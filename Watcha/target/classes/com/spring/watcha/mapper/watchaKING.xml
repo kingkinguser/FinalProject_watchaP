@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="watcha">
+
+	<select id="projectInfo" parameterType="String" resultType="com.spring.watcha.common.MovieVO">
+	select movie_id, movie_title, overview, to_char(release_date,'yyyy-mm-dd') as release_date, tagline, runtime, poster_path, backdrop_path
+	from movie	
+	where movie_id = #{movie_id} 
+	</select>  
+
+</mapper>
+
