@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="watcha">
+
+	<select id="ratingFive" parameterType="String" resultType="com.spring.watcha.common.MovieVO">
+	    select movie_id, movie_title, poster_path
+	    from
+	    (
+		    select row_number() over(order by R.rating_date desc) AS rno
+		         , M.movie_id, M.movie_title, M.poster_path
+		    from movie M right join star_rating R
+		    on M.movie_id = R.movie_id
+		    where user_id = #{user_id}
+		    order by rating_date desc
+	    ) A
+	    where A.rno between 1 and 5	
+	</select>
+
+	<resultMap type="HashMap" id="userInfo_Map">
+		<result property="user_id" 	 	 	column="user_id" 		  javaType="String"/>
+		<result property="nickname" 	 	column="nickname" 		  javaType="String"/>
+		<result property="profile_message" 	column="profile_message"  javaType="String"/>
+		<result property="profile_image" 	column="profile_image" 	  javaType="String"/>
+		<result property="avg_rating" 	 	column="avg_rating" 	  javaType="String"/>
+		<result property="count_rating" 	column="count_rating" 	  javaType="String"/>
+	</resultMap>
+	
+	<select id="userInfo" parameterType="String" resultMap="userInfo_Map">
+	    select b.user_id, b.nickname, b.profile_message, b.profile_image
+	         , A.avg_rating, A.count_rating 
+	    from
+	    (
+	        select user_id, round(avg(rating),2) as avg_rating, count(rating) as count_rating
+	        from star_rating
+	        where user_id = #{user_id}   
+	        group by user_id
+	    ) A join member B
+	    on A.user_id = B.user_id	
+	</select>
+
+	<select id="reviewCount" parameterType="String" resultType="String">
+	    select count(review_id)
+	    from movie_review
+	    where user_id = #{user_id}
+	</select>
+
+	<select id="collectionCount" parameterType="String" resultType="String">
+	    select count(collection_ID)
+	    from collection
+	    where user_id = #{user_id}
+	</select>
+	
+	<resultMap type="HashMap" id="ratingMovies_Map">
+		<result property="movie_id" 	 column="movie_id" 		javaType="String"/>
+		<result property="movie_title"   column="movie_title" 	javaType="String"/>
+		<result property="poster_path"   column="poster_path" 	javaType="String"/>
+		<result property="rating" 		 column="rating" 		javaType="String"/>
+	</resultMap>
+	
+	<select id="ratingMovies" parameterType="String" resultMap="ratingMovies_Map">
+	    select M.movie_id, M.movie_title, M.poster_path, R.rating
+	    from movie M right join star_rating R
+	    on M.movie_id = R.movie_id
+	    where user_id = #{user_id}
+	    order by rating_date desc	
+	</select>
+
+	<resultMap type="HashMap" id="myReviewPaging_Map">
+		<result property="review_id" 	 	  column="review_id" 		  javaType="String"/>
+		<result property="movie_id" 	 	  column="movie_id" 		  javaType="String"/>
+		<result property="movie_title" 	 	  column="movie_title" 		  javaType="String"/>
+		<result property="poster_path" 	 	  column="poster_path" 		  javaType="String"/>
+		<result property="review_content" 	  column="review_content" 	  javaType="String"/>
+		<result property="review_date" 	 	  column="review_date" 		  javaType="String"/>
+		<result property="spoiler_status" 	  column="spoiler_status" 	  javaType="String"/>
+		<result property="number_of_likes" 	  column="number_of_likes" 	  javaType="String"/>
+		<result property="number_of_comments" column="number_of_comments" javaType="String"/>
+	</resultMap>
+	
+	<select id="myReviewPaging" parameterType="String" resultMap="myReviewPaging_Map">
+	    select review_id, movie_id, movie_title, poster_path, review_content, review_date, spoiler_status
+	    	 , number_of_likes, number_of_comments
+	    from
+	    (
+	        select row_number() over(order by R.review_date desc) AS rno
+	             , R.review_id, M.movie_id, M.movie_title, M.poster_path, R.review_content
+	             , to_char(R.review_date, 'yyyy-mm-dd') AS review_date
+	             , R.spoiler_status, R.number_of_likes, R.number_of_comments
+	        from movie_review R join movie M
+	        on R.movie_id = M.movie_id
+	        where user_id = #{user_id}
+	    ) A
+	    where rno between #{startRno} and #{endRno}
+	</select>
+	
+	<select id="rateMoviesPaging" parameterType="String" resultMap="ratingMovies_Map">
+	    select movie_id, movie_title, poster_path, rating
+	    from
+	    (
+	        select row_number() over(order by R.rating_date desc) AS rno
+	             , M.movie_id, M.movie_title, M.poster_path
+	             , R.rating
+	        from movie M right join star_rating R
+	        on M.movie_id = R.movie_id
+	        where user_id = #{user_id}
+	        order by rating_date desc
+	    ) A
+	    where rno between #{startRno} and #{endRno}
+	</select>
+
+	<resultMap type="HashMap" id="movieReviewPaging_Map">
+		<result property="review_id" 	 	  column="review_id" 		  javaType="String"/>
+		<result property="movie_id" 	 	  column="movie_id" 		  javaType="String"/>
+		<result property="review_content" 	  column="movie_title" 		  javaType="String"/>
+		<result property="review_date" 	 	  column="review_date" 		  javaType="String"/>
+		<result property="spoiler_status" 	  column="spoiler_status" 	  javaType="String"/>
+		<result property="number_of_likes" 	  column="number_of_likes" 	  javaType="String"/>
+		<result property="number_of_comments" column="number_of_comments" javaType="String"/>
+		<result property="user_id" 			  column="number_of_comments" javaType="String"/>
+		<result property="profile_image" 	  column="number_of_comments" javaType="String"/>
+		<result property="nickname" 		  column="number_of_comments" javaType="String"/>
+		<result property="rating" 			  column="number_of_comments" javaType="String"/>
+	</resultMap>
+	
+	<select id="movieReviewPaging" parameterType="String" resultMap="movieReviewPaging_Map">
+	    select A.review_id, A.movie_id, A.review_content, A.review_date, A.spoiler_status, A.number_of_likes, A.number_of_comments
+	         , A.user_id, A.profile_image, A.nickname
+	         , decode(nvl(B.rating, 0), 0, '평가안함', 1, B.rating) AS rating
+	    from 
+	    (
+	        select row_number() over(order by R.review_date desc) AS rno
+	             , R.review_id, R.movie_id, R.review_content, R.review_date, R.spoiler_status, R.number_of_likes, R.number_of_comments
+	             , M.user_id, M.profile_image, M.nickname  
+	        from movie_review R join member M
+	        on R.user_id = M.user_id
+	    ) A join star_rating B
+	    on A.movie_id = B.movie_id
+	    where A.movie_id = #{movie_id}
+	  <if test='startRno != "" and endRno != ""'>
+	    and rno between #{startRno} and #{endRno}
+	  </if>	    
+	</select>
+
+</mapper>
