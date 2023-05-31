@@ -7,7 +7,7 @@ import javax.annotation.Resource;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
 
-import com.spring.watcha.common.MovieVO;
+import com.spring.watcha.model.MovieVO;
 
 @Repository
 public class WatchaDAO implements InterWatchaDAO {

@@ -4,7 +4,7 @@
 
 <mapper namespace="watcha">
 
-	<select id="ratingFive" parameterType="String" resultType="com.spring.watcha.common.MovieVO">
+	<select id="ratingFive" parameterType="String" resultType="com.spring.watcha.model.MovieVO">
 	    select movie_id, movie_title, poster_path
 	    from
 	    (

@@ -12,7 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.spring.watcha.common.MovieVO;
+import com.spring.watcha.model.MovieVO;
 import com.spring.watcha.seosk.service.InterWatchaService;
 
 @Controller

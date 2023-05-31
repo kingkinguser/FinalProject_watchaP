@@ -2,7 +2,7 @@ package com.spring.watcha.seosk.model;
 
 import java.util.*;
 
-import com.spring.watcha.common.MovieVO;
+import com.spring.watcha.model.MovieVO;
 
 public interface InterWatchaDAO {
 
