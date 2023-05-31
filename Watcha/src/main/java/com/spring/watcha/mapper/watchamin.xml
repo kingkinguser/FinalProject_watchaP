@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="watchamin">
+
+	<!-- 평점 순위  -->
+	<select id="starRank" resultType="com.spring.watcha.model.MovieVO">
+		 <![CDATA[
+		    SELECT  movie_id, movie_title, original_language, release_date, poster_path, rating_count, rating_avg
+			FROM (
+			  SELECT ROWNUM, movie_id, movie_title, original_language, CONCAT('20', release_date) AS release_date, poster_path, rating_count, rating_avg
+			  FROM Movie
+			  
+			) 
+			WHERE ROWNUM <= 30
+			ORDER BY rating_avg desc, movie_title asc
+		  ]]>
+	</select>
+	
+	<!-- FROM Movie 뒤에 where rating_count > 9  사용하면 됨 -->
+	
+	<!-- 보고싶어요 순위  -->
+	<select id="seeRank" resultType="com.spring.watcha.model.MovieVO">
+		 <![CDATA[
+		 SELECT m.movie_id, m.movie_title, m.original_language, m.release_date, m.poster_path, m.rating_avg, w.movie_count
+		 FROM (
+		   SELECT movie_id, movie_title, original_language, CONCAT('20', release_date) AS release_date, poster_path, rating_avg
+		   FROM Movie
+		 ) m
+		 JOIN (
+		   SELECT movie_id, COUNT(*) AS movie_count
+		   FROM watch_list
+		   GROUP BY movie_id
+		 ) w
+		 ON m.movie_id = w.movie_id
+		 where ROWNUM <= 30
+		 ORDER BY w.movie_count DESC
+		 ]]>
+	</select>
+	
+	
+	<!-- 한줄평 많은 순위 20개  -->
+	<select id="commentRank" resultType="com.spring.watcha.model.MovieVO">
+		<![CDATA[
+		SELECT m.movie_id, m.movie_title, m.original_language, m.release_date, m.poster_path, m.rating_avg, w.movie_count
+		FROM (
+		  SELECT movie_id, movie_title, original_language, CONCAT('20', release_date) AS release_date, poster_path, rating_avg
+		  FROM Movie
+		) m
+		JOIN (
+		  SELECT movie_id, COUNT(*) AS movie_count
+		  FROM movie_review
+		  GROUP BY movie_id
+		) w
+		ON m.movie_id = w.movie_id
+		where ROWNUM <= 20
+		ORDER BY w.movie_count DESC
+		]]>
+	</select>
+	
+	
+	<resultMap id="movieMainMap" type="com.spring.watcha.model.MovieVO">
+       <id property="actorRank" column="actorRank" />
+       <result property="movieTitle" column="movie_title"/>
+       <result property="overview" column="overview"/>
+       <result property="originalLanguage" column="original_language"/>
+       <result property="originalTitle" column="original_title"/>
+       <result property="releaseDate" column="release_date"/>
+       <result property="tagline" column="tagline"/>
+       <result property="runtime" column="runtime"/>
+       <result property="posterPath" column="poster_path"/>
+       <result property="backdropPath" column="backdrop_path"/>
+       <result property="ratingCount" column="rating_count"/>
+       <result property="ratingAvg" column="rating_avg"/>
+       <!-- <collection property="moviestar" javaType="java.util.List" column="movie_id" ofType="com.spring.watcha.model.Star_ratingVO" select="selectMainStar" /> -->
+   </resultMap>
+	
+	
+	<!-- 좋아하는 배우 영화  -->
+	<select id="actorRank" resultMap="movieMainMap" > 
+		SELECT m.movie_id, a.actor_id, COUNT(*) OVER (PARTITION BY a.actor_id) AS identical_actor_count, a.casting_order, b.actor_name
+	    FROM (
+	        SELECT movie_id, user_id, rating, rating_date
+	        FROM star_rating
+	        WHERE user_id = 'qwer1234'
+	    ) w
+	    JOIN (
+	        SELECT movie_id, movie_title, original_language, CONCAT('20', release_date) AS release_date, poster_path, rating_avg
+	        FROM Movie
+	    ) m ON w.movie_id = m.movie_id
+	    JOIN (
+	        SELECT actor_id, movie_id, casting_order
+	        FROM movie_role
+	    ) a ON a.movie_id = m.movie_id
+	    JOIN (
+	        SELECT actor_id, actor_name
+	        FROM actor
+	    ) b ON b.actor_id = a.actor_id
+	    ORDER BY identical_actor_count DESC, a.casting_order ASC
+	    FETCH FIRST ROW ONLY
+	</select>
+	
+
+				    
+</mapper>
