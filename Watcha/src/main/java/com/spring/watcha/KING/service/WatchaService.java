@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.spring.watcha.KING.model.InterWatchaDAO;
 import com.spring.watcha.common.AES256;
+import com.spring.watcha.model.MovieVO;
 
 
 @Service
@@ -15,7 +16,7 @@ public class WatchaService implements InterWatchaService {
 
    @Autowired 
    private AES256 aes;
-/*
+
 	@Override
 	public MovieVO projectInfo(String movie_id) {
 
@@ -23,5 +24,5 @@ public class WatchaService implements InterWatchaService {
 		
 		return projectInfo;
 	}
-	*/	
+		
 }

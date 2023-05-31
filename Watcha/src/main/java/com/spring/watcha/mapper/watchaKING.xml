@@ -4,7 +4,7 @@
 
 <mapper namespace="watcha">
 
-	<select id="projectInfo" parameterType="String" resultType="com.spring.watcha.common.MovieVO">
+	<select id="projectInfo" parameterType="String" resultType="com.spring.watcha.model.MovieVO">
 	select movie_id, movie_title, overview, to_char(release_date,'yyyy-mm-dd') as release_date, tagline, runtime, poster_path, backdrop_path
 	from movie	
 	where movie_id = #{movie_id} 

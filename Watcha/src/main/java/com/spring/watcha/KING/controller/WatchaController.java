@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.spring.watcha.KING.service.InterWatchaService;
+import com.spring.watcha.model.MovieVO;
 
 @Controller
 public class WatchaController {
@@ -25,9 +26,9 @@ public class WatchaController {
 			public String project_detail(HttpServletRequest request, Model model) {
 				 
 				String movie_id = request.getParameter("movie_id");
-			//	MovieVO projectInfo = service.projectInfo(movie_id); 
+				MovieVO projectInfo = service.projectInfo(movie_id); 
 
-			//	model.addAttribute("projectInfo",projectInfo);
+				model.addAttribute("projectInfo",projectInfo);
 				  
 				return "project_detail.tiles";
 				
