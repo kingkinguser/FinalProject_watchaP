@@ -1,7 +1,9 @@
 package com.spring.watcha.KING.controller;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,12 +17,14 @@ public class WatchaController {
 			@Autowired 
 			private InterWatchaService service;  
 			
+			@Resource
+			private SqlSessionTemplate sqlsession ;
+			
 			// ==== ***** project_detail tiles 시작 ***** ==== // 
 			@RequestMapping(value="/view/project_detail.action") 
 			public String project_detail(HttpServletRequest request, Model model) {
 				 
 				String movie_id = request.getParameter("movie_id");
-				
 			//	MovieVO projectInfo = service.projectInfo(movie_id); 
 
 			//	model.addAttribute("projectInfo",projectInfo);
