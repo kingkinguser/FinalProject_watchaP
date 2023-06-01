@@ -21,17 +21,13 @@ public class WatchaController {
 		List<MovieVO> starRankvo = service.starRank();   // 평점 순위 
 		List<MovieVO> seeRankvo = service.seeRank();   // 보고싶어요  순위 
 		List<MovieVO> commentRankvo = service.commentRank();   // 한줄평 많은  순위 
-		//List<MovieVO> actorvo = service.actorRank();   // 좋아하는 배우 영화 
+		List<MovieVO> actorvo = service.actorRank();   // 좋아하는 배우 영화 
 		
-		
-		for(MovieVO vo : seeRankvo) {
-			System.out.println(vo);
-		}
 			
 		mav.addObject("starRankvo", starRankvo);
 		mav.addObject("seeRankvo", seeRankvo);
 		mav.addObject("commentRankvo", commentRankvo);
-		//mav.addObject("actorvo", actorvo);
+		mav.addObject("actorvo", actorvo);
 		mav.setViewName("/main.tiles");
 		
 		return mav;

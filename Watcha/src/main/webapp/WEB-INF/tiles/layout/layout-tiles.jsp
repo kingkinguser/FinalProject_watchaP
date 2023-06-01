@@ -21,7 +21,9 @@
 
   <!-- Font Awesome 5 Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-  
+  <!-- Font Awesome 6 Icons --> 
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
+
   <!-- 직접 만든 CSS 1 -->
   <link rel="stylesheet" type="text/css" href="<%=ctxPath %>/resources/css/style1.css" />
   
@@ -37,20 +39,20 @@
   <%-- *** ajax로 파일을 업로드할때 가장 널리 사용하는 방법 ==> ajaxForm *** --%>
   <script type="text/javascript" src="<%= ctxPath%>/resources/js/jquery.form.min.js"></script>
 
+  <!-- 글꼴 적용하기 -->
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.6/dist/web/static/pretendard.css" />
+  
+
+	<%-- <link rel="icon" href="<%=ctxPath%>/images/파비콘.ico"> --%>
+	
 </head>
 <body>
 	<div id="mycontainer">
-		<div id="myheader">
 			<tiles:insertAttribute name="header" />
-		</div>
 		
-		<div id="mycontent">
 			<tiles:insertAttribute name="content" />
-		</div>
 		
-		<div id="myfooter">
 			<tiles:insertAttribute name="footer" />
-		</div>
 	</div>
 </body>
 </html>    
