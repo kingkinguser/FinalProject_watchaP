@@ -1,4 +1,4 @@
-package com.spring.watcha.shinjh.model;
+package com.spring.watcha.model;
 
 public class MemberVO {
 
@@ -14,8 +14,10 @@ public class MemberVO {
 	private String profile_message;			// 프로필 문구
 	private String profile_image;      		// 프로필 이미지
 	private String last_password_change;	// 마지막으로 암호를 변경한 날짜
-	
-	private int lastLoginDuration;          // select 용. 지금으로 부터 마지막으로 로그인한지가 몇개월인지 알려주는 개월수(12개월 동안 로그인을 안 했을 경우 해당 로그인 계정을 비활성화 시키려고 함)
+	// idle 추가할것
+
+	private int pwdchangegap;          // select 용. 지금으로 부터 마지막으로 암호를 변경한지가 몇개월인지 알려주는 개월수(3개월 동안 암호를 변경 안 했을시 암호를 변경하라는 메시지를 보여주기 위함)  
+	private int lastlogingap;          // select 용. 지금으로 부터 마지막으로 로그인한지가 몇개월인지 알려주는 개월수(12개월 동안 로그인을 안 했을 경우 해당 로그인 계정을 비활성화 시키려고 함)
 	
 	////////////////////////////////////////////////////////////////////////
 	
@@ -137,13 +139,22 @@ public class MemberVO {
 		this.last_password_change = last_password_change;
 	}
 
-	// ==== select 용. 지금으로 부터 마지막으로 로그인한지가 몇개월인지 알려주는 개월수 ==== //
-	public int getLastLoginDuration() {
-		return lastLoginDuration;
+	// ==== select 용. 지금으로 부터 마지막으로 암호를 변경하지가 몇개월인지 알려주는 개월수 ==== //
+	public int getPwdchangegap() {
+		return pwdchangegap;
 	}
 
-	public void setLastLoginDuration(int lastLoginDuration) {
-		this.lastLoginDuration = lastLoginDuration;
+	public void setPwdchangegap(int pwdchangegap) {
+		this.pwdchangegap = pwdchangegap;
+	}
+
+	// ==== select 용. 지금으로 부터 마지막으로 로그인한지가 몇개월인지 알려주는 개월수 ==== //
+	public int getLastlogingap() {
+		return lastlogingap;
+	}
+
+	public void setLastlogingap(int lastlogingap) {
+		this.lastlogingap = lastlogingap;
 	}
 
 	public boolean isRequirePwdChange() {

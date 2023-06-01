@@ -375,28 +375,24 @@ $(document).ready(function() {
         }
     });
 
-    // 로그인 정보가 입력됐을 때
-    $("#loginForm").submit(function(e) {
+    // 로그인 버튼이 눌렸을 때
+    $("button#btnLogin").click(function(){
     	func_Login(); // 로그인 기능 실행
     });
 
-    // 회원가입 정보가 입력됐을 때
-    $("#signupForm").submit(function(e) {
+    // 회원가입 버튼이 눌렸을 때
+    $("button#btnLogin").click(function(){
     	func_Signup(); // 회원가입 기능 실행
-    });
+    });    
 
-    // 로그인/회원가입 버튼을 클릭했을 때
-    $("button.login_signup-btn").click(function(){
-		submitForm();
-    });
-    
-
+    /* 미구현
     // input 태그에 enter 눌렀을 때
     $("input.login_signup-input").keydown(function(e){
         if(e.keyCode == 13) {   // enter를 눌렀을 경우
-            submitForm();       // form 기능 실행	
+            submit(); 			// form 기능 실행	
         }
     });
+     */
 
 });// end of $(document).ready(function()
 
@@ -423,6 +419,7 @@ function resetForm(){
     }
 }
 
+// 로그인 정규화 및 기능
 function func_Login() {
 	
 	const email = $("input[type='email']").val(); 
@@ -506,7 +503,7 @@ function func_Login() {
                                 </label>
                                 <p class="warning-text" id="pwd-warning">비밀번호는 최소 6자리 이상이어야 합니다.</p>
                             </div>
-                            <button type="button" class="login_signup-btn">로그인</button>
+                            <button type="button" class="login_signup-btn" id="btnLogin">로그인</button>
                         </form>
                         <div class="textstyle-modal mt20_mb14">
                             <button class="text-button">비밀번호를 잊어버리셨나요?</button>
@@ -586,7 +583,7 @@ function func_Login() {
                                 </label>
                                 <p class="warning-text" id="pwd2-warning">비밀번호는 영문, 숫자, 특수문자 중 2개 이상을 조합하여 최소 10자리 이상이여야 합니다.</p>
                             </div>
-                            <button type="button" class="login_signup-btn">회원가입</button>
+                            <button type="button" class="login_signup-btn" id="btnSignup">회원가입</button>
                         </form>
                         <div class="textstyle-modal mt20_mb14">
                             이미 가입하셨나요?
