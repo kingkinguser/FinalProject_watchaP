@@ -9,6 +9,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.spring.watcha.KING.service.InterWatchaService;
 import com.spring.watcha.model.MovieVO;
 
@@ -26,10 +28,15 @@ public class WatchaController {
 			public String project_detail(HttpServletRequest request, Model model) {
 				 
 				String movie_id = request.getParameter("movie_id");
-				MovieVO projectInfo = service.projectInfo(movie_id); 
+				MovieVO movieDetail = service.getMovieDetail(movie_id); 
 
-				model.addAttribute("projectInfo",projectInfo);
-				  
+				model.addAttribute("movieDetail",movieDetail);
+				
+				// 1대N 배열 한눈에 보기
+				Gson gson = new GsonBuilder().setPrettyPrinting().create();
+				String movieStr = gson.toJson(movieDetail);
+				System.out.println(movieStr);
+				 
 				return "project_detail.tiles";
 				
 			}	

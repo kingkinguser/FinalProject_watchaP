@@ -4,11 +4,63 @@
 
 <mapper namespace="watcha">
 
-	<select id="projectInfo" parameterType="String" resultType="com.spring.watcha.model.MovieVO">
-	select movie_id, movie_title, overview, to_char(release_date,'yyyy-mm-dd') as release_date, tagline, runtime, poster_path, backdrop_path
-	from movie	
-	where movie_id = #{movie_id} 
-	</select>  
+   <resultMap id="movieResultMap" type="com.spring.watcha.model.MovieVO">
+       <id     		property="movie_id"          column="movie_id"/>
+       <result 		property="movie_title" 		column="movie_title"/>
+       <result 		property="overview" 		column="overview"/>
+       <result 		property="original_language" column="original_language"/>
+       <result 		property="original_title" 	column="original_title"/>
+       <result 		property="release_date" 		column="release_date"/>
+       <result 		property="tagline" 			column="tagline"/>
+       <result 		property="runtime" 			column="runtime"/>
+       <result 		property="poster_path" 		column="poster_path"/>
+       <result 		property="backdrop_path" 	column="backdrop_path"/>
+       <result 		property="rating_count" 		column="rating_count"/>
+       <result 		property="rating_avg" 		column="rating_avg"/>
+       <collection  property="genres"	  javaType="java.util.List" column="movie_id" ofType="com.spring.watcha.model.Movie_genreVO" select="selectGenresByMovieId" />
+       <collection  property="movieRoles" javaType="java.util.List" column="movie_id" ofType="com.spring.watcha.model.Movie_roleVO" select="selectMovieRolesByMovieId"/>
+   </resultMap>
+   
+   <resultMap id="genreResultMap" type="com.spring.watcha.model.GenreVO">
+       <id property="genre_id" column="genre_id" />
+       <result property="genre_name" column="genre_name" />
+   </resultMap>
+   
+   <resultMap id="movieRoleResultMap" type="com.spring.watcha.model.Movie_roleVO">
+       <result property="role" column="role"/>
+       <result property="casting_order" column="casting_order"/>
+       <association property="actor" javaType="com.spring.watcha.model.ActorVO" resultMap="actorResultMap" />
+   </resultMap>
+   
+   <resultMap id="actorResultMap" type="com.spring.watcha.model.ActorVO">
+       <id property="actor_id" column="actor_id" />
+       <result property="actor_name" column="actor_name"/>
+       <result property="gender" column="gender"/>
+       <result property="date_of_birth" column="date_of_birth"/>
+       <result property="place_of_birth" column="place_of_birth"/>
+       <result property="profile_image_path" column="profile_image_path"/>
+   </resultMap>
+   
+   <select id="getMovieDetails" resultMap="movieResultMap" parameterType="String">
+       SELECT movie_id, movie_title, overview, original_language, original_title, to_char(release_date, 'yyyy-mm-dd') as release_date, tagline, to_number(runtime) as runtime, poster_path, backdrop_path, to_number(rating_count) as rating_count
+       , to_number(rating_avg) as rating_avg
+       FROM movie
+       WHERE movie_id = #{movie_id}
+   </select>
+   
+   <select id="selectGenresByMovieId" resultMap="genreResultMap">
+       SELECT MG.movie_id, G.genre_id, G.genre_name
+       FROM genre G JOIN movie_genre MG 
+       ON G.genre_id = MG.genre_id
+       WHERE MG.movie_id = #{movie_id}
+   </select>
+   
+   <select id="selectMovieRolesByMovieId" resultMap="movieRoleResultMap">
+       SELECT MR.movie_id, MR.actor_id, MR.role, MR.casting_order, A.actor_name, A.gender, A.date_of_birth, A.place_of_birth, A.profile_image_path
+       FROM movie_role MR JOIN actor A 
+       ON MR.actor_id = A.actor_id
+       WHERE MR.movie_id = #{movie_id}
+   </select>
 
 </mapper>
 

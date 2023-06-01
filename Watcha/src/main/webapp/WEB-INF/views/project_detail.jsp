@@ -55,7 +55,7 @@
 	    float: left;
 		border: solid 1px #b3b3b3;
 		width: 23%;
-		height: 400px;
+		height: 350px;
 		border-radius: 10px 10px;
 		background-repeat: no-repeat;
 		background-size:cover;  
@@ -65,7 +65,7 @@
 	    float: left;
 		border: solid 1px #b3b3b3;
 		width: 75%;
-		height: 400px; 
+		height: 350px; 
 		margin: 0px 0px 20px 20px; 
 		border-radius: 10px 10px;
 	}	
@@ -75,7 +75,6 @@
 		border: solid 1.5px #b3b3b3;
 		width: 100%;
 		display: inline-block;
-		height: 500px;
 		border-radius: 10px 10px;
 	}	
 	
@@ -83,7 +82,7 @@
 		border: solid 1.5px #b3b3b3;
 		width: 100%;
 		display: inline-block;
-		height: 470px;
+		height: 410px;
 		margin-top: 20px;
 		border-radius: 10px 10px;	
 	}	 
@@ -152,7 +151,7 @@
 	/* 출연,제작 끝 */
 	
 	/*보고싶어요 시작*/
-	input[type="checkbox"] { 
+	input[type="checkbox"] {  
 	   opacity: 0;
 	}
     /*보고싶어요 끝*/
@@ -164,12 +163,20 @@
 	.fa-face-meh:hover{color: #ff0558; cursor: pointer;}
 	/*코멘트 끝*/
 	
+	.actor {
+	    font-size: 13px;
+		margin: 0;
+		padding: 0;
+	}
 	
+	.card { 
+		height: 320px;
+	}
 	
 </style>
 
 <script type="text/javascript">
-
+	
 	/* 출연, 제작 시작*/
 	$(document).ready(function(){
 		
@@ -178,8 +185,8 @@
 		});
 	
 	$('.carousel .carousel-item').each(function(){
-	    var minPerSlide = 7;
-	    var next = $(this).next();
+	    var minPerSlide = 4;
+	    var next = $(this).next(); 
 	    if (!next.length) {
 	        next = $(this).siblings(':first');
 	    }
@@ -265,31 +272,43 @@
 <title>제품상세</title>
 </head>
 <body>
-
+	
 	<div>
 		<div id="left"></div> 
-		<img id="middle" src="https://image.tmdb.org/t/p/w1280${requestScope.projectInfo.backdrop_path}"/>
+		<img id="middle" src="https://image.tmdb.org/t/p/w1280${requestScope.movieDetail.backdrop_path}"/>
 		<div id="right"></div>
 	</div>
 	
 	<div id="container">
 		 
-		<img id="poster" src="https://image.tmdb.org/t/p/w780${requestScope.projectInfo.poster_path}"/>
+		<img id="poster" src="https://image.tmdb.org/t/p/w780${requestScope.movieDetail.poster_path}"/>
 	
 		<div id="posterInfo"> 
-			<div style="margin: 30px 0 0 30px;">
+			<div style="margin: 15px 0 0 30px;">
 			
-				<div style="margin: 0 0 20px 0; font-size: 40px; font-weight: bolder;">${requestScope.projectInfo.movie_title}</div>
+				<div style="margin: 0 0 0 0; font-size: 40px; font-weight: bolder;">${requestScope.movieDetail.movie_title}</div>
 				
-				<div style="font-weight: bold;">${requestScope.projectInfo.tagline}</div>
+			    <c:forEach var="genres" items="${requestScope.movieDetail.genres}" varStatus="status">
+					<c:choose>
+						<c:when test="${not status.last}"><span style="font-weight: bold; font-size: 13px;" >${genres.genre_name}</span><span style="color: #eee;">&nbsp;|&nbsp;</span></c:when>
+						<c:otherwise><span style="font-weight: bold; font-size: 13px;">${genres.genre_name}</span></c:otherwise>
+					</c:choose>
+		        </c:forEach>  
+			
+				
+				<div style="margin-top: 10px; font-weight: bold; font-size: 17px;">${requestScope.movieDetail.tagline}</div>
 	
 				<hr style="margin-right: 40px;">	 
 				
-				<div style="font-weight: bold;">개봉일자:&nbsp;${requestScope.projectInfo.release_date}&nbsp;&nbsp;<span style="color: #eee;">|</span>&nbsp;&nbsp;러닝타임:&nbsp;${requestScope.projectInfo.runtime}분&nbsp;&nbsp;<span style="color: #eee;">|</span>&nbsp;&nbsp;평균별점:&nbsp;</div>  
+				<div style="font-weight: bold;">
+					개봉일자:&nbsp;${requestScope.movieDetail.release_date}&nbsp;&nbsp;
+					<span style="color: #eee;">|</span>
+					러닝타임:&nbsp;${requestScope.movieDetail.runtime}분&nbsp;&nbsp;
+				</div>  
 				
 				<hr style="margin-right: 40px;"> 
 				 
-				<div style="margin: 50px 0 10px 77px; font-weight: bold;">평가하기</div> 
+				<div style="margin: 30px 0 10px 77px; font-weight: bold;">평가하기</div> 
 				
 				<fieldset class="rate">
                      <input type="radio" id="rating10" name="rating" value="10"><label for="rating10" title="5점"></label>
@@ -335,56 +354,97 @@
 		
 		<div id="BasicInfo">
 		
-			<h4 style="margin: 30px 0 20px 30px; font-weight: bolder; ">기본 정보</h4>
+			<h4 style="margin: 20px 0 20px 30px; font-weight: bolder; ">기본 정보</h4>
 		       
 		       <div style="margin-left: 50px;"> 
-			       <span style="margin-right: 65px;">원제</span><span>${requestScope.projectInfo.movie_title}</span>
+			       <span style="margin-right: 65px;">원제</span><span>${requestScope.movieDetail.movie_title}</span>
 			       
 			       <hr style="margin-right: 40px;"> 
 			        
-			       <span style="margin-right: 5px;">개봉일자 </span><span style="margin-left: 27px;">${requestScope.projectInfo.release_date}</span>
+			       <span style="margin-right: 5px;">개봉일자 </span><span style="margin-left: 27px;">${requestScope.movieDetail.release_date}</span>
 			       
 			       <hr style="margin-right: 40px;"> 
 			       
-			       <span>상영시간 </span><span style="margin-left: 35px;">${requestScope.projectInfo.runtime}분</span>
+			       <span>상영시간 </span><span style="margin-left: 35px;">${requestScope.movieDetail.runtime}분</span>
 			       
 			       <hr style="margin-right: 40px;"> 
+			        
+			       <span style="margin-right: 64px;">장르</span> 
+			       <c:forEach var="genres" items="${requestScope.movieDetail.genres}" varStatus="status">
+						
+						<c:choose>
+							<c:when test="${not status.last}"><span>${genres.genre_name}</span><span style="color: #eee;">&nbsp;|&nbsp;</span></c:when>
+							<c:otherwise><span>${genres.genre_name}</span></c:otherwise>
+						</c:choose>
+						
+			       </c:forEach>  
+			       
+			       <hr style="margin-right: 40px;">   
 			         
-			       <span style="margin-right: 55px;">슬로건</span><span>${requestScope.projectInfo.tagline}</span>  
+			       <span style="margin-right: 55px;">슬로건</span><span>${requestScope.movieDetail.tagline}</span>  
 			       
 			       <hr style="margin-right: 40px;"> 
 			       
-			       <span style="width: 10%; vertical-align: top; display: inline-block;">내용 </span>
+			       <span style="width: 10%; vertical-align: top; display: inline-block;">내용</span>
 			       
-			       <span style="width: 80%; display: inline-block;">${requestScope.projectInfo.overview}</span> 
+			       <span style="width: 80%; display: inline-block; margin-bottom: 20px;">${requestScope.movieDetail.overview}</span> 
 			   </div>
 		</div>
 		
 		<div id="cast">
 		
-			<h4 style="margin: 30px 0 0 30px; font-weight: bolder; ">출연/제작</h4>
+			<h4 style="margin: 30px 0 10px 30px; font-weight: bolder; ">출연/제작</h4>
 
-			<div id="html">
-			<c:if test="${not empty requestScope.projectInfo.actorList}">
-			
 				<div class="row mx-auto my-auto">
 			        <div id="recipeCarousel" class="carousel slide w-100" data-ride="carousel">
 			            <div class="carousel-inner w-100" role="listbox">
-			                
-			                <c:forEach  var="actor" items="${requestScope.projectInfo.actorList}" varStatus="status">
+			               <c:forEach var="movieRoles" items="${requestScope.movieDetail.movieRoles}" varStatus="status">
+			                  <c:if test="${status.index == 0}">
 					            <div class="carousel-item active">
-				                    <div class="col-md-4">
+				                    <div class="col-md-2">
 				                        <div class="card"> 
-				                            <img class="img-fluid card-img-top" src="https://image.tmdb.org/t/p/w1280${requestScope.projectInfo.backdrop_path}">
+				                            <img class="img-fluid card-img-top" src="https://image.tmdb.org/t/p/w1280${movieRoles.actor.profile_image_path}">
 				                            <div class="card-body">
-										    <h5 class="card-title">${actor.actor_name}</h5>
-										    <p class="card-text">${actor.birthday}</p>
-										    <a href="#" class="stretched-link"></a>
-										  </div>
+										    <h5 class="card-title actor" style="font-size: 16px; font-weight:bold; margin-bottom: 3px;">${movieRoles.actor.actor_name}</h5>
+										    
+										    <c:if test="${not empty movieRoles.actor.date_of_birth}">
+										    	<p class="card-text actor">생일: ${movieRoles.actor.date_of_birth}</p>
+										  	</c:if>
+										  	
+											<c:choose>
+												<c:when test="${movieRoles.actor.gender eq 2}"><div class="actor">성별: 남자</div></c:when>
+												<c:otherwise><div class="actor">성별: 여자</div></c:otherwise>
+											</c:choose>
+										  	
+										  </div> 
 				                        </div>
 				                    </div>
-				                </div>
-			                </c:forEach>
+				                </div> 
+				              </c:if>
+				              
+			                  <c:if test="${status.index > 0}">
+					            <div class="carousel-item">
+				                    <div class="col-md-2">
+				                        <div class="card"> 
+				                            <img class="img-fluid card-img-top" src="https://image.tmdb.org/t/p/w1280${movieRoles.actor.profile_image_path}">
+				                            <div class="card-body">
+										    <h5 class="card-title actor" style="font-size: 16px; font-weight:bold; margin-bottom: 3px;">${movieRoles.actor.actor_name}</h5>
+										   
+										    <c:if test="${not empty movieRoles.actor.date_of_birth}">
+										    	<p class="card-text actor">생일: ${movieRoles.actor.date_of_birth}</p>
+										  	</c:if>
+
+											<c:choose>
+												<c:when test="${movieRoles.actor.gender eq 2}"><div class="actor">성별: 남자</div></c:when>
+												<c:otherwise><div class="actor">성별: 여자</div></c:otherwise>
+											</c:choose>
+										  	
+ 										  </div>
+				                        </div>
+				                    </div>
+				                </div> 
+				              </c:if>
+			               </c:forEach>
 			                
 			            </div>
 			            <a class="carousel-control-prev w-auto" href="#recipeCarousel" role="button" data-slide="prev">
@@ -396,20 +456,13 @@
 			                <span class="sr-only">Next</span>
 			            </a>
 			        </div>
-		    	</div>
-			</c:if>
-			<%-- </c:forEach> --%>
 			</div>  
-		 
 		 
 		</div>
 		
 		<div id="Comment">
 		
 			<h4 style="margin: 30px 0 0 30px; font-weight: bolder; ">코멘트</h4>
-			  	
-			
-				
 				
 		      <%-- 코멘트 등록 모달창 --%>
 		      <div class="modal fade" id="registerComment">

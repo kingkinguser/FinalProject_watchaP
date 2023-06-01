@@ -18,9 +18,9 @@ public class WatchaService implements InterWatchaService {
    private AES256 aes;
 
 	@Override
-	public MovieVO projectInfo(String movie_id) {
+	public MovieVO getMovieDetail(String movie_id) {
 
-		MovieVO projectInfo = dao.projectInfo(movie_id);
+		MovieVO projectInfo = dao.getMovieDetail(movie_id);
 		
 		return projectInfo;
 	}

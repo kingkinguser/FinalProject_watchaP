@@ -17,14 +17,11 @@ public class WatchaDAO implements InterWatchaDAO {
 		private SqlSessionTemplate sqlsession ;
 
 		
-		// 영화 및 드라마 등 정보 가져오기 
-		@Override
-		public MovieVO projectInfo(String movie_id) {
-
-			MovieVO projectInfo = sqlsession.selectOne("watcha.projectInfo",movie_id);
-			
-			return projectInfo;
-		}
-		
-		
+		// 영화 정보 가져오기 	
+	   @Override
+	   public MovieVO getMovieDetail(String movieId) {
+	      MovieVO movie = sqlsession.selectOne("watcha.getMovieDetails", movieId); 
+	      
+	      return movie;
+	   }
 }
