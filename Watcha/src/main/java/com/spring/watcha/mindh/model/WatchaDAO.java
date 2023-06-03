@@ -1,6 +1,7 @@
 package com.spring.watcha.mindh.model;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -14,6 +15,14 @@ import com.spring.watcha.model.MovieVO;
 @Repository
 public class WatchaDAO implements InterWatchaDAO {
 
+	
+	// header 검색어 자동완성
+	@Override
+	public List<String> searchword(Map<String, String> paraMap) {
+		List<String> wordList = sqlsession_1.selectList("watchamin.searchword", paraMap);
+	    return wordList;
+	}
+	
 	// footer 평점 갯수 나타내기 
 	@Override
 	public int showEvaluationNum(MovieVO vo) {
@@ -73,6 +82,8 @@ public class WatchaDAO implements InterWatchaDAO {
 		
 		return usercolList;
 	}
+
+	
 
 
 }

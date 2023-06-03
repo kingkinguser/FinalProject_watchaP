@@ -1,6 +1,7 @@
 package com.spring.watcha.mindh.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,14 @@ public class WatchaService implements InterWatchaService {
 	@Autowired
 	private InterWatchaDAO dao;
 
+	
+	// header 검색어 자동완성
+	@Override
+	public List<String> searchword(Map<String, String> paraMap) {
+		List<String> wordList = dao.searchword(paraMap);
+	    return wordList;
+	}
+	
 	// footer 평점 갯수 나타내기 
 	@Override
 	public int showEvaluationNum(MovieVO vo) {
@@ -70,6 +79,10 @@ public class WatchaService implements InterWatchaService {
 		
 		return usercolvo;
 	}
+
+	
+
+
 
 
 

@@ -1,11 +1,17 @@
 package com.spring.watcha.mindh.model;
 
 import java.util.List;
+import java.util.Map;
 
 import com.spring.watcha.model.MovieVO;
 
 public interface InterWatchaDAO {
 
+	
+	// header 검색어 자동완성
+	List<String> searchword(Map<String, String> paraMap);
+		
+		
 	// footer 평점 갯수 나타내기 
 	int showEvaluationNum(MovieVO vo);
 	
@@ -26,6 +32,8 @@ public interface InterWatchaDAO {
 
 	// 유저의 컬랙션
 	List<MovieVO> usercol();
+
+	
 
 	
 

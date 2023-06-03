@@ -1,8 +1,15 @@
 package com.spring.watcha.mindh.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +25,38 @@ import com.spring.watcha.model.Star_ratingVO;
 @Controller
 public class WatchaController {
 
+	// header 검색어 자동완성
+	@ResponseBody
+	@RequestMapping(value="/searchword.action", method = {RequestMethod.GET}, produces="text/plain;charset=UTF-8") 
+	public String searchword(HttpServletRequest request) {
+
+	    String searchWord = request.getParameter("searchWord");
+
+	    Map<String, String> paraMap = new HashMap<>();
+
+	    paraMap.put("searchWord", searchWord);
+
+	    List<String> wordList = service.searchword(paraMap);
+
+	    // ajax 를 사용했으므로 
+	    JSONArray jsonArr = new JSONArray();
+
+	    // 리스트가 존재한다면 실행 
+	    if(wordList != null) {
+	        for(String word : wordList) {
+	            JSONObject jsonObj = new JSONObject();
+	            jsonObj.put("word", word);
+
+	            jsonArr.put(jsonObj);
+	        }// end of for 믄 
+	    }
+	    return jsonArr.toString();
+	}
+	
+	
+	
+	
+	
 	@Autowired 
 	private com.spring.watcha.mindh.service.InterWatchaService service ; 
 	
@@ -33,7 +72,26 @@ public class WatchaController {
 	
 	
 	@RequestMapping(value="/view/main.action")
-	public ModelAndView main(ModelAndView mav) {
+	public ModelAndView main(ModelAndView mav, HttpServletRequest request) {
+		
+		Map<String, String> paraMap = new HashMap<>();
+		
+		HttpSession session = request.getSession();
+		
+		/*
+		 
+		MemberVO loginuser = (MemberVO) session.getAttribute("loginuser");
+
+		String login_userid = null;
+		
+		// 로그인 했다면 
+		if(loginuser != null) {
+			login_userid = loginuser.getUserid();  // 세션에서 유저의 아이디를 가져온다.
+		}
+		
+		paraMap.put("login_userid", login_userid);   // map 에 저장  
+
+		*/
 		
 		List<MovieVO> starRankvo = service.starRank();   // 평점 순위 
 		List<MovieVO> seeRankvo = service.seeRank();   // 보고싶어요  순위 

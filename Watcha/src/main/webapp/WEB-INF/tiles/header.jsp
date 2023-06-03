@@ -46,17 +46,17 @@
 		background-color: #F5F5F6;
 	}
 	
-	input#search-header {
+	input#search_header {
 		background-color: #F5F5F6;
 		border: none;
 		width:100%;
 		padding-left: 34px;
 	}
 	
-	input#search-header:focus{   /* input 태그 focus 시 */
+	input#search_header:focus{   /* input 태그 focus 시 */
 		outline:none;
 	}
-	input#search-header:autofill {   /* 자동완성시 css 부분*/
+	input#search_header:autofill {   /* 자동완성시 css 부분*/
 		-webkit-box-shadow: 0 0 0px 1000px #F5F5F6 inset;
 	}
 	
@@ -74,6 +74,12 @@
 		margin-right: 10px;
 		bottom: 5px;
 		position: relative;
+	}
+	
+	/* 검색창  */
+	#mainSearchdiv:hover {
+		background-color: rgb(245, 245, 246);
+		cursor: pointer;
 	}
 
 
@@ -99,7 +105,7 @@
 	
 	@media (max-width: 992px) and (min-width: 860px) {
 		.footer-label {
-			width: 280px;
+			width: 255px;
 		}
 		
 	}
@@ -115,7 +121,7 @@
 			margin: 0 0 0 auto;	
 			width: 26px;		
 		}
-		input#search-header {
+		input#search_header {
 			padding-left: 11px;
 		}
 
@@ -434,16 +440,108 @@ input[type="text"]:focus {
 		});
 		
 		$(window).on('resize', function() {					// 실시간 창 사이즈가 859 이상일때 버튼이 클릭해서 input 크기가 커졌을때 초기 상태로 돌린다.
-			gosize();    
+			gosize();   
+			gosearch();
 		});
 		gosearch();
 		gosize();
 		
-		$('input#search-header').on('keyup', function(event){
+		
+		/* 검색 엔터누를시  */
+		$('input#search_header').on('keyup', function(event){
 	    	if( event.keyCode == 13 ){
 	    		goSearchWord();
 	    	}
 	    });
+		
+		
+
+		 // 검색시 검색조건 및 검색어 유지시키기
+		  if(${not empty requestScope.paraMap}) {
+			  $("input#search_header").val("${requestScope.paraMap.search_header}");
+		  }
+		  
+		 
+		  $("div#showSearch").hide();  
+		  
+		  $("input#search_header").keyup(function(){
+			 
+			  const wordLength = $(this).val().trim().length;  
+			  //검색어에서 공백을 제거한 길이를 알아온다.
+			  
+			  // 길이가 0일때 
+			  if(wordLength == 0) {
+				  $("div#showSearch").hide(); 
+				  // 검색어가 공백이거나 검색어 입력후 백스페이스키를 눌러서 검색어를 모두 지우면 검색된 내용이 안나오도록 해야 한다.
+			  }
+			  else {  
+				  
+				  $.ajax({
+					 url:"<%= ctxPath%>/searchword.action",
+					 type:"get",
+					 data:{
+						   "searchWord":$("input#search_header").val()
+						   },
+					 dataType:"json",
+					 success:function(json) {
+
+						 if(json.length > 0){
+							  
+							 let html = "<p style='color: pink; margin: 5px;'>연관검색어<p>";
+							 
+							 $.each(json, function(index, item) {
+								 
+								 const word = item.word; 
+								 const idx = word.toLowerCase().indexOf($("input#search_header").val().toLowerCase());
+								 const len = $("input#search_header").val().length;
+								 const result = word.substring(0, idx) + "<span>" + word.substring(idx, idx+len)+"</span>" + word.substring(idx+len);
+								 
+								 html += "<div id='mainSearchdiv'><span style='cursor: pointer; margin-left: 5px; text-overflow: ellipsis; white-space: nowrap;' class='result'>"+ result +"</span></div>";    // 손가락 모양을 만든다.
+								 
+							 }); // end for $.each(json, function(index, item)
+									 
+							// 검색되어진 길이를 알아오자 
+							const input_width = $("input#search_header").css("width");   // 검색어 input 태그 width 를 알아오기 
+									 
+							$("div#showSearch").css({"width":input_width});   // 길이를 일치시키는 것이다.
+							// 검색결과 div 의 width 크기를 검색어 입력 input 태그의 width 와 일치시키기  
+							
+							
+						 	$("div#showSearch").html(html);
+						 	$("div#showSearch").show();    // 보여라 
+						 	
+						 }
+						 
+						 
+					 },
+					 error: function(request, status, error){
+		                  alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+		             }
+						   
+				  });
+			  }
+			  
+			  
+			  
+			  
+		  }); // end of $("input#searchWord").keyup(function()
+		
+		// 연관검색어를 누르면 실행하는것 
+		$(document).on("click"," div#mainSearchdiv, span.result", function() {
+			const word = $(this).text();   // 실제 클릭한 곳을 나타냄
+			$("input#search_header").val(word);    // 텍스트 박스에 검색된 결과의 문자열을 입력해준다.
+			$("div#showSearch").hide();   
+			goSearchWord();
+		}); 
+		  
+
+		/* 
+		// 화면 크기 변경 시 showSearch 요소의 너비를 업데이트
+		$(window).resize(function() {
+		  if ($(window).width() >= 859) {
+		  	  $(div#showSearch)
+		  }
+		});  */
 		
 		
 		///////////////////////////////////////////////////
@@ -480,13 +578,9 @@ input[type="text"]:focus {
 	        }
 	    });
 
-
-		
-		
 	}); 
 	
-	
-	
+		
 	function randomInput(){
 	  const placeholders = [
 	    '가디언즈 오브 갤럭시: Volume 3',
@@ -498,7 +592,10 @@ input[type="text"]:focus {
 	  ];
 	  const randomIndex = Math.floor(Math.random() * placeholders.length);
 	  const button = $('<button>', { 'class': 'position-absolute btn-search1' }).append($('<i>', { 'class': 'fa-solid fa-magnifying-glass' }));
-	  const input = $('<input>', { id: 'search-header', type: 'text', placeholder: placeholders[randomIndex],name:'searchWord' });
+	  const input = $('<input>', { id: 'search_header', type: 'text', placeholder: placeholders[randomIndex],name:'searchWord' });
+	 
+	 
+	  
 	  $('span.header-div-input').empty().append(button).append(input);
 	}
 	
@@ -516,18 +613,19 @@ input[type="text"]:focus {
 	    $('.footer-label').css({
 		      width: ''
 		});
-	    $('input#search-header').css({
-		     padding: '0 0 0 11px'
+	    $('input#search_header').css({
+		     padding: '0 0 0 34px',
+		     'background-color': 'white' 
 	    });
 	    $('.header-li').css({
 	    	display: 'flex'
 	    });
-	    $('button.btn-search1').css(
-			'background-color', 'white'
-		);
-	    $('input#search-header ').css(
-	    	'background-color', 'white'   
-	    );
+	    $('button.btn-search1').css({
+	        'background-color': 'white'
+	    });
+
+
+
 	    
 	  } else if(!gosearchone && windowWidth < 859){  // 버튼 누를때마다 달라지며 창 크기가 859미만일대 실행 
 	    
@@ -539,18 +637,16 @@ input[type="text"]:focus {
 		      margin: '0 0 0 auto'
 		      
 		    });
-	    $('input#search-header').css({
-		     padding: '0 0 0 34px'
+	    $('input#search_header').css({
+		     padding: '0 0 0 34px',
+		     'background-color': '#F5F5F6'  
 	    });
 	    $('.header-li').css({
 	    	display: 'none'
 	    });
-	    $('button.btn-search1').css(
-			 'background-color', '#F5F5F6'
-		);
-	    $('input#search-header ').css(
-	    	'background-color', '#F5F5F6'   
-	    );
+	    $('button.btn-search1').css({
+			 'background-color': '#F5F5F6'
+	    });
 	  }
 	  
 	  gosearchone = ! gosearchone; // 누를때마다 css 추가
@@ -569,13 +665,13 @@ input[type="text"]:focus {
 	  	   $('.header-login').css({
 	  		 color: 'black' 
 	  	   });
-		   $('input#search-header').css({
+		   $('input#search_header').css({
 			    padding: '0 0 0 34px'
 		   });
 		   $('button.btn-search1').css(
 			    'background-color', '#F5F5F6'
 		   );
-		   $('input#search-header ').css(
+		   $('input#search_header ').css(
 		    	'background-color', '#F5F5F6'   
 		   );
 		   gosearchone = true;
@@ -591,7 +687,7 @@ input[type="text"]:focus {
 	       $('button.btn-search1').css(
 			    'background-color', 'white'
 		   );
-	       $('input#search-header ').css(
+	       $('input#search_header ').css(
 	    		'background-color', 'white'   
 	       );
 	       gosearchone = false;
@@ -604,7 +700,7 @@ input[type="text"]:focus {
 	      $('.footer-label').css({
 	        width: ''
 	      });
-	      $('input#search-header').css({
+	      $('input#search_header').css({
 			     padding: '0 0 0 34px'
 		  });
 	      $(".header-li").css({
@@ -615,7 +711,7 @@ input[type="text"]:focus {
 	
 	function goSearchWord(){
 		// console.log( '확인용 ~~')
-		const searchText = $('input#search-header').val();
+		const searchText = $('input#search_header').val();
 		
 		const searchFrm = document.searchFrm;
 		searchFrm.action="<%=ctxPath%>/go.action";     /* // action 인것 바꾸기 */ 
@@ -663,9 +759,9 @@ input[type="text"]:focus {
 	<div class="d-none d-md-block">
 		<div class="container">
 			<div class="row">
-				<ul style="display: flex; padding: 0; margin: 0; overflow: hidden; width: 100%;">
+				<ul style="display: flex; padding: 0; margin: 0; width: 100%;">
 					<li style="list-style: none;">
-						<a href="#"><img src="<%= ctxPath%>/resources/images/watchapedia.png" style="top: 10%; position: relative; width: 85%;"></a>
+						<a href="<%=ctxPath%>/view/main.action"><img src="<%= ctxPath%>/resources/images/watchapedia.png" style="top: 10%; position: relative; width: 85%;"></a>
 					</li>
 					<li class="header-main-li header-li" style="margin: 0;">	
 						<span class="header-list"><a href="#" style="color: #999999" class="header-a">영화</a></span>
@@ -680,16 +776,19 @@ input[type="text"]:focus {
 						<span class="header-list"><a href="#" style="color: #999999" class="header-a">웹툰</a></span>
 					</li>
 					<li class="header-second-li">
-						<div style="    position: relative; width: 100%;">
-						<form name="searchFrm" id="searchFrm">
+						<div style=" position: relative; width: 100%;">
+						<form name="searchFrm" id="searchFrm" >
 							<label class="footer-label">
 							
 								<span class="header-div-input" style="top:40%; position: relative;"></span>	
-							
+
 							</label>
 						</form>
 						</div>
-					</li>	
+						<div id="showSearch" style="border: solid 1px gray; border-radius: 5px; height: 200px; margin-top: 30px; overflow: auto; position: absolute; z-index: 9999; top: 0; left: 0; right: 0; background-color: white;"></div>
+				
+  	  	 				
+  	  	 			</li>	
 					<li class="header-main-li" style="margin-left: 24px;">
 						
 						<!-- <c:if test="">  로그인 안되어있으면 login 할 수 있게 나타내기 -->
@@ -722,7 +821,8 @@ input[type="text"]:focus {
 				
 				<div style="border: solid 1px #F5F5F6; width: 100%; margin: 10px 0 30px 0;"></div>
 			</div>
-		</div>
+		</div>  	 
+  	  	 
 	</div>
 	
 	<div class="d-block d-md-none" >
@@ -748,6 +848,7 @@ input[type="text"]:focus {
 			</div>
 		</div>	
 	</div>
+	
 	
 	
 	
