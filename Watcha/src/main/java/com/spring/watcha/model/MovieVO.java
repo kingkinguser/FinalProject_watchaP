@@ -16,18 +16,17 @@ public class MovieVO {
     private String backdrop_path;     // 포스터 url 백업
     private String rating_count;         // 평균 별점
     private String rating_avg;           // 평가 수 
-    private List<ActorVO> actorList; // 캐스팅리스트
-    private List<GenreVO> genreList; // 장르 List
     private List<GenreVO> genres;
     private List<Movie_roleVO> movieRoles;  
     private List<Star_ratingVO> starRating;
+    private List<ActorVO> actor;
      
     // 기본생성자
     public MovieVO(){};
 	   
     public MovieVO(String movie_id, String movie_title, String overview, String original_language, String original_title, String release_date,
-  		  String tagline, String runtime, String poster_path, String backdrop_path, String rating_avg, String rating_count, List<ActorVO> actorList,  List<GenreVO> genreList,
-  		  List<GenreVO> genres, List<Movie_roleVO> movieRoles, List<Star_ratingVO> starRating ) {
+  		  String tagline, String runtime, String poster_path, String backdrop_path, String rating_avg, String rating_count,
+  		  List<GenreVO> genres, List<Movie_roleVO> movieRoles, List<Star_ratingVO> starRating, List<ActorVO> actor ) {
 	
 	this.movie_id = movie_id;
 	this.movie_title = movie_title;
@@ -41,11 +40,10 @@ public class MovieVO {
 	this.backdrop_path = backdrop_path;
 	this.rating_avg = rating_avg;
 	this.rating_count = rating_count;
-	this.actorList = actorList;
-	this.genreList = genreList;
 	this.genres = genres;
 	this.movieRoles = movieRoles;
 	this.starRating = starRating;
+	this.actor = actor;
 	}
 
     
@@ -145,22 +143,6 @@ public class MovieVO {
 		this.rating_avg = rating_avg;
 	}
 
-	public List<ActorVO> getActorList() {
-		return actorList;
-	}
-
-	public void setActorList(List<ActorVO> actorList) {
-		this.actorList = actorList;
-	}
-
-	public List<GenreVO> getGenreList() {
-		return genreList;
-	}
-
-	public void setGenreList(List<GenreVO> genreList) {
-		this.genreList = genreList;
-	}
-
 	public List<GenreVO> getGenres() {
 		return genres;
 	}
@@ -184,7 +166,15 @@ public class MovieVO {
 	public void setStarRating(List<Star_ratingVO> starRating) {
 		this.starRating = starRating;
 	}
-	   
+	  
+	public List<ActorVO> getActor() {
+		return actor;
+	}
+
+	public void setActor(List<ActorVO> actor) {
+		this.actor = actor;
+	}
+
 	
 	
 	

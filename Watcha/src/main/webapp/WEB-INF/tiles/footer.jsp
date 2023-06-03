@@ -131,16 +131,20 @@
    		    }
    		});
  		
- 		/*
- 		       버튼 url 에 따라 focus 주기 예시 나중에 만들기 
- 		let currentUrl = window.location.href;
-
-		  if (currentUrl.includes('pedia.watcha.com/en-KR') && !currentUrl.includes('/search')) {
-		    $('.nav-link-1').css('color', 'red');
-		  } else if (currentUrl.includes('pedia.watcha.com/en-KR/search')) {
-		    $('.nav-link-2').css('color', 'blue');
-		  }
-		  */
+ 		$.ajax({
+ 			url:"<%= ctxPath%>/footer/showEvaluationNumber.action",
+ 			type:"get",
+ 			success: function(data){
+ 				//console.log("n : " + data);	
+ 				 $("span#footer-count").text(data);
+ 				
+ 			},
+	 		error: function(request, status, error){
+		            alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+		    }	
+ 		});
+ 		
+ 		
 	});
  	
  	
@@ -149,7 +153,6 @@
 	
 </script>
 
-<title>Insert title here</title>
 </head>
 <body>
 
@@ -419,7 +422,7 @@
 	<div class="footer d-none d-md-block">
 		<div class="container footer-container">
 			<div class="footer-up">
-				<h2 class="footer_h2">지금까지<span id="">★ ~~ 개의 평가가</span> 쌓였어요.</h2>
+				<h2 class="footer_h2 pt-2">지금까지<span id="">★ <span id="footer-count"></span> 개의 평가가</span> 쌓였어요.</h2>
 			</div>
 			
 			 <%-- md 사이즈보다 크면 실행한다. --%>
@@ -473,13 +476,9 @@
 							</div>
 						</div>	
 						<div class="col-md-1">
-							<select style="right: 38px;  position: relative;  width: 109px;">
-								<option value="한국어" selected>한국어</option>
-					            <option value="English">English</option>
-					            <option value="日本語">日本語</option>			          
-							</select>
 							
-							<div class="footer-icon" style="width:117px; right: 40px; top: 100px;">
+							
+							<div class="footer-icon" style="width:117px; right: 40px; top: 160px;">
 								<a href="https://www.facebook.com/watchaKR/"><i class="fa-brands fa-facebook fa-2xl footer-icon1" style="margin-right: 5px;" ></i></a>
 								<a href="https://twitter.com/watcha_kr?ref_src=twsrc%5Egoogle%7Ctwcamp%5Eserp%7Ctwgr%5Eauthor"><i class="fa-brands fa-square-twitter fa-2xl footer-icon2" style="margin-right: 5px;"></i></a>
 								<a href="https://watcha.team"><i class="fa-solid fa-w fa-xl footer-icon3"></i></a>

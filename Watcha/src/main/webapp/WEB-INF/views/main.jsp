@@ -45,7 +45,7 @@
   
   .Main-card {
   	border: none;
-  	height: 400px;
+  	height: 430px;
   }
   
   .Main-card-header {
@@ -80,7 +80,7 @@
   
   .Main-card2 {
   	border: none;
-  	height: 300px;
+  	height: 350px;
   }
   
   .Main-card-header2 {
@@ -334,7 +334,7 @@ function StarRank() {
    
 	<div class="container my-3">
 		
-		<div class="card-deck main-carousel-card mb-5">
+		<div class="card-deck main-carousel-card mb-1">
 		  
 		  <c:forEach var="starRankvo" items="${requestScope.starRankvo}" varStatus="status">
 		  
@@ -360,7 +360,7 @@ function StarRank() {
 	<h5 class="h5 main-h5 main-h5-2">보고싶어요 순위</h5>
    	 <div class="container my-3">
 
-		<div class="card-deck main-carousel-card mb-5">
+		<div class="card-deck main-carousel-card mb-1">
 		  
 		 <c:forEach var="seeRankvo" items="${requestScope.seeRankvo}" varStatus="status">
 		  
@@ -381,6 +381,31 @@ function StarRank() {
 		  
 		</div>
 	</div>	  
+	
+	<h5 class="h5 main-h5 main-h5-3">한줄평 많은 순위</h5>
+   	<div class="container my-3">
+
+		<div class="card-deck main-carousel-card mb-1">
+		  
+		 <c:forEach var="commentRankvo" items="${requestScope.commentRankvo}" varStatus="status">
+		  
+			  <a href = "<%= ctxPath%>/view/project_detail.action?movie_id=${commentRankvo.movie_id}" title="${commentRankvo.movie_title}" class="Main-a">
+				  <div class="Main-card">
+				  	<div class="Main-card-header">
+				    	<img src="https://image.tmdb.org/t/p/w500/${commentRankvo.poster_path}" class="card-img-top" alt="...">
+				    </div>
+				    <div class="main-number">${status.index + 1}</div>
+				    <div class="Main-card-body Main-card-in-no">
+				      <h5 class="card-title card-font" >${commentRankvo.movie_title}</h5>
+				      <p style="margin: 0;"><span class="text-muted">개봉일자 : ${commentRankvo.release_date} ・ ${commentRankvo.original_language}</span></p>
+				      <p><span class="text-muted">평균★<span id="">${commentRankvo.rating_avg}</span></span></p>
+				    </div>
+				  </div>
+			  </a> 
+		  </c:forEach>
+		  
+		</div>
+	</div>	
 	
 	<%-- 광고 부분 --%>	   
 	<div style="margin: 30px 0 ;">
@@ -407,366 +432,98 @@ function StarRank() {
 	
 	<%-- 다시 캐러셀 --%>
 	
-	<h5 class="h5 main-h5 main-h5-3">한줄평 많은 순위</h5>
-   	<div class="container my-3">
-
-		<div class="card-deck main-carousel-card mb-5">
-		  
-		 <c:forEach var="commentRankvo" items="${requestScope.commentRankvo}" varStatus="status">
-		  
-			  <a href = "<%= ctxPath%>/view/project_detail.action?movie_id=${commentRankvo.movie_id}" title="${commentRankvo.movie_title}" class="Main-a">
-				  <div class="Main-card">
-				  	<div class="Main-card-header">
-				    	<img src="https://image.tmdb.org/t/p/w500/${commentRankvo.poster_path}" class="card-img-top" alt="...">
-				    </div>
-				    <div class="main-number">${status.index + 1}</div>
-				    <div class="Main-card-body Main-card-in-no">
-				      <h5 class="card-title card-font" >${commentRankvo.movie_title}</h5>
-				      <p style="margin: 0;"><span class="text-muted">개봉일자 : ${commentRankvo.release_date} ・ ${commentRankvo.original_language}</span></p>
-				      <p><span class="text-muted">평균★<span id="">${commentRankvo.rating_avg}</span></span></p>
-				    </div>
-				  </div>
-			  </a> 
-		  </c:forEach>
-		  
-		</div>
-	</div>	
-	
-	
-	
-	<h5 class="h5 main-h5 main-h5-3">회원님이 좋아하는 배우의 작품</h5>
+	<h5 class="h5 main-h5 main-h5-3 mt-5">(여기에 세션 로그인id 가져오기)회원님이 많이 보신 
+		<c:forEach items="${requestScope.actor}" var="rating">
+   			<span>${rating.actor_name}</span>
+		</c:forEach>배우의 작품
+	</h5>
+   	
    	 <div class="container my-3">
 
-		<div class="card-deck main-carousel-card2 mb-5">
+		<div class="card-deck main-carousel-card2 mb-1">
 		  
-		  <a href = "" title="범죄도시" class="Main-a">
-			  <div class="Main-card2">
-			  	<div class="Main-card-header2">
-			    	<img src="<%= ctxPath%>/resources/images/범죄도시.jpg" class="card-img-top" alt="...">
-			    </div>
-			    <div class="Main-card-body2">
-			      <h5 class="card-title card-font" >범죄도시3</h5>
-			      <p style="margin: 0;"><span class="text-muted">2023 ・ 한국</span></p>
-			      <p><span class="text-muted">평균★<span id="">4.0</span></span></p>
-			    </div>
-			  </div>
-		  </a>
+		  <c:forEach var="movie" items="${requestScope.starRatings}" varStatus="status">
+	        <a href="<%= ctxPath%>/view/project_detail.action?movie_id=${movie.movie_id}" title="${movie.movie_title}" class="Main-a">
+	            <div class="Main-card2">
+	                <div class="Main-card-header2">
+	                    <img src="https://image.tmdb.org/t/p/w500/${movie.poster_path}" class="card-img-top" alt="...">
+	                </div>
+	                <div class="main-number">${status.index + 1}</div>
+	                <div class="Main-card-body2 Main-card-in-no">
+	                    <h5 class="card-title card-font">${movie.movie_title}</h5>
+	                    <p style="margin: 0;"><span class="text-muted">개봉일자: ${movie.release_date} ・ ${movie.original_language}</span></p>
+	                    <p><span class="text-muted">평균★<span id="">${movie.rating_avg}</span></span></p>
+	                </div>
+	            </div>
+	        </a>
+		</c:forEach>
 		  
-		  <a href = "" title="인어공주" class="Main-a">
-		  <div class="Main-card2">
-		    <div class="Main-card-header2">
-		    	<img src="<%= ctxPath%>/resources/images/인어공주.jpg" class="card-img-top" alt="...">
-		    </div>
-		    <div class="Main-card-body2">
-			      <h5 class="card-title card-font" >인어공주</h5>
-			      <p style="margin: 0;"><span class="text-muted">2023 ・ 미국</span></p>
-			      <p><span class="text-muted">평균★<span id="">2.0</span></span></p>
-			</div>
-		  </div>
-		  </a>
-		  
-		  <a href = "" title="분노의질주: 라이드 오어 다이" class="Main-a">
-		  <div class="Main-card2">
-		    <div class="Main-card-header2">
-		    	<img src="<%= ctxPath%>/resources/images/분노의질주.jpg" class="card-img-top  card-size" alt="...">
-		    </div>
-		    <div class="Main-card-body2">
-			      <h5 class="card-title card-font" >분노의 질주: 라이드 오어 다이</h5>
-			      <p style="margin: 0;"><span class="text-muted">2023 ・ 미국</span></p>
-			      <p><span class="text-muted">평균★<span id="">3.2</span></span></p>
-			</div>
-		  </div>
-		  </a>
-		  
-		  <a href = "" title="가디언즈오브갤럭시: volume 3" class="Main-a">
-		  <div class="Main-card2">
-		    <div class="Main-card-header2">
-		    	<img src="<%= ctxPath%>/resources/images/가디언즈오브갤럭시.jpg" class="card-img-top card-size" alt="...">
-		    </div>
-		    <div class="Main-card-body2">
-			      <h5 class="card-title card-font" >가디언즈 오브 갤럭시: Volume 3</h5>
-			      <p style="margin: 0;"><span class="text-muted">2023 ・ 미국</span></p>
-			      <p><span class="text-muted">평균★<span id="">4.1</span></span></p>
-			</div>
-		  </div>
-		  </a>
-		  
-		  <a href = "" title="남은 인생 10년" class="Main-a">
-		  <div class="Main-card2">
-		    <div class="Main-card-header2">
-		    	<img src="<%= ctxPath%>/resources/images/남은인생10년.jpg" class="card-img-top card-size" alt="...">
-		    </div>
-		    <div class="Main-card-body2">
-			      <h5 class="card-title card-font" >남은 인생 10년</h5>
-			      <p style="margin: 0;"><span class="text-muted">2022 ・ 일본</span></p>
-			      <p><span class="text-muted">평균★<span id="">3.3</span></span></p>
-			</div>
-		  </div>
-		  </a>
-		  
-		  <a href = "" class="Main-a">
-		  <div class="Main-card2">
-		    <div class="Main-card-header2">
-		    	<img src="<%= ctxPath%>/resources/images/동원.png" class="card-img-top card-size" alt="...">
-		    </div>
-		    <div class="Main-card-body2">
-			      <h5 class="card-title card-font" >범죄도시3</h5>
-			      <p style="margin: 0;"><span class="text-muted">2023 ・ 한국</span></p>
-			      <p><span class="text-muted">평균★<span id="">2.0</span></span></p>
-			</div>
-		  </div>
-		  </a>
-		  
-		  <a href = "" class="Main-a">
-		  <div class="Main-card2">
-		    <div class="Main-card-header2">
-		    	<img src="<%= ctxPath%>/resources/images/동원.png" class="card-img-top card-size" alt="...">
-		    </div>
-		    <div class="Main-card-body2">
-			      <h5 class="card-title card-font" >범죄도시3</h5>
-			      <p style="margin: 0;"><span class="text-muted">2023 ・ 한국</span></p>
-			      <p><span class="text-muted">평균★<span id="">2.0</span></span></p>
-			</div>
-		  </div>
-		  </a>
-		  
-		  <a href = "" class="Main-a">
-		  <div class="Main-card2">
-		    <div class="Main-card-header2">
-		    	<img src="<%= ctxPath%>/resources/images/동원.png" class="card-img-top card-size" alt="...">
-		    </div>
-		    <div class="Main-card-body2">
-			      <h5 class="card-title card-font" >범죄도시3</h5>
-			      <p style="margin: 0;"><span class="text-muted">2023 ・ 한국</span></p>
-			      <p><span class="text-muted">평균★<span id="">2.0</span></span></p>
-			</div>
-		  </div>
-		  </a>
-		  
-		  <a href = "" class="Main-a">
-		  <div class="Main-card2">
-		    <div class="Main-card-header2">
-		    	<img src="<%= ctxPath%>/resources/images/동원.png" class="card-img-top card-size" alt="...">
-		    </div>
-		    <div class="Main-card-body2">
-			      <h5 class="card-title card-font" >범죄도시3</h5>
-			      <p style="margin: 0;"><span class="text-muted">2023 ・ 한국</span></p>
-			      <p><span class="text-muted">평균★<span id="">2.0</span></span></p>
-			</div>
-		  </div>
-		  </a>
-		  
-		  <a href = "" class="Main-a">
-		  <div class="Main-card2">
-		    <div class="Main-card-header2">
-		    	<img src="<%= ctxPath%>/resources/images/동원.png" class="card-img-top card-size" alt="...">
-		    </div>
-		    <div class="Main-card-body2">
-			      <h5 class="card-title card-font" >범죄도시3</h5>
-			      <p style="margin: 0;"><span class="text-muted">2023 ・ 한국</span></p>
-			      <p><span class="text-muted">평균★<span id="">2.0</span></span></p>
-			</div>
-		  </div>
-		  </a>
-		  
-		   <a href = "" title="범죄도시" class="Main-a">
-			  <div class="Main-card2">
-			  	<div class="Main-card-header2">
-			    	<img src="<%= ctxPath%>/resources/images/범죄도시.jpg" class="card-img-top" alt="...">
-			    </div>
-			    <div class="Main-card-body2">
-			      <h5 class="card-title card-font" >범죄도시3</h5>
-			      <p style="margin: 0;"><span class="text-muted">2023 ・ 한국</span></p>
-			      <p><span class="text-muted">평균★<span id="">4.0</span></span></p>
-			    </div>
-			  </div>
-		  </a>
-		  
-		  
-		   <a href = "" title="범죄도시" class="Main-a">
-			  <div class="Main-card2">
-			  	<div class="Main-card-header2">
-			    	<img src="<%= ctxPath%>/resources/images/범죄도시.jpg" class="card-img-top" alt="...">
-			    </div>
-			    <div class="Main-card-body2">
-			      <h5 class="card-title card-font" >범죄도시3</h5>
-			      <p style="margin: 0;"><span class="text-muted">2023 ・ 한국</span></p>
-			      <p><span class="text-muted">평균★<span id="">4.0</span></span></p>
-			    </div>
-			  </div>
-		  </a> 
 		  
 		</div>
+		  
 	</div>	
 	
 	
-	<h5 class="h5 main-h5 main-h5-3">장르별</h5>
+	<h5 class="h5 main-h5 main-h5-3 mt-5">(여기에 세션 로그인id 가져오기)회원님이 많이 보신 
+		<c:forEach items="${requestScope.genres}" var="genres">
+   			<span>${genres.genre_name}</span>
+		</c:forEach>장르 TOP 10
+	</h5>
    	 <div class="container my-3">
 
-		<div class="card-deck main-carousel-card2 mb-5">
+		<div class="card-deck main-carousel-card2 mb-1">
 		  
-		  <a href = "" title="범죄도시" class="Main-a">
-			  <div class="Main-card2">
-			  	<div class="Main-card-header2">
-			    	<img src="<%= ctxPath%>/resources/images/범죄도시.jpg" class="card-img-top" alt="...">
-			    </div>
-			    <div class="Main-card-body2">
-			      <h5 class="card-title card-font" >범죄도시3</h5>
-			      <p style="margin: 0;"><span class="text-muted">2023 ・ 한국</span></p>
-			      <p><span class="text-muted">평균★<span id="">4.0</span></span></p>
-			    </div>
-			  </div>
-		  </a>
+		  <c:forEach var="starRating22" items="${requestScope.starRating22}" varStatus="status">
+	        <a href="<%= ctxPath%>/view/project_detail.action?movie_id=${starRating22.movie_id}" title="${starRating22.movie_title}" class="Main-a">
+	            <div class="Main-card2">
+	                <div class="Main-card-header2">
+	                    <img src="https://image.tmdb.org/t/p/w500/${starRating22.poster_path}" class="card-img-top" alt="...">
+	                </div>
+	                <div class="main-number">${status.index + 1}</div>
+	                <div class="Main-card-body2 Main-card-in-no">
+	                    <h5 class="card-title card-font">${starRating22.movie_title}</h5>
+	                    <p style="margin: 0;"><span class="text-muted">개봉일자: ${starRating22.release_date} ・ ${starRating22.original_language}</span></p>
+	                    <p><span class="text-muted">평균★<span id="">${starRating22.rating_avg}</span></span></p>
+	                </div>
+	            </div>
+	        </a>
+		</c:forEach>
 		  
-		  <a href = "" title="인어공주" class="Main-a">
-		  <div class="Main-card2">
-		    <div class="Main-card-header2">
-		    	<img src="<%= ctxPath%>/resources/images/인어공주.jpg" class="card-img-top" alt="...">
-		    </div>
-		    <div class="Main-card-body2">
-			      <h5 class="card-title card-font" >인어공주</h5>
-			      <p style="margin: 0;"><span class="text-muted">2023 ・ 미국</span></p>
-			      <p><span class="text-muted">평균★<span id="">2.0</span></span></p>
-			</div>
-		  </div>
-		  </a>
-		  
-		  <a href = "" title="분노의질주: 라이드 오어 다이" class="Main-a">
-		  <div class="Main-card2">
-		    <div class="Main-card-header2">
-		    	<img src="<%= ctxPath%>/resources/images/분노의질주.jpg" class="card-img-top  card-size" alt="...">
-		    </div>
-		    <div class="Main-card-body2">
-			      <h5 class="card-title card-font" >분노의 질주: 라이드 오어 다이</h5>
-			      <p style="margin: 0;"><span class="text-muted">2023 ・ 미국</span></p>
-			      <p><span class="text-muted">평균★<span id="">3.2</span></span></p>
-			</div>
-		  </div>
-		  </a>
-		  
-		  <a href = "" title="가디언즈오브갤럭시: volume 3" class="Main-a">
-		  <div class="Main-card2">
-		    <div class="Main-card-header2">
-		    	<img src="<%= ctxPath%>/resources/images/가디언즈오브갤럭시.jpg" class="card-img-top card-size" alt="...">
-		    </div>
-		    <div class="Main-card-body2">
-			      <h5 class="card-title card-font" >가디언즈 오브 갤럭시: Volume 3</h5>
-			      <p style="margin: 0;"><span class="text-muted">2023 ・ 미국</span></p>
-			      <p><span class="text-muted">평균★<span id="">4.1</span></span></p>
-			</div>
-		  </div>
-		  </a>
-		  
-		  <a href = "" title="남은 인생 10년" class="Main-a">
-		  <div class="Main-card2">
-		    <div class="Main-card-header2">
-		    	<img src="<%= ctxPath%>/resources/images/남은인생10년.jpg" class="card-img-top card-size" alt="...">
-		    </div>
-		    <div class="Main-card-body2">
-			      <h5 class="card-title card-font" >남은 인생 10년</h5>
-			      <p style="margin: 0;"><span class="text-muted">2022 ・ 일본</span></p>
-			      <p><span class="text-muted">평균★<span id="">3.3</span></span></p>
-			</div>
-		  </div>
-		  </a>
-		  
-		  <a href = "" class="Main-a">
-		  <div class="Main-card2">
-		    <div class="Main-card-header2">
-		    	<img src="<%= ctxPath%>/resources/images/동원.png" class="card-img-top card-size" alt="...">
-		    </div>
-		    <div class="Main-card-body2">
-			      <h5 class="card-title card-font" >범죄도시3</h5>
-			      <p style="margin: 0;"><span class="text-muted">2023 ・ 한국</span></p>
-			      <p><span class="text-muted">평균★<span id="">2.0</span></span></p>
-			</div>
-		  </div>
-		  </a>
-		  
-		  <a href = "" class="Main-a">
-		  <div class="Main-card2">
-		    <div class="Main-card-header2">
-		    	<img src="<%= ctxPath%>/resources/images/동원.png" class="card-img-top card-size" alt="...">
-		    </div>
-		    <div class="Main-card-body2">
-			      <h5 class="card-title card-font" >범죄도시3</h5>
-			      <p style="margin: 0;"><span class="text-muted">2023 ・ 한국</span></p>
-			      <p><span class="text-muted">평균★<span id="">2.0</span></span></p>
-			</div>
-		  </div>
-		  </a>
-		  
-		  <a href = "" class="Main-a">
-		  <div class="Main-card2">
-		    <div class="Main-card-header2">
-		    	<img src="<%= ctxPath%>/resources/images/동원.png" class="card-img-top card-size" alt="...">
-		    </div>
-		    <div class="Main-card-body2">
-			      <h5 class="card-title card-font" >범죄도시3</h5>
-			      <p style="margin: 0;"><span class="text-muted">2023 ・ 한국</span></p>
-			      <p><span class="text-muted">평균★<span id="">2.0</span></span></p>
-			</div>
-		  </div>
-		  </a>
-		  
-		  <a href = "" class="Main-a">
-		  <div class="Main-card2">
-		    <div class="Main-card-header2">
-		    	<img src="<%= ctxPath%>/resources/images/동원.png" class="card-img-top card-size" alt="...">
-		    </div>
-		    <div class="Main-card-body">
-			      <h5 class="card-title card-font" >범죄도시3</h5>
-			      <p style="margin: 0;"><span class="text-muted">2023 ・ 한국</span></p>
-			      <p><span class="text-muted">평균★<span id="">2.0</span></span></p>
-			</div>
-		  </div>
-		  </a>
-		  
-		  <a href = "" class="Main-a2">
-		  <div class="Main-card2">
-		    <div class="Main-card-header2">
-		    	<img src="<%= ctxPath%>/resources/images/동원.png" class="card-img-top card-size" alt="...">
-		    </div>
-		    <div class="Main-card-body2">
-			      <h5 class="card-title card-font" >범죄도시3</h5>
-			      <p style="margin: 0;"><span class="text-muted">2023 ・ 한국</span></p>
-			      <p><span class="text-muted">평균★<span id="">2.0</span></span></p>
-			</div>
-		  </div>
-		  </a>
-		  
-		   <a href = "" title="범죄도시" class="Main-a">
-			  <div class="Main-card2">
-			  	<div class="Main-card-header2">
-			    	<img src="<%= ctxPath%>/resources/images/범죄도시.jpg" class="card-img-top" alt="...">
-			    </div>
-			    <div class="Main-card-body2">
-			      <h5 class="card-title card-font" >범죄도시3</h5>
-			      <p style="margin: 0;"><span class="text-muted">2023 ・ 한국</span></p>
-			      <p><span class="text-muted">평균★<span id="">4.0</span></span></p>
-			    </div>
-			  </div>
-		  </a>
-		  
-		  
-		   <a href = "" title="범죄도시" class="Main-a">
-			  <div class="Main-card2">
-			  	<div class="Main-card-header2">
-			    	<img src="<%= ctxPath%>/resources/images/범죄도시.jpg" class="card-img-top" alt="...">
-			    </div>
-			    <div class="Main-card-body2">
-			      <h5 class="card-title card-font" >범죄도시3</h5>
-			      <p style="margin: 0;"><span class="text-muted">2023 ・ 한국</span></p>
-			      <p><span class="text-muted">평균★<span id="">4.0</span></span></p>
-			    </div>
-			  </div>
-		  </a> 
 		  
 		</div>
 	</div>	
+	
+	
+	
+	<h5 class="h5 main-h5 main-h5-3 mt-5">(여기에 세션 로그인id 가져오기)회원님의 컬렉션</h5>
+   	 <div class="container my-3">
+
+		<div class="card-deck main-carousel-card2 mb-1">
+		  
+		  <c:forEach var="usercol" items="${requestScope.usercol}" varStatus="status">
+	        <a href="<%= ctxPath%>/view/project_detail.action?movie_id=${usercol.movie_id}" title="${usercol.movie_title}" class="Main-a">
+	            <div class="Main-card2">
+	                <div class="Main-card-header2">
+	                    <img src="https://image.tmdb.org/t/p/w500/${usercol.poster_path}" class="card-img-top" alt="...">
+	                </div>
+	                <div class="main-number">${status.index + 1}</div>
+	                <div class="Main-card-body2 Main-card-in-no">
+	                    <h5 class="card-title card-font">${usercol.movie_title}</h5>
+	                    <p style="margin: 0;"><span class="text-muted">개봉일자: ${usercol.release_date} ・ ${usercol.original_language}</span></p>
+	                    <p><span class="text-muted">평균★<span id="">${usercol.rating_avg}</span></span></p>
+	                </div>
+	            </div>
+	        </a>
+		</c:forEach>
+		  
+		  
+		</div>
+	</div>	
+	
+	
 		    
 	
-	<h5 class="h5 main-h5 main-h5-3">왓챠피디아 컬렉션</h5>
+	<h5 class="h5 main-h5 main-h5-3">왓챠피디아 회원들의 컬렉션</h5>
    	 <div class="container my-3">
 
 		<div class="card-deck main-carousel-card mb-5">

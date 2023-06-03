@@ -14,6 +14,14 @@ public class WatchaService implements InterWatchaService {
 	@Autowired
 	private InterWatchaDAO dao;
 
+	// footer 평점 갯수 나타내기 
+	@Override
+	public int showEvaluationNum(MovieVO vo) {
+		int n = dao.showEvaluationNum(vo);
+		return n;
+	}
+	
+	
 	// 평점순 으로 30개 나타내기(평점 평가가 기본적으로 10개 이상일때  ) 
 	@Override
 	public List<MovieVO> starRank() {
@@ -39,13 +47,31 @@ public class WatchaService implements InterWatchaService {
 		return commentRankvo;
 	}
 
-	// 좋아하는 배우 영화 
+	// 많이 평가한 배우 영화 
 	@Override
 	public List<MovieVO> actorRank() {
 		List<MovieVO> actorRankvo = dao.actorRank();
 		
 		return actorRankvo;
 	}
+
+	// 많이 평가한 영화 장르 
+	@Override
+	public List<MovieVO> genreRank() {
+		List<MovieVO> genreRankvo = dao.genreRank();
+		
+		return genreRankvo;
+	}
+
+	// 유저의 컬랙션
+	@Override
+	public List<MovieVO> usercol() {
+		List<MovieVO> usercolvo = dao.usercol();
+		
+		return usercolvo;
+	}
+
+
 
 
 }

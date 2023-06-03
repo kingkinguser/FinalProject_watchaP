@@ -14,6 +14,13 @@ import com.spring.watcha.model.MovieVO;
 @Repository
 public class WatchaDAO implements InterWatchaDAO {
 
+	// footer 평점 갯수 나타내기 
+	@Override
+	public int showEvaluationNum(MovieVO vo) {
+		int n = sqlsession_1.selectOne("watchamin.showEvaluationNum", vo);
+		System.out.println(n);
+		return n; 
+	} 
 	
 	@Resource
 	private SqlSessionTemplate sqlsession_1;
@@ -43,11 +50,29 @@ public class WatchaDAO implements InterWatchaDAO {
 		return commentRankList;
 	}
 
-	// 좋아하는 배우 영화 
+	// 많이 평가한 배우 영화 
 	@Override
 	public List<MovieVO> actorRank() {
 		List<MovieVO> actorRankList = sqlsession_1.selectList("watchamin.actorRank");	
 		
 		return actorRankList;
-	} 
+	}
+
+	// 많이 평가한 영화 장르 
+	@Override
+	public List<MovieVO> genreRank() {
+		List<MovieVO> genreRankList = sqlsession_1.selectList("watchamin.genreRank");	
+		
+		return genreRankList;
+	}
+
+	// 유저의 컬랙션
+	@Override
+	public List<MovieVO> usercol() {
+		List<MovieVO> usercolList = sqlsession_1.selectList("watchamin.usercol");	
+		
+		return usercolList;
+	}
+
+
 }
