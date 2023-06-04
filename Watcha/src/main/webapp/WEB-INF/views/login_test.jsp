@@ -422,44 +422,33 @@ function resetForm(){
 // 로그인 정규화 및 기능
 function func_Login() {
 	
-	const email = $("input[type='email']").val(); 
-	const pwd = $("input[type='password']").val(); 
+	const userid = $("input#userid").val(); 
+	const pwd = $("input#pwd").val(); 
 
-	if(email.trim()=="") {
-		alert("이메일을 입력하세요!!");     // 테스트용이고 나중에 지울것
+	if(userid.trim()=="") {
+		alert("아이디를 입력하세요!!");     // 테스트용이고 나중에 지울것
+		$("p#id-warning").css("display","block"); // 해당 부분만 error 문구 출력해주기
 		return; // 종료
 	}
+	else {
+		$("p#id-warning").css("display","none"); // 해당 부분만 error 문구 숨기기
+	}
 
-    // 이메일 체크 정규식
-    const regExp = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i; 
-    
-    const bool = regExp.test(email.trim()); // 정규표현식에 맞으면 true 아니면 false
 	
-    if(!bool) {
-    
-        $("p#email-warning").css("display","block"); // 해당 부분만 error 문구 출력해주기
-        
-    }
-    
-    else {
-        // 이메일이 정규표현식에 맞는 경우
-        
-        $("table#tblMemberRegister :input").prop("disabled", false);
-        
-        $("p#email-warning").css("display","block"); // 해당 부분만 error 문구 출력해주기
-    }
-
 	if(pwd.trim()=="") {
 		alert("비밀번호를 입력하세요!!");
-		$("input[type='password']").val("");
-		$("input[type='password']").focus();
+		$("p#pwd-warning").css("display","block");
 		return; // 종료
 	}
+	else {
+		$("p#pwd-warning").css("display","none");
+	}
 	
-	const frm = document.loginFrm;
+	
+	const frm = document.loginForm;
 	
 	frm.action = "<%= ctxPath%>/loginEnd.action";
-	frm.method = "post";
+	frm.method = "get";
 	frm.submit();
 	
 }// end of function func_Login()---------
@@ -485,20 +474,20 @@ function func_Login() {
                 <h2 class="login_signup-modal-title">로그인</h2>
                 <section>
                     <div class="mx20">
-                        <form id="loginForm" class="form">
+                        <form name="loginForm" class="form">
                             <div class="py4">
                                 <label class="login_signup-label-input">
                                     <div class="login_signup-div-input">
-                                        <input autocomplete="off" placeholder="이메일" type="email" name="email" class="login_signup-input" value="">
+                                        <input autocomplete="off" placeholder="아이디" id="userid" name="userid" class="login_signup-input" value="">
                                     </div>
                                 </label>
-                                <p class="warning-text" id="email-warning">정확하지 않은 이메일입니다.</p>
+                                <p class="warning-text" id="id-warning">아이디를 입력하세요.</p>
                             </div>
                             
                             <div class="py4">
                                 <label class="login_signup-label-input">
                                     <div class="login_signup-div-input">
-                                        <input autocomplete="off" placeholder="비밀번호" type="password" name="password" class="login_signup-input" value="">
+                                        <input autocomplete="off" placeholder="비밀번호" id="pwd" type="password" name="pwd" class="login_signup-input" value="">
                                     </div>
                                 </label>
                                 <p class="warning-text" id="pwd-warning">비밀번호는 최소 6자리 이상이어야 합니다.</p>
@@ -509,7 +498,7 @@ function func_Login() {
                             <button class="text-button">비밀번호를 잊어버리셨나요?</button>
                         </div>
                         <div class="textstyle-modal">
-                            계정이 없으신가요?
+							계정이 없으신가요?
                             <button type="button" id="switchToSignupBtn" data-modal="#signupModal" class="text-button" onclick="modalClose(), modalOpen(this)">회원가입</button>
                         </div>
                         <hr>

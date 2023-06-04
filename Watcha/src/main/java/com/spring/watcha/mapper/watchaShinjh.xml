@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="watcha">
+
+	<!-- 로그인 기능 구현 -->
+	<select id="getLoginMember" parameterType="HashMap" resultType="com.spring.watcha.model.MemberVO">
+        SELECT user_id, name, nickname, mobile, email, gender, date_joined
+			, profile_message, profile_image, pwdchangegap
+		FROM
+		(
+			select user_id, name, nickname, mobile, email, gender
+                , to_char(date_joined, 'yyyy-mm-dd') AS date_joined
+                , profile_message, profile_image
+                , trunc( months_between(sysdate, last_password_change) ) AS pwdchangegap
+			from member
+			where user_id = #{userid} and password = #{pwd}
+		) M
+	</select>
+
+</mapper>
