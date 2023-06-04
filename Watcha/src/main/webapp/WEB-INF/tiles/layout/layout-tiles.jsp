@@ -45,14 +45,24 @@
 
 	<%-- <link rel="icon" href="<%=ctxPath%>/images/파비콘.ico"> --%>
 	
+	
+<style type="text/css">
+  .content-margin-tiles {
+    margin-top: 80px; 
+  }
+
+</style>	
+	
 </head>
 <body>
-	<div id="mycontainer">
-			<tiles:insertAttribute name="header" />
-		
-			<tiles:insertAttribute name="content" />
-		
-			<tiles:insertAttribute name="footer" />
+
+	<tiles:insertAttribute name="header" />
+
+	<div class="content-margin-tiles">
+		<tiles:insertAttribute name="content" />
 	</div>
+	
+	<tiles:insertAttribute name="footer" />
+
 </body>
 </html>    

@@ -786,8 +786,9 @@ input[type="text"]:focus {
 
 </head>
 <body>
-	<div class="d-none d-md-block">
-		<div class="container">
+	<div class="d-none d-md-block fixed-top"  style="background-color: white;">
+		<div class="container ">
+		
 			<div class="row">
 				<ul style="display: flex; padding: 0; margin: 0; width: 100%;">
 					<li style="list-style: none;">
@@ -848,14 +849,16 @@ input[type="text"]:focus {
 					
 					</li>
 				</ul>
+				<div style="border: solid 1px #F5F5F6; width: 100%; margin: 10px 0 0 0;"></div>
 				
-				<div style="border: solid 1px #F5F5F6; width: 100%; margin: 10px 0 30px 0;"></div>
 			</div>
-		</div>  	 
+		
+		</div>  
+		
   	  	 
 	</div>
 	
-	<div class="d-block d-md-none" >
+	<div class="d-block d-md-none fixed-top" style="background-color: white;">
 		<div class="container">
 			<div class="row">
 				<ul style="display: flex; padding-left: 0; margin-bottom: 30px;">
@@ -878,7 +881,7 @@ input[type="text"]:focus {
 			</div>
 		</div>	
 	</div>
-	
+
 	
 	
 	
