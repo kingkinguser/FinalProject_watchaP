@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.mail.Session;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -25,6 +26,10 @@ import com.spring.watcha.model.Star_ratingVO;
 @Controller
 public class WatchaController {
 
+	@Autowired 
+	private com.spring.watcha.mindh.service.InterWatchaService service ; 
+	
+	
 	// header 검색어 자동완성
 	@ResponseBody
 	@RequestMapping(value="/searchword.action", method = {RequestMethod.GET}, produces="text/plain;charset=UTF-8") 
@@ -53,13 +58,7 @@ public class WatchaController {
 	    return jsonArr.toString();
 	}
 	
-	
-	
-	
-	
-	@Autowired 
-	private com.spring.watcha.mindh.service.InterWatchaService service ; 
-	
+
 	@ResponseBody
 	@RequestMapping(value="/footer/showEvaluationNumber.action",method = {RequestMethod.GET}, produces="text/plain;charset=UTF-8") 
 	public String showEvaluationNumber(MovieVO vo) {
@@ -148,7 +147,23 @@ public class WatchaController {
 		// /WEB-INF/views/tiles1/tiles1/tiles_test
 	}	
 	
-	
+	// 검색어 부분 
+	@RequestMapping(value="/goSearch.action")
+	public ModelAndView goSearch(ModelAndView mav, HttpServletRequest request) {
+		
+		String searchWord = request.getParameter("searchWord");
+		//System.out.println(searchWord);
+		
+		Map<String, String> paraMap = new HashMap<>();
+		
+		paraMap.put("searchWord",searchWord);
+		
+		service.goSearch(request, paraMap);
+
+		
+		return mav;
+		
+	}
 	
 	
 }

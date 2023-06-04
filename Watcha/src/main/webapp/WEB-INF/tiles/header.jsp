@@ -744,7 +744,7 @@ input[type="text"]:focus {
 		const searchText = $('input#search_header').val();
 		
 		const searchFrm = document.searchFrm;
-		searchFrm.action="<%=ctxPath%>/go.action";     /* // action 인것 바꾸기 */ 
+		searchFrm.action="<%=ctxPath%>/goSearch.action";     /* // action 인것 바꾸기 */ 
 		searchFrm.method="get";
 		searchFrm.submit();	
 		

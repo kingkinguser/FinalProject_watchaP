@@ -3,6 +3,9 @@ package com.spring.watcha.mindh.service;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -78,6 +81,21 @@ public class WatchaService implements InterWatchaService {
 		List<MovieVO> usercolvo = dao.usercol();
 		
 		return usercolvo;
+	}
+
+	// 검색어 세션등록 및 검색 
+	@Override
+	public void goSearch(HttpServletRequest request, Map<String, String> paraMap) {
+		
+		HttpSession session =  request.getSession();
+		// 메모리에 생성되어져 있는 session을 불러오는 것이다. 
+
+		String searchWord = paraMap.get("searchWord");
+		session.setAttribute("searchWord", searchWord);
+		
+		//System.out.println(searchWord);
+		
+		
 	}
 
 	

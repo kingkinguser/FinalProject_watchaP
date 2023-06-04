@@ -3,6 +3,8 @@ package com.spring.watcha.mindh.service;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import com.spring.watcha.model.MovieVO;
 
 public interface InterWatchaService {
@@ -30,6 +32,9 @@ public interface InterWatchaService {
 
 	// 유저의 컬랙션
 	List<MovieVO> usercol();
+
+	// 검색어 세션등록 및 검색 
+	void goSearch(HttpServletRequest request, Map<String, String> paraMap);
 
 	
 
