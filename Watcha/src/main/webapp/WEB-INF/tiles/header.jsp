@@ -535,14 +535,26 @@ input[type="text"]:focus {
 		}); 
 		  
 
-		/* 
+		/*
 		// 화면 크기 변경 시 showSearch 요소의 너비를 업데이트
 		$(window).resize(function() {
 		  if ($(window).width() >= 859) {
 		  	  $(div#showSearch)
 		  }
-		});  */
+		});  
+		*/
 		
+		// label 요소의 너비를 가져와 showSearch 요소의 너비로 설정
+		let labelWidth = $('label.footer-label').width();
+		$('#showSearch').width(labelWidth);
+
+		// 화면 크기 변경 시 showSearch 요소의 너비를 업데이트
+		$(window).resize(function() {
+			 if ($(window).width() >= 859) { 
+		 		 labelWidth = $('label.footer-label').width();
+		  		 $('#showSearch').width(labelWidth);
+		     }
+		});
 		
 		///////////////////////////////////////////////////
 		
@@ -604,8 +616,8 @@ input[type="text"]:focus {
 	
 	function gosearch() {
 		
-	  let windowWidth = $(window).width();   // 크기를 알아오기 위해 
-
+		let windowWidth = window.innerWidth;
+	  
 	  if (gosearchone && windowWidth < 859) {   // 버튼 누를때마다 달라지며 창크기가 859 미만일때 실행 
 		$('.header-second-li').css({
 	      width: ''
@@ -623,6 +635,10 @@ input[type="text"]:focus {
 	    $('button.btn-search1').css({
 	        'background-color': 'white'
 	    });
+	    $('div#showSearch').css({
+	    	width: '255px'
+	    });
+	    $('div#showSearch').hide();
 
 
 
@@ -630,13 +646,13 @@ input[type="text"]:focus {
 	  } else if(!gosearchone && windowWidth < 859){  // 버튼 누를때마다 달라지며 창 크기가 859미만일대 실행 
 	    
 		$('.header-second-li').css({
-	      width: '349px'
+	      width: '334px'
 	    });
 	    $('.footer-label').css({
-		      width: '349px',
+		      width: '334px',
 		      margin: '0 0 0 auto'
 		      
-		    });
+		});
 	    $('input#search_header').css({
 		     padding: '0 0 0 34px',
 		     'background-color': '#F5F5F6'  
@@ -647,6 +663,20 @@ input[type="text"]:focus {
 	    $('button.btn-search1').css({
 			 'background-color': '#F5F5F6'
 	    });
+	    $('div#showSearch').css({
+	    	width: '334px'
+	    });
+	    
+	    // 검색창 연관검색 부분
+	    if($('input#search_header').val() != '' )
+	    {
+	    	$('div#showSearch').show();
+	    }
+	    else{
+	    	$('div#showSearch').hide();
+	    }
+	    
+
 	  }
 	  
 	  gosearchone = ! gosearchone; // 누를때마다 css 추가
@@ -654,7 +684,7 @@ input[type="text"]:focus {
 	
 	// 사이즈 변경 마다 평가하기 부분 & 검색 버튼 아이콘 부분  
 	function gosize() {
-		 let windowWidth = $(window).width();
+		let windowWidth = window.innerWidth;
 		    
 		if(windowWidth > 859){
 	  	   $('.header-star').text('평가하기');

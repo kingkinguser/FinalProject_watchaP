@@ -27,7 +27,7 @@ public class WatchaDAO implements InterWatchaDAO {
 	@Override
 	public int showEvaluationNum(MovieVO vo) {
 		int n = sqlsession_1.selectOne("watchamin.showEvaluationNum", vo);
-		System.out.println(n);
+		
 		return n; 
 	} 
 	
