@@ -7,11 +7,11 @@
 	<!-- header 검색어 자동완성-->
 	<select id="searchword" parameterType="HashMap" resultType="String">
 	
-		select movie_title
-        from movie
-        where movie_title like '%' || #{searchWord} || '%'
-        ORDER BY CASE WHEN movie_title LIKE CONCAT(#{searchWord}, '%') THEN 0 ELSE 1 END, movie_title
-	
+		SELECT movie_title
+		FROM movie
+		WHERE movie_title LIKE CONCAT(LOWER(#{searchWord}), '%')	
+		ORDER BY CASE WHEN movie_title LIKE CONCAT(LOWER(#{searchWord}), '%') THEN 0 ELSE 1 END, movie_title
+
 	</select>
 
 

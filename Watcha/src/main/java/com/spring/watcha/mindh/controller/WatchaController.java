@@ -1,11 +1,13 @@
 package com.spring.watcha.mindh.controller;
 
 import java.util.ArrayList;
+
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.mail.Session;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -36,46 +38,163 @@ public class WatchaController {
 	public String searchword(HttpServletRequest request) {
 
 	    String searchWord = request.getParameter("searchWord");
+	    String switchValues = request.getParameter("switchValue");
+	    int switchValue = Integer.parseInt(switchValues);
+	    
+	    HttpSession session = request.getSession();
+	    //System.out.println(switchValue+"호호호");
+	    //System.out.println("Received searchWord: " + searchWord);
+	    
+	    if (switchValue == 1){
+	    	
+		    // ajax 를 사용했으므로 
+	    	JSONObject jsonObj = new JSONObject();
+	    	jsonObj.put("switchValue", switchValue);
 
-	    Map<String, String> paraMap = new HashMap<>();
-
-	    paraMap.put("searchWord", searchWord);
-
-	    List<String> wordList = service.searchword(paraMap);
-
-	    // ajax 를 사용했으므로 
-	    JSONArray jsonArr = new JSONArray();
-
-	    // 리스트가 존재한다면 실행 
-	    if(wordList != null) {
-	        for(String word : wordList) {
-	            JSONObject jsonObj = new JSONObject();
-	            jsonObj.put("word", word);
-
-	            jsonArr.put(jsonObj);
-	        }// end of for 믄 
+	        return jsonObj.toString();
 	    }
-	    return jsonArr.toString();
+	    else {
+	    	//System.out.println("여기야!!");
+	    	Map<String, String> paraMap = new HashMap<>();
+
+		    paraMap.put("searchWord", searchWord);
+
+		    List<String> wordList = service.searchword(paraMap);
+
+		    
+		    // ajax 를 사용했으므로 
+		    JSONArray jsonArr = new JSONArray();
+
+		    // 리스트가 존재한다면 실행 
+		    if(wordList != null) {
+		        for(String word : wordList) {
+		            JSONObject jsonObj = new JSONObject();
+		            jsonObj.put("word", word);
+
+		            jsonArr.put(jsonObj);
+		        }// end of for 믄 
+		    }
+		    return jsonArr.toString();
+	    }
+	    
 	}
+	
 	
 
-	@ResponseBody
-	@RequestMapping(value="/footer/showEvaluationNumber.action",method = {RequestMethod.GET}, produces="text/plain;charset=UTF-8") 
-	public String showEvaluationNumber(MovieVO vo) {
+	
+	// header 검색어 부분 
+	@RequestMapping(value="/goSearch.action")
+	public ModelAndView goSearch(ModelAndView mav, HttpServletRequest request) {
 		
-		int n = service.showEvaluationNum(vo);
-		return String.valueOf(n);
-	}
-	
-	
-	
-	
-	@RequestMapping(value="/view/main.action")
-	public ModelAndView main(ModelAndView mav, HttpServletRequest request) {
+		String searchWord = request.getParameter("searchWord");
+		//System.out.println(searchWord);
 		
 		Map<String, String> paraMap = new HashMap<>();
 		
+		paraMap.put("searchWord",searchWord);
+		
+		String[] searchWords = service.goSearch(request, paraMap);
+		 
+		String lastSearchWord = searchWords[searchWords.length - 1];
+		//System.out.println(lastSearchWord);
+		
+		
+	    List<String> recentSearchWords = new ArrayList<>();
+
+	    if (searchWords != null) {
+	        int startIndex = Math.max(0, searchWords.length - 5);
+	        int endIndex = searchWords.length;
+
+	        for (int i = startIndex; i < endIndex; i++) {
+	            recentSearchWords.add(searchWords[i]);
+	        }
+	        Collections.reverse(recentSearchWords); // 최근 검색어를 내림차순으로 정렬
+	    }
+
+	    String recentSearchWordsString = String.join(",", recentSearchWords);
+	    recentSearchWordsString = recentSearchWordsString.replaceAll("\\[|\\]", "");
+
+		
+		mav.addObject("recentSearchWords", recentSearchWordsString);
+		mav.addObject("lastSearchWord", lastSearchWord);
+		mav.setViewName("/searchWord.tiles");    // 검색했을때 넘어가는 페이지 
+		
+		return mav;
+		
+	}
+	
+	
+
+	// header 검색어 자동완성
+	@ResponseBody
+	@RequestMapping(value="/deleteRecentSearch.action", method = {RequestMethod.GET}, produces="text/plain;charset=UTF-8") 
+	public String deleteRecentSearch(HttpServletRequest request) {
+
 		HttpSession session = request.getSession();
+		String switchValue = request.getParameter("switchValue");
+		
+		//System.out.println(switchValue+"삭제하자");
+		 
+	    if ("1".equals(switchValue)){
+	    	
+	    	//System.out.println("gkgkgkgk");
+		    String[] searchWordsArray = (String[]) session.getAttribute("searchWords");
+			  
+	    	session.removeAttribute("searchWords");
+	    	searchWordsArray = null;
+	    	
+	    }
+	    // AJAX 요청을 호출한 URL 가져오기
+	    String referer = request.getHeader("Referer");
+	    
+	    // URL을 기반으로 보기 이름 설정
+	    String viewName = referer != null ? "redirect:" + referer : "redirect:/";  // Referer 헤더가 존재하면 해당 URL로 리다이렉트. 그렇지 않으면 루트 URL로 리다이렉트.
+	    
+	    return viewName;
+	}
+	
+	
+	
+
+	@RequestMapping(value="/view/main.action")
+	public ModelAndView main(ModelAndView mav, HttpServletRequest request) {
+		
+		HttpSession session = request.getSession();
+	    
+	    String[] searchWordsArray = (String[]) session.getAttribute("searchWords");
+ 	    
+
+		Map<String, String> paraMap = new HashMap<>();
+		
+		// 최근 검색어를 저장할 리스트 생성
+		List<String> recentSearchWords = new ArrayList<>();
+		
+		// 검색어 배열을 쉼표로 구분된 문자열로 변환
+		if (searchWordsArray != null) {
+		    // 검색어 배열을 쉼표로 구분된 문자열로 변환
+		    //searchWordsString = String.join(",", searchWordsArray);
+		    //System.out.println(searchWordsString);
+			
+			
+			// 최근에 검색된 5개의 항목만 가져오기
+			int startIndex = Math.max(0, searchWordsArray.length - 5); // 검색어 배열에서 가져올 시작 인덱스
+			int endIndex = searchWordsArray.length; // 검색어 배열에서 가져올 끝 인덱스
+
+			
+
+			// 검색어 배열에서 최근 5개 항목 가져오기
+			for (int i = startIndex; i < endIndex; i++) {
+			    recentSearchWords.add(searchWordsArray[i]);
+			}
+			
+			Collections.reverse(recentSearchWords); // 최근 검색어를 내림차순으로 정렬
+
+
+		}
+		String recentSearchWordsString = String.join(",", recentSearchWords);
+		recentSearchWordsString = recentSearchWordsString.replaceAll("\\[|\\]", "");
+
+		
 		
 		/*
 		 
@@ -130,7 +249,10 @@ public class WatchaController {
 		        genres.addAll(genre);                // genre를 모두 genres에 추가한다.
 		    }
 		}
-
+			
+		mav.addObject("recentSearchWords", recentSearchWordsString);
+		
+		
 		mav.addObject("starRankvo", starRankvo);
 		mav.addObject("seeRankvo", seeRankvo);
 		mav.addObject("commentRankvo", commentRankvo);
@@ -145,25 +267,20 @@ public class WatchaController {
 		
 		return mav;
 		// /WEB-INF/views/tiles1/tiles1/tiles_test
+    
 	}	
 	
-	// 검색어 부분 
-	@RequestMapping(value="/goSearch.action")
-	public ModelAndView goSearch(ModelAndView mav, HttpServletRequest request) {
+	
+	
+	@ResponseBody
+	@RequestMapping(value="/footer/showEvaluationNumber.action",method = {RequestMethod.GET}, produces="text/plain;charset=UTF-8") 
+	public String showEvaluationNumber(MovieVO vo) {
 		
-		String searchWord = request.getParameter("searchWord");
-		//System.out.println(searchWord);
-		
-		Map<String, String> paraMap = new HashMap<>();
-		
-		paraMap.put("searchWord",searchWord);
-		
-		service.goSearch(request, paraMap);
-
-		
-		return mav;
-		
+		int n = service.showEvaluationNum(vo);
+		return String.valueOf(n);
 	}
+	
+	
 	
 	
 }

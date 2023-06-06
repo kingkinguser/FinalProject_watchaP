@@ -34,7 +34,7 @@ public interface InterWatchaService {
 	List<MovieVO> usercol();
 
 	// 검색어 세션등록 및 검색 
-	void goSearch(HttpServletRequest request, Map<String, String> paraMap);
+	String[] goSearch(HttpServletRequest request, Map<String, String> paraMap);
 
 	
 

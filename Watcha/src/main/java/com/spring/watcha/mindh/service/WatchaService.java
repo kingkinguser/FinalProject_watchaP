@@ -1,5 +1,6 @@
 package com.spring.watcha.mindh.service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -85,17 +86,29 @@ public class WatchaService implements InterWatchaService {
 
 	// 검색어 세션등록 및 검색 
 	@Override
-	public void goSearch(HttpServletRequest request, Map<String, String> paraMap) {
+	public String[] goSearch(HttpServletRequest request, Map<String, String> paraMap) {
 		
 		HttpSession session =  request.getSession();
 		// 메모리에 생성되어져 있는 session을 불러오는 것이다. 
 
 		String searchWord = paraMap.get("searchWord");
-		session.setAttribute("searchWord", searchWord);
 		
-		//System.out.println(searchWord);
+		// 이전에 저장된 검색어 배열을 가져옴
+	    String[] searchWords = (String[]) session.getAttribute("searchWords");
+	    
+	    // 새로운 검색어를 추가하여 새로운 배열을 생성
+	    String[] newSearchWords;
+	    if (searchWords != null) {
+	        newSearchWords = Arrays.copyOf(searchWords, searchWords.length + 1);
+	        newSearchWords[searchWords.length] = searchWord;
+	    } else {
+	        newSearchWords = new String[]{searchWord};
+	    }
 		
-		
+	    session.setAttribute("searchWords", newSearchWords);
+	    
+	    return newSearchWords;
+	
 	}
 
 	
