@@ -29,17 +29,14 @@ public class MemberVO {
 	
 	public MemberVO() {}
 	
-	public MemberVO(String user_id, String password, String name, String nickname
-	, String mobile, String email, int gender, String birthday) {
+	public MemberVO(String user_id, String name, String mobile, String email, String date_joined, int pwdchangegap) {
 		
 		this.user_id = user_id;
-		this.password = password;
 		this.name = name;
-		this.nickname = nickname;
 		this.mobile = mobile;
 		this.email = email;
-		this.gender = gender;
-		this.birthday = birthday;
+		this.date_joined = date_joined;
+		this.pwdchangegap = pwdchangegap;
 		
 	}
 
