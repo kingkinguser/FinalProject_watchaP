@@ -4,6 +4,7 @@
 
 <mapper namespace="watcha">
 
+   <!-- 영화 및 드라마 등 정보 가져오기  시작 -->
    <resultMap id="movieResultMap" type="com.spring.watcha.model.MovieVO">
        <id     		property="movie_id"          column="movie_id"/>
        <result 		property="movie_title" 		column="movie_title"/>
@@ -61,6 +62,101 @@
        ON MR.actor_id = A.actor_id
        WHERE MR.movie_id = #{movie_id}
    </select>
+   <!-- 영화 및 드라마 등 정보 가져오기  끝 -->
 
+   <!-- 유저의 컬랙션 카드  시작 -->
+   <resultMap type="HashMap" id="collectionViewMap">
+       <result property="collection_id"      column="collection_id"      javaType="String" />
+       <result property="user_id"            column="userid"           	 javaType="String" />
+       <result property="collection_name"    column="collection_name"    javaType="String" />
+       <result property="movie_id"           column="movie_id"           javaType="String" />
+       <result property="movie_title"   	 column="movie_title"        javaType="String" />
+       <result property="runtime"   		 column="runtime"            javaType="String" />
+       <result property="poster_path"   	 column="poster_path"        javaType="String" />
+       <result property="rating_avg"   		 column="rating_avg"     	 javaType="String" />
+       <result property="rating_count"   	 column="rating_count"       javaType="String" /> 
+   </resultMap>
+   
+   <select id="getCollection_view" resultMap="collectionViewMap" parameterType="HashMap">
+	select C.collection_id, C.user_id, C.collection_name, CM.movie_id, M.movie_title, M.runtime, M.poster_path, M.rating_avg, M.rating_count
+	from collection C join collection_movie CM
+	on C.collection_id = CM.collection_id
+	join movie M
+	on CM.movie_id = M.movie_id
+	where user_id ='qwer1234' and C.collection_id = '1'
+   </select>   
+   <!-- 유저의 컬랙션 카드  끝 -->
+
+
+   <!-- 더보기 시작 -->	
+  <resultMap type="HashMap" id="totalCountMap"></resultMap>
+   
+   <select id="totalCount" resultMap="totalCountMap" parameterType="HashMap">
+	select count(*) as count
+	from collection C join collection_movie CM
+	on C.collection_id = CM.collection_id
+	join movie M
+	on CM.movie_id = M.movie_id
+	where user_id ='qwer1234' and C.collection_id = '1'
+   </select>   
+
+   <resultMap type="HashMap" id="cardSeeMoreMap">
+       <result property="collection_id"      column="collection_id"      javaType="String" />
+       <result property="user_id"            column="userid"           	 javaType="String" />
+       <result property="collection_name"    column="collection_name"    javaType="String" />
+       <result property="movie_id"           column="movie_id"           javaType="String" />
+       <result property="movie_title"   	 column="movie_title"        javaType="String" />
+       <result property="runtime"   		 column="runtime"            javaType="String" />
+       <result property="poster_path"   	 column="poster_path"        javaType="String" />
+       <result property="rating_avg"   		 column="rating_avg"     	 javaType="String" />
+       <result property="rating_count"   	 column="rating_count"       javaType="String" /> 
+   </resultMap>   
+   <select id="cardSeeMore" resultMap="cardSeeMoreMap" parameterType="HashMap">
+	select collection_id, user_id, collection_name, movie_id, movie_title, runtime, poster_path, rating_avg, rating_count
+	from     
+	(        
+	select row_number() over(order by C.collection_id desc) AS RNO, C.collection_id, C.user_id, C.collection_name, CM.movie_id
+	      , M.movie_title, M.runtime, M.poster_path, M.rating_avg, M.rating_count  
+	from collection C join collection_movie CM
+	on C.collection_id = CM.collection_id
+	join movie M
+	on CM.movie_id = M.movie_id
+	where user_id ='qwer1234' and C.collection_id = '1' 
+	 ) V
+	 where RNO between #{start} and #{end}
+   </select>   
+   <!-- 더보기 끝 -->	
+	
+	<!-- 댓글쓰기 insert -->
+	<insert id="addUserComment">
+	INSERT INTO user_collection_comment 
+	(user_collection_seq, user_id, collection_id, user_collection_content, user_collection_time, user_collection_status) 
+	VALUES 
+	(userCollectionSeq.nextval,#{user_id},#{collection_id},#{user_collection_content}, sysdate, default)
+	</insert>
+	
+	<!-- 페이징 처리하기 -->
+	<select id="uccListNoSearchWithPaging" parameterType="HashMap" resultType="com.spring.watcha.model.user_collection_commentVO">
+	select user_collection_seq, user_id, collection_id, user_collection_content, user_collection_time
+	from 
+	(
+	  select row_number() over(order by user_collection_seq desc) AS rno,
+	         user_collection_seq, user_id, collection_id, user_collection_content,
+	         to_char(user_collection_time, 'YYYY-MM-DD HH24:MI:SS') AS user_collection_time
+	  from user_collection_comment
+	  where user_collection_status = '1'
+	) V 
+	where rno between #{startRno} and #{endRno}
+	</select>
+	
+	<!-- 원글 글번호에 해당하는 댓글의 totalPage 알아오기 -->
+	<select id="getUserCommentTotalPage" parameterType="HashMap" resultType="int">
+		select ceil(count(*)/#{sizePerPage})
+		from user_collection_comment
+		where user_collection_status = 1 and collection_id = #{collection_id}
+	</select>
+	
+	
+	
 </mapper>
 

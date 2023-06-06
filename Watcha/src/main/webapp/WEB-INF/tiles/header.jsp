@@ -2,6 +2,7 @@
     pageEncoding="UTF-8"%>
  
 <% String ctxPath = request.getContextPath(); %>    
+<%@ page import="java.util.Arrays" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -433,6 +434,7 @@ input[type="text"]:focus {
 <script type="text/javascript">
 
 	$(document).ready(function(){
+		
 		randomInput() ; // INPUT에 PLACEHOLDER 가 랜덤하게 들어가게 하는 방법
 		$('button.btn-search1').on('click', function(event) {   // 버튼 클릭시 
 		    event.preventDefault(); // 새로고침 안함
@@ -447,6 +449,20 @@ input[type="text"]:focus {
 		gosize();
 		
 		
+	/* 	// 검색어에서 커서를 다른곳에 눌렀을때 보이지 마라
+		$('input#search_header').on('blur', function() {
+		  $('div#showSearch').hide();
+		}); */
+		
+		
+		/* 검색 창에 아무것도 없을시 최근 검색어만 보이게 하기 */
+		$('input#search_header').on('click', function(event){
+			 
+			let switchValue = 0;
+			goajax(switchValue);   // 최근 검색어, 연관검색어를 보이게 하는 ajax로 이동 
+			
+	    });
+		
 		/* 검색 엔터누를시  */
 		$('input#search_header').on('keyup', function(event){
 	    	if( event.keyCode == 13 ){
@@ -455,74 +471,23 @@ input[type="text"]:focus {
 	    });
 		
 		
+		 $("input#search_header").val('${lastSearchWord}'); // 검색했을때 마지막 부분 유지하기 
+		
 
+
+		 
 		 // 검색시 검색조건 및 검색어 유지시키기
 		  if(${not empty requestScope.paraMap}) {
 			  $("input#search_header").val("${requestScope.paraMap.search_header}");
 		  }
 		  
 		 
-		  $("div#showSearch").hide();  
+		  $("div#showSearch").hide();    // 먼저 숨긴다.
 		  
+		  // 키를 눌렀을때 연관검색어, 최근검색어 실행 
 		  $("input#search_header").keyup(function(){
-			 
-			  const wordLength = $(this).val().trim().length;  
-			  //검색어에서 공백을 제거한 길이를 알아온다.
-			  
-			  // 길이가 0일때 
-			  if(wordLength == 0) {
-				  $("div#showSearch").hide(); 
-				  // 검색어가 공백이거나 검색어 입력후 백스페이스키를 눌러서 검색어를 모두 지우면 검색된 내용이 안나오도록 해야 한다.
-			  }
-			  else {  
-				  
-				  $.ajax({
-					 url:"<%= ctxPath%>/searchword.action",
-					 type:"get",
-					 data:{
-						   "searchWord":$("input#search_header").val()
-						   },
-					 dataType:"json",
-					 success:function(json) {
 
-						 if(json.length > 0){
-							  
-							 let html = "<p style='color: pink; margin: 5px;'>연관검색어<p>";
-							 
-							 $.each(json, function(index, item) {
-								 
-								 const word = item.word; 
-								 const idx = word.toLowerCase().indexOf($("input#search_header").val().toLowerCase());
-								 const len = $("input#search_header").val().length;
-								 const result = word.substring(0, idx) + "<span>" + word.substring(idx, idx+len)+"</span>" + word.substring(idx+len);
-								 
-								 html += "<div id='mainSearchdiv'><span style='cursor: pointer; margin-left: 5px; text-overflow: ellipsis; white-space: nowrap;' class='result'>"+ result +"</span></div>";    // 손가락 모양을 만든다.
-								 
-							 }); // end for $.each(json, function(index, item)
-									 
-							// 검색되어진 길이를 알아오자 
-							const input_width = $("input#search_header").css("width");   // 검색어 input 태그 width 를 알아오기 
-									 
-							$("div#showSearch").css({"width":input_width});   // 길이를 일치시키는 것이다.
-							// 검색결과 div 의 width 크기를 검색어 입력 input 태그의 width 와 일치시키기  
-							
-							
-						 	$("div#showSearch").html(html);
-						 	$("div#showSearch").show();    // 보여라 
-						 	
-						 }
-						 
-						 
-					 },
-					 error: function(request, status, error){
-		                  alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
-		             }
-						   
-				  });
-			  }
-			  
-			  
-			  
+			  search_keyup();
 			  
 		  }); // end of $("input#searchWord").keyup(function()
 		
@@ -534,15 +499,13 @@ input[type="text"]:focus {
 			goSearchWord();
 		}); 
 		  
-
-		/*
-		// 화면 크기 변경 시 showSearch 요소의 너비를 업데이트
-		$(window).resize(function() {
-		  if ($(window).width() >= 859) {
-		  	  $(div#showSearch)
-		  }
-		});  
-		*/
+		// 검색어 부분 과 연관검색 및 최근검색 부분 외 클릭시 showsearch를 가린다.  
+		$(document).click(function(e) {
+		    if (!$(e.target).closest('#showSearch').length && !$(e.target).is('#search_header')) {
+		      $('#showSearch').hide();
+		    }
+		});  		  
+		
 		
 		// label 요소의 너비를 가져와 showSearch 요소의 너비로 설정
 		let labelWidth = $('label.footer-label').width();
@@ -593,6 +556,7 @@ input[type="text"]:focus {
 	}); 
 	
 		
+	// 검색창에 랜덤으로 나타내기	  
 	function randomInput(){
 	  const placeholders = [
 	    '가디언즈 오브 갤럭시: Volume 3',
@@ -604,11 +568,139 @@ input[type="text"]:focus {
 	  ];
 	  const randomIndex = Math.floor(Math.random() * placeholders.length);
 	  const button = $('<button>', { 'class': 'position-absolute btn-search1' }).append($('<i>', { 'class': 'fa-solid fa-magnifying-glass' }));
-	  const input = $('<input>', { id: 'search_header', type: 'text', placeholder: placeholders[randomIndex],name:'searchWord' });
+	  const input = $('<input>', { id: 'search_header', type: 'text', placeholder: placeholders[randomIndex],name:'searchWord'});
 	 
-	 
+	  input.attr('autocomplete', 'off');  // 자동완성 off
 	  
 	  $('span.header-div-input').empty().append(button).append(input);
+	}
+	
+	
+	
+	
+	// 검색어에 검색을 실행햐고 있을때 key up
+	function search_keyup(){
+		const wordLength = $("input#search_header").val().trim().length;  
+		  //검색어에서 공백을 제거한 길이를 알아온다.
+		  
+		  // 길이가 0일때 
+		  if(wordLength == 0) {
+			  $("div#showSearch").hide(); 
+			  // 검색어가 공백이거나 검색어 입력후 백스페이스키를 눌러서 검색어를 모두 지우면 검색된 내용이 안나오도록 해야 한다.
+		  }
+		  else {  
+			  // session 에 저장된 배열의 값을 실제 값으로 가져오기 
+			  let switchValue = 0;
+
+			  goajax(switchValue);
+ 
+		  }
+ 
+	}
+		
+	var delsearch = 0;
+	
+	// 연관검색어와 최근 검색어 나타내는 ajax
+	function goajax(switchValue){
+			
+		var searchWordsString = "${recentSearchWords}";
+		var searchWords = searchWordsString.split(",");
+		
+		
+		  $.ajax({
+			 url:"<%= ctxPath%>/searchword.action",
+			 type:"get",
+			 data: {
+				 "searchWord":$("input#search_header").val(),
+				  switchValue: switchValue
+			    },
+			 dataType:"json",
+			 success:function(json) {
+
+				  				 
+				 let html = '';
+				 //console.log(switchValue);
+				 // 최근 검색어 나타내기
+				 if(switchValue != 1) {
+					 if(delsearch == 0){
+						 if (searchWords != '') {  // 최근 검색이 없으면 처음에는 나타내지 말기
+							 //console.log("제발되라 ㅇ으아아");
+							 html += "<div id='dels'><p style='color: pink; margin: 5px;'>최근검색어<button type='button' style='float: right; border: none; background-color: white;' onclick='deleteSession()'>모두삭제</button></p>";
+
+							 for (var i = 0; i < searchWords.length; i++) {
+						        html += "<div id='mainSearchdiv'><span style='cursor: pointer; margin-left: 5px; text-overflow: ellipsis; white-space: nowrap;' class='result'>" + searchWords[i] + "</span></div>";
+						      }
+							 
+							 html += "</div>";
+						 }			
+					 }
+					 else {
+						 $("div#dels").empty(); 
+					 }
+					 		
+				 }
+				 else {   
+					 $("div#dels").empty(); 
+					 delsearch = 1; 
+				 }
+				 
+
+				 if(json.length > 0){
+					  
+					 html += "<p style='color: pink; margin: 5px;'>연관검색어<p>";
+					 
+					 $.each(json, function(index, item) {
+						 
+						 const word = item.word; 
+						 const idx = word.toLowerCase().indexOf($("input#search_header").val().toLowerCase());
+						 const len = $("input#search_header").val().length;
+						 const result = word.substring(0, idx) + "<span>" + word.substring(idx, idx+len)+"</span>" + word.substring(idx+len);
+						 
+						 html += "<div id='mainSearchdiv'><span style='cursor: pointer; margin-left: 5px; text-overflow: ellipsis; white-space: nowrap;' class='result'>"+ result +"</span></div>";    // 손가락 모양을 만든다.
+						 
+					 }); // end for $.each(json, function(index, item)
+							 
+					// 검색되어진 길이를 알아오자 
+					const input_width = $("input#search_header").css("width");   // 검색어 input 태그 width 를 알아오기 
+							 
+					$("div#showSearch").css({"width":input_width});   // 길이를 일치시키는 것이다.
+					// 검색결과 div 의 width 크기를 검색어 입력 input 태그의 width 와 일치시키기  
+					
+					
+				 	$("div#showSearch").html(html);
+				 	$("div#showSearch").show();    // 보여라 
+				 	
+				 }
+				 
+				 
+			 },
+			 error: function(request, status, error){
+                alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+           }
+				   
+		  });
+	}
+	
+	
+	function deleteSession(){
+		// 삭제하기 버튼을 누른다면 
+		
+		 $.ajax({
+		    url: "<%= ctxPath%>/deleteRecentSearch.action", 
+		    method: "GET", 
+		    data: { switchValue: 1 },
+		    success: function() {
+		    	 
+		    	let switchValue = 1;
+		         goajax(switchValue);
+		    },
+		    error: function(request, status, error){
+	            alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+	        }
+		  });
+		 
+		 
+
 	}
 	
 	// 검색창 부분 사이즈 변경마다 다르게 
@@ -667,16 +759,7 @@ input[type="text"]:focus {
 	    	width: '334px'
 	    });
 	    
-	    // 검색창 연관검색 부분
-	    if($('input#search_header').val() != '' )
-	    {
-	    	$('div#showSearch').show();
-	    }
-	    else{
-	    	$('div#showSearch').hide();
-	    }
 	    
-
 	  }
 	  
 	  gosearchone = ! gosearchone; // 누를때마다 css 추가
