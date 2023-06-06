@@ -6,17 +6,30 @@
 
 	<!-- 로그인 기능 구현 -->
 	<select id="getLoginMember" parameterType="HashMap" resultType="com.spring.watcha.model.MemberVO">
-        SELECT user_id, name, nickname, mobile, email, gender, date_joined
-			, profile_message, profile_image, pwdchangegap
+        SELECT user_id, name, mobile, email, date_joined, pwdchangegap
 		FROM
 		(
-			select user_id, name, nickname, mobile, email, gender
+			select user_id, name, mobile, email
                 , to_char(date_joined, 'yyyy-mm-dd') AS date_joined
-                , profile_message, profile_image
                 , trunc( months_between(sysdate, last_password_change) ) AS pwdchangegap
 			from member
-			where user_id = #{userid} and password = #{pwd}
-		) M
+			where user_id = #{user_id} and password = #{password}
+		)
 	</select>
+	
+	
+	<!-- 회원가입시 아이디 중복체크 기능 구현 -->
+	<select id="idDuplicateCheck" parameterType="String" resultType="int">
+		select count(user_id)
+		from member
+		where user_id = #{user_id}
+	</select>
+	
+	
+	<!-- 회원가입 기능 구현 -->
+	<insert id="signupEnd" parameterType="HashMap">
+		insert into member(user_id, password, name, mobile, email, date_joined, last_password_change)
+		values(#{user_id}, #{password}, #{name}, #{mobile}, #{email}, sysdate, sysdate)
+	</insert>
 
 </mapper>
