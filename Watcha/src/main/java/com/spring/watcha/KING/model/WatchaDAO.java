@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import com.spring.watcha.model.MovieVO;
+import com.spring.watcha.model.collection_likeVO;
 import com.spring.watcha.model.user_collection_commentVO;
 
 
@@ -75,4 +76,24 @@ public class WatchaDAO implements InterWatchaDAO {
 			int totalPage = sqlsession.selectOne("watcha.getUserCommentTotalPage", paraMap);
 			return totalPage;
 		}
+
+		// 좋아요
+		@Override
+		public int getLikeSelect(Map<String, Object> paraMap) {
+			int n = sqlsession.selectOne("watcha.getLikeSelect", paraMap);
+			return n;
+		}
+		@Override
+		public String getLikeInsertCollection(Map<String, Object> paraMap) {
+			
+			String likeCollection = sqlsession.selectOne("watcha.getLikeInsertCollection", paraMap);
+			return likeCollection;
+		}
+		@Override
+		public String getLikeDeleteCollection(Map<String, Object> paraMap) {
+			String likeCollection = sqlsession.selectOne("watcha.getLikeDeleteCollection", paraMap);
+			return likeCollection;
+		}
+
+
 }

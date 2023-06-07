@@ -151,12 +151,27 @@
 	
 	<!-- 원글 글번호에 해당하는 댓글의 totalPage 알아오기 -->
 	<select id="getUserCommentTotalPage" parameterType="HashMap" resultType="int">
-		select ceil(count(*)/#{sizePerPage})
-		from user_collection_comment
-		where user_collection_status = 1 and collection_id = #{collection_id}
+	select ceil(count(*)/#{sizePerPage})
+	from user_collection_comment
+	where user_collection_status = 1 and collection_id = #{collection_id}
 	</select>
 	
+	<!-- 좋아요 -->
+	<select id="getLikeSelect" parameterType="HashMap" resultType="int">
+	select count(*)
+	from collection_like
+	where collection_id = #{collection_id} and user_id = #{user_id}
+	</select>
 	
+	<insert id="getLikeInsertCollection" parameterType="HashMap" >
+		INSERT INTO collection_like(collection_id, user_id) 
+		VALUES (#{collection_id}, #{user_id})
+	</insert>
+	
+	<insert id="getLikeDeleteCollection" parameterType="HashMap" >
+		delete from collection_like
+		where collection_id = #{collection_id} and user_id = #{user_id}
+	</insert>
 	
 </mapper>
 

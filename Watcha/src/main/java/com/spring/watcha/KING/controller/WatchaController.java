@@ -22,6 +22,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.spring.watcha.KING.service.InterWatchaService;
 import com.spring.watcha.model.MovieVO;
+import com.spring.watcha.model.collection_likeVO;
 import com.spring.watcha.model.user_collection_commentVO;
 
 @Controller
@@ -209,6 +210,38 @@ public class WatchaController {
 				
 				return totalPage;
 			}
+
+			// === 좋아요 === //
+			@ResponseBody
+			@RequestMapping(value="/likeCollection.action", method= {RequestMethod.POST})   
+			public String likeCollection(HttpServletRequest request) {
+				
+				String collection_id = request.getParameter("collection_id");
+				String user_id = request.getParameter("user_id");
+				
+				String likeCollection = "";
+				
+				Map<String, Object> paraMap = new HashMap<>();
+				paraMap.put("collection_id", collection_id);
+				paraMap.put("user_id", user_id);
+				
+				int n = service.getLikeSelect(paraMap);
+				
+				paraMap.put("n", n);
+				
+				if(n == 1) {
+					 likeCollection = service.getLikeDeleteCollection(paraMap);
+				}
+				else {
+				     likeCollection = service.getLikeInsertCollection(paraMap);
+				}
+				JSONObject jsonObj = new JSONObject();
+				jsonObj.put("likeCollection", likeCollection);
+				
+				return jsonObj.toString();
+			}
+			
+			
 			
 		   // =============================================== 기능 끝 ======================================================== //	
 }
