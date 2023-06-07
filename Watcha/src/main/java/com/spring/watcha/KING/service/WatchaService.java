@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.spring.watcha.KING.model.InterWatchaDAO;
 import com.spring.watcha.common.AES256;
 import com.spring.watcha.model.MovieVO;
+import com.spring.watcha.model.collection_likeVO;
 import com.spring.watcha.model.user_collection_commentVO;
 
 
@@ -72,6 +73,7 @@ public class WatchaService implements InterWatchaService {
 		return uccList;
 	}
 
+	// 페이징 토탈구하기
 	@Override
 	public String getUserCommentTotalPage(Map<String, String> paraMap) {
 		
@@ -82,5 +84,28 @@ public class WatchaService implements InterWatchaService {
 			
 			return jsonObj.toString();
 	}
+
+	// 좋아요
+	@Override
+	public int getLikeSelect(Map<String, Object> paraMap) {
+		int n = dao.getLikeSelect(paraMap);
+		
+		return n;
+	}
+	@Override
+	public String getLikeInsertCollection(Map<String, Object> paraMap) {
+		
+		String likeCollection = dao.getLikeInsertCollection(paraMap);
+		
+		return likeCollection;
+	}
+	@Override
+	public String getLikeDeleteCollection(Map<String, Object> paraMap) {
+		String likeCollection = dao.getLikeDeleteCollection(paraMap);
+		
+		return likeCollection;
+	}
+
+	
 		
 }

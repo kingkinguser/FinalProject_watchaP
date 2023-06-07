@@ -194,11 +194,15 @@
 				if($('input:checkbox[name="check_good"]').is(":checked")) {
 					 
 				 	$(".goodi").css({"color":"#f3578d"}); 
+				 	
+				 	
 				}
 				else if(!$('input:checkbox[name="check_good"]').is(":checked")) {
 		
 					$(".goodi").css({"background-color":"","color":""}); 
 				}
+				
+				goLikeCollection();
 				
 				$("input:checkbox[name='check_good']").toggle();
 				
@@ -239,7 +243,7 @@
 			    	
 		    		 html += "현재 상품 준비중...";
 		    	 
-		    	 	 // HIT 상품 결과물 출력하ㅁ기
+		    	 	 // HIT 상품 결과물 출력하기
 	
 		    	 	 $("div#displayHIT").html(html);
 		    		 
@@ -286,7 +290,7 @@
 	
 		});					        
 		
-	}// end of function displayHIT() ------------------------------------------
+	}
 	/* ==== 더보기 끝 ==== */
 
 	/* ==== 댓글쓰기 시작 ==== */
@@ -301,7 +305,7 @@
 	  
 	     goAddUserWrite_noAttach();
 	  
-    }// end of function goAddWrite() {}-----------------------
+    }
 	/* ==== 댓글쓰기 끝 ==== */
 	
     /* ==== 파일첨부가 없는 댓글쓰기 시작 ==== */
@@ -325,7 +329,7 @@
 	     }
       });
     
-    }// end of function goAddWrite_noAttach(){}---------------
+    }
     /* ==== 파일첨부가 없는 댓글쓰기 끝 ==== */
   
     // === Ajax로 불러온 댓글내용을  페이징 처리 하기 시작  === //
@@ -345,7 +349,6 @@
 				 $.each(json, function(index, item){
 					 
 					 html += "<tr>";
-					 html += "<td>"+(index+1)+"</td>";
 					 html += "<td>"+item.collection_content+"</td>";
 		             html += "<td>"+item.user_id+"</td>";
 		             html += "<td>"+item.user_collection_time+"</td>"; 
@@ -370,13 +373,13 @@
 		  }
 	  });
 	  
-    }// end of function goViewComment(currentShowPageNo) {}-----------
+    }
     //=== Ajax로 불러온 댓글내용을  페이징 처리 하기 끝  === // 
   
     // ==== 댓글내용 페이지바 Ajax로 만들기 ==== //
     function makeUserCommentPageBar(currentShowPageNo) {
 	  
-	  <%-- === 원글에 대한 totalPage 수를 알아오려고 한다. === --%>
+	  <%-- === 원글에 대한 totalPage 수를 알아오려고 한다. 시작 === --%>
 	  $.ajax({
 		  url:"<%= request.getContextPath()%>/getUserCommentTotalPage.action",
 		  data:{"collection_id":$("input#collection_id").val(),
@@ -385,7 +388,7 @@
 		  dataType:"json",
 		  success:function(json){
 
-			  console.log("~~ 확인용 : " + JSON.stringify(json));
+			  // console.log("~~ 확인용 : " + JSON.stringify(json));
 			  
 			  if(json.totalPage > 0) {
 				  // 댓글이 있는 경우 
@@ -446,11 +449,45 @@
 				alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
 		  }
 	  });
-	  
-  }// end of function makeCommentPageBar(currentShowPageNo) {}-------
+	 
+  }
+  <%-- === 원글에 대한 totalPage 수를 알아오려고 한다. 끝 === --%>
+    
+    
   
-    
-    
+  // === 좋아요 시작  === //
+  function goLikeCollection() {
+	  
+	  $.ajax({
+		  url:"<%= request.getContextPath()%>/likeCollection.action",
+		  data:{"collection_id":$("input#collection_id").val(), 
+			    "user_id":$("input#user_id").val()},
+		  type:"post", 	    
+		  dataType:"json",
+		  success:function(json){
+			   console.log("~~ 확인용 : " + JSON.stringify(json));
+			  
+			  
+		  },
+		  error: function(request, status, error){
+				alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+		  }
+	  });
+	  
+  }
+  //=== 좋아요 끝  === //
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   
 </script>
 
@@ -471,7 +508,7 @@
 				</div>
 				
 				<div style="display: inline-block; position: relative; left: 10px; bottom: 17px; font-weight: bolder; font-size: 16px;">유저이름</div>
-				
+				  
 				<span style="position: relative; right:55px; top: 20px;">좋아요&nbsp;<span>10</span>&nbsp;&nbsp;<span style="color: #eee;">|</span>&nbsp;&nbsp;댓글&nbsp;<span>10</span></span>
  
 				<span style="position: relative; left: 460px; bottom: 10px; width: 100px;"> 
@@ -520,7 +557,6 @@
 				<table class="table" style="width: 924px; margin-top: 2%; margin-bottom: 3%;">
 					<thead>
 					<tr>
-					    <th style="width: 9%;  text-align: center;">번호</th>
 						<th style="text-align: center;">내용</th>
 						<th style="width: 8%; text-align: center;">작성자</th>
 						<th style="width: 12%; text-align: center;">작성일자</th>

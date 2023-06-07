@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.spring.watcha.model.MovieVO;
+import com.spring.watcha.model.collection_likeVO;
 import com.spring.watcha.model.user_collection_commentVO;
 
 public interface InterWatchaDAO {
@@ -26,6 +27,13 @@ public interface InterWatchaDAO {
 
 	// 페이지바 토탈 페이지 알아보기
 	int getUserCommentTotalPage(Map<String, String> paraMap);
+
+	// 좋아요
+	int getLikeSelect(Map<String, Object> paraMap);
+	String getLikeInsertCollection(Map<String, Object> paraMap);
+	String getLikeDeleteCollection(Map<String, Object> paraMap);
+
+	
 		
 		
 }
