@@ -6,6 +6,7 @@
 %>     
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <!DOCTYPE html>
 <html>
@@ -442,7 +443,7 @@ function StarRank() {
 	
 	<%-- 다시 캐러셀 --%>
 	
-	<c:if test="${not empty login_userid}">
+	<c:if test="${not empty login_userid and not empty requestScope.actorCheck}">
 		<h5 class="h5 main-h5 main-h5-3 mt-5">${login_username} 회원님이 많이 보신 
 			<c:forEach items="${requestScope.actor}" var="rating">
 	   			<span>${rating.actor_name}</span>
@@ -475,6 +476,44 @@ function StarRank() {
 			  
 		</div>	
 	</c:if>
+	
+	<c:if test="${empty login_userid || empty requestScope.actorCheck}">
+		<h5 class="h5 main-h5 main-h5-3 mt-5">  화재의
+			<c:if test="${not empty requestScope.actorCheckFinal}">   <!-- 결과값이 있을때 []괄호는 제거한다. -->
+			    <c:set var="actorName" value="${requestScope.actorCheckFinal[0].actor}" />
+ 				<span>${fn:replace(fn:replace(actorName, '[', ''), ']', '')}</span>
+			</c:if>
+			배우의 작품
+		</h5>
+	   	
+	   	 <div class="container my-3">
+	
+			<div class="card-deck main-carousel-card2 mb-1">
+			  
+			  <c:forEach var="actorCheckFinal" items="${requestScope.actorCheckFinal}" varStatus="status">
+		        <a href="<%= ctxPath%>/view/project_detail.action?movie_id=${actorCheckFinal.movie_id}" title="${actorCheckFinal.movie_title}" class="Main-a">
+		            <div class="Main-card2">
+		                <div class="Main-card-header2">
+		                    <img src="https://image.tmdb.org/t/p/w500/${actorCheckFinal.poster_path}" class="card-img-top" alt="...">
+		                </div>
+		                <div class="main-number">${status.index + 1}</div>
+		                <div class="Main-card-body2 Main-card-in-no">
+		                    <h5 class="card-title card-font">${actorCheckFinal.movie_title}</h5>
+		                    <p style="margin: 0;"><span class="text-muted">개봉일자: ${actorCheckFinal.release_date}</span></p>
+		                    <p style="margin: 0;"><span class="text-muted">언어 : ${actorCheckFinal.original_language}</span></p>
+		                    <p><span class="text-muted">평균★<span id="">${actorCheckFinal.rating_avg}</span></span></p>
+		                </div>
+		            </div>
+		        </a>
+			</c:forEach>
+			  
+			  
+			</div>
+			  
+		</div>	
+	</c:if>
+	
+	
 	
 	<c:if test="${not empty login_userid}">
 		<h5 class="h5 main-h5 main-h5-3 mt-5">${login_username} 회원님이 많이 보신 

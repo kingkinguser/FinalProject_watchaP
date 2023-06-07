@@ -262,4 +262,57 @@
 		WHERE LOWER(movie_title) LIKE '%' || LOWER(#{searchWord}) || '%'
 	</select>
 	
+	
+	<!-- 로그인 안했을때 또는 로그인 했지만 평가하지 않은 경우 나오는 Tom Holland 의 최신 순의 영화 작품 (체크하기) -->
+	<select id="actorCheck" resultType="com.spring.watcha.model.MovieVO" parameterType="HashMap">
+		
+		<if test="login_userid != null">   <!-- 로그인 안했으면 결과 반환 x 했으면 결과 반환 -->
+        SELECT movie_id, user_id, rating, rating_date
+        FROM star_rating
+        WHERE user_id = #{login_userid}     
+       	</if> 
+       	
+       	<if test="login_userid == null">   <!-- 로그인 안했으면 결과 반환 x 했으면 결과 반환 -->
+        SELECT movie_id, user_id, rating, rating_date
+        FROM star_rating
+        WHERE user_id = ''  <!-- 아무것도 없게 하기 위해서  -->     
+       	</if> 
+	    
+	</select>
+	
+	<!-- 바로 위의 메소드가 결과가 공백이라면 두번째 쿼리문 실행  -->
+	
+	<resultMap id="MovieVOActorName" type="com.spring.watcha.model.MovieVO">
+	    <id property="movie_id" column="movie_id"/>
+	    <result property="movie_title" column="movie_title"/>
+	    <result property="original_language" column="original_language"/>
+	    <result property="release_date" column="release_date"/>
+	    <result property="poster_path" column="poster_path"/>
+	    <result property="rating_avg" column="rating_avg"/>
+	    <collection property="actor" ofType="java.lang.String">
+	        <result column="actor_name"/>
+	    </collection>
+	</resultMap>
+	
+	<select id="actorCheckFinal" resultMap="MovieVOActorName">
+		SELECT m.movie_id, m.movie_title, m.original_language, m.release_date, m.poster_path, m.rating_avg, c.actor_name
+		FROM (
+		  SELECT movie_id, movie_title, original_language, CONCAT('20', release_date) AS release_date, poster_path, rating_avg
+		  FROM Movie
+		) m
+		JOIN (
+		  SELECT movie_id, actor_id
+		  FROM movie_role
+		  where actor_id = '1136406'
+		) w
+		ON m.movie_id = w.movie_id
+		JOIN (
+		  select actor_id, actor_name
+		  from actor
+		) c
+		ON w.actor_id = c.actor_id
+		ORDER BY release_date desc
+		
+	</select>
+	
 </mapper>

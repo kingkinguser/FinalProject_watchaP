@@ -36,6 +36,12 @@ public interface InterWatchaDAO {
 	// 검색후 처음 콘텐츠 일때 영화 보여주기 
 	List<MovieVO> showMovie(Map<String, String> paraMap);
 
+	// 로그인 안했을때 또는 로그인 했지만 평가하지 않은 경우 나오는 Tom Holland 의 최신 순의 영화 작품 (체크하기)
+	List<MovieVO> actorCheck(Map<String, String> paraMap);
+
+	// 바로 위의 메소드가 결과가 공백이라면 두번째 쿼리문 실행 
+	List<MovieVO> actorCheckFinal();
+
 	
 
 	

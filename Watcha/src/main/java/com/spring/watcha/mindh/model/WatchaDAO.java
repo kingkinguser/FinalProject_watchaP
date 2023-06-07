@@ -91,6 +91,22 @@ public class WatchaDAO implements InterWatchaDAO {
 		return showMovie;
 	}
 
+	// 로그인 안했을때 또는 로그인 했지만 평가하지 않은 경우 나오는 Tom Holland 의 최신 순의 영화 작품 (체크하기)
+	@Override
+	public List<MovieVO> actorCheck(Map<String, String> paraMap) {
+		List<MovieVO> actorCheck = sqlsession_1.selectList("watchamin.actorCheck", paraMap);	
+		
+		return actorCheck;
+	}
+
+	// 바로 위의 메소드가 결과가 공백이라면 두번째 쿼리문 실행 
+	@Override
+	public List<MovieVO> actorCheckFinal() {
+		List<MovieVO> actorCheckFinal = sqlsession_1.selectList("watchamin.actorCheckFinal");	
+		
+		return actorCheckFinal;
+	}
+
 	
 
 
