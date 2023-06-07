@@ -20,6 +20,13 @@
 
 
 <style type="text/css">
+
+	
+	/* 로그인 회원가입 modal 띄우면, 메인페이지 스크롤 잠그기 */
+ 	.disableBodyScrolling {
+	    overflow: hidden !important;
+	} 
+
   .main-h5 {
     font-weight: bold;
     text-align: left;

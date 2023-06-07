@@ -61,6 +61,7 @@ public class WatchaService implements InterWatchaService {
 	            // 화면에 보여주는 페이지는 시작페이지로 가는 것이 아니라
 	            // 조금전 사용자가 시도하였던 로그인을 해야만 접근할 수 있는 페이지로 가기 위한 것이다.
 				 String goBackURL = (String) session.getAttribute("goBackURL");
+				 System.out.println("로그인 성공"); // 로그인 확인용 나중에 지울것
 				
 				 if(goBackURL != null) {
 					 mav.setViewName("redirect:"+goBackURL);

@@ -56,14 +56,7 @@ html:lang(ko) {
     overflow: hidden !important;
 }
 
-/* 로그인 회원가입 input 테두리 없애기 */
-input.login_signup-input:focus {
-    outline: none;
-}
 
-input.login_signup-input:invalid {
-  border-color: red;
-}
 
 /* login_signup-modal 시작 */
 
@@ -183,8 +176,19 @@ input.login_signup-input:invalid {
             text-overflow: ellipsis;
             caret-color: rgb(255, 47, 110);
         }
+        
 
-        /* warning */
+		/* 입력란 테두리 없애기 */
+		input.login_signup-input:focus {
+		    outline: none;
+		}
+		
+		/* 입력란 경고 */
+		input.login_signup-input:invalid {
+		  border-color: red;
+		}
+
+        /* 경고문 */
         .warning-text {
             display: none;
             color: rgb(245, 0, 0);
