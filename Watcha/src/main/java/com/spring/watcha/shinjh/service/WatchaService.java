@@ -68,6 +68,8 @@ public class WatchaService implements InterWatchaService {
 					 session.removeAttribute("goBackURL"); // 세션에서 반드시 제거해주어야 한다.
 				 }
 				 else {
+					    MemberVO login_userid = (MemberVO) session.getAttribute("loginuser");
+					    mav.addObject("login_userid",login_userid);
 						mav.setViewName("redirect:/view/main.action"); // 시작페이지로
 				 }
 			}

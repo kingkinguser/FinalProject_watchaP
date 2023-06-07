@@ -1,7 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
  
-<% String ctxPath = request.getContextPath(); %>    
+<% String ctxPath = request.getContextPath(); %>   
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> 
 <%@ page import="java.util.Arrays" %>
 <!DOCTYPE html>
 <html>
@@ -511,18 +512,10 @@
 	    	}
 	    });
 		
-		
+		// 검색시 검색조건 및 검색어 유지시키기
 		 $("input#search_header").val('${lastSearchWord}'); // 검색했을때 마지막 부분 유지하기 
 		
 
-
-		 
-		 // 검색시 검색조건 및 검색어 유지시키기
-		  if(${not empty requestScope.paraMap}) {
-			  $("input#search_header").val("${requestScope.paraMap.search_header}");
-		  }
-		  
-		 
 		  $("div#showSearch").hide();    // 먼저 숨긴다.
 		  
 		  // 키를 눌렀을때 연관검색어, 최근검색어 실행 
@@ -1021,29 +1014,29 @@
   	  	 			</li>	
 					<li class="header-main-li" style="margin-left: 24px;">
 						
-						<!-- <c:if test="">  로그인 안되어있으면 login 할 수 있게 나타내기 -->
+						<c:if test="${empty login_userid}">  <!-- 로그인 안되어있으면 login 할 수 있게 나타내기 -->
 							 
 							 <!-- 로그인 버튼 -->
     						 <button type="button" class="header-a" id="loginBtn" data-modal="#loginModal" onclick="modalOpen(this)" style="border: none; background-color: white; padding: 0;"><span class="header-login"></span></button>
-						<!-- </c:if> -->
+						</c:if>
 						
 						
-						<!-- <c:if test="">  로그인 되어 있으면 평가하기 나타내기 -->
-							<!-- <a href="#" class="header-a"><span class="header-star"></span></a> -->
-						<!-- </c:if> -->
+						<c:if test="${not empty login_userid}"> <!--  로그인 되어 있으면 평가하기 나타내기  -->
+							<a href="#" class="header-a"><span class="header-star"></span></a>
+						</c:if> 
 						
 					</li>
 					<li class="header-main-li" style="margin-left: 24px;">
 						
-						<!-- <c:if test="">  로그인 안 되어 있으면 나타내기 -->	
+						<c:if test="${empty login_userid}">  <!-- 로그인 안 되어 있으면 나타내기 -->	
 							 <button type="button" id="signupBtn" data-modal="#signupModal" style="border-radius: 5px; bottom: 2px; position: relative; background-color: white; border: solid 1px #999999;" onclick="modalOpen(this)" >회원가입</button>
 							 
-						<!-- </c:if> -->
+						</c:if>
 						
 						
-						<!-- <c:if test="">  로그인 되어 있으면 나타내기 -->	
-							<!-- <a href="#"><i class="fa-solid fa-user fa-lg" style="color: #999999"></i></a> -->
-						<!-- </c:if> -->	
+						<c:if test="${not empty login_userid}"> <!-- 로그인 되어 있으면 나타내기 -->	
+							<a href="#"><i class="fa-solid fa-user fa-lg" style="color: #999999"></i></a>
+						</c:if> 	
 					
 					
 					</li>
