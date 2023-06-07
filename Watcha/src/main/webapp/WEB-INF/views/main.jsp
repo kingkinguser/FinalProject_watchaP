@@ -353,7 +353,8 @@ function StarRank() {
 				    <div class="main-number">${status.index + 1}</div>
 				    <div class="Main-card-body Main-card-in-no">
 				      <h5 class="card-title card-font" >${starRankvo.movie_title}</h5>
-				      <p style="margin: 0;"><span class="text-muted">개봉일자 : ${starRankvo.release_date} ・ ${starRankvo.original_language}</span></p>
+				      <p style="margin: 0;"><span class="text-muted">개봉일자 : ${starRankvo.release_date}</span></p>
+				      <p style="margin: 0;"><span class="text-muted">언어 : ${starRankvo.original_language}</span></p>
 				      <p><span class="text-muted">평균★<span id="">${starRankvo.rating_avg}</span></span></p>
 				    </div>
 				  </div>
@@ -379,7 +380,8 @@ function StarRank() {
 				    <div class="main-number">${status.index + 1}</div>
 				    <div class="Main-card-body Main-card-in-no">
 				      <h5 class="card-title card-font" >${seeRankvo.movie_title}</h5>
-				      <p style="margin: 0;"><span class="text-muted">개봉일자 : ${seeRankvo.release_date} ・ ${seeRankvo.original_language}</span></p>
+				      <p style="margin: 0;"><span class="text-muted">개봉일자 : ${seeRankvo.release_date}</span></p>
+				      <p style="margin: 0;"><span class="text-muted">언어 : ${seeRankvo.original_language}</span></p>
 				      <p><span class="text-muted">평균★<span id="">${seeRankvo.rating_avg}</span></span></p>
 				    </div>
 				  </div>
@@ -404,7 +406,8 @@ function StarRank() {
 				    <div class="main-number">${status.index + 1}</div>
 				    <div class="Main-card-body Main-card-in-no">
 				      <h5 class="card-title card-font" >${commentRankvo.movie_title}</h5>
-				      <p style="margin: 0;"><span class="text-muted">개봉일자 : ${commentRankvo.release_date} ・ ${commentRankvo.original_language}</span></p>
+				      <p style="margin: 0;"><span class="text-muted">개봉일자 : ${commentRankvo.release_date}</span></p>
+				      <p style="margin: 0;"><span class="text-muted">언어 : ${commentRankvo.original_language}</span></p>
 				      <p><span class="text-muted">평균★<span id="">${commentRankvo.rating_avg}</span></span></p>
 				    </div>
 				  </div>
@@ -439,94 +442,99 @@ function StarRank() {
 	
 	<%-- 다시 캐러셀 --%>
 	
-	<h5 class="h5 main-h5 main-h5-3 mt-5">(여기에 세션 로그인id 가져오기)회원님이 많이 보신 
-		<c:forEach items="${requestScope.actor}" var="rating">
-   			<span>${rating.actor_name}</span>
-		</c:forEach>배우의 작품
-	</h5>
-   	
-   	 <div class="container my-3">
-
-		<div class="card-deck main-carousel-card2 mb-1">
-		  
-		  <c:forEach var="movie" items="${requestScope.starRatings}" varStatus="status">
-	        <a href="<%= ctxPath%>/view/project_detail.action?movie_id=${movie.movie_id}" title="${movie.movie_title}" class="Main-a">
-	            <div class="Main-card2">
-	                <div class="Main-card-header2">
-	                    <img src="https://image.tmdb.org/t/p/w500/${movie.poster_path}" class="card-img-top" alt="...">
-	                </div>
-	                <div class="main-number">${status.index + 1}</div>
-	                <div class="Main-card-body2 Main-card-in-no">
-	                    <h5 class="card-title card-font">${movie.movie_title}</h5>
-	                    <p style="margin: 0;"><span class="text-muted">개봉일자: ${movie.release_date} ・ ${movie.original_language}</span></p>
-	                    <p><span class="text-muted">평균★<span id="">${movie.rating_avg}</span></span></p>
-	                </div>
-	            </div>
-	        </a>
-		</c:forEach>
-		  
-		  
-		</div>
-		  
-	</div>	
+	<c:if test="${not empty login_userid}">
+		<h5 class="h5 main-h5 main-h5-3 mt-5">${login_username} 회원님이 많이 보신 
+			<c:forEach items="${requestScope.actor}" var="rating">
+	   			<span>${rating.actor_name}</span>
+			</c:forEach>배우의 작품
+		</h5>
+	   	
+	   	 <div class="container my-3">
 	
+			<div class="card-deck main-carousel-card2 mb-1">
+			  
+			  <c:forEach var="movie" items="${requestScope.starRatings}" varStatus="status">
+		        <a href="<%= ctxPath%>/view/project_detail.action?movie_id=${movie.movie_id}" title="${movie.movie_title}" class="Main-a">
+		            <div class="Main-card2">
+		                <div class="Main-card-header2">
+		                    <img src="https://image.tmdb.org/t/p/w500/${movie.poster_path}" class="card-img-top" alt="...">
+		                </div>
+		                <div class="main-number">${status.index + 1}</div>
+		                <div class="Main-card-body2 Main-card-in-no">
+		                    <h5 class="card-title card-font">${movie.movie_title}</h5>
+		                    <p style="margin: 0;"><span class="text-muted">개봉일자: ${movie.release_date}</span></p>
+		                    <p style="margin: 0;"><span class="text-muted">언어 : ${movie.original_language}</span></p>
+		                    <p><span class="text-muted">평균★<span id="">${movie.rating_avg}</span></span></p>
+		                </div>
+		            </div>
+		        </a>
+			</c:forEach>
+			  
+			  
+			</div>
+			  
+		</div>	
+	</c:if>
 	
-	<h5 class="h5 main-h5 main-h5-3 mt-5">(여기에 세션 로그인id 가져오기)회원님이 많이 보신 
-		<c:forEach items="${requestScope.genres}" var="genres">
-   			<span>${genres.genre_name}</span>
-		</c:forEach>장르 TOP 10
-	</h5>
-   	 <div class="container my-3">
-
-		<div class="card-deck main-carousel-card2 mb-1">
-		  
-		  <c:forEach var="starRating22" items="${requestScope.starRating22}" varStatus="status">
-	        <a href="<%= ctxPath%>/view/project_detail.action?movie_id=${starRating22.movie_id}" title="${starRating22.movie_title}" class="Main-a">
-	            <div class="Main-card2">
-	                <div class="Main-card-header2">
-	                    <img src="https://image.tmdb.org/t/p/w500/${starRating22.poster_path}" class="card-img-top" alt="...">
-	                </div>
-	                <div class="main-number">${status.index + 1}</div>
-	                <div class="Main-card-body2 Main-card-in-no">
-	                    <h5 class="card-title card-font">${starRating22.movie_title}</h5>
-	                    <p style="margin: 0;"><span class="text-muted">개봉일자: ${starRating22.release_date} ・ ${starRating22.original_language}</span></p>
-	                    <p><span class="text-muted">평균★<span id="">${starRating22.rating_avg}</span></span></p>
-	                </div>
-	            </div>
-	        </a>
-		</c:forEach>
-		  
-		  
-		</div>
-	</div>	
+	<c:if test="${not empty login_userid}">
+		<h5 class="h5 main-h5 main-h5-3 mt-5">${login_username} 회원님이 많이 보신 
+			<c:forEach items="${requestScope.genres}" var="genres">
+	   			<span>${genres.genre_name}</span>
+			</c:forEach>장르 TOP 10
+		</h5>
+	   	 <div class="container my-3">
 	
+			<div class="card-deck main-carousel-card2 mb-1">
+			  
+			  <c:forEach var="starRating22" items="${requestScope.starRating22}" varStatus="status">
+		        <a href="<%= ctxPath%>/view/project_detail.action?movie_id=${starRating22.movie_id}" title="${starRating22.movie_title}" class="Main-a">
+		            <div class="Main-card2">
+		                <div class="Main-card-header2">
+		                    <img src="https://image.tmdb.org/t/p/w500/${starRating22.poster_path}" class="card-img-top" alt="...">
+		                </div>
+		                <div class="main-number">${status.index + 1}</div>
+		                <div class="Main-card-body2 Main-card-in-no">
+		                    <h5 class="card-title card-font">${starRating22.movie_title}</h5>
+		                    <p style="margin: 0;"><span class="text-muted">개봉일자: ${starRating22.release_date}</span></p>
+		                    <p style="margin: 0;"><span class="text-muted">언어 : ${starRating22.original_language}</span></p>
+		                    <p><span class="text-muted">평균★<span id="">${starRating22.rating_avg}</span></span></p>
+		                </div>
+		            </div>
+		        </a>
+			</c:forEach>
+			  
+			  
+			</div>
+		</div>	
+	</c:if>
 	
+	<c:if test="${not empty login_userid}">
+		<h5 class="h5 main-h5 main-h5-3 mt-5">${login_username} 회원님의 컬렉션</h5>
+	   	 <div class="container my-3">
 	
-	<h5 class="h5 main-h5 main-h5-3 mt-5">(여기에 세션 로그인id 가져오기)회원님의 컬렉션</h5>
-   	 <div class="container my-3">
-
-		<div class="card-deck main-carousel-card2 mb-1">
-		  
-		  <c:forEach var="usercol" items="${requestScope.usercol}" varStatus="status">
-	        <a href="<%= ctxPath%>/view/project_detail.action?movie_id=${usercol.movie_id}" title="${usercol.movie_title}" class="Main-a">
-	            <div class="Main-card2">
-	                <div class="Main-card-header2">
-	                    <img src="https://image.tmdb.org/t/p/w500/${usercol.poster_path}" class="card-img-top" alt="...">
-	                </div>
-	                <div class="main-number">${status.index + 1}</div>
-	                <div class="Main-card-body2 Main-card-in-no">
-	                    <h5 class="card-title card-font">${usercol.movie_title}</h5>
-	                    <p style="margin: 0;"><span class="text-muted">개봉일자: ${usercol.release_date} ・ ${usercol.original_language}</span></p>
-	                    <p><span class="text-muted">평균★<span id="">${usercol.rating_avg}</span></span></p>
-	                </div>
-	            </div>
-	        </a>
-		</c:forEach>
-		  
-		  
-		</div>
-	</div>	
-	
+			<div class="card-deck main-carousel-card2 mb-1">
+			  
+			  <c:forEach var="usercol" items="${requestScope.usercol}" varStatus="status">
+		        <a href="<%= ctxPath%>/view/project_detail.action?movie_id=${usercol.movie_id}" title="${usercol.movie_title}" class="Main-a">
+		            <div class="Main-card2">
+		                <div class="Main-card-header2">
+		                    <img src="https://image.tmdb.org/t/p/w500/${usercol.poster_path}" class="card-img-top" alt="...">
+		                </div>
+		                <div class="main-number">${status.index + 1}</div>
+		                <div class="Main-card-body2 Main-card-in-no">
+		                    <h5 class="card-title card-font">${usercol.movie_title}</h5>
+		                    <p style="margin: 0;"><span class="text-muted">개봉일자: ${usercol.release_date}</span></p>
+		                    <p style="margin: 0;"><span class="text-muted">언어 : ${usercol.original_language}</span></p>
+		                    <p><span class="text-muted">평균★<span id="">${usercol.rating_avg}</span></span></p>
+		                </div>
+		            </div>
+		        </a>
+			</c:forEach>
+			  
+			  
+			</div>
+		</div>	
+	</c:if>
 	
 		    
 	

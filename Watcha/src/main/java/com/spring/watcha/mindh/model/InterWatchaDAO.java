@@ -25,13 +25,16 @@ public interface InterWatchaDAO {
 	List<MovieVO> commentRank();
 
 	// 많이 평가한 배우 영화 
-	List<MovieVO> actorRank();
+	List<MovieVO> actorRank(Map<String, String> paraMap);
 
 	// 많이 평가한 영화 장르 
-	List<MovieVO> genreRank();
+	List<MovieVO> genreRank(Map<String, String> paraMap);
 
 	// 유저의 컬랙션
-	List<MovieVO> usercol();
+	List<MovieVO> usercol(Map<String, String> paraMap);
+
+	// 검색후 처음 콘텐츠 일때 영화 보여주기 
+	List<MovieVO> showMovie(Map<String, String> paraMap);
 
 	
 

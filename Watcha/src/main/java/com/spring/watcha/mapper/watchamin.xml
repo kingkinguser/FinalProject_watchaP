@@ -104,12 +104,14 @@
    
 	
 	<!-- 많이 평가한  배우 영화  -->
-	<select id="actorRank" resultMap="movieMainMap" > 
+	<select id="actorRank" resultMap="movieMainMap" parameterType="HashMap"> 
 		SELECT m.movie_id, a.actor_id, COUNT(*) OVER (PARTITION BY a.actor_id) AS identical_actor_count, a.casting_order, b.actor_name
 	    FROM (
 	        SELECT movie_id, user_id, rating, rating_date
 	        FROM star_rating
-	        WHERE user_id = 'qwer1234'     <!-- 로그인 한 사람으로 변경해야 함  -->
+	        <if test="login_userid != null">
+	       	    WHERE user_id = #{login_userid}     <!-- 로그인 한 사람으로 변경해야 함  -->
+	       	</if>    
 	    ) w
 	    JOIN (
 	        SELECT movie_id, movie_title, original_language, CONCAT('20', release_date) AS release_date, poster_path, rating_avg
@@ -173,13 +175,15 @@
   	   <result property="genre_name" column="genre_name"/>
     </resultMap>
 	
-	<select id="genreRank" resultMap="movieMaingenreMap">
+	<select id="genreRank" resultMap="movieMaingenreMap" parameterType="HashMap">
 		select a.movie_id, a.movie_title, a.original_language, CONCAT('20', a.release_date) AS release_date, a.poster_path, a.rating_avg,
 		       COUNT(*) OVER (PARTITION BY b.Genre_id) AS count_Genre_id, c.Genre_id, c.Genre_name 
 		from (
 		    SELECT movie_id, user_id, rating, rating_date
 		    FROM star_rating
-		    WHERE user_id = 'qwer1234'
+		    <if test="login_userid != null">
+	       	    WHERE user_id = #{login_userid}     <!-- 로그인 한 사람으로 변경해야 함  -->
+	       	</if> 
 		) w
 		JOIN(
 		    select movie_id, movie_title, original_language, CONCAT('20', release_date) AS release_date, poster_path, rating_avg  
@@ -228,7 +232,7 @@
 	</select>
 	
 	
-	<select id="usercol"  resultType="com.spring.watcha.model.MovieVO">
+	<select id="usercol"  resultType="com.spring.watcha.model.MovieVO" parameterType="HashMap">
 		
 		select a.movie_id, a.movie_title, a.original_language, a.release_date, a.poster_path, a.rating_avg
 		from (
@@ -243,10 +247,19 @@
 		JOIN (
 		    select collection_id, user_id, collection_name, creation_date
 		    from collection
-		    where user_id = 'qwer1234'
+		    <if test="login_userid != null">
+	       	    WHERE user_id = #{login_userid}     <!-- 로그인 한 사람으로 변경해야 함  -->
+	       	</if> 
 		)c
 		ON b.collection_id = c.collection_id
 
+	</select>
+	
+	<!-- 검색했을때 처음 콘텐츠 내보내기 -->
+	<select id="showMovie1" resultType="com.spring.watcha.model.MovieVO" parameterType="HashMap">
+		SELECT movie_id, movie_title, original_language, CONCAT('20', release_date) AS release_date, poster_path, rating_avg
+		FROM movie
+		WHERE LOWER(movie_title) LIKE '%' || LOWER(#{searchWord}) || '%'
 	</select>
 	
 </mapper>

@@ -22,6 +22,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.spring.watcha.model.ActorVO;
 import com.spring.watcha.model.GenreVO;
+import com.spring.watcha.model.MemberVO;
 import com.spring.watcha.model.MovieVO;
 import com.spring.watcha.model.Star_ratingVO;
 
@@ -113,10 +114,16 @@ public class WatchaController {
 
 	    String recentSearchWordsString = String.join(",", recentSearchWords);
 	    recentSearchWordsString = recentSearchWordsString.replaceAll("\\[|\\]", "");
-
+	 	    
+	    // 처음에 콘텐츠를 검색하는 것이므로 영화를 보여준다.
+	    List<MovieVO> showMovie = service.showMovie(paraMap);
+	    
+	    
+	    
 		
 		mav.addObject("recentSearchWords", recentSearchWordsString);
 		mav.addObject("lastSearchWord", lastSearchWord);
+		mav.addObject("showMovie", showMovie);
 		mav.setViewName("/searchWord.tiles");    // 검색했을때 넘어가는 페이지 
 		
 		return mav;
@@ -196,27 +203,29 @@ public class WatchaController {
 
 		
 		
-		/*
-		 
+		
 		MemberVO loginuser = (MemberVO) session.getAttribute("loginuser");
 
 		String login_userid = null;
+		String login_username = null;
 		
 		// 로그인 했다면 
 		if(loginuser != null) {
-			login_userid = loginuser.getUserid();  // 세션에서 유저의 아이디를 가져온다.
+			login_userid = loginuser.getUser_id();  // 세션에서 유저의 아이디를 가져온다.
+			login_username = loginuser.getName();  // 세션에서 유저의 이름을 가져온다.
 		}
+		//System.out.println(login_userid);
 		
 		paraMap.put("login_userid", login_userid);   // map 에 저장  
 
-		*/
+		
 		
 		List<MovieVO> starRankvo = service.starRank();   // 평점 순위 
 		List<MovieVO> seeRankvo = service.seeRank();   // 보고싶어요  순위 
 		List<MovieVO> commentRankvo = service.commentRank();   // 한줄평 많은  순위 
-		List<MovieVO> actorvo = service.actorRank();   // 많이 평가한 배우 영화  (로그인한 사람의 아이디 들어가야 함)
-		List<MovieVO> genrevo = service.genreRank();   // 많이 평가한 양화 장르  (로그인한 사람의 아이디 들어가야 함)
-		List<MovieVO> usercol = service.usercol();     // 유저의 컬렉션             (로그인한 사람의 아이디 들어가야 함)
+		List<MovieVO> actorvo = service.actorRank(paraMap);   // 많이 평가한 배우 영화  (로그인한 사람의 아이디 들어가야 함)
+		List<MovieVO> genrevo = service.genreRank(paraMap);   // 많이 평가한 양화 장르  (로그인한 사람의 아이디 들어가야 함)
+		List<MovieVO> usercol = service.usercol(paraMap);     // 유저의 컬렉션             (로그인한 사람의 아이디 들어가야 함)
 		
 	
 		List<ActorVO> actor = new ArrayList<>();    // 좋아하는 배우의 이름 
@@ -250,8 +259,11 @@ public class WatchaController {
 		    }
 		}
 			
-		mav.addObject("recentSearchWords", recentSearchWordsString);
 		
+		
+		mav.addObject("login_userid",login_userid);
+		mav.addObject("login_username",login_username);
+		mav.addObject("recentSearchWords", recentSearchWordsString);
 		
 		mav.addObject("starRankvo", starRankvo);
 		mav.addObject("seeRankvo", seeRankvo);

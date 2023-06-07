@@ -1,13 +1,206 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+    
+<%
+    String ctxPath = request.getContextPath();
+%>  
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+    
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+
+<!-- slick 이용하기 위한 링크 -->
+<script src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script> 
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css" />
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css" />
+
+
+
+
+<style type="text/css">
+
+	.searchWord_header {
+		border-bottom: solid 1px  #f2f2f2;
+		background-color: #f8f9fa!important;
+		padding: 12px 0 ;
+		position: relative;
+		bottom: 20px;
+	}
+	
+	.searchWord_div_nav {
+		margin-bottom: 10px; 
+		position: relative;
+		bottom: 20px;
+		border-bottom: solid 1px #cccccc;
+	}
+	.searchWord_nav {
+		padding-bottom: 0;
+		background-color: white;
+	}
+	
+	nav.navbar > ul.navbar-nav > li.nav-item > button.nav-link {
+		border: none;
+		background-color: white;
+		margin-right: 10px;
+	}
+	
+	
+	/* 케러셀 부분 */
+  .searchWord-card {
+  	border: none;
+  	height: 350px;
+  }
+  
+  .searchWord-card-header {
+  	height: 200px;
+  	padding: 0 10px;
+  }
+  
+  .searchWord-card-header > img {  	
+  	height: 200px;
+  }
+  
+  .searchWord-card-body {
+  	padding: 10px 10px 0 10px;
+  	height: 100px;
+  	font-size: 11pt;
+  	color: black;
+  }
+  
+  .searchWord-card-body > h5{
+  	overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 13pt;
+  }
+  
+  .slick-prev:before {
+		color: gray;
+    	font-size: xx-large;
+  }
+	
+  .slick-next:before {
+		color: gray;
+    	font-size: xx-large;
+    	right: 13px;
+   		position: relative;
+  }
+
+</style>
+
+<script type="text/javascript">
+	
+	$(document).ready(function(){
+		
+		Carousel();
+		$('button.nav-link').on('click', function() {   // 버튼 클릭시 
+			
+			$('button.nav-link').css('border-bottom', 'none');  // 다른 버튼들 밑줄 삭제 
+		    
+		    $(this).css('border-bottom', 'solid 1px black');	// 클릭한 것만 버튼에 밑줄 생성
+			
+		});
+		
+	});
+	
+	
+	function Carousel(){
+		
+		 $('.searchWord-carousel-card').slick({
+		  	  dots: false,     /* 밑에 점으로 표시되는것  */
+		  	  infinite: false,  /* 반복할것인지 파악하기 */
+		  	  speed: 300,		/* 슬라이드 스피드 */
+		  	  slidesToShow: 6,	/* 몇개씩 보여줄것인지 파악 */
+		  	  slidesToScroll: 6,	/* 몇개씩 넘길것인지 파악 */
+		  	  responsive: [
+		  	    {
+		  	      breakpoint: 1024,		/* 사이즈가 1024 보다 작으면 시작 */
+		  	      settings: {  
+		    	        dots: false,
+		    	        infinite: false,  
+		  	    	slidesToShow: 5,
+		  	        slidesToScroll: 5
+		  	      }
+		  	    },
+		  	    {
+		  	      breakpoint: 768,
+		  	      settings: {
+		  	    	dots: false,
+		      	    infinite: false,   
+		  	        slidesToShow: 3,
+		  	        slidesToScroll: 3
+		  	      }
+		  	    }
+
+	  	  ]
+	  	});	
+	    
+	}
+	
+	
+</script>
+
+
 </head>
 <body>
-	안녕
-	console.log(${searchWord22});
+
+	<div class="searchWord_header">
+		<div class="container">
+			<h5 class="h5" style="margin: 0;">"${lastSearchWord}"의 검색결과</h5>
+		</div>
+	</div>
+		
+		
+	<div class="container">
+		
+		<div class="searchWord_div_nav">
+			<nav class="navbar  navbar-expand  navbar-light searchWord_nav">
+		
+			  <ul class="navbar-nav">
+			    <li class="nav-item">
+			      <button type="button" class="nav-link" id="contants">콘텐츠</button>
+			    </li>
+			    <li class="nav-item">
+			      <button type="button" class="nav-link" id="people">인물</button>			      
+			    </li>
+			    <li class="nav-item">
+			      <button type="button" class="nav-link" id="collection">컬렉션</button>	
+			    </li>
+			    <li class="nav-item">
+			      <button type="button" class="nav-link" id="user">유저</button>	
+			    </li>
+			  </ul>
+			</nav>
+		</div>
+		
+		
+
+		<div class="container my-5">
+		
+			<div class="card-deck searchWord-carousel-card mb-1" style="border-bottom: 1px black;">
+			  
+			  <c:forEach var="showMovie" items="${requestScope.showMovie}" varStatus="status">
+			  
+				  <a href = "<%= ctxPath%>/view/project_detail.action?movie_id=${showMovie.movie_id}" title="${showMovie.movie_title}" class="Main-a">
+					  <div class="searchWord-card">
+					  	<div class="searchWord-card-header">
+					    	<img src="https://image.tmdb.org/t/p/w500/${showMovie.poster_path}" class="card-img-top" alt="...">
+					    </div>					   
+					    <div class="searchWord-card-body Main-card-in-no">
+					      <h5 class="card-title card-font" >${showMovie.movie_title}</h5>
+					      <p style="margin: 0;"><span class="text-muted">개봉일자 : ${showMovie.release_date}</span></p>
+					      <p style="margin: 0;"><span class="text-muted">언어 : ${showMovie.original_language}</span></p>
+					      <p><span class="text-muted">평균★<span id="">${showMovie.rating_avg}</span></span></p>
+					    </div>
+					  </div>
+				  </a> 
+			  </c:forEach>
+			</div>
+		</div>	 
+
+		
+	</div>
 </body>
 </html>

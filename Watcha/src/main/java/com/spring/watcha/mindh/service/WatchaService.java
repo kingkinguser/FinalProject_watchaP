@@ -62,24 +62,24 @@ public class WatchaService implements InterWatchaService {
 
 	// 많이 평가한 배우 영화 
 	@Override
-	public List<MovieVO> actorRank() {
-		List<MovieVO> actorRankvo = dao.actorRank();
+	public List<MovieVO> actorRank(Map<String, String> paraMap) {
+		List<MovieVO> actorRankvo = dao.actorRank(paraMap);
 		
 		return actorRankvo;
 	}
 
 	// 많이 평가한 영화 장르 
 	@Override
-	public List<MovieVO> genreRank() {
-		List<MovieVO> genreRankvo = dao.genreRank();
+	public List<MovieVO> genreRank(Map<String, String> paraMap) {
+		List<MovieVO> genreRankvo = dao.genreRank(paraMap);
 		
 		return genreRankvo;
 	}
 
 	// 유저의 컬랙션
 	@Override
-	public List<MovieVO> usercol() {
-		List<MovieVO> usercolvo = dao.usercol();
+	public List<MovieVO> usercol(Map<String, String> paraMap) {
+		List<MovieVO> usercolvo = dao.usercol(paraMap);
 		
 		return usercolvo;
 	}
@@ -109,6 +109,13 @@ public class WatchaService implements InterWatchaService {
 	    
 	    return newSearchWords;
 	
+	}
+
+	// 검색후 처음 콘텐츠 일때 영화 보여주기 
+	@Override
+	public List<MovieVO> showMovie(Map<String, String> paraMap) {
+		List<MovieVO> showMovie = dao.showMovie(paraMap);
+	    return showMovie;
 	}
 
 	
