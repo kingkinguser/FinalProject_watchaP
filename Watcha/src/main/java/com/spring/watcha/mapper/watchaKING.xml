@@ -64,7 +64,7 @@
    </select>
    <!-- 영화 및 드라마 등 정보 가져오기  끝 -->
 
-   <!-- 유저의 컬랙션 카드  시작 -->
+   <!-- 유저의 컬랙션  시작 -->
    <resultMap type="HashMap" id="collectionViewMap">
        <result property="collection_id"      column="collection_id"      javaType="String" />
        <result property="user_id"            column="userid"           	 javaType="String" />
@@ -73,19 +73,20 @@
        <result property="movie_title"   	 column="movie_title"        javaType="String" />
        <result property="runtime"   		 column="runtime"            javaType="String" />
        <result property="poster_path"   	 column="poster_path"        javaType="String" />
+       <result property="backdrop_path"   	 column="backdrop_path"        javaType="String" />
        <result property="rating_avg"   		 column="rating_avg"     	 javaType="String" />
        <result property="rating_count"   	 column="rating_count"       javaType="String" /> 
    </resultMap>
    
    <select id="getCollection_view" resultMap="collectionViewMap" parameterType="HashMap">
-	select C.collection_id, C.user_id, C.collection_name, CM.movie_id, M.movie_title, M.runtime, M.poster_path, M.rating_avg, M.rating_count
+    select C.collection_id, C.user_id, C.collection_name, CM.movie_id, M.movie_title, M.runtime, M.poster_path, M.backdrop_path, M.rating_avg, M.rating_count
 	from collection C join collection_movie CM
 	on C.collection_id = CM.collection_id
 	join movie M
 	on CM.movie_id = M.movie_id
 	where user_id ='qwer1234' and C.collection_id = '1'
    </select>   
-   <!-- 유저의 컬랙션 카드  끝 -->
+   <!-- 유저의 컬랙션  끝 -->
 
 
    <!-- 더보기 시작 -->	

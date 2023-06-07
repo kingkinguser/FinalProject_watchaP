@@ -26,12 +26,6 @@
 		margin: 20px auto; /* 상 하는 20px 우 좌는 남은 20%에서 좌우로 균등하게 주겠다. 즉, 화면의 가운데로 위치하겠다는 말이다.*/
 	}
 
-	.box {
-	    width: 50px;
-	    height: 50px; 
-	    border-radius: 70%;
-	    overflow: hidden;
-	}
 	.profile {
 	    width: 100%;
 	    height: 100%;
@@ -79,7 +73,7 @@
 		
 	.commentP {
 	  width: 700px;
-	  height: 40px;
+	  height: 35px;
 	  font-size: 15px;
 	  border: 0;
 	  border-radius: 15px;
@@ -128,7 +122,34 @@
 	   opacity: 0;
 	}
 	
-		
+	.btn:active, .btn:focus {
+		outline:none !important;
+		box-shadow:none !important;
+	}
+	
+	#commentBack{
+	  width: 700px;
+	  height: 200px;
+	  font-size: 15px;
+	  border: 0;
+	  border-radius: 15px;
+	  outline: none;
+	  background-color: rgb(233, 233, 233);
+	  margin: -25px 0 0 140px;
+	}
+	
+	img#middle {
+		 background-repeat: no-repeat;
+		 background-size:cover;  
+		 background-position: center center; 
+		 height: 300px;
+  	     width: 100%; 
+  	     background-blend-mode: multiply;
+  	     border-radius: 10px 10px;
+  	     opacity: 0.4;
+	} 
+	
+				
 </style>
 
 <script type="text/javascript">
@@ -152,7 +173,7 @@
 					$("div#displayHIT").empty();
 					$("span#end").empty();
 					displayHIT("1");
-					$(this).text("더보기...");
+					$(this).text("더보기");
 					
 				}
 				else{
@@ -229,29 +250,18 @@
 		    dataType:"json",
 		    success:function(json){
 		    	
-		    	// console.log(json);
-		    	// console.log("확인용 json => " + JSON.stringify(json));
-		    	
-		    	// console.log("JSON.stringify(json) 의 타입 => " + typeof JSON.stringify(json) );
-		    	// JSON.stringify(json) 의 타입 => string 
-		    	// 또는
-		    	// json => []
-				
 		    	 let html = "";
 		    	 
 		    	 if(start == "1" && json.length == 0){
 			    	
 		    		 html += "현재 상품 준비중...";
 		    	 
-		    	 	 // HIT 상품 결과물 출력하기
-	
 		    	 	 $("div#displayHIT").html(html);
 		    		 
 		    	 }
 		    	 else if(json.length > 0){
 		    		 // 데이터가 존재하는 경우
 		    		 
-		    		 // jQuery를 사용하는 경우    
 		    		 $.each(json, function(index, item){  
 					    			    
 				        html +=    "<div class='card mb-3' style='width: 10rem; display: inline-block; margin: 20px 0 0 30px;'>" +
@@ -268,7 +278,7 @@
 		    		 // 상품결과 출력하기		 
 		    		 $("div#displayHIT").append(html);	
 		    		 
-	    			// >>> !!! 중요 !!! 더보기... 버튼의 value 속성에 값을 지정하기 <<< //
+	    			// >>> !!! 중요 !!! 더보기 버튼의 value 속성에 값을 지정하기 <<< //
 	    			$("button#btnMoreHIT").val(Number(start) + lenHIT); 
 	    			
 	    			// span#countHIT 에 지금까지 출력된 상품의 개수를 누적해서 기록한다.
@@ -350,7 +360,6 @@
 					 
 					 html += "<tr>";
 					 html += "<td>"+item.collection_content+"</td>";
-		             html += "<td>"+item.user_id+"</td>";
 		             html += "<td>"+item.user_collection_time+"</td>"; 
 		             html += "</tr>";  
 		             
@@ -479,16 +488,6 @@
   
   
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
 </script>
 
 <meta charset="UTF-8">
@@ -498,77 +497,64 @@
 
 	<div id="container">
 		<div class="card">
-		    <div class="card-body"> <!-- .card-body에는 카드 내용이 들어갑니다. -->
+		    <div class="card-body"> 
 		        
-		        <hr style="margin-right: 20px;">  	
+		        <img id="middle" src="https://image.tmdb.org/t/p/w1280${requestScope.collection_view[0].backdrop_path}"/>
+		        
+		        <hr style="margin: 0 30px 0 30px;">  	
 		        
 		        <span style="margin-left: 50px;"></span>
 		        
-		        <div class="box" style=" margin-left: 50px; display: inline-block;">
-				</div>
-				
-				<div style="display: inline-block; position: relative; left: 10px; bottom: 17px; font-weight: bolder; font-size: 16px;">유저이름</div>
+				<div style="display: inline-block; font-weight: bolder; font-size: 16px;">유저이름</div>
 				  
-				<span style="position: relative; right:55px; top: 20px;">좋아요&nbsp;<span>10</span>&nbsp;&nbsp;<span style="color: #eee;">|</span>&nbsp;&nbsp;댓글&nbsp;<span>10</span></span>
+				<span style="">좋아요&nbsp;<span>10</span>&nbsp;&nbsp;<span style="color: #eee;">|</span>&nbsp;&nbsp;댓글&nbsp;<span>10</span></span>
  
-				<span style="position: relative; left: 460px; bottom: 10px; width: 100px;"> 
+				<span style= "width: 100px;"> 
 				  <label for="check_good" style="cursor: pointer;">
 				    <i class="far fa-thumbs-up goodi"></i><span class="goodi" style="font-weight: bolder">&nbsp;&nbsp;좋아요</span></label>
 					<input type="checkbox" id="check_good" name="check_good"/>
 				</span>
 			
-				
-				<hr style="margin-right: 20px;">  	    
-		    
-		    	<div style="font-size: 20px; font-weight: bold; margin-left: 30px;">작품들</div>	
-
-				  <div class="row" id="displayHIT"></div>
+				<hr style="margin: 0 30px 0 30px;">  	    
+		      
+		    	<div style="font-size: 20px; font-weight: bold; margin: 20px 0 0 47px;">나의 컬렉션</div>	
+ 
+				  <div class="row" id="displayHIT" style="margin-left: 20px;"></div>
    
 			      <div>
 			         <p class="text-center">
-			            <span id="end" style="display:block; margin:20px; font-size: 14pt; font-weight: bold; color: red;"></span> 
-			            <button type="button" class="btn btn-secondary btn-lg" id="btnMoreHIT" value="">더보기...</button>
+			            <span id="end" style="display:block; margin:20px 0px 0 0; font-weight:bold; font-size: 12pt;"></span> 
+			            <button type="button" class="btn" id="btnMoreHIT" style="font-weight:bold; color:#f3578d;">더보기</button>
 			            <span id="totalHITCount">${requestScope.totalCount.COUNT}</span>
 			            <span id="countHIT">0</span>
 			         </p>
 			      </div>
+			    
+			    <hr style="margin: 0 30px 0 30px;">  
+			    		
+			    <div style="font-size: 20px; font-weight: bold; margin: 20px 0 0 47px; display: inline-block;">댓글</div>			
 			    		
 		    	<%-- === 댓글쓰기 폼 추가 === --%>
 		    	<%--<c:if test="${not empty sessionScope.loginuser}"> --%>
-			    	<form name="addWriteFrm" id="addWriteFrm" style="margin-top: 20px;">
-			    	      <table class="table">
-							   <tr style="height: 30px;">
-							      <td>
-							         <input type="hidden" name="user_id" id="user_id" value="${requestScope.collection_view[0].USER_ID}" />
-							         
-							         <%-- 댓글에 달리는 원게시물 글번호(즉, 댓글의 부모글 글번호) --%>
-							         <input type="hidden" name="collection_id" id="collection_id" value="${requestScope.collection_view[0].collection_id}" /> 
-							   
-							         <span style="font-size: 20px; font-weight: bold; margin: 0 80px 0 10px;">댓글</span>	
-							         <input class="commentP" type="text" name="user_collection_content" id="user_collection_content">
-							         <button style="margin-left: 20px;" class="btnP" onclick="goAddUserWrite()"><i class="far fa-comment"></i>제출</button>
-							      </td>
-							   </tr>
-						  </table>	      
-			    	</form>
+			         <input type="hidden" name="user_id" id="user_id" value="${requestScope.collection_view[0].USER_ID}" />
+			         <input type="hidden" name="collection_id" id="collection_id" value="${requestScope.collection_view[0].collection_id}" /> 
 		    	<%--</c:if> --%>
 		    	
 		    	<%-- === 댓글 내용 보여주기 === --%>
-				<table class="table" style="width: 924px; margin-top: 2%; margin-bottom: 3%;">
-					<thead>
-					<tr>
-						<th style="text-align: center;">내용</th>
-						<th style="width: 8%; text-align: center;">작성자</th>
-						<th style="width: 12%; text-align: center;">작성일자</th>
-					</tr>
-					</thead>
-					<tbody id="commentDisplay"></tbody>
-				</table>		    		
-		    		
-	    	   	<div style="display: flex; margin-bottom: 50px;">
-		    	   <div id="pageBar" style="margin: auto; text-align: center;"></div>
+		    	
+		    	<div id="commentBack">
+			    	<table style="">
+						<tbody id="commentDisplay"></tbody>
+					</table>
+		    	</div>
+		    	
+	    	   	<div style="display: flex;">  
+		    	   <div id="pageBar" style="margin: 10px 0 0 400px; text-align: center;"></div>
 		    	</div>	
 		    	
+		    	<input style="margin-left: 140px;" class="commentP" type="text" name="user_collection_content" id="user_collection_content">
+		    	<button style="margin-left: 20px;" class="btnP" onclick="goAddUserWrite()"><i class="far fa-comment"></i>제출</button>
+		    		
 		    </div>
 		</div>
 	</div> 
