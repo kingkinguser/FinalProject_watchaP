@@ -4,6 +4,7 @@
 
 <mapper namespace="watcha">
 
+	<!-- 최근 평가한 영화 5개 -->
 	<select id="ratingFive" parameterType="String" resultType="com.spring.watcha.model.MovieVO">
 	    select movie_id, movie_title, poster_path
 	    from
@@ -18,6 +19,7 @@
 	    where A.rno between 1 and 5	
 	</select>
 
+	<!-- 회원정보, 평균 별점, 평가한 영화개수 -->
 	<resultMap type="HashMap" id="userInfo_Map">
 		<result property="user_id" 	 	 	column="user_id" 		  javaType="String"/>
 		<result property="nickname" 	 	column="nickname" 		  javaType="String"/>
@@ -26,7 +28,6 @@
 		<result property="avg_rating" 	 	column="avg_rating" 	  javaType="String"/>
 		<result property="count_rating" 	column="count_rating" 	  javaType="String"/>
 	</resultMap>
-	
 	<select id="userInfo" parameterType="String" resultMap="userInfo_Map">
 	    select b.user_id, b.nickname, b.profile_message, b.profile_image
 	         , A.avg_rating, A.count_rating 
@@ -40,25 +41,33 @@
 	    on A.user_id = B.user_id	
 	</select>
 
+	<!-- 한줄평 개수(로그인한 회원의 한줄평) -->
 	<select id="reviewCount" parameterType="String" resultType="String">
 	    select count(review_id)
 	    from movie_review
 	    where user_id = #{user_id}
 	</select>
 
+	<!-- 컬렉션 개수 -->
 	<select id="collectionCount" parameterType="String" resultType="String">
 	    select count(collection_ID)
 	    from collection
 	    where user_id = #{user_id}
 	</select>
 	
+	<!-- 검색하기 - 모든 종류의 장르 가져오기 -->
+	<select id="genreInfo" resultType="com.spring.watcha.model.GenreVO">
+	    select genre_id, genre_name
+	    from genre
+	</select>
+	
+	<!-- 회원이 평가한 영화 전체 -->
 	<resultMap type="HashMap" id="ratingMovies_Map">
 		<result property="movie_id" 	 column="movie_id" 		javaType="String"/>
 		<result property="movie_title"   column="movie_title" 	javaType="String"/>
 		<result property="poster_path"   column="poster_path" 	javaType="String"/>
 		<result property="rating" 		 column="rating" 		javaType="String"/>
 	</resultMap>
-	
 	<select id="ratingMovies" parameterType="String" resultMap="ratingMovies_Map">
 	    select M.movie_id, M.movie_title, M.poster_path, R.rating
 	    from movie M right join star_rating R
@@ -67,6 +76,7 @@
 	    order by rating_date desc	
 	</select>
 
+	<!-- 회원의 한줄평 - 한줄평 8개씩 페이징 처리 -->
 	<resultMap type="HashMap" id="myReviewPaging_Map">
 		<result property="review_id" 	 	  column="review_id" 		  javaType="String"/>
 		<result property="movie_id" 	 	  column="movie_id" 		  javaType="String"/>
@@ -78,8 +88,7 @@
 		<result property="number_of_likes" 	  column="number_of_likes" 	  javaType="String"/>
 		<result property="number_of_comments" column="number_of_comments" javaType="String"/>
 	</resultMap>
-	
-	<select id="myReviewPaging" parameterType="String" resultMap="myReviewPaging_Map">
+	<select id="myReviewPaging" parameterType="HashMap" resultMap="myReviewPaging_Map">
 	    select review_id, movie_id, movie_title, poster_path, review_content, review_date, spoiler_status
 	    	 , number_of_likes, number_of_comments
 	    from
@@ -95,7 +104,8 @@
 	    where rno between #{startRno} and #{endRno}
 	</select>
 	
-	<select id="rateMoviesPaging" parameterType="String" resultMap="ratingMovies_Map">
+	<!-- 회원이 평가한 영화 - 10개씩 페이징 처리 -->
+	<select id="rateMoviesPaging" parameterType="HashMap" resultMap="ratingMovies_Map">
 	    select movie_id, movie_title, poster_path, rating
 	    from
 	    (
@@ -110,28 +120,36 @@
 	    where rno between #{startRno} and #{endRno}
 	</select>
 
+	<!-- 영화별 유저들 한줄평 - 6개씩 페이징 처리 -->
 	<resultMap type="HashMap" id="movieReviewPaging_Map">
 		<result property="review_id" 	 	  column="review_id" 		  javaType="String"/>
 		<result property="movie_id" 	 	  column="movie_id" 		  javaType="String"/>
-		<result property="review_content" 	  column="movie_title" 		  javaType="String"/>
+		<result property="review_content" 	  column="review_content" 	  javaType="String"/>
 		<result property="review_date" 	 	  column="review_date" 		  javaType="String"/>
 		<result property="spoiler_status" 	  column="spoiler_status" 	  javaType="String"/>
 		<result property="number_of_likes" 	  column="number_of_likes" 	  javaType="String"/>
 		<result property="number_of_comments" column="number_of_comments" javaType="String"/>
-		<result property="user_id" 			  column="number_of_comments" javaType="String"/>
-		<result property="profile_image" 	  column="number_of_comments" javaType="String"/>
-		<result property="nickname" 		  column="number_of_comments" javaType="String"/>
-		<result property="rating" 			  column="number_of_comments" javaType="String"/>
+		<result property="user_id" 			  column="user_id" 			  javaType="String"/>
+		<result property="profile_image" 	  column="profile_image" 	  javaType="String"/>
+		<result property="nickname" 		  column="nickname" 		  javaType="String"/>
+		<result property="rating" 			  column="rating" 			  javaType="String"/>
+		<result property="like_review" 		  column="like_review" 		  javaType="String"/>
 	</resultMap>
-	
-	<select id="movieReviewPaging" parameterType="String" resultMap="movieReviewPaging_Map">
+	<select id="movieReviewPaging" parameterType="HashMap" resultMap="movieReviewPaging_Map">
 	    select A.review_id, A.movie_id, A.review_content, A.review_date, A.spoiler_status, A.number_of_likes, A.number_of_comments
 	         , A.user_id, A.profile_image, A.nickname
-	         , decode(nvl(B.rating, 0), 0, '평가안함', 1, B.rating) AS rating
+	         , nvl(B.rating, 0) AS rating 
+	         ,( select case Y.user_id when #{user_id} then 1 else 0 end as like_review
+	            from movie_review X join review_like Y
+	            on X.review_id = Y.review_id
+	            where Y.review_id = A.review_id ) AS like_review
+	            <!-- 로그인한 회원이 해당 한줄평에 좋아요를 했으면 1, 좋아요를 하지 않았으면 0 -->
 	    from 
 	    (
 	        select row_number() over(order by R.review_date desc) AS rno
-	             , R.review_id, R.movie_id, R.review_content, R.review_date, R.spoiler_status, R.number_of_likes, R.number_of_comments
+	             , R.review_id, R.movie_id, R.review_content
+	             , to_char(R.review_date, 'yyyy-mm-dd') AS review_date
+	             , R.spoiler_status, R.number_of_likes, R.number_of_comments
 	             , M.user_id, M.profile_image, M.nickname  
 	        from movie_review R join member M
 	        on R.user_id = M.user_id
@@ -143,4 +161,193 @@
 	  </if>	    
 	</select>
 
+	<!-- 한줄평 - 영화에 대한 정보(별점개수, 별점평균 포함) -->
+	<select id="movieInfo" parameterType="String" resultType="com.spring.watcha.model.MovieVO">
+	    select movie_id, movie_title, poster_path, backdrop_path, rating_count, rating_avg
+	    from movie
+	    where movie_id = #{movie_id}
+    </select>
+
+	<!-- 한줄평 개수(영화별 유저의 한줄평) -->
+	<select id="userReviewCount" parameterType="String" resultType="int">
+	    select count(review_id)
+	    from movie_review
+	    where movie_id = #{movie_id}
+	</select>
+
+	<!-- 영한줄평 - 해당 한줄평에 달린 댓글List 가져오기 -->
+	<resultMap type="HashMap" id="commentList_Map">
+		<result property="comment_id" 	 	  column="comment_id" 		  javaType="String"/>
+		<result property="review_id" 	 	  column="review_id" 		  javaType="String"/>
+		<result property="user_id" 			  column="user_id" 			  javaType="String"/>
+		<result property="profile_image" 	  column="profile_image" 	  javaType="String"/>
+		<result property="nickname" 		  column="nickname" 		  javaType="String"/>
+		<result property="content" 	  		  column="content" 	  		  javaType="String"/>
+		<result property="comment_date" 	  column="comment_date" 	  javaType="String"/>
+	</resultMap>
+	<select id="commentList" parameterType="String" resultMap="commentList_Map">
+	    select C.comment_id, C.review_id, M.user_id, M.profile_image, M.nickname, C.content, to_char(C.comment_date, 'yyyy-mm-dd') AS comment_date
+	    from review_comment C join member M
+	    on C.user_id = M.user_id 
+	    where review_id = #{review_id}
+	</select>
+	
+	<!-- 한줄평 - 로그인한 회원이 해당 영화에 대해 작성한 한줄평 유무 및 한줄평 정보 -->
+	<select id="reviewInfo" parameterType="HashMap" resultType="com.spring.watcha.model.MovieReviewVO">
+	    select review_id, review_content, spoiler_status
+	    from movie_review
+	    where movie_id = #{movie_id} and user_id = #{user_id}
+	</select>
+
+	<!-- 한줄평 추가 -->
+	<insert id="addReview" parameterType="com.spring.watcha.model.MovieReviewVO">
+		insert into movie_review(review_id, movie_id, user_id, review_content, review_date, spoiler_status, number_of_likes, number_of_comments)
+    	values(review_seq.nextval, #{movie_id}, #{user_id}, #{review_content}, sysdate, #{spoiler_status}, 0, 0)
+	</insert>
+
+	<!-- 한줄평 삭제 -->
+	<delete id="deleteReview" parameterType="String">
+		delete from movie_review
+		where review_id = #{review_id}
+	</delete>
+	
+	<!-- 한줄평 수정 -->
+	<update id="updateReview" parameterType="com.spring.watcha.model.MovieReviewVO">
+		update movie_review set review_content = #{review_content}
+							  , spoiler_status = #{spoiler_status}
+		where review_id = #{review_id}
+	</update>
+	
+	<!-- 한줄평 - 좋아요 체크 -->
+	<insert id="addReviewLike" parameterType="HashMap">
+	    insert into review_like(review_like_id, review_id, user_id, review_like_date)
+	    values(review_like_seq.nextval, #{review_id}, #{user_id}, sysdate)
+	</insert>
+	
+	<!-- 한줄평 - 좋아요 체크해제 -->
+	<delete id="delReviewLike" parameterType="HashMap">
+		delete from review_like
+		where review_id = #{review_id} and user_id = #{user_id}
+	</delete>
+
+	<!-- 한줄평 - 좋아요개수 업데이트 -->
+	<update id="updateLikeCount" parameterType="HashMap">
+		update movie_review set number_of_likes = number_of_likes + #{number_of_likes}
+		where review_id = #{review_id}
+	</update>
+
+	<!-- 한줄평 - 댓글달기 -->
+	<insert id="addComment" parameterType="com.spring.watcha.model.ReviewCommentVO">
+	    insert into review_comment(comment_id, review_id, user_id, content, comment_date)
+	    values(review_comment_seq.nextval, #{review_id}, #{user_id}, #{content}, sysdate)
+	</insert>
+	
+	<!-- 한줄평 - 댓글 수정 -->
+	<update id="updateComment" parameterType="com.spring.watcha.model.ReviewCommentVO">
+		update review_comment set content = #{content}
+		where comment_id = #{comment_id}
+	</update>
+	
+	<!-- 한줄평 - 댓글 삭제 -->
+	<delete id="deleteComment" parameterType="com.spring.watcha.model.ReviewCommentVO">
+		delete from review_comment
+		where comment_id = #{comment_id}
+	</delete>
+	
+	<!-- 한줄평 - 댓글개수 업데이트 -->
+	<update id="updateCommentCount" parameterType="HashMap">
+		update movie_review set number_of_comments = number_of_comments + #{number_of_comments}
+		where review_id = #{review_id}
+	</update>
+	
+	<!-- 검색하기 - 검색조건에 해당하는 검색결과List 가져오기 -->
+	<resultMap type="HashMap" id="searchResult_Map">
+		<result property="movie_id" 	 column="movie_id" 		javaType="String"/>
+		<result property="movie_title"   column="movie_title" 	javaType="String"/>
+		<result property="rating" 		 column="rating" 		javaType="String"/>
+		<result property="watching_date" column="watching_date" javaType="String"/>
+	</resultMap>
+	<select id="searchResult" parameterType="HashMap" resultMap="searchResult_Map">
+	    select distinct(A.movie_id), A.movie_title, A.rating, A.watching_date
+	    from
+	    (
+	        select R.user_id, M.movie_id, M.movie_title, R.rating
+	            , (select to_char(watching_date, 'yyyy-mm-dd') from movie_diary where movie_id = M.movie_id) AS watching_date
+	        from movie M join star_rating R
+	        on M.movie_id = R.movie_id
+	        where R.user_id = 'qwer1234'
+	    ) A join movie_genre G
+	    on A.movie_id = G.movie_id
+	    where lower(A.movie_title) like '%'|| lower(#{searchWord}) ||'%'
+	  <if test="arr_genre_id != null">
+	    and G.genre_id in
+        <foreach collection="arr_genre_id" index="i" open="(" separator="," close=")">
+      	  '${arr_genre_id[i]}'
+        </foreach>
+	  </if>
+	  <if test="arr_rating != null">
+	    and A.rating in
+        <foreach collection="arr_rating" index="i" open="(" separator="," close=")">
+      	  '${arr_rating[i]}'
+        </foreach>
+	  </if>
+	  <if test="from_watching_date != '' and to_watching_date != ''">
+    	and A.watching_date between #{from_watching_date} and #{to_watching_date}
+      </if>
+	</select>
+	
+	<!-- 검색하기 - 영화에 따른 장르 이름 알아오기 -->
+	<select id="genre_name_List" parameterType="String" resultType="com.spring.watcha.model.GenreVO">
+		select G.genre_name
+	    from movie_genre M join genre G
+	    on M.genre_id = G.genre_id
+	    where M.movie_id = #{movie_id}
+	</select>
+	
+	<!-- 검색상세 - 영화정보(장르포함), 무비다이어리 가져오기 -->
+	<resultMap type="HashMap" id="searchDetail_Map">
+		<result property="movie_id" 	 column="movie_id" 		javaType="String"/>
+		<result property="movie_title"   column="movie_title" 	javaType="String"/>
+		<result property="release_date"  column="release_date" 	javaType="String"/>
+		<result property="poster_path" 	 column="poster_path" 	javaType="String"/>
+		<result property="backdrop_path" column="backdrop_path" javaType="String"/>
+		<result property="rating" 		 column="rating" 		javaType="String"/>
+		<result property="diary_id" 	 column="diary_id" 		javaType="String"/>
+		<result property="watching_date" column="watching_date" javaType="String"/>
+		<result property="photo_front" 	 column="photo_front" 	javaType="String"/>
+		<result property="photo_back" 	 column="photo_back" 	javaType="String"/>
+	</resultMap>
+	<select id="searchDetail" parameterType="HashMap" resultMap="searchDetail_Map">
+	    select A.movie_id, A.movie_title, A.release_date, A.poster_path, A.backdrop_path, A.rating
+	         , B.diary_id, B.watching_date, B.photo_front, B.photo_back
+	    from
+	    (
+	        select M.movie_id, M.movie_title, to_char(M.release_date, 'yyyy-mm-dd') AS release_date, M.poster_path, M.backdrop_path, R.user_id, R.rating
+	        from movie M join star_rating R
+	        on M.movie_id = R.movie_id
+	        where M.movie_id = #{movie_id} and R.user_id = #{user_id} 
+	    ) A 
+	    left join
+	    (
+	        select movie_id, diary_id, to_char(watching_date, 'yyyy-mm-dd') AS watching_date, photo_front, photo_back
+	        from movie_diary
+	        where movie_id = #{movie_id} and user_id = #{user_id} 
+	    ) B
+	    on A.movie_id = B.movie_id
+	</select>
+	
+	<!-- 검색상세 - 해당 영화의 한줄평 가져오기 -->
+	<select id="searchReview" parameterType="HashMap" resultType="com.spring.watcha.model.MovieReviewVO">
+	    select review_id, review_content, to_char(review_date, 'yyyy-mm-dd') AS review_date, spoiler_status, number_of_likes, number_of_comments
+	    from movie_review
+	    where movie_id = #{movie_id} and user_id = #{user_id} 
+	</select>
+	
+	<!-- 별점평가 수정하기 -->
+	<update id="updateRating" parameterType="HashMap">
+		update star_rating set rating = #{rating}
+	                         , rating_date = sysdate
+	    where movie_id = #{movie_id} and user_id = #{user_id}
+	</update>
+	
 </mapper>
