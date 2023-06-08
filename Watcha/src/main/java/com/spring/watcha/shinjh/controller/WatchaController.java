@@ -27,11 +27,19 @@ public class WatchaController {
 			
 		
 		// 로그인 테스트페이지, 페이지 합치면서 삭제할 예정
-		@RequestMapping(value="/view/login_test.action")
+		@RequestMapping(value="/login_test.action")
 		public String login_test() {
 			
 			return "member/login_test";
-		}	
+		}
+		
+		
+		// 내정보 수정 테스트페이지, 페이지 합치면서 삭제할 예정
+		@RequestMapping(value="/modifyMyInfo.action")
+		public String modifyMyInfo_test() {
+			
+			return "member/modifyMyInfo.tiles";
+		}
 		
 		
 		// 로그인 기능 구현

@@ -423,7 +423,7 @@ function func_Login() {
 	} */
 
 	
-	if(password.trim().length == 6) {
+	if(password.trim().length < 6) {
 		$("p#password-warning").css("display","block"); // 해당 부분만 error 문구 출력해주기
 		return; // 종료
 	}
