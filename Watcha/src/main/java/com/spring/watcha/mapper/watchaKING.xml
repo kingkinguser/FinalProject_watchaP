@@ -66,25 +66,33 @@
 
    <!-- 유저의 컬랙션  시작 -->
    <resultMap type="HashMap" id="collectionViewMap">
+   
+       <result property="name"     			 column="name"    			 javaType="String" />
+       <result property="nickname"           column="nickname"         	 javaType="String" />
+       <result property="profile_message"    column="profile_message"    javaType="String" />
+       <result property="profile_image"      column="profile_image"      javaType="String" />
        <result property="collection_id"      column="collection_id"      javaType="String" />
-       <result property="user_id"            column="userid"           	 javaType="String" />
+       <result property="user_id"            column="user_id"            javaType="String" />
        <result property="collection_name"    column="collection_name"    javaType="String" />
        <result property="movie_id"           column="movie_id"           javaType="String" />
        <result property="movie_title"   	 column="movie_title"        javaType="String" />
        <result property="runtime"   		 column="runtime"            javaType="String" />
        <result property="poster_path"   	 column="poster_path"        javaType="String" />
-       <result property="backdrop_path"   	 column="backdrop_path"        javaType="String" />
+       <result property="backdrop_path"   	 column="backdrop_path"      javaType="String" />
        <result property="rating_avg"   		 column="rating_avg"     	 javaType="String" />
        <result property="rating_count"   	 column="rating_count"       javaType="String" /> 
    </resultMap>
    
    <select id="getCollection_view" resultMap="collectionViewMap" parameterType="HashMap">
-    select C.collection_id, C.user_id, C.collection_name, CM.movie_id, M.movie_title, M.runtime, M.poster_path, M.backdrop_path, M.rating_avg, M.rating_count
-	from collection C join collection_movie CM
+    select MB.name, MB.nickname, MB.profile_message, MB.profile_image, C.collection_id, 
+           MB.user_id, C.collection_name, CM.movie_id, M.movie_title, M.runtime, M.poster_path, M.backdrop_path, M.rating_avg, M.rating_count
+	from collection C join member MB
+    on  C.user_id = MB.user_id
+    join collection_movie CM
 	on C.collection_id = CM.collection_id
 	join movie M
-	on CM.movie_id = M.movie_id
-	where user_id ='qwer1234' and C.collection_id = '1'
+	on CM.movie_id = M.movie_id       
+    where MB.user_id ='qwer1234' and C.collection_id = '1'   
    </select>   
    <!-- 유저의 컬랙션  끝 -->
 

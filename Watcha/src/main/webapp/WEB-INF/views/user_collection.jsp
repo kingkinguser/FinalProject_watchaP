@@ -142,21 +142,43 @@
 		 background-repeat: no-repeat;
 		 background-size:cover;  
 		 background-position: center center; 
-		 height: 300px;
+		 height: 350px;
   	     width: 100%; 
   	     background-blend-mode: multiply;
   	     border-radius: 10px 10px;
   	     opacity: 0.4;
 	} 
 	
-				
+	#commentInfo{
+	  width: 49%;
+	  height: 300px;
+	  border: solid 1px #eee;
+	  border-radius: 15px;
+	  float: left;
+	  margin: 10px 0 10px 0;
+	}
+	
+	#chart{ 
+	  width: 49%;
+	  height: 300px;
+	  border: solid 1px #eee;
+	  border-radius: 15px;
+	  margin: -13px 0 10px 520px; 
+	}			
 </style>
 
 <script type="text/javascript">
 
 	
 	$(document).ready(function(){
-
+			
+			/* 검색 엔터누를시  */ 
+			$('input#user_collection_content').on('keyup', function(event){
+		    	if( event.keyCode == 13 ){
+		    		goAddUserWrite()
+		    	}
+		    });
+		
 		    goUserViewComment(1); // 페이징 처리 한 댓글 읽어오기
 				
 			/* 카드 더보기 시작 */
@@ -317,13 +339,13 @@
 	  
     }
 	/* ==== 댓글쓰기 끝 ==== */
-	
+	 
     /* ==== 파일첨부가 없는 댓글쓰기 시작 ==== */
     function goAddUserWrite_noAttach() {
 	 
       $.ajax({
   		 url:"<%= request.getContextPath()%>/addUserComment.action",
-  		 data:{"user_id":$("input#user_id").val()
+  		 data:{"user_id":"${requestScope.collection_view[0].user_id}" 
   			  ,"user_collection_content":$("input#user_collection_content").val()
   			  ,"collection_id":$("input#collection_id").val()},
   		 type:"post",
@@ -462,16 +484,14 @@
   }
   <%-- === 원글에 대한 totalPage 수를 알아오려고 한다. 끝 === --%>
     
-    
-  
   // === 좋아요 시작  === //
   function goLikeCollection() {
 	  
 	  $.ajax({
 		  url:"<%= request.getContextPath()%>/likeCollection.action",
 		  data:{"collection_id":$("input#collection_id").val(), 
-			    "user_id":$("input#user_id").val()},
-		  type:"post", 	    
+			    "user_id":"${requestScope.collection_view[0].user_id}"}, 
+		  type:"post", 	      
 		  dataType:"json",
 		  success:function(json){
 			   console.log("~~ 확인용 : " + JSON.stringify(json));
@@ -485,7 +505,6 @@
 	  
   }
   //=== 좋아요 끝  === //
-  
   
   
 </script>
@@ -505,15 +524,19 @@
 		        
 		        <span style="margin-left: 50px;"></span>
 		        
-				<div style="display: inline-block; font-weight: bolder; font-size: 16px;">유저이름</div>
-				  
-				<span style="">좋아요&nbsp;<span>10</span>&nbsp;&nbsp;<span style="color: #eee;">|</span>&nbsp;&nbsp;댓글&nbsp;<span>10</span></span>
- 
-				<span style= "width: 100px;"> 
-				  <label for="check_good" style="cursor: pointer;">
-				    <i class="far fa-thumbs-up goodi"></i><span class="goodi" style="font-weight: bolder">&nbsp;&nbsp;좋아요</span></label>
-					<input type="checkbox" id="check_good" name="check_good"/>
-				</span>
+		        <div id="commentInfo">
+			        <span>닉네임:&nbsp;</span><span style="display: inline-block; font-weight: bolder; font-size: 16px;">${requestScope.collection_view[0].nickname}</span>
+					<span style= "width: 100px;"> 
+					  <label for="check_good" style="cursor: pointer;">
+					    <i class="far fa-thumbs-up goodi"></i><span class="goodi" style="font-weight: bolder">&nbsp;&nbsp;좋아요</span></label>
+						<input type="checkbox" id="check_good" name="check_good"/>
+					</span>
+		        </div> 
+		        
+		        <div id="chart">
+		        </div> 		        
+			    
+			
 			
 				<hr style="margin: 0 30px 0 30px;">  	    
 		      
@@ -534,12 +557,12 @@
 			    		
 			    <div style="font-size: 20px; font-weight: bold; margin: 20px 0 0 47px; display: inline-block;">댓글</div>			
 			    		
-		    	<%-- === 댓글쓰기 폼 추가 === --%>
+		    	<%-- === 댓글쓰기 폼 추가 === --%> 
 		    	<%--<c:if test="${not empty sessionScope.loginuser}"> --%>
-			         <input type="hidden" name="user_id" id="user_id" value="${requestScope.collection_view[0].USER_ID}" />
+			         <input type="hidden" name="user_id" id="user_id" value="${requestScope.collection_view[0].user_id}" />
 			         <input type="hidden" name="collection_id" id="collection_id" value="${requestScope.collection_view[0].collection_id}" /> 
 		    	<%--</c:if> --%>
-		    	
+		    	 
 		    	<%-- === 댓글 내용 보여주기 === --%>
 		    	
 		    	<div id="commentBack">

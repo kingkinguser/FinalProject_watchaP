@@ -22,7 +22,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.spring.watcha.KING.service.InterWatchaService;
 import com.spring.watcha.model.MovieVO;
-import com.spring.watcha.model.collection_likeVO;
 import com.spring.watcha.model.user_collection_commentVO;
 
 @Controller
@@ -216,10 +215,9 @@ public class WatchaController {
 			@RequestMapping(value="/likeCollection.action", method= {RequestMethod.POST})   
 			public String likeCollection(HttpServletRequest request) {
 				
+				String likeCollection = "";
 				String collection_id = request.getParameter("collection_id");
 				String user_id = request.getParameter("user_id");
-				
-				String likeCollection = "";
 				
 				Map<String, Object> paraMap = new HashMap<>();
 				paraMap.put("collection_id", collection_id);
