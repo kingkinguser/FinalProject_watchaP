@@ -33,7 +33,7 @@ public class WatchaController {
 		
 		HttpSession session = request.getSession();
 		MemberVO loginuser = (MemberVO) session.getAttribute("loginuser");
-		String user_id = loginuser.user_id;
+		String user_id = loginuser.getUser_id;
 
 		// *** 1. 마이왓챠 기본정보
 		// 최근 평가한 영화 5개(프로필배경)
@@ -75,7 +75,7 @@ public class WatchaController {
 		
 		HttpSession session = request.getSession();
 		MemberVO loginuser = (MemberVO) session.getAttribute("loginuser");
-		String user_id = loginuser.user_id;
+		String user_id = loginuser.getUser_id;
 		
 		String str_currentShowPageNo = request.getParameter("currentShowPageNo");
 		
@@ -132,7 +132,7 @@ public class WatchaController {
 		
 		HttpSession session = request.getSession();
 		MemberVO loginuser = (MemberVO) session.getAttribute("loginuser");
-		String user_id = loginuser.user_id;
+		String user_id = loginuser.getUser_id;
 
 		// *** 페이징 처리 - 현재 페이지
 		String str_currentShowPageNo = request.getParameter("currentShowPageNo");
@@ -168,7 +168,7 @@ public class WatchaController {
 		
 		HttpSession session = request.getSession();
 		MemberVO loginuser = (MemberVO) session.getAttribute("loginuser");
-		String user_id = loginuser.user_id;
+		String user_id = loginuser.getUser_id;
 
 		// 회원정보, 평균 별점, 평가한 영화개수, 한줄평 개수, 컬렉션 개수
 		Map<String, String> userInfo = service.userInfo(user_id);
@@ -185,7 +185,7 @@ public class WatchaController {
 		
 		HttpSession session = request.getSession();
 		MemberVO loginuser = (MemberVO) session.getAttribute("loginuser");
-		String user_id = loginuser.user_id;
+		String user_id = loginuser.getUser_id;
 		
 		// *** 페이징 처리 - 현재 페이지
 		String str_currentShowPageNo = request.getParameter("currentShowPageNo");
@@ -249,7 +249,7 @@ public class WatchaController {
 		
 		HttpSession session = request.getSession();
 		MemberVO loginuser = (MemberVO) session.getAttribute("loginuser");
-		String user_id = loginuser.user_id;
+		String user_id = loginuser.getUser_id;
 		
 		String movie_id = request.getParameter("movie_id");
 		
@@ -436,7 +436,7 @@ public class WatchaController {
 		
 		HttpSession session = request.getSession();
 		MemberVO loginuser = (MemberVO) session.getAttribute("loginuser");
-		String user_id = loginuser.user_id;
+		String user_id = loginuser.getUser_id;
 
 		String review_id = request.getParameter("review_id");
 		String like_review = request.getParameter("like_review");
@@ -505,7 +505,7 @@ public class WatchaController {
 		
 		HttpSession session = request.getSession();
 		MemberVO loginuser = (MemberVO) session.getAttribute("loginuser");
-		String user_id = loginuser.user_id;
+		String user_id = loginuser.getUser_id;
 
 		String searchWord = request.getParameter("searchWord");
 		String str_genre_id = request.getParameter("str_genre_id");
@@ -557,7 +557,7 @@ public class WatchaController {
 		
 		HttpSession session = request.getSession();
 		MemberVO loginuser = (MemberVO) session.getAttribute("loginuser");
-		String user_id = loginuser.user_id;
+		String user_id = loginuser.getUser_id;
 
 		String movie_id = request.getParameter("movie_id");
 
