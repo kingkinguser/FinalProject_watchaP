@@ -147,7 +147,7 @@ div#makePhotoTicket{font-family: 'Noto Sans KR', sans-serif;}
  			$.ajax({
 				url:"<%= ctxPath%>/myWatcha/updateRating.action",
 				data:{"movie_id":"${requestScope.searchDetail.movie_id}",
-					  "user_id":"${sessionScope.loginuser.user_id}",
+					  "user_id":"qwer1234",
 					  "rating":Number($(this).val())/2}, // 세션 수정 
 				type:"post",
 				dataType:"json",
@@ -169,7 +169,7 @@ div#makePhotoTicket{font-family: 'Noto Sans KR', sans-serif;}
  				$.ajax({
  					url:"<%= ctxPath%>/addReview.action",
 					data:{"movie_id":"${requestScope.searchDetail.movie_id}",
-						  "user_id":"${sessionScope.loginuser.user_id}",
+						  "user_id":"qwer1234",
 						  "review_content":$("textarea#review_content").val(),
 						  "spoiler_status":$("input#spoiler_status").val()}, 
  					type:"post",
@@ -735,7 +735,7 @@ div#makePhotoTicket{font-family: 'Noto Sans KR', sans-serif;}
 						  <div style="width: 100%;">
 			    	  	    <div style="display: flex;" class="mb-2">
 			    	  		  <p style="text-align: left; padding: 0 5px; margin: 0px 10px 5px 0px; font-weight: 600;">작성자이름</p>
-			    	  		  <input type="hidden" name="user_id" value="${sessionScope.loginuser.user_id}" />
+			    	  		  <input type="hidden" name="user_id" value="qwer1234" />
 			    	  		</div>
 			    	  		<textarea id="content" name="content" style="width: 100%; height: 70px; resize: none; border: solid 1px #e6e6e6; border-radius: 1%; font-size: 11pt;" placeholder="이 한줄평에 대한 댓글을 적어주세요."></textarea>
 			    	  		<div style="display: flex; position: relative; float: right;">

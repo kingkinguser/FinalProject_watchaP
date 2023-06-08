@@ -19,42 +19,24 @@
 	    where A.rno between 1 and 5	
 	</select>
 
-	<!-- 회원정보, 평균 별점, 평가한 영화개수 -->
+	<!-- 회원의 평균 별점, 평가한 영화개수 -->
 	<resultMap type="HashMap" id="userInfo_Map">
-		<result property="user_id" 	 	 	column="user_id" 		  javaType="String"/>
-		<result property="nickname" 	 	column="nickname" 		  javaType="String"/>
-		<result property="profile_message" 	column="profile_message"  javaType="String"/>
-		<result property="profile_image" 	column="profile_image" 	  javaType="String"/>
-		<result property="avg_rating" 	 	column="avg_rating" 	  javaType="String"/>
-		<result property="count_rating" 	column="count_rating" 	  javaType="String"/>
+		<result property="avg_rating" 	column="avg_rating" 	  javaType="String"/>
+		<result property="count_rating" column="count_rating" 	  javaType="String"/>
 	</resultMap>
 	<select id="userInfo" parameterType="String" resultMap="userInfo_Map">
-	    select b.user_id, b.nickname, b.profile_message, b.profile_image
-	         , A.avg_rating, A.count_rating 
-	    from
-	    (
-	        select user_id, round(avg(rating),2) as avg_rating, count(rating) as count_rating
-	        from star_rating
-	        where user_id = #{user_id}   
-	        group by user_id
-	    ) A join member B
-	    on A.user_id = B.user_id	
+	    select nvl(round(avg(rating),2), 0) as avg_rating, count(rating) as count_rating
+        from star_rating
+        where user_id = #{user_id}
 	</select>
 
 	<!-- 한줄평 개수(로그인한 회원의 한줄평) -->
-	<select id="reviewCount" parameterType="String" resultType="String">
+	<select id="reviewCount" parameterType="String" resultType="int">
 	    select count(review_id)
 	    from movie_review
 	    where user_id = #{user_id}
 	</select>
 
-	<!-- 컬렉션 개수 -->
-	<select id="collectionCount" parameterType="String" resultType="String">
-	    select count(collection_ID)
-	    from collection
-	    where user_id = #{user_id}
-	</select>
-	
 	<!-- 검색하기 - 모든 종류의 장르 가져오기 -->
 	<select id="genreInfo" resultType="com.spring.watcha.model.GenreVO">
 	    select genre_id, genre_name

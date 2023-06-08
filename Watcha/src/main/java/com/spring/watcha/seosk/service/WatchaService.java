@@ -30,22 +30,18 @@ public class WatchaService implements InterWatchaService {
 		return ratingFiveList;
 	}
 
-	// 마이왓챠 기본정보 - 최근 평가한 영화 5개, 회원정보, 평균 별점, 평가한 영화개수, 한줄평 개수, 컬렉션 개수
+	// 마이왓챠 기본정보 - 평균 별점, 평가한 영화개수
 	@Override
 	public Map<String, String> userInfo(String user_id) {
-
-		// 회원정보, 평균 별점, 평가한 영화개수
 		Map<String, String> userInfo = dao.userInfo(user_id);
-		
-		// 한줄평 개수
-		String reviewCount = dao.reviewCount(user_id);
-		userInfo.put("reviewCount", reviewCount);
-		
-		// 컬렉션 개수
-		String collectionCount = dao.collectionCount(user_id);
-		userInfo.put("collectionCount", collectionCount);
-		
 		return userInfo;
+	}
+	
+	// 한줄평 개수(로그인한 회원의 한줄평)
+	@Override
+	public int reviewCount(String user_id) {
+		int reviewCount = dao.reviewCount(user_id);
+		return reviewCount;
 	}
 
 	// 검색하기 - 모든 종류의 장르 가져오기
@@ -79,7 +75,7 @@ public class WatchaService implements InterWatchaService {
 		int currentShowPageNo = Integer.parseInt(paraMap.get("currentShowPageNo"));
 		int sizePerPage = Integer.parseInt(paraMap.get("sizePerPage"));
 		
-		int totalCount = Integer.parseInt(dao.reviewCount(user_id));
+		int totalCount = dao.reviewCount(user_id);
 		int totalPage = (int)Math.ceil((double)totalCount/sizePerPage);
 
 		int blockSize = 5; 
