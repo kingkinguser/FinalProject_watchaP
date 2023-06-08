@@ -66,71 +66,51 @@
 
    <!-- 유저의 컬랙션  시작 -->
    <resultMap type="HashMap" id="collectionViewMap">
-   
-       <result property="name"     			 column="name"    			 javaType="String" />
-       <result property="nickname"           column="nickname"         	 javaType="String" />
-       <result property="profile_message"    column="profile_message"    javaType="String" />
-       <result property="profile_image"      column="profile_image"      javaType="String" />
-       <result property="collection_id"      column="collection_id"      javaType="String" />
-       <result property="user_id"            column="user_id"            javaType="String" />
-       <result property="collection_name"    column="collection_name"    javaType="String" />
-       <result property="movie_id"           column="movie_id"           javaType="String" />
-       <result property="movie_title"   	 column="movie_title"        javaType="String" />
-       <result property="runtime"   		 column="runtime"            javaType="String" />
-       <result property="poster_path"   	 column="poster_path"        javaType="String" />
-       <result property="backdrop_path"   	 column="backdrop_path"      javaType="String" />
-       <result property="rating_avg"   		 column="rating_avg"     	 javaType="String" />
-       <result property="rating_count"   	 column="rating_count"       javaType="String" /> 
+       <result property="movie_id"      column="movie_id"    	javaType="String" />
+       <result property="movie_title"   column="movie_title"    javaType="String" />
+       <result property="poster_path"   column="poster_path"    javaType="String" />
+       <result property="backdrop_path" column="backdrop_path"  javaType="String" />
+       <result property="user_id"       column="user_id"        javaType="String" />
+       <result property="nickname"      column="nickname"       javaType="String" />
+       <result property="profile_image" column="profile_image"  javaType="String" />
+       <result property="name"          column="name"           javaType="String" />
    </resultMap>
    
    <select id="getCollection_view" resultMap="collectionViewMap" parameterType="HashMap">
-    select MB.name, MB.nickname, MB.profile_message, MB.profile_image, C.collection_id, 
-           MB.user_id, C.collection_name, CM.movie_id, M.movie_title, M.runtime, M.poster_path, M.backdrop_path, M.rating_avg, M.rating_count
-	from collection C join member MB
-    on  C.user_id = MB.user_id
-    join collection_movie CM
-	on C.collection_id = CM.collection_id
-	join movie M
-	on CM.movie_id = M.movie_id       
-    where MB.user_id ='qwer1234' and C.collection_id = '1'   
+    select M.movie_id, M.movie_title, M.poster_path, M.backdrop_path, MB.user_id, MB.nickname, MB.profile_image, MB.name 
+    from movie M join collection_movie CM
+    on M.movie_id = CM.movie_id
+    join member MB
+    on CM. user_id = MB.user_id
+    where MB.user_id = #{user_id}
    </select>   
    <!-- 유저의 컬랙션  끝 -->
 
 
-   <!-- 더보기 시작 -->	
-  <resultMap type="HashMap" id="totalCountMap"></resultMap>
+   <!-- 더보기 시작-->	
    
-   <select id="totalCount" resultMap="totalCountMap" parameterType="HashMap">
-	select count(*) as count
-	from collection C join collection_movie CM
-	on C.collection_id = CM.collection_id
-	join movie M
-	on CM.movie_id = M.movie_id
-	where user_id ='qwer1234' and C.collection_id = '1'
+   <select id="totalCount" parameterType="HashMap" resultType="HashMap" >
+    select count(*) as count
+    from collection_movie 
+    where user_id = #{user_id}
    </select>   
 
    <resultMap type="HashMap" id="cardSeeMoreMap">
-       <result property="collection_id"      column="collection_id"      javaType="String" />
-       <result property="user_id"            column="userid"           	 javaType="String" />
-       <result property="collection_name"    column="collection_name"    javaType="String" />
-       <result property="movie_id"           column="movie_id"           javaType="String" />
-       <result property="movie_title"   	 column="movie_title"        javaType="String" />
-       <result property="runtime"   		 column="runtime"            javaType="String" />
-       <result property="poster_path"   	 column="poster_path"        javaType="String" />
-       <result property="rating_avg"   		 column="rating_avg"     	 javaType="String" />
-       <result property="rating_count"   	 column="rating_count"       javaType="String" /> 
+       <result property="user_id"         column="user_id"       javaType="String" />
+       <result property="movie_id"        column="movie_id"      javaType="String" />
+       <result property="movie_title"     column="movie_title"   javaType="String" />
+       <result property="poster_path"     column="poster_path"   javaType="String" />
+       <result property="rating_avg"   	  column="rating_avg"    javaType="String" />
+       <result property="rating_count"    column="rating_count"  javaType="String" /> 
    </resultMap>   
    <select id="cardSeeMore" resultMap="cardSeeMoreMap" parameterType="HashMap">
-	select collection_id, user_id, collection_name, movie_id, movie_title, runtime, poster_path, rating_avg, rating_count
+    select user_id, movie_id, movie_title, poster_path, rating_avg, rating_count
 	from     
 	(        
-	select row_number() over(order by C.collection_id desc) AS RNO, C.collection_id, C.user_id, C.collection_name, CM.movie_id
-	      , M.movie_title, M.runtime, M.poster_path, M.rating_avg, M.rating_count  
-	from collection C join collection_movie CM
-	on C.collection_id = CM.collection_id
-	join movie M
+    select row_number() over(order by M.movie_id desc) AS RNO, CM.user_id, M.movie_id, M.movie_title, M.runtime, M.poster_path, M.rating_avg, M.rating_count
+	from collection_movie CM join movie M
 	on CM.movie_id = M.movie_id
-	where user_id ='qwer1234' and C.collection_id = '1' 
+	where user_id = #{user_id}
 	 ) V
 	 where RNO between #{start} and #{end}
    </select>   
@@ -139,22 +119,31 @@
 	<!-- 댓글쓰기 insert -->
 	<insert id="addUserComment">
 	INSERT INTO user_collection_comment 
-	(user_collection_seq, user_id, collection_id, user_collection_content, user_collection_time, user_collection_status) 
+	(user_collection_seq, user_id, user_collection_content, user_collection_time, user_collection_status) 
 	VALUES 
-	(userCollectionSeq.nextval,#{user_id},#{collection_id},#{user_collection_content}, sysdate, default)
+	(userCollectionSeq.nextval,#{user_id},#{user_collection_content}, sysdate, default)
 	</insert>
-	
+	 
 	<!-- 페이징 처리하기 -->
-	<select id="uccListNoSearchWithPaging" parameterType="HashMap" resultType="com.spring.watcha.model.user_collection_commentVO">
-	select user_collection_seq, user_id, collection_id, user_collection_content, user_collection_time
+    <resultMap type="HashMap" id="uccListNoSearchWithPagingMap">
+       <result property="user_collection_seq"      column="user_collection_seq"      javaType="String" />
+       <result property="user_id"             	   column="user_id"           	 	 javaType="String" />
+       <result property="user_collection_content"  column="user_collection_content"  javaType="String" />
+       <result property="user_collection_time"     column="user_collection_time"     javaType="String" />
+       <result property="name"   		 		   column="name"            		 javaType="String" />
+       <result property="nickname"   	 		   column="nickname"        		 javaType="String" />
+       <result property="profile_image"   		   column="profile_image"     	 	 javaType="String" />
+    </resultMap>  
+	<select id="uccListNoSearchWithPaging" parameterType="HashMap" resultMap="uccListNoSearchWithPagingMap">
+    select user_collection_seq, user_id, user_collection_content, user_collection_time, name, nickname, profile_image
 	from 
 	(
-	  select row_number() over(order by user_collection_seq desc) AS rno,
-	         user_collection_seq, user_id, collection_id, user_collection_content,
-	         to_char(user_collection_time, 'YYYY-MM-DD HH24:MI:SS') AS user_collection_time
-	  from user_collection_comment
-	  where user_collection_status = '1'
-	) V 
+      select row_number() over(order by CC.user_collection_seq desc) AS rno, M.name, M.nickname, M.profile_image,
+	         CC.user_collection_seq, CC.user_id, CC.user_collection_content,
+	         to_char(CC.user_collection_time, 'YYYY-MM-DD HH24:MI:SS') AS user_collection_time
+	  from user_collection_comment CC join member M
+      on CC.user_id = M.user_id
+    ) V 
 	where rno between #{startRno} and #{endRno}
 	</select>
 	
@@ -162,25 +151,25 @@
 	<select id="getUserCommentTotalPage" parameterType="HashMap" resultType="int">
 	select ceil(count(*)/#{sizePerPage})
 	from user_collection_comment
-	where user_collection_status = 1 and collection_id = #{collection_id}
+	where user_collection_status = 1
 	</select>
 	
 	<!-- 좋아요 -->
 	<select id="getLikeSelect" parameterType="HashMap" resultType="int">
 	select count(*)
 	from collection_like
-	where collection_id = #{collection_id} and user_id = #{user_id}
+	where user_id = #{user_id}
 	</select>
 	
 	<insert id="getLikeInsertCollection" parameterType="HashMap" >
-		INSERT INTO collection_like(collection_id, user_id) 
-		VALUES (#{collection_id}, #{user_id})
+	INSERT INTO collection_like( user_id) 
+	VALUES (#{user_id})
 	</insert>
 	
 	<insert id="getLikeDeleteCollection" parameterType="HashMap" >
-		delete from collection_like
-		where collection_id = #{collection_id} and user_id = #{user_id}
+	delete from collection_like
+	where user_id = #{user_id}
 	</insert>
-	
+	 
 </mapper>
 

@@ -40,7 +40,7 @@ public class WatchaService implements InterWatchaService {
 		
 		return collection_viewList;
 	}
-
+	
 	// 더보기
 	@Override
 	public Map<String, String> totalCount(Map<String, String> paraMap) {
@@ -56,7 +56,7 @@ public class WatchaService implements InterWatchaService {
 		
 		return cardSeeMore;
 	}
-
+	
 	// 댓글쓰기
 	@Override
 	public int addUserComment(user_collection_commentVO uccvo) {
@@ -68,8 +68,8 @@ public class WatchaService implements InterWatchaService {
 
 	// 페이징 처리하기
 	@Override
-	public List<user_collection_commentVO> getuccListPaging(Map<String, String> paraMap) {
-		List<user_collection_commentVO> uccList = dao.uccListNoSearch(paraMap);
+	public List<Map<String, String>> getuccListPaging(Map<String, String> paraMap) {
+		List<Map<String, String>> uccList = dao.uccListNoSearch(paraMap);
 		return uccList;
 	}
 
@@ -106,6 +106,5 @@ public class WatchaService implements InterWatchaService {
 		return likeCollection;
 	}
 
-	
 		
 }

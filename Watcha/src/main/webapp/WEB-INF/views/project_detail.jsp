@@ -180,6 +180,7 @@
 	/* 출연, 제작 시작*/
 	$(document).ready(function(){
 		
+		
 		$('#recipeCarousel').carousel({ 
 			  interval: 10000
 		});
@@ -222,8 +223,8 @@
 			
 			$("input:checkbox[name='check_wantsee']").toggle();
 		
-	  });
-	/*보고싶어요 끝*/		
+	 });
+	 /*보고싶어요 끝*/		
 
 	/*코멘트 시작*/		
 	$("input:checkbox[name='check_comment']").click(function(){
@@ -239,8 +240,8 @@
 		
 		$("input:checkbox[name='check_comment']").toggle();
 		
-	  });
-	/*코멘트 끝*/
+	 });
+	 /*코멘트 끝*/
 	
 	/*보는중 시작*/		
 	$("input:checkbox[name='check_seeing']").click(function(){
@@ -340,58 +341,58 @@
 				</div>  
 				
 				<hr style="margin-right: 40px;"> 
-				 
-				<div style="margin: 20px 0 0px 77px; font-weight: bold;">평가하기</div> 
 				
-				<fieldset class="rate">
-                     <input type="radio" id="rating10" name="rating" value="10"><label for="rating10" title="5점"></label>
-                     <input type="radio" id="rating9" name="rating" value="9"><label class="half" for="rating9" title="4.5점"></label>
-                     <input type="radio" id="rating8" name="rating" value="8"><label for="rating8" title="4점"></label>
-                     <input type="radio" id="rating7" name="rating" value="7"><label class="half" for="rating7" title="3.5점"></label>
-                     <input type="radio" id="rating6" name="rating" value="6"><label for="rating6" title="3점"></label>
-                     <input type="radio" id="rating5" name="rating" value="5"><label class="half" for="rating5" title="2.5점"></label>
-                     <input type="radio" id="rating4" name="rating" value="4"><label for="rating4" title="2점"></label>
-                     <input type="radio" id="rating3" name="rating" value="3"><label class="half" for="rating3" title="1.5점"></label>
-                     <input type="radio" id="rating2" name="rating" value="2"><label for="rating2" title="1점"></label>
-                     <input type="radio" id="rating1" name="rating" value="1"><label class="half" for="rating1" title="0.5점"></label>
-                 </fieldset>
+					<div style="margin: 20px 0 0px 77px; font-weight: bold;">평가하기</div> 
+					
+					<fieldset class="rate">
+	                     <input type="radio" id="rating10" name="rating" value="10"><label for="rating10" title="5점"></label>
+	                     <input type="radio" id="rating9" name="rating" value="9"><label class="half" for="rating9" title="4.5점"></label>
+	                     <input type="radio" id="rating8" name="rating" value="8"><label for="rating8" title="4점"></label>
+	                     <input type="radio" id="rating7" name="rating" value="7"><label class="half" for="rating7" title="3.5점"></label>
+	                     <input type="radio" id="rating6" name="rating" value="6"><label for="rating6" title="3점"></label>
+	                     <input type="radio" id="rating5" name="rating" value="5"><label class="half" for="rating5" title="2.5점"></label>
+	                     <input type="radio" id="rating4" name="rating" value="4"><label for="rating4" title="2점"></label>
+	                     <input type="radio" id="rating3" name="rating" value="3"><label class="half" for="rating3" title="1.5점"></label>
+	                     <input type="radio" id="rating2" name="rating" value="2"><label for="rating2" title="1점"></label>
+	                     <input type="radio" id="rating1" name="rating" value="1"><label class="half" for="rating1" title="0.5점"></label>
+	                 </fieldset>
+					
+					<div style="margin: 7px 0 0 240px; position: relative; bottom: 60px;">  
+						
+						<%-- 보고싶어요 --%>
+						<div>
+							<label for="check_wantsee" style="cursor: pointer;">
+							   <i style="font-size: 15px;" class="seechange1 fas fa-plus wantseei"></i><i style="font-size: 15px; margin-right: 3.3px;" class="seechange2 fas fa-bookmark"></i><span class="wantseei" style="font-size: 15px; font-weight: bolder">&nbsp;&nbsp;보고싶어요</span>
+							   <input type="checkbox" id="check_wantsee" name="check_wantsee"/>
+							</label>
+						</div>
+						
+						<%-- 코멘트 등록하기 --%>
+				        <div style="position: relative; left: 115px; bottom: 33px;">
+				          <label for="check_comment" style="cursor: pointer;">
+				             <span class="commenti">
+				               <button type="button" data-toggle="modal" data-target="#registerComment" style="font-weight: bold; font-size: 15px; border: none; background-color: transparent;">
+				                 <i style="font-size: 13px;" class="fas fa-pen-nib commenti"></i>&nbsp;코멘트 등록
+				               </button>
+				             </span>
+				          </label>
+				        </div> 
+						
+						<%-- 보는중 --%>
+						<div style="position: relative; left: 240px; bottom: 66px; width: 100px;"> 
+						    <label for="check_seeing" style="cursor: pointer;">
+						    <i style="font-size: 15px;" class="far fa-eye seeingi"></i><span class="seeingi" style="font-size: 15px; font-weight: bolder">&nbsp;보는중</span></label>
+							<input type="checkbox" id="check_seeing" name="check_seeing"/>
+						</div>
+	 
+						<%-- 컬렉션에 추가 --%> 
+						<div style="position: relative; left: 330px; bottom: 100px; width: 150px;"> 
+						    <label for="check_collection" style="cursor: pointer;">
+						    <i class="fas fa-book collectioni"></i><span class="collectioni" style="font-size: 15px; font-weight: bolder">&nbsp;컬렉션에 추가</span></label>
+							<input type="checkbox" id="check_collection" name="check_collection"/>
+						</div>
+					</div>
 				
-				<div style="margin: 7px 0 0 240px; position: relative; bottom: 60px;">  
-					
-					<%-- 보고싶어요 --%>
-					<div>
-						<label for="check_wantsee" style="cursor: pointer;">
-						   <i style="font-size: 15px;" class="seechange1 fas fa-plus wantseei"></i><i style="font-size: 15px; margin-right: 3.3px;" class="seechange2 fas fa-bookmark"></i><span class="wantseei" style="font-size: 15px; font-weight: bolder">&nbsp;&nbsp;보고싶어요</span>
-						   <input type="checkbox" id="check_wantsee" name="check_wantsee"/>
-						</label>
-					</div>
-					
-					<%-- 코멘트 등록하기 --%>
-			        <div style="position: relative; left: 115px; bottom: 33px;">
-			          <label for="check_comment" style="cursor: pointer;">
-			             <span class="commenti">
-			               <button type="button" data-toggle="modal" data-target="#registerComment" style="font-weight: bold; font-size: 15px; border: none; background-color: transparent;">
-			                 <i style="font-size: 13px;" class="fas fa-pen-nib commenti"></i>&nbsp;코멘트 등록
-			               </button>
-			             </span>
-			          </label>
-			        </div> 
-					
-					<%-- 보는중 --%>
-					<div style="position: relative; left: 240px; bottom: 66px; width: 100px;"> 
-					    <label for="check_seeing" style="cursor: pointer;">
-					    <i style="font-size: 15px;" class="far fa-eye seeingi"></i><span class="seeingi" style="font-size: 15px; font-weight: bolder">&nbsp;보는중</span></label>
-						<input type="checkbox" id="check_seeing" name="check_seeing"/>
-					</div>
- 
-					<%-- 컬렉션에 추가 --%> 
-					<div style="position: relative; left: 330px; bottom: 100px; width: 150px;"> 
-					    <label for="check_collection" style="cursor: pointer;">
-					    <i class="fas fa-book collectioni"></i><span class="collectioni" style="font-size: 15px; font-weight: bolder">&nbsp;컬렉션에 추가</span></label>
-						<input type="checkbox" id="check_collection" name="check_collection"/>
-					</div>
-					
-				</div>
 			</div>
 		</div>
 		

@@ -16,14 +16,14 @@
 
 	body {
 		border: solid 0px gray;
-		word-break: break-all; /* 공백없이 영어로만 되어질 경우 해당구역을 뚫고 빠져나감으로 이것을 막기 위해서 사용한다 */
-		padding: 0;            /* 상 우 하 좌 모두 안쪽여백을 0px을 준 것이다. 즉, 바깥여백을 없는 것으로 한 것이다.*/
+		word-break: break-all; 
+		padding: 0;           
 	}	
 
 	div#container{
 		border: solid 0px purple;
 		width: 70%;
-		margin: 20px auto; /* 상 하는 20px 우 좌는 남은 20%에서 좌우로 균등하게 주겠다. 즉, 화면의 가운데로 위치하겠다는 말이다.*/
+		margin: 20px auto; 
 	}
 
 	.profile {
@@ -129,7 +129,6 @@
 	
 	#commentBack{
 	  width: 700px;
-	  height: 200px;
 	  font-size: 15px;
 	  border: 0;
 	  border-radius: 15px;
@@ -164,7 +163,20 @@
 	  border: solid 1px #eee;
 	  border-radius: 15px;
 	  margin: -13px 0 10px 520px; 
-	}			
+	}		
+	
+	#profile_i {
+		padding: 0 10px 0 15px;  
+	}
+	
+	#uccontent {  
+		padding: 15px 0 15px 70px;  
+	}
+	 
+	#uctime { 
+		padding: 0 0 0 300px;   
+	}
+		
 </style>
 
 <script type="text/javascript">
@@ -238,7 +250,6 @@
 					 
 				 	$(".goodi").css({"color":"#f3578d"}); 
 				 	
-				 	
 				}
 				else if(!$('input:checkbox[name="check_good"]').is(":checked")) {
 		
@@ -263,7 +274,6 @@
 	
 	// display 할  HIT상품 정보를 추가 요청하기(Ajax 로 처리함)
 	function displayHIT(start){
-		
 		$.ajax({
 			url:"<%= ctxPath %>/cardSeeMore.action",
 		    data:{"start":start,  
@@ -321,7 +331,6 @@
 	        }
 	
 		});					        
-		
 	}
 	/* ==== 더보기 끝 ==== */
 
@@ -342,7 +351,6 @@
 	 
     /* ==== 파일첨부가 없는 댓글쓰기 시작 ==== */
     function goAddUserWrite_noAttach() {
-	 
       $.ajax({
   		 url:"<%= request.getContextPath()%>/addUserComment.action",
   		 data:{"user_id":"${requestScope.collection_view[0].user_id}" 
@@ -360,13 +368,11 @@
 			alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
 	     }
       });
-    
     }
     /* ==== 파일첨부가 없는 댓글쓰기 끝 ==== */
   
     // === Ajax로 불러온 댓글내용을  페이징 처리 하기 시작  === //
     function goUserViewComment(currentShowPageNo) {
-	  
 	  $.ajax({
 		  url:"<%= request.getContextPath()%>/user_collection_commentList.action",
 		  data:{"collection_id":$("input#collection_id").val(),
@@ -379,10 +385,12 @@
 			  let html = "";
 			  if(json.length > 0) {
 				 $.each(json, function(index, item){
-					 
-					 html += "<tr>";
-					 html += "<td>"+item.collection_content+"</td>";
-		             html += "<td>"+item.user_collection_time+"</td>"; 
+					  
+					 html += "<tr>"; 
+					 html += '<td id="profile_i">'+item.profile_image+"</td>";
+					 html += "<td>"+item.name+"</td>";
+					 html += '<td id="uccontent">'+item.user_collection_content+"</td>";
+		             html += '<td id="uctime">'+item.user_collection_time+"</td>";  
 		             html += "</tr>";  
 		             
  				 }); 
@@ -480,13 +488,11 @@
 				alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
 		  }
 	  });
-	 
   }
   <%-- === 원글에 대한 totalPage 수를 알아오려고 한다. 끝 === --%>
     
   // === 좋아요 시작  === //
   function goLikeCollection() {
-	  
 	  $.ajax({
 		  url:"<%= request.getContextPath()%>/likeCollection.action",
 		  data:{"collection_id":$("input#collection_id").val(), 
@@ -502,7 +508,6 @@
 				alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
 		  }
 	  });
-	  
   }
   //=== 좋아요 끝  === //
   
@@ -525,7 +530,9 @@
 		        <span style="margin-left: 50px;"></span>
 		        
 		        <div id="commentInfo">
-			        <span>닉네임:&nbsp;</span><span style="display: inline-block; font-weight: bolder; font-size: 16px;">${requestScope.collection_view[0].nickname}</span>
+			        <span>닉네임:&nbsp;${requestScope.collection_view[0].nickname}</span>
+			        <span>성명:&nbsp;${requestScope.collection_view[0].name}</span>
+			        
 					<span style= "width: 100px;"> 
 					  <label for="check_good" style="cursor: pointer;">
 					    <i class="far fa-thumbs-up goodi"></i><span class="goodi" style="font-weight: bolder">&nbsp;&nbsp;좋아요</span></label>
@@ -543,28 +550,24 @@
 		    	<div style="font-size: 20px; font-weight: bold; margin: 20px 0 0 47px;">나의 컬렉션</div>	
  
 				  <div class="row" id="displayHIT" style="margin-left: 20px;"></div>
-   
+   					
 			      <div>
 			         <p class="text-center">
 			            <span id="end" style="display:block; margin:20px 0px 0 0; font-weight:bold; font-size: 12pt;"></span> 
 			            <button type="button" class="btn" id="btnMoreHIT" style="font-weight:bold; color:#f3578d;">더보기</button>
-			            <span id="totalHITCount">${requestScope.totalCount.COUNT}</span>
+			            <span id="totalHITCount">${requestScope.totalCount.count}</span>
 			            <span id="countHIT">0</span>
 			         </p>
 			      </div>
-			    
+			      
 			    <hr style="margin: 0 30px 0 30px;">  
 			    		
 			    <div style="font-size: 20px; font-weight: bold; margin: 20px 0 0 47px; display: inline-block;">댓글</div>			
 			    		
-		    	<%-- === 댓글쓰기 폼 추가 === --%> 
-		    	<%--<c:if test="${not empty sessionScope.loginuser}"> --%>
 			         <input type="hidden" name="user_id" id="user_id" value="${requestScope.collection_view[0].user_id}" />
 			         <input type="hidden" name="collection_id" id="collection_id" value="${requestScope.collection_view[0].collection_id}" /> 
-		    	<%--</c:if> --%>
 		    	 
 		    	<%-- === 댓글 내용 보여주기 === --%>
-		    	
 		    	<div id="commentBack">
 			    	<table style="">
 						<tbody id="commentDisplay"></tbody>

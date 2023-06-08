@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -21,6 +22,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.spring.watcha.KING.service.InterWatchaService;
+import com.spring.watcha.model.MemberVO;
 import com.spring.watcha.model.MovieVO;
 import com.spring.watcha.model.user_collection_commentVO;
 
@@ -36,7 +38,7 @@ public class WatchaController {
 			// ==== ***** project_detail tiles 시작 ***** ==== // 
 			@RequestMapping(value="/view/project_detail.action") 
 			public String project_detail(HttpServletRequest request, Model model) {
-				 
+				
 				String movie_id = request.getParameter("movie_id");
 				MovieVO movieDetail = service.getMovieDetail(movie_id); 
 
@@ -49,7 +51,7 @@ public class WatchaController {
 				System.out.println(movieStr);
 				*/
 				
-				return "project_detail.tiles";
+				return "project_detail.tiles";			
 				
 			}	
 		   // ==== ***** project_detail tiles 끝 ***** ==== // 
@@ -58,8 +60,10 @@ public class WatchaController {
 			@RequestMapping(value="/view/user_collection.action")
 			public String user_collection(HttpServletRequest request, Model model) {
 				
+	            HttpSession session = request.getSession();
+	            MemberVO loginuser = (MemberVO) session.getAttribute("loginuser");
+	            String user_id = loginuser.getUser_id();
 				String movie_id = request.getParameter("movie_id");
-				String user_id = request.getParameter("user_id");
 				
 				Map<String, String> paraMap = new HashMap<>();
 				paraMap.put("movie_id", movie_id);
@@ -70,7 +74,7 @@ public class WatchaController {
 				
 				model.addAttribute("collection_view", collection_view);
 				model.addAttribute("totalCount", totalCount);
-				
+				 
 				return "user_collection.tiles";
 				// /WEB-INF/views/tiles1/tiles1/tiles_test
 			}	
@@ -83,8 +87,10 @@ public class WatchaController {
 			@ResponseBody
 			@RequestMapping(value="/cardSeeMore.action")
 			public String cardSeeMore(HttpServletRequest request) {
-				
-				String user_id = request.getParameter("user_id");
+
+	            HttpSession session = request.getSession();
+	            MemberVO loginuser = (MemberVO) session.getAttribute("loginuser");
+	            String user_id = loginuser.getUser_id();
 				String start = request.getParameter("start");
 				String len = request.getParameter("len");
 				
@@ -114,8 +120,7 @@ public class WatchaController {
 		    	
 		    	return new Gson().toJson(jsonArr);
 			}				
-			
-			
+
 			// === 댓글쓰기(Ajax 로 처리) === //
 			@ResponseBody
 			@RequestMapping(value="/addUserComment.action", method= {RequestMethod.POST}, produces="text/plain;charset=UTF-8") 
@@ -149,19 +154,10 @@ public class WatchaController {
 				
 				if(currentShowPageNo == null) {
 					currentShowPageNo = "1";
-				}
+				}  
 				
 				int sizePerPage = 3; // 한 페이지당 3개의 댓글을 보여줄 것임.
 				
-			/*
-			    currentShowPageNo      startRno     endRno
-			   --------------------------------------------
-			       1page        ==>       1           5
-			       2page        ==>       6           10
-			       3page        ==>       11          15
-			       4page        ==>       16          20
-			       ....  
-			 */
 				int startRno = (( Integer.parseInt(currentShowPageNo) - 1) * sizePerPage) + 1;
 				int endRno = startRno + sizePerPage - 1;
 				
@@ -170,20 +166,22 @@ public class WatchaController {
 				paraMap.put("startRno", String.valueOf(startRno));
 				paraMap.put("endRno", String.valueOf(endRno));
 				
-				List<user_collection_commentVO> uccList = service.getuccListPaging(paraMap);
+				List<Map<String, String>> uccList = service.getuccListPaging(paraMap);
 				
 				JSONArray jsonArr = new JSONArray(); // []
 				
 				if(uccList != null) {
-					for(user_collection_commentVO uccvo : uccList) {
+					for(Map<String, String> uccvo : uccList) {
 						
 						JSONObject jsonObj = new JSONObject();
-						jsonObj.put("collection_seq", uccvo.getUser_collection_seq());
-						jsonObj.put("collection_id", uccvo.getCollection_id());
-						jsonObj.put("user_id", uccvo.getUser_id());
-						jsonObj.put("collection_content", uccvo.getUser_collection_content());
-						jsonObj.put("user_collection_time", uccvo.getUser_collection_time());
-						jsonObj.put("collection_status", uccvo.getUser_collection_status());
+						jsonObj.put("user_collection_seq", uccvo.get("user_collection_seq"));
+						jsonObj.put("user_id", uccvo.get("user_id"));
+						jsonObj.put("collection_id", uccvo.get("collection_id"));
+						jsonObj.put("user_collection_content", uccvo.get("user_collection_content"));
+						jsonObj.put("user_collection_time", uccvo.get("user_collection_time"));
+						jsonObj.put("name", uccvo.get("name"));
+						jsonObj.put("nickname", uccvo.get("nickname"));
+						jsonObj.put("profile_image", uccvo.get("profile_image"));
 						
 						jsonArr.put(jsonObj);
 					}// end of for-----------------
@@ -238,7 +236,6 @@ public class WatchaController {
 				
 				return jsonObj.toString();
 			}
-			
 			
 			
 		   // =============================================== 기능 끝 ======================================================== //	

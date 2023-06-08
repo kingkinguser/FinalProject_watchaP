@@ -39,6 +39,7 @@ public class WatchaDAO implements InterWatchaDAO {
 			
 		}
 
+		
 		// 더보기
 		@Override
 		public Map<String, String> totalCount(Map<String, String> paraMap) {
@@ -55,6 +56,7 @@ public class WatchaDAO implements InterWatchaDAO {
 			return cardSeeMore;
 		}
 
+		 
 		// 댓글쓰기 insert
 		@Override
 		public int addUserComment(user_collection_commentVO uccvo) {
@@ -64,8 +66,8 @@ public class WatchaDAO implements InterWatchaDAO {
 
 		// 페이징 처리하기
 		@Override
-		public List<user_collection_commentVO> uccListNoSearch(Map<String, String> paraMap) {
-			List<user_collection_commentVO> uccList = sqlsession.selectList("watcha.uccListNoSearchWithPaging", paraMap);
+		public List<Map<String, String>> uccListNoSearch(Map<String, String> paraMap) {
+			List<Map<String, String>> uccList = sqlsession.selectList("watcha.uccListNoSearchWithPaging", paraMap);
 			return uccList;
 		}
 
@@ -76,7 +78,7 @@ public class WatchaDAO implements InterWatchaDAO {
 			int totalPage = sqlsession.selectOne("watcha.getUserCommentTotalPage", paraMap);
 			return totalPage;
 		}
-
+		
 		// 좋아요
 		@Override
 		public int getLikeSelect(Map<String, Object> paraMap) {
@@ -94,6 +96,4 @@ public class WatchaDAO implements InterWatchaDAO {
 			String likeCollection = sqlsession.selectOne("watcha.getLikeDeleteCollection", paraMap);
 			return likeCollection;
 		}
-
-
 }
