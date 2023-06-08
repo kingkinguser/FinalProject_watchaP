@@ -582,14 +582,8 @@ function StarRank() {
 	</c:if>
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	<c:if test="${not empty login_userid}">
+	<!-- 로그인을 했을때 그리고 컬렉션이 하나라도 있을때   -->
+	<c:if test="${not empty login_userid and not empty requestScope.celCheck}">
 		<h5 class="h5 main-h5 main-h5-3 mt-5">${login_username} 회원님의 컬렉션</h5>
 	   	 <div class="container my-3">
 	
@@ -607,6 +601,35 @@ function StarRank() {
 		                    <p style="margin: 0;"><span class="text-muted">개봉일자: ${usercol.release_date}</span></p>
 		                    <p style="margin: 0;"><span class="text-muted">언어 : ${usercol.original_language}</span></p>
 		                    <p><span class="text-muted">평균★<span id="">${usercol.rating_avg}</span></span></p>
+		                </div>
+		            </div>
+		        </a>
+			</c:forEach>
+			  
+			  
+			</div>
+		</div>	
+	</c:if>
+	
+	<!-- 로그인을 했을때 그리고 콜렉션을 설정 안했을때 || 로그인을 안했을때   -->
+	<c:if test="${empty login_userid || empty requestScope.celCheck}">
+		<h5 class="h5 main-h5 main-h5-3 mt-5">포함된 영화가 가장 많은 컬렉션 </h5>
+	   	 <div class="container my-3">
+	
+			<div class="card-deck main-carousel-card2 mb-1">
+			  
+			  <c:forEach var="collection" items="${requestScope.collection}" varStatus="status">
+		        <a href="<%= ctxPath%>/view/project_detail.action?movie_id=${collection.movie_id}" title="${collection.movie_title}" class="Main-a">
+		            <div class="Main-card2">
+		                <div class="Main-card-header2">
+		                    <img src="https://image.tmdb.org/t/p/w500/${collection.poster_path}" class="card-img-top" alt="...">
+		                </div>
+		                <div class="main-number">${status.index + 1}</div>
+		                <div class="Main-card-body2 Main-card-in-no">
+		                    <h5 class="card-title card-font">${collection.movie_title}</h5>
+		                    <p style="margin: 0;"><span class="text-muted">개봉일자: ${collection.release_date}</span></p>
+		                    <p style="margin: 0;"><span class="text-muted">언어 : ${collection.original_language}</span></p>
+		                    <p><span class="text-muted">평균★<span id="">${collection.rating_avg}</span></span></p>
 		                </div>
 		            </div>
 		        </a>

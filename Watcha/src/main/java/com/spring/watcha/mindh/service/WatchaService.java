@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.spring.watcha.model.MovieVO;
+import com.spring.watcha.model.collection_movieVO;
 import com.spring.watcha.mindh.model.InterWatchaDAO;
 
 @Service
@@ -130,6 +131,20 @@ public class WatchaService implements InterWatchaService {
 	public List<MovieVO> actorCheckFinal() {
 		List<MovieVO> actorCheckFinal = dao.actorCheckFinal();
 	    return actorCheckFinal;
+	}
+
+	// 로그인 안했을때 또는 로그인 했지만 컬렉션한 것이 없을 경우 나오는 것 체크하기
+	@Override
+	public List<collection_movieVO> celCheck(Map<String, String> paraMap) {
+		List<collection_movieVO> celCheck = dao.celCheck(paraMap);
+	    return celCheck;
+	}
+
+	// 가장 많은 컬렉션(영화수)을 가지고 있는 다른 유저의 컬렉션 가져오기
+	@Override
+	public List<MovieVO> celCheckFinal() {
+		List<MovieVO> celCheckFinal = dao.celCheckFinal();
+	    return celCheckFinal;
 	}
 
 	

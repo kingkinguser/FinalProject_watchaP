@@ -232,6 +232,7 @@
 	</select>
 	
 	
+	<!-- 회원의 컬렉션을 나타내는 곳이다.  -->
 	<select id="usercol"  resultType="com.spring.watcha.model.MovieVO" parameterType="HashMap">
 		
 		select a.movie_id, a.movie_title, a.original_language, a.release_date, a.poster_path, a.rating_avg
@@ -240,18 +241,13 @@
 		    from movie
 		) a
 		JOIN (
-		    select collection_id, movie_id
+		    select user_id, movie_id
 		    from collection_movie
+		    <if test="login_userid != null"> 
+	       		WHERE user_id = #{login_userid}   
+			</if>
 		) b
 		ON a.movie_id = b.movie_id
-		JOIN (
-		    select collection_id, user_id, collection_name, creation_date
-		    from collection
-		    <if test="login_userid != null">
-	       	    WHERE user_id = #{login_userid}     <!-- 로그인 한 사람으로 변경해야 함  -->
-	       	</if> 
-		)c
-		ON b.collection_id = c.collection_id
 
 	</select>
 	
@@ -315,11 +311,62 @@
 		
 	</select>
 	
-	
-	<select id="genreCheckFinal">
+	<!-- 유저의 컬렉션이 있는지 확인하기  -->
+	<select id="celCheck" resultType="com.spring.watcha.model.collection_movieVO" parameterType="HashMap">
+		<if test="login_userid != null"> 
+			select *
+			from collection_movie
+			where user_id = #{login_userid} 
+		</if>
+		<if test="login_userid == null"> 
+			select *
+			from collection_movie
+			where user_id = ''
+		</if>
 	
 	</select>
 	
 	
+	
+	<!-- 가장 많은 컬렉션(영화수)을 가지고 있는 다른 유저의 컬렉션 가져오기 -->
+	
+	<resultMap id="colMovie" type="com.spring.watcha.model.MovieVO">
+	    <id property="movie_id" column="movie_id"/>
+	    <result property="movie_title" column="movie_title"/>
+	    <result property="original_language" column="original_language"/>
+	    <result property="release_date" column="release_date"/>
+	    <result property="poster_path" column="poster_path"/>
+	    <result property="rating_avg" column="rating_avg"/>
+	    <collection property="collection" javaType="java.util.List" column="user_id" ofType="com.spring.watcha.model.collection_movieVO" select="colMovieFinal" />
+	</resultMap>
+	
+	
+	<select id="celCheckFinal" resultMap="colMovie">
+		
+		select COUNT(*) OVER (PARTITION BY user_id) AS count_user_id, user_id
+		from ( 
+		    select user_id, movie_id
+		    from collection_movie
+		)
+		order by count_user_id desc, user_id asc
+		FETCH FIRST ROW ONLY
+	</select>
+	
+	<select id="colMovieFinal" resultMap="colMovie">
+
+		select a.movie_id, a.movie_title, a.original_language, a.release_date, a.poster_path, a.rating_avg
+		from (
+		    select movie_id, movie_title, original_language, release_date, poster_path, rating_avg
+		    from movie
+		) a
+		JOIN (
+		    select user_id, movie_id
+		    from collection_movie
+		    where user_id = #{user_id}
+		) b
+		ON a.movie_id = b.movie_id
+		order by rating_avg desc
+	
+	</select>
 	
 </mapper>

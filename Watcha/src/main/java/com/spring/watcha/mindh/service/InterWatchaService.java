@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import com.spring.watcha.model.MovieVO;
+import com.spring.watcha.model.collection_movieVO;
 
 public interface InterWatchaService {
 
@@ -30,6 +31,9 @@ public interface InterWatchaService {
 	// 많이 평가한 영화 장르 
 	List<MovieVO> genreRank(Map<String, String> paraMap);
 
+	// 로그인 안했을때 또는 로그인 했지만 컬렉션한 것이 없을 경우 나오는 것 체크하기
+	List<collection_movieVO> celCheck(Map<String, String> paraMap);
+	
 	// 유저의 컬랙션
 	List<MovieVO> usercol(Map<String, String> paraMap);
 
@@ -44,6 +48,11 @@ public interface InterWatchaService {
 
 	// 바로 위의 메소드가 결과가 공백이라면 두번째 쿼리문 실행 
 	List<MovieVO> actorCheckFinal();
+
+	// 가장 많은 컬렉션(영화수)을 가지고 있는 다른 유저의 컬렉션 가져오기
+	List<MovieVO> celCheckFinal();
+
+	
 
 
 	

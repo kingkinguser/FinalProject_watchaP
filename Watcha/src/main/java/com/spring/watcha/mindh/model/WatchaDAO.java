@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import com.spring.watcha.model.MovieVO;
+import com.spring.watcha.model.collection_movieVO;
 
 @Component
 @Repository
@@ -105,6 +106,21 @@ public class WatchaDAO implements InterWatchaDAO {
 		List<MovieVO> actorCheckFinal = sqlsession_1.selectList("watchamin.actorCheckFinal");	
 		
 		return actorCheckFinal;
+	}
+
+	// 로그인 안했을때 또는 로그인 했지만 컬렉션한 것이 없을 경우 나오는 것 체크하기
+	@Override
+	public List<collection_movieVO> celCheck(Map<String, String> paraMap) {
+		List<collection_movieVO> celCheck = sqlsession_1.selectList("watchamin.celCheck", paraMap);			
+		return celCheck;
+	}
+
+	// 가장 많은 컬렉션(영화수)을 가지고 있는 다른 유저의 컬렉션 가져오기
+	@Override
+	public List<MovieVO> celCheckFinal() {
+		List<MovieVO> celCheckFinal = sqlsession_1.selectList("watchamin.celCheckFinal");	
+		
+		return celCheckFinal;
 	}
 
 

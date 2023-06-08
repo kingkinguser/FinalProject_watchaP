@@ -92,15 +92,52 @@
 
 <script type="text/javascript">
 	
+	let status = 0;
+	
 	$(document).ready(function(){
 		
-		Carousel();
+		if(status == 0){
+			$("#contants").css({'border-bottom': 'solid 1px black'});
+			Carousel();
+		}
+		else if(status == 1){
+			
+		}
+		else if(status == 2){
+			
+		}
+		else {
+			
+		}
+		
 		$('button.nav-link').on('click', function() {   // 버튼 클릭시 
 			
 			$('button.nav-link').css('border-bottom', 'none');  // 다른 버튼들 밑줄 삭제 
 		    
 		    $(this).css('border-bottom', 'solid 1px black');	// 클릭한 것만 버튼에 밑줄 생성
 			
+		    status = $(this).data('status'); 
+		    console.log('Status:', status);
+		    
+		    // Perform actions based on the status value
+		    switch (status) {
+		      case 0:
+
+		        break;
+		      case 1:
+
+		        break;
+		      case 2:
+
+		        break;
+		      case 3:
+
+		        break;
+		      default:
+
+		        break;
+		    }
+		    
 		});
 		
 	});
@@ -160,16 +197,16 @@
 		
 			  <ul class="navbar-nav">
 			    <li class="nav-item">
-			      <button type="button" class="nav-link" id="contants">콘텐츠</button>
+			      <button type="button" class="nav-link" data-status="0" id="contants">콘텐츠</button>
 			    </li>
 			    <li class="nav-item">
-			      <button type="button" class="nav-link" id="people">인물</button>			      
+			      <button type="button" class="nav-link" data-status="1" id="people">인물</button>			      
 			    </li>
 			    <li class="nav-item">
-			      <button type="button" class="nav-link" id="collection">컬렉션</button>	
+			      <button type="button" class="nav-link" data-status="2" id="collection">컬렉션</button>	
 			    </li>
 			    <li class="nav-item">
-			      <button type="button" class="nav-link" id="user">유저</button>	
+			      <button type="button" class="nav-link" data-status="3" id="user">유저</button>	
 			    </li>
 			  </ul>
 			</nav>
@@ -177,7 +214,7 @@
 		
 		
 
-		<div class="container my-5">
+		<div class="container my-4" style="border-bottom: solid 1px #cccccc;">
 		
 			<div class="card-deck searchWord-carousel-card mb-1" style="border-bottom: 1px black;">
 			  
@@ -199,6 +236,14 @@
 			  </c:forEach>
 			</div>
 		</div>	 
+		
+		
+		<div class="mt-1">
+			didi
+		</div>
+		
+		
+		
 
 		
 	</div>
