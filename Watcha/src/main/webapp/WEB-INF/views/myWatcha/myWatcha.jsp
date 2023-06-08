@@ -229,7 +229,7 @@ div#makePhotoTicket{font-family: 'Noto Sans KR', sans-serif;}
  				$.ajax({
  					url:"<%= ctxPath%>/addReview.action",
 					data:{"movie_id":"290859",
-						  "user_id":"${sessionScope.loginuser.user_id}",
+						  "user_id":"qwer1234",
 						  "review_content":$("textarea#review_content").val(),
 						  "spoiler_status":$("input#spoiler_status").val()}, 
  					type:"post",
@@ -447,7 +447,7 @@ div#makePhotoTicket{font-family: 'Noto Sans KR', sans-serif;}
 	  	    </c:forEach>
 	  	   </c:if>
 	  	   <c:if test="${empty requestScope.ratingFiveList}">
-	        <img class="p-0 m-0" src="<%= ctxPath%>/resources/images/팝콘아이콘.png">
+	        <img class="p-0 m-0" src="<%= ctxPath%>/resources/images/팝콘아이콘.png" style="height: 220px;">
 	  	   </c:if>
 	  	  </div>
 	  	</div>
@@ -456,28 +456,25 @@ div#makePhotoTicket{font-family: 'Noto Sans KR', sans-serif;}
   		  <div id="div_myProfile">
   		    <%-- 회원의 프로필  --%>
 			<div style="display: flex; margin: 0px; position: relative; top: -2rem;" class="row">
-			  <c:if test="${not empty requestScope.userInfo.profile_image}">
-  			    <img id="img_profile" src="<%= ctxPath%>/resources/images/${requestScope.userInfo.profile_image}"/>
+			  <c:if test="${not empty sessionScope.loginuser.profile_image}">
+  			    <img id="img_profile" src="<%= ctxPath%>/resources/images/${sessionScope.loginuser.profile_image}"/>
 			  </c:if>
-			  <c:if test="${empty requestScope.userInfo.profile_image}">
+			  <c:if test="${empty sessionScope.loginuser.profile_image}">
   			    <img id="img_profile" src="<%= ctxPath%>/resources/images/프로필없음.jpg"/>
 			  </c:if>
 		    </div>
 			<div style="position: relative; top: -2rem;" class="p-0 m-0">
-  			  <h5 style="text-align: left; padding: 0 5px; font-size: 20pt; font-weight: 900; margin: 10px 0px;">${requestScope.userInfo.nickname}</h5>
-		      <c:if test="${not empty requestScope.userInfo.profile_message}">
-  			    <p style="text-align: left; padding: 0 5px; font-weight: 600; margin-top: 5px;">${requestScope.userInfo.profile_message}</p>
+  			  <h5 style="text-align: left; padding: 0 5px; font-size: 20pt; font-weight: 900; margin: 10px 0px;">${sessionScope.loginuser.nickname}</h5>
+		      <c:if test="${not empty sessionScope.loginuser.profile_message}">
+  			    <p style="text-align: left; padding: 0 5px; font-weight: 600; margin-top: 5px;">${sessionScope.loginuser.profile_message}</p>
 		      </c:if>
   			
 	  		  <ul class="nav nav-pills row" style="padding: 5px 0px 15px 15px; border-bottom: solid 1px #e6e6e6;">
 			    <li class="nav-item">
-			      <a class="active" data-toggle="pill" href="#ratingMovies">평균별점<span style="padding-left: 5px;">${requestScope.userInfo.avg_rating}</span></a>
+			      <a class="active" data-toggle="pill" href="#ratingMovies">평균별점<span style="padding-left: 5px;">${requestScope.userInfo.avg_rating}점</span></a>
 			    </li>
 			    <li class="nav-item">
-			      <a data-toggle="pill" href="#review">한줄평<span style="padding-left: 5px;">${requestScope.userInfo.reviewCount}개</span></a>
-			    </li>
-			    <li class="nav-item">
-			      <a data-toggle="pill" href="#collection">컬렉션<span style="padding-left: 5px;">${requestScope.userInfo.collectionCount}개</span></a>
+			      <a data-toggle="pill" href="#review">한줄평<span style="padding-left: 5px;">${requestScope.reviewCount}개</span></a>
 			    </li>
 			    <li class="nav-item">
 			      <a data-toggle="pill" href="#movieDiary">무비다이어리</a>
@@ -490,10 +487,13 @@ div#makePhotoTicket{font-family: 'Noto Sans KR', sans-serif;}
   		  </div>
   		</div>
   		
-	  	<div id="div_nav_content" class="tab-content pt-4 pb-3 my-3"> <%-- 평가한 영화 / 한줄평 / 컬렉션 / 무비다이어리 --%>
+	  	<div id="div_nav_content" class="tab-content pt-4 pb-3 my-3"> <%-- 평가한 영화 / 한줄평 / 무비다이어리 --%>
 	  	  <div id="ratingMovies" class="tab-pane container active">
+
+	        <c:if test="${not empty requestScope.ratingMoviesList}">
+
 	  	    <div style="display: flex; padding: 0 50px;">
-	 	      <h5 style="padding-left: 5px; font-weight: 600;"><span>${requestScope.userInfo.nickname}</span>&nbsp;님이 선호하는 장르</h5>
+	 	      <h5 style="padding-left: 5px; font-weight: 600;"><span>${sessionScope.loginuser.nickname}</span>&nbsp;님이 선호하는 장르</h5>
 	        </div>
 	        <div class="row mx-auto my-1 mb-5" style="padding: 0 50px;">
 	          <div id="preference" style="width: 100%; height: 400px; border: solid 1px #e6e6e6; border-radius: 2%;">
@@ -505,6 +505,7 @@ div#makePhotoTicket{font-family: 'Noto Sans KR', sans-serif;}
 	 	      <a class="col-md-3 text-right" href="<%= ctxPath%>/rateMovies.action" style="color: black; text-decoration: none;">전체보기</a>
 	        </div>
 	        <div id="div_rateMovies" class="row mx-auto my-1 mb-3" style="padding: 0 50px;">
+
 	          <div id="movieCarousel" class="carousel slide w-100" data-ride="carousel">
 	            <div class="carousel-inner w-100" role="listbox">
 	             <c:forEach var="movie" items="${requestScope.ratingMoviesList}" varStatus="status">
@@ -587,11 +588,16 @@ div#makePhotoTicket{font-family: 'Noto Sans KR', sans-serif;}
 	            </a>
 	      	  </div>
 		    </div>
+	        </c:if>
+	        <c:if test="${empty requestScope.ratingMoviesList}">
+	          <p class="h5 text-center">평가한 영화가 없어요.</p>
+	        </c:if>
+		    
 		  </div>
 	  	
 		  <div id="review" class="tab-pane container fade">
 	  	    <div style="display: flex; padding: 0 50px;" class="row mx-auto">
-	 	      <h5 style="padding-left: 5px; font-weight: 600;">내 한줄평<span id="reviewCount">${requestScope.userInfo.reviewCount}</span></h5>
+	 	      <h5 style="padding-left: 5px; font-weight: 600;">내 한줄평<span id="reviewCount">${requestScope.reviewCount}</span></h5>
 	        </div>
 	        
     		<%-- 한줄평(Ajax로 페이징 처리) --%>
@@ -599,53 +605,6 @@ div#makePhotoTicket{font-family: 'Noto Sans KR', sans-serif;}
 		    <div id="div_reviewPageBar">${requestScope.pageBar}</div>
 		  </div>
 	  	
-		  <div id="collection" class="tab-pane container fade">
-	  	    <div style="display: flex; padding: 0 50px;" class="row mx-auto">
-	 	      <h5 style="padding-left: 5px; font-weight: 600;">내 컬렉션<span id="collectionCount">${requestScope.userInfo.collectionCount}</span></h5>
-	        </div>
-	        <div class="row mx-auto my-1 mb-3" style="padding: 0 50px;">
-			  <div class="col-md-4 p-0">
-				<div class="card m-1">
-				  <div style="display:inline-block; text-align: center;">
-				    <a href="#" style="text-decoration: none; color: black;">
-                      <img class="img-thumnail" style="width: 48%;" src="<%= ctxPath%>/resources/images/포스터.jpg">
-                      <img class="img-thumnail" style="width: 48%;" src="<%= ctxPath%>/resources/images/포스터.jpg">
-                      <img class="img-thumnail" style="width: 48%;" src="<%= ctxPath%>/resources/images/포스터.jpg">
-                      <img class="img-thumnail" style="width: 48%;" src="<%= ctxPath%>/resources/images/포스터.jpg">
-				    </a>
-				  </div>
-		    	</div>
-			    <h5 class="card-title m-2">컬렉션제목</h5>
-			  </div>
-			  <div class="col-md-4 p-0">
-				<div class="card m-1">
-				  <div style="display:inline-block; text-align: center;">
-				    <a href="#" style="text-decoration: none; color: black;">
-                      <img class="img-thumnail" style="width: 48%;" src="<%= ctxPath%>/resources/images/포스터.jpg">
-                      <img class="img-thumnail" style="width: 48%;" src="<%= ctxPath%>/resources/images/포스터.jpg">
-                      <img class="img-thumnail" style="width: 48%;" src="<%= ctxPath%>/resources/images/포스터.jpg">
-                      <img class="img-thumnail" style="width: 48%;" src="<%= ctxPath%>/resources/images/포스터.jpg">
-				    </a>
-				  </div>
-		    	</div>
-			    <h5 class="card-title m-2">컬렉션제목</h5>
-			  </div>
-			  <div class="col-md-4 p-0">
-				<div class="card m-1">
-				  <div style="display:inline-block; text-align: center;">
-				    <a href="#" style="text-decoration: none; color: black;">
-                      <img class="img-thumnail" style="width: 48%;" src="<%= ctxPath%>/resources/images/포스터.jpg">
-                      <img class="img-thumnail" style="width: 48%;" src="<%= ctxPath%>/resources/images/포스터.jpg">
-                      <img class="img-thumnail" style="width: 48%;" src="<%= ctxPath%>/resources/images/포스터.jpg">
-                      <img class="img-thumnail" style="width: 48%;" src="<%= ctxPath%>/resources/images/포스터.jpg">
-				    </a>
-				  </div>
-		    	</div>
-			    <h5 class="card-title m-2">컬렉션제목</h5>
-			  </div>
-		    </div>
-		  </div>
-		  
 		  <div id="movieDiary" class="tab-pane container fade">
 	  	    <div style="display: flex; padding: 0 50px;">
 	 	      <h5 style="padding-left: 5px; font-weight: 600; margin: 4px 0 0 0;">포토티켓</h5>

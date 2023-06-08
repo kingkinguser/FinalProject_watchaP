@@ -35,18 +35,11 @@ public class WatchaDAO implements InterWatchaDAO {
 
 	// 한줄평 개수
 	@Override
-	public String reviewCount(String user_id) {
-		String reviewCount = sqlsession.selectOne("watcha.reviewCount", user_id);
+	public int reviewCount(String user_id) {
+		int reviewCount = sqlsession.selectOne("watcha.reviewCount", user_id);
 		return reviewCount;
 	}
 
-	// 컬렉션 개수
-	@Override
-	public String collectionCount(String user_id) {
-		String collectionCount = sqlsession.selectOne("watcha.collectionCount", user_id);
-		return collectionCount;
-	}
-	
 	// 검색하기 - 모든 종류의 장르 가져오기
 	@Override
 	public List<GenreVO> genreInfo() {

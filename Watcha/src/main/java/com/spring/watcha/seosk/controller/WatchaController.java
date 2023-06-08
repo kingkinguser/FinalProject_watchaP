@@ -30,7 +30,7 @@ public class WatchaController {
 	// === 마이왓챠 페이지 요청(view단 페이지) === //
 	@RequestMapping(value="/myWatcha.action")
 	public String myWatcha(HttpServletRequest request) {
-		
+
 		HttpSession session = request.getSession();
 		MemberVO loginuser = (MemberVO) session.getAttribute("loginuser");
 		String user_id = loginuser.getUser_id();
@@ -39,13 +39,14 @@ public class WatchaController {
 		// 최근 평가한 영화 5개(프로필배경)
 		List<MovieVO> ratingFiveList = service.ratingFive(user_id);
 
-		// 회원정보, 평균 별점, 평가한 영화개수, 한줄평 개수, 컬렉션 개수
+		// 평균 별점, 평가한 영화개수
 		Map<String, String> userInfo = service.userInfo(user_id);
+		
+		// 한줄평 개수
+		int reviewCount = service.reviewCount(user_id);
 		
 		// *** 2. 평가한 영화 - 평가한 영화 전체
 		List<Map<String, String>> ratingMoviesList = service.ratingMovies(user_id);
-		
-		// *** 3. 컬렉션
 		
 		// *** 4. 검색하기 - 모든 종류의 장르 가져오기
 		List<GenreVO> genreList = service.genreInfo();
@@ -59,6 +60,7 @@ public class WatchaController {
 
 		request.setAttribute("ratingFiveList", ratingFiveList);
 		request.setAttribute("userInfo", userInfo);
+		request.setAttribute("reviewCount", reviewCount);
 		request.setAttribute("ratingMoviesList", ratingMoviesList);
 		request.setAttribute("genreList", genreList);
 
@@ -72,11 +74,11 @@ public class WatchaController {
 	@ResponseBody
 	@RequestMapping(value="/myWatcha/myReviewPaging.action", produces="text/plain;charset=UTF-8")
 	public String myReviewPaging(HttpServletRequest request) {
-		
+
 		HttpSession session = request.getSession();
 		MemberVO loginuser = (MemberVO) session.getAttribute("loginuser");
 		String user_id = loginuser.getUser_id();
-		
+
 		String str_currentShowPageNo = request.getParameter("currentShowPageNo");
 		
 		int currentShowPageNo = 0;
@@ -129,7 +131,7 @@ public class WatchaController {
 	@ResponseBody
 	@RequestMapping(value="/myWatcha/showReviewPageBar.action", produces="text/plain;charset=UTF-8")
 	public String showReviewPageBar(HttpServletRequest request) {
-		
+
 		HttpSession session = request.getSession();
 		MemberVO loginuser = (MemberVO) session.getAttribute("loginuser");
 		String user_id = loginuser.getUser_id();
@@ -165,10 +167,13 @@ public class WatchaController {
 	// === 평가한 영화들 전체보기 페이지 요청(view단 페이지) === //
 	@RequestMapping(value="/rateMovies.action")
 	public String rateMovies(HttpServletRequest request) {
-		
+		/*
 		HttpSession session = request.getSession();
 		MemberVO loginuser = (MemberVO) session.getAttribute("loginuser");
 		String user_id = loginuser.getUser_id();
+		*/
+		
+		String user_id = "qwer1234";
 
 		// 회원정보, 평균 별점, 평가한 영화개수, 한줄평 개수, 컬렉션 개수
 		Map<String, String> userInfo = service.userInfo(user_id);
@@ -182,11 +187,11 @@ public class WatchaController {
 	@ResponseBody
 	@RequestMapping(value="/myWatcha/viewRateMovies.action", produces="text/plain;charset=UTF-8")
 	public String viewRateMovies(HttpServletRequest request) {
-		
+
 		HttpSession session = request.getSession();
 		MemberVO loginuser = (MemberVO) session.getAttribute("loginuser");
 		String user_id = loginuser.getUser_id();
-		
+
 		// *** 페이징 처리 - 현재 페이지
 		String str_currentShowPageNo = request.getParameter("currentShowPageNo");
 		
@@ -246,11 +251,11 @@ public class WatchaController {
 	@ResponseBody
 	@RequestMapping(value="/movieReview.action", produces="text/plain;charset=UTF-8")
 	public String movieReview(HttpServletRequest request) {
-		
+
 		HttpSession session = request.getSession();
 		MemberVO loginuser = (MemberVO) session.getAttribute("loginuser");
 		String user_id = loginuser.getUser_id();
-		
+
 		String movie_id = request.getParameter("movie_id");
 		
 		Map<String, String> paraMap = new HashMap<>();
@@ -433,7 +438,7 @@ public class WatchaController {
 	@ResponseBody
 	@RequestMapping(value="/reviewLike.action", produces="text/plain;charset=UTF-8", method= {RequestMethod.POST})
 	public String reviewLike(HttpServletRequest request) {
-		
+
 		HttpSession session = request.getSession();
 		MemberVO loginuser = (MemberVO) session.getAttribute("loginuser");
 		String user_id = loginuser.getUser_id();
@@ -502,7 +507,7 @@ public class WatchaController {
 	@ResponseBody
 	@RequestMapping(value="/myWatcha/searchResult.action", produces="text/plain;charset=UTF-8")
 	public String viewSearch(HttpServletRequest request) {
-		
+
 		HttpSession session = request.getSession();
 		MemberVO loginuser = (MemberVO) session.getAttribute("loginuser");
 		String user_id = loginuser.getUser_id();
@@ -554,7 +559,7 @@ public class WatchaController {
 	// === 검색상세 페이지 요청(view단 페이지) === //
 	@RequestMapping(value="/myWatcha/searchDetail.action")
 	public ModelAndView searchDetail(ModelAndView mav, HttpServletRequest request) {
-		
+
 		HttpSession session = request.getSession();
 		MemberVO loginuser = (MemberVO) session.getAttribute("loginuser");
 		String user_id = loginuser.getUser_id();

@@ -14,15 +14,12 @@ public interface InterWatchaDAO {
 	// 최근 평가한 영화 5개
 	List<MovieVO> ratingFive(String user_id);
 
-	// 회원정보, 평균 별점, 평가한 영화개수
+	// 평균 별점, 평가한 영화개수
 	Map<String, String> userInfo(String user_id);
 
 	// 한줄평 개수(로그인한 회원의 한줄평)
-	String reviewCount(String user_id);
+	int reviewCount(String user_id);
 
-	// 컬렉션 개수
-	String collectionCount(String user_id);
-	
 	// 검색하기 - 모든 종류의 장르 가져오기
 	List<GenreVO> genreInfo();
 
