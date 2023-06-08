@@ -176,13 +176,13 @@
     </resultMap>
 	
 	<select id="genreRank" resultMap="movieMaingenreMap" parameterType="HashMap">
-		select a.movie_id, a.movie_title, a.original_language, CONCAT('20', a.release_date) AS release_date, a.poster_path, a.rating_avg,
+		select a.movie_id, a.movie_title, a.original_language, release_date, a.poster_path, a.rating_avg,
 		       COUNT(*) OVER (PARTITION BY b.Genre_id) AS count_Genre_id, c.Genre_id, c.Genre_name 
 		from (
 		    SELECT movie_id, user_id, rating, rating_date
 		    FROM star_rating
-		    <if test="login_userid != null">
-	       	    WHERE user_id = #{login_userid}     <!-- 로그인 한 사람으로 변경해야 함  -->
+		    <if test="login_userid != null and actorCheck != null">
+	       	    WHERE user_id = #{login_userid}     <!-- 로그인 한 사람 그리고 actorCheck 가 null로 넘어오지 않으면  -->
 	       	</if> 
 		) w
 		JOIN(
@@ -200,7 +200,7 @@
 		    from genre
 		) c
 		ON b.Genre_id = c.Genre_id
-		ORDER BY GENRE_ID desc
+		ORDER BY count_Genre_id desc
 		FETCH FIRST ROW ONLY
 
 	</select>
@@ -314,5 +314,12 @@
 		ORDER BY release_date desc
 		
 	</select>
+	
+	
+	<select id="genreCheckFinal">
+	
+	</select>
+	
+	
 	
 </mapper>

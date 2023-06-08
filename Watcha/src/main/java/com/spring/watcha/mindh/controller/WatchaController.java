@@ -220,20 +220,26 @@ public class WatchaController {
 
 		
 		List<MovieVO> actorCheckFinal;  // 로그인 안했을때 또는 로그인 했지만 평가하지 않은 경우 나오는 Tom Holland 의 최신 순의 영화 작품 (체크하기) 위해 설정함
-		
+		List<MovieVO> genreCheckFinal;  // 로그인 안했을때 또는 로그인 했지만 평가하지 않은 경우 나오는 가장 많이 평가한 장르의 작품 (체크하기) 위해 설정함
 		
 		List<MovieVO> starRankvo = service.starRank();   // 평점 순위 
 		List<MovieVO> seeRankvo = service.seeRank();   // 보고싶어요  순위 
 		List<MovieVO> commentRankvo = service.commentRank();   // 한줄평 많은  순위 
 		List<MovieVO> actorvo = service.actorRank(paraMap);   // 많이 평가한 배우 영화  (로그인한 사람의 아이디 들어가야 함)
 		List<MovieVO> actorCheck = service.actorCheck(paraMap);   // 로그인 안했을때 또는 로그인 했지만 평가하지 않은 경우 나오는 Tom Holland 의 최신 순의 영화 작품 (체크하기)
+		
+		
 		if (actorCheck.isEmpty()) {								 // 바로 위의 메소드가 결과가 공백이라면 두번째 쿼리문 실행 
-			actorCheckFinal = service.actorCheckFinal();			
+			paraMap.put("actorCheck", null);
+			actorCheckFinal = service.actorCheckFinal();     // 공백을경우 Tom Holland 의 작품을 보여주자 
 		}
 		else {
+			paraMap.put("actorCheck", "1");
 			actorCheckFinal = actorCheck;   // 결과값 없게 만들기 
 		}
-		List<MovieVO> genrevo = service.genreRank(paraMap);   // 많이 평가한 양화 장르  (로그인한 사람의 아이디 들어가야 함)
+		
+		
+		List<MovieVO> genrevo = service.genreRank(paraMap);   // 많이 평가한 양화 장르  (로그인안하거나 actorCheck 가 1 이면은 전체 평가중 가장많은 장르를 가져오고 로그인 하고 평가를 1개라도 했으면 평가한 영화 장르에 대해 나타냄)
 		List<MovieVO> usercol = service.usercol(paraMap);     // 유저의 컬렉션             (로그인한 사람의 아이디 들어가야 함)
 		
 	

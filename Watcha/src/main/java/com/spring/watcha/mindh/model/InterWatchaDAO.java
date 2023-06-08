@@ -42,7 +42,7 @@ public interface InterWatchaDAO {
 	// 바로 위의 메소드가 결과가 공백이라면 두번째 쿼리문 실행 
 	List<MovieVO> actorCheckFinal();
 
-	
+
 
 	
 

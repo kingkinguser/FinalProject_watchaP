@@ -442,7 +442,7 @@ function StarRank() {
 	</div>
 	
 	<%-- 다시 캐러셀 --%>
-	
+	<!-- 로그인을 하고 평가를 1개라도 했을때   -->
 	<c:if test="${not empty login_userid and not empty requestScope.actorCheck}">
 		<h5 class="h5 main-h5 main-h5-3 mt-5">${login_username} 회원님이 많이 보신 
 			<c:forEach items="${requestScope.actor}" var="rating">
@@ -477,6 +477,7 @@ function StarRank() {
 		</div>	
 	</c:if>
 	
+	<!-- 로그인을 하고 평가를 안했을때 || 로그인을 안했을때   -->
 	<c:if test="${empty login_userid || empty requestScope.actorCheck}">
 		<h5 class="h5 main-h5 main-h5-3 mt-5">  화재의
 			<c:if test="${not empty requestScope.actorCheckFinal}">   <!-- 결과값이 있을때 []괄호는 제거한다. -->
@@ -514,8 +515,8 @@ function StarRank() {
 	</c:if>
 	
 	
-	
-	<c:if test="${not empty login_userid}">
+	<!-- 로그인을 했을때 그리고 평가를 하나라도 했을때   -->
+	<c:if test="${not empty login_userid and not empty requestScope.actorCheck}">
 		<h5 class="h5 main-h5 main-h5-3 mt-5">${login_username} 회원님이 많이 보신 
 			<c:forEach items="${requestScope.genres}" var="genres">
 	   			<span>${genres.genre_name}</span>
@@ -546,6 +547,47 @@ function StarRank() {
 			</div>
 		</div>	
 	</c:if>
+	
+	<!-- 로그인을 했을때 그리고 평가를 안했을때 || 로그인을 안했을때   -->
+	<c:if test="${empty login_userid || empty requestScope.actorCheck}">
+		<h5 class="h5 main-h5 main-h5-3 mt-5">회원님들이 많이 보신 
+			<c:forEach items="${requestScope.genres}" var="genres">
+	   			<span>${genres.genre_name}</span>
+			</c:forEach>장르 TOP 10
+		</h5>
+	   	 <div class="container my-3">
+	
+			<div class="card-deck main-carousel-card2 mb-1">
+			  
+			  <c:forEach var="starRating22" items="${requestScope.starRating22}" varStatus="status">
+		        <a href="<%= ctxPath%>/view/project_detail.action?movie_id=${starRating22.movie_id}" title="${starRating22.movie_title}" class="Main-a">
+		            <div class="Main-card2">
+		                <div class="Main-card-header2">
+		                    <img src="https://image.tmdb.org/t/p/w500/${starRating22.poster_path}" class="card-img-top" alt="...">
+		                </div>
+		                <div class="main-number">${status.index + 1}</div>
+		                <div class="Main-card-body2 Main-card-in-no">
+		                    <h5 class="card-title card-font">${starRating22.movie_title}</h5>
+		                    <p style="margin: 0;"><span class="text-muted">개봉일자: ${starRating22.release_date}</span></p>
+		                    <p style="margin: 0;"><span class="text-muted">언어 : ${starRating22.original_language}</span></p>
+		                    <p><span class="text-muted">평균★<span id="">${starRating22.rating_avg}</span></span></p>
+		                </div>
+		            </div>
+		        </a>
+			</c:forEach>
+			  
+			  
+			</div>
+		</div>	
+	</c:if>
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	<c:if test="${not empty login_userid}">
 		<h5 class="h5 main-h5 main-h5-3 mt-5">${login_username} 회원님의 컬렉션</h5>
