@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.spring.watcha.KING.service.InterWatchaService;
@@ -128,7 +129,10 @@ public class WatchaController {
 				// 댓글쓰기에 첨부파일이 없는 경우 
 				
 				int n = 0;
-				
+			/*	
+			Gson gson = new GsonBuilder().setPrettyPrinting().create();
+			System.out.println(gson.toJson(uccvo));
+			*/ 	
 				try {
 					n = service.addUserComment(uccvo);
 					// 댓글쓰기(insert)
@@ -140,7 +144,7 @@ public class WatchaController {
 				JSONObject jsonObj = new JSONObject();
 				jsonObj.put("n", n);
 						
-				return jsonObj.toString(); // "{"n":1, "name":"서영학"}" 또는  "{"n":0, "name":"서영학"}"
+				return jsonObj.toString(); 
 			}			
 			
 			
@@ -149,7 +153,7 @@ public class WatchaController {
 			@RequestMapping(value="/user_collection_commentList.action", method= {RequestMethod.GET}, produces="text/plain;charset=UTF-8")
 			public String user_collection_commentList(HttpServletRequest request) {
 				
-				String collection_id = request.getParameter("collection_id");
+				String user_id_collection = request.getParameter("user_id_collection");
 				String currentShowPageNo = request.getParameter("currentShowPageNo");
 				
 				if(currentShowPageNo == null) {
@@ -162,7 +166,7 @@ public class WatchaController {
 				int endRno = startRno + sizePerPage - 1;
 				
 				Map<String, String> paraMap = new HashMap<>();
-				paraMap.put("collection_id", collection_id);
+				paraMap.put("user_id_collection", user_id_collection);
 				paraMap.put("startRno", String.valueOf(startRno));
 				paraMap.put("endRno", String.valueOf(endRno));
 				
@@ -175,8 +179,8 @@ public class WatchaController {
 						
 						JSONObject jsonObj = new JSONObject();
 						jsonObj.put("user_collection_seq", uccvo.get("user_collection_seq"));
-						jsonObj.put("user_id", uccvo.get("user_id"));
-						jsonObj.put("collection_id", uccvo.get("collection_id"));
+						jsonObj.put("user_id_comment", uccvo.get("user_id_comment"));
+						jsonObj.put("user_id_collection", uccvo.get("user_id_collection"));
 						jsonObj.put("user_collection_content", uccvo.get("user_collection_content"));
 						jsonObj.put("user_collection_time", uccvo.get("user_collection_time"));
 						jsonObj.put("name", uccvo.get("name"));
@@ -214,12 +218,12 @@ public class WatchaController {
 			public String likeCollection(HttpServletRequest request) {
 				
 				String likeCollection = "";
-				String collection_id = request.getParameter("collection_id");
-				String user_id = request.getParameter("user_id");
+				String user_id_collection = request.getParameter("user_id_collection");
+				String user_id_like = request.getParameter("user_id_like");
 				
 				Map<String, Object> paraMap = new HashMap<>();
-				paraMap.put("collection_id", collection_id);
-				paraMap.put("user_id", user_id);
+				paraMap.put("user_id_collection", user_id_collection);
+				paraMap.put("user_id_like", user_id_like); 
 				
 				int n = service.getLikeSelect(paraMap);
 				
@@ -235,6 +239,7 @@ public class WatchaController {
 				jsonObj.put("likeCollection", likeCollection);
 				
 				return jsonObj.toString();
+				
 			}
 			
 			

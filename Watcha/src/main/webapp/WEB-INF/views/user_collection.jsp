@@ -166,15 +166,14 @@
 	}		
 	
 	#profile_i {
-		padding: 0 10px 0 15px;  
-	}
+		padding: 0 15px 0 35px; 
+	} 
 	
-	#uccontent {  
-		padding: 15px 0 15px 70px;  
+	#uccontent {   
+		padding: 0 185px 0 15px;  
 	}
 	 
 	#uctime { 
-		padding: 0 0 0 300px;   
 	}
 		
 </style>
@@ -344,25 +343,34 @@
 		  return;  // 종료 
 	  }
 	  
-	     goAddUserWrite_noAttach();
+	  goAddUserWrite_noAttach();
 	  
     }
 	/* ==== 댓글쓰기 끝 ==== */
 	 
     /* ==== 파일첨부가 없는 댓글쓰기 시작 ==== */
     function goAddUserWrite_noAttach() {
+		
+		const commentData = {
+				user_id_collection : '${param.user_id}',
+				user_id_comment : '${sessionScope.loginuser.user_id}',
+				user_collection_content : $("input#user_collection_content").val(),
+		}
+		
+		
       $.ajax({
   		 url:"<%= request.getContextPath()%>/addUserComment.action",
-  		 data:{"user_id":"${requestScope.collection_view[0].user_id}" 
-  			  ,"user_collection_content":$("input#user_collection_content").val()
-  			  ,"collection_id":$("input#collection_id").val()},
+  		 data: commentData,
   		 type:"post",
   		 dataType:"json",
   		 success:function(json){
+  			 if(json.n == '1') {
+  				goUserViewComment(1); // 페이징 처리 한 댓글 읽어오기	 
+  			 } else {
+  				 alert("댓글 입력 실패");
+  			 } 
   			 
-  			 goUserViewComment(1); // 페이징 처리 한 댓글 읽어오기
-  			 
-  			 $("input#commentContent").val("");
+  			 $("input#user_collection_content").val("");
   		 },
   		 error: function(request, status, error){
 			alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
@@ -375,12 +383,11 @@
     function goUserViewComment(currentShowPageNo) {
 	  $.ajax({
 		  url:"<%= request.getContextPath()%>/user_collection_commentList.action",
-		  data:{"collection_id":$("input#collection_id").val(),
+		  data:{"user_id_collection":$("input#user_id_collection").val(),
 			    "currentShowPageNo":currentShowPageNo},
 		  dataType:"json",
 		  success:function(json){
 			  // console.log("~~ 확인용 : " + JSON.stringify(json));
-			  
 			  
 			  let html = "";
 			  if(json.length > 0) {
@@ -388,7 +395,7 @@
 					  
 					 html += "<tr>"; 
 					 html += '<td id="profile_i">'+item.profile_image+"</td>";
-					 html += "<td>"+item.name+"</td>";
+					 html += "<td>"+item.user_id_comment+"</td>"; 
 					 html += '<td id="uccontent">'+item.user_collection_content+"</td>";
 		             html += '<td id="uctime">'+item.user_collection_time+"</td>";  
 		             html += "</tr>";  
@@ -493,15 +500,18 @@
     
   // === 좋아요 시작  === //
   function goLikeCollection() {
+	  
+	 const commentData = { user_id_collection : '${param.user_id}',
+	   		   			   user_id_like : '${sessionScope.loginuser.user_id}'
+     }
+	  
 	  $.ajax({
 		  url:"<%= request.getContextPath()%>/likeCollection.action",
-		  data:{"collection_id":$("input#collection_id").val(), 
-			    "user_id":"${requestScope.collection_view[0].user_id}"}, 
+		  data: commentData , 
 		  type:"post", 	      
 		  dataType:"json",
 		  success:function(json){
 			   console.log("~~ 확인용 : " + JSON.stringify(json));
-			  
 			  
 		  },
 		  error: function(request, status, error){
@@ -530,7 +540,6 @@
 		        <span style="margin-left: 50px;"></span>
 		        
 		        <div id="commentInfo">
-			        <span>닉네임:&nbsp;${requestScope.collection_view[0].nickname}</span>
 			        <span>성명:&nbsp;${requestScope.collection_view[0].name}</span>
 			        
 					<span style= "width: 100px;"> 
@@ -542,23 +551,24 @@
 		        
 		        <div id="chart">
 		        </div> 		        
-			    
-			
 			
 				<hr style="margin: 0 30px 0 30px;">  	    
 		      
 		    	<div style="font-size: 20px; font-weight: bold; margin: 20px 0 0 47px;">나의 컬렉션</div>	
  
 				  <div class="row" id="displayHIT" style="margin-left: 20px;"></div>
-   					
-			      <div>
-			         <p class="text-center">
-			            <span id="end" style="display:block; margin:20px 0px 0 0; font-weight:bold; font-size: 12pt;"></span> 
-			            <button type="button" class="btn" id="btnMoreHIT" style="font-weight:bold; color:#f3578d;">더보기</button>
-			            <span id="totalHITCount">${requestScope.totalCount.count}</span>
-			            <span id="countHIT">0</span>
-			         </p>
-			      </div>
+   					 
+				  <c:if test="${requestScope.totalCount.count} > 5">		 		 	
+				      <div>
+				         <p class="text-center">
+				            <span id="end" style="display:block; margin:20px 0px 0 0; font-weight:bold; font-size: 12pt;"></span> 
+				            <button type="button" class="btn" id="btnMoreHIT" style="font-weight:bold; color:#f3578d;">더보기</button>
+				            <span id="totalHITCount">${requestScope.totalCount.count}</span>
+				            <span id="countHIT">0</span>
+				         </p>
+				      </div>
+			      </c:if>   
+			    
 			      
 			    <hr style="margin: 0 30px 0 30px;">  
 			    		

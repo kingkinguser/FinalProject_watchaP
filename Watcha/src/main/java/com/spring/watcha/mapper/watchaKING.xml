@@ -119,15 +119,16 @@
 	<!-- 댓글쓰기 insert -->
 	<insert id="addUserComment">
 	INSERT INTO user_collection_comment 
-	(user_collection_seq, user_id, user_collection_content, user_collection_time, user_collection_status) 
+	(user_collection_seq, user_id_comment, user_id_collection ,user_collection_content, user_collection_time, user_collection_status) 
 	VALUES 
-	(userCollectionSeq.nextval,#{user_id},#{user_collection_content}, sysdate, default)
+	(userCollectionSeq.nextval,#{user_id_comment},#{user_id_collection} ,#{user_collection_content}, sysdate, default)
 	</insert>
 	 
 	<!-- 페이징 처리하기 -->
     <resultMap type="HashMap" id="uccListNoSearchWithPagingMap">
        <result property="user_collection_seq"      column="user_collection_seq"      javaType="String" />
-       <result property="user_id"             	   column="user_id"           	 	 javaType="String" />
+       <result property="user_id_comment"          column="user_id_comment"          javaType="String" />
+       <result property="user_id_collection"  	   column="user_id_collection"  	 javaType="String" />
        <result property="user_collection_content"  column="user_collection_content"  javaType="String" />
        <result property="user_collection_time"     column="user_collection_time"     javaType="String" />
        <result property="name"   		 		   column="name"            		 javaType="String" />
@@ -135,16 +136,16 @@
        <result property="profile_image"   		   column="profile_image"     	 	 javaType="String" />
     </resultMap>  
 	<select id="uccListNoSearchWithPaging" parameterType="HashMap" resultMap="uccListNoSearchWithPagingMap">
-    select user_collection_seq, user_id, user_collection_content, user_collection_time, name, nickname, profile_image
+    select user_collection_seq, user_id_comment, user_id_collection, user_collection_content, user_collection_time, name, nickname, profile_image
 	from 
 	(
       select row_number() over(order by CC.user_collection_seq desc) AS rno, M.name, M.nickname, M.profile_image,
-	         CC.user_collection_seq, CC.user_id, CC.user_collection_content,
+	         CC.user_collection_seq, CC.user_id_comment, CC.user_id_collection, CC.user_collection_content,
 	         to_char(CC.user_collection_time, 'YYYY-MM-DD HH24:MI:SS') AS user_collection_time
 	  from user_collection_comment CC join member M
-      on CC.user_id = M.user_id
+      on CC.user_id_collection = M.user_id
     ) V 
-	where rno between #{startRno} and #{endRno}
+	where rno between #{startRno} and #{endRno} 
 	</select>
 	
 	<!-- 원글 글번호에 해당하는 댓글의 totalPage 알아오기 -->
@@ -158,17 +159,17 @@
 	<select id="getLikeSelect" parameterType="HashMap" resultType="int">
 	select count(*)
 	from collection_like
-	where user_id = #{user_id}
+	where user_id_like = #{user_id_like} and user_id_collection = #{user_id_collection}
 	</select>
 	
 	<insert id="getLikeInsertCollection" parameterType="HashMap" >
-	INSERT INTO collection_like( user_id) 
-	VALUES (#{user_id})
+   	INSERT INTO collection_like(user_id_collection,user_id_like,collection_like_date) 
+	VALUES (#{user_id_collection},#{user_id_like},sysdate)
 	</insert>
 	
 	<insert id="getLikeDeleteCollection" parameterType="HashMap" >
 	delete from collection_like
-	where user_id = #{user_id}
+	where user_id_collection = #{user_id_collection} and user_id_like = #{user_id_like}
 	</insert>
 	 
 </mapper>
