@@ -52,6 +52,12 @@ public interface InterWatchaService {
 	// 가장 많은 컬렉션(영화수)을 가지고 있는 다른 유저의 컬렉션 가져오기
 	List<MovieVO> celCheckFinal();
 
+	// 컬렉션 있는 user 가져오기 
+	List<collection_movieVO> finduser();
+
+	// 각자의 컬렉션 가져오기 
+	List<MovieVO> findCollectionFinal(String user_id);
+
 	
 
 

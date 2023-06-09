@@ -243,7 +243,7 @@ public class WatchaController {
 		
 		List<collection_movieVO> celCheck = service.celCheck(paraMap);   // 로그인 안했을때 또는 로그인 했지만 컬렉션한 것이 없을 경우 나오는 것 체크하기
 		
-		System.out.println(celCheck);
+		//System.out.println(celCheck);
 		
 		List<MovieVO> celCheckFinal;  // 로그인 안했을때 또는 로그인 했지만 컬력션이 없는 경우 나오는 가장 많은 컬렉션 (영화수) 를 가지고 있는 다른 유저의 컬렉션 가져오기 
 		
@@ -259,12 +259,10 @@ public class WatchaController {
 		        	collection.addAll(collectionMovie);               
 		        }
 			}
-			System.out.println("1111");
 		}
 		else {
 			
 			celCheckFinal = actorCheck;   // 결과값 없게 만들기 
-			System.out.println("2222");
 		}
 		
 		
@@ -304,8 +302,26 @@ public class WatchaController {
 		    }
 		}
 			
+		// user의 컬렉견을 하나하나 보여주는 곳 
+			
+		List<MovieVO> mergedCollection = new ArrayList<>();
+		List<List<MovieVO>> mergedCollectionFinal = new ArrayList<>();
 		
 		
+		List<collection_movieVO> finduser = service.finduser();
+		
+		for (collection_movieVO movie : finduser) {
+		    String user_id= movie.getUser_id(); 			
+			
+			List<MovieVO> findCollectionFinal = service.findCollectionFinal(user_id);
+			
+			//System.out.println(mergedCollection);
+			List<MovieVO> currentMergedCollection = new ArrayList<>(findCollectionFinal);
+			mergedCollectionFinal.add(currentMergedCollection);
+	
+		}
+		
+
 		mav.addObject("login_userid",login_userid);
 		mav.addObject("login_username",login_username);
 		mav.addObject("recentSearchWords", recentSearchWordsString);
@@ -325,6 +341,8 @@ public class WatchaController {
 		mav.addObject("usercol", usercol);
 		mav.addObject("celCheck",celCheck);
 		mav.addObject("collection",collection);
+		mav.addObject("mergedCollectionFinal",mergedCollectionFinal);
+		mav.addObject("finduser",finduser);
 		mav.setViewName("/main.tiles");
 		
 		

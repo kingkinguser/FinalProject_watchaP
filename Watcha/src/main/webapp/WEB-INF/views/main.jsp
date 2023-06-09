@@ -120,6 +120,11 @@
   	color: black;
   }
   
+  .Main-card4 {
+  	border: none;
+  	height: 350px;
+  }
+  
   .card-img-top {
   	border: solid 1px #e6e6e6;
   }
@@ -646,244 +651,59 @@ function StarRank() {
    	 <div class="container my-3">
 
 		<div class="card-deck main-carousel-card mb-5">
-		  
-		  <a href = "" title="선댄스영화제 미국 극영화 심사위원대상 수상작" class="Main-a">
-			  <div class="Main-card">
-				  <div class="Main-card-header">
-				  	<div class="Main-card-header-fin">
-				    	<img src="<%= ctxPath%>/resources/images/범죄도시.jpg" class="card-img-top card-img-top-fin" alt="...">
-				    	<img src="<%= ctxPath%>/resources/images/인어공주.jpg" class="card-img-top card-img-top-fin" alt="...">
-				    </div>	
-				    <div class="Main-card-header-fin">	
-				    	<img src="<%= ctxPath%>/resources/images/분노의질주.jpg" class="card-img-top card-img-top-fin" alt="...">
-				    	<img src="<%= ctxPath%>/resources/images/가디언즈오브갤럭시.jpg" class="card-img-top card-img-top-fin" alt="...">
-				    </div>
-			    </div>			 
-			    <div class="Main-card-body3">
-			      <h5 class="card-title card-font" >선댄스영화제 미국 극영화 심사위원대상 수상작</h5>
-			    </div>
-			  </div>
-		  </a>
-		  
-		  <a href = "" title="선댄스영화제 미국 다큐멘터리 심사위원대상 수상작" class="Main-a">
-			  <div class="Main-card">
-				  <div class="Main-card-header">
-				  	<div class="Main-card-header-fin">
-				    	<img src="<%= ctxPath%>/resources/images/범죄도시.jpg" class="card-img-top card-img-top-fin" alt="...">
-				    	<img src="<%= ctxPath%>/resources/images/인어공주.jpg" class="card-img-top card-img-top-fin" alt="...">
-				    </div>	
-				    <div class="Main-card-header-fin">	
-				    	<img src="<%= ctxPath%>/resources/images/분노의질주.jpg" class="card-img-top card-img-top-fin" alt="...">
-				    	<img src="<%= ctxPath%>/resources/images/가디언즈오브갤럭시.jpg" class="card-img-top card-img-top-fin" alt="...">
-				    </div>
-			    </div>			 
-			    <div class="Main-card-body3">
-			      <h5 class="card-title card-font" >선댄스영화제 미국 다큐멘터리 심사위원대상 수상작</h5>
-			    </div>
-			  </div>
-		  </a>
-		  
-		  <a href = "" title="선댄스영화제 월드시네마 극영화 심사위원대상 수상작" class="Main-a">
-			  <div class="Main-card">
-				  <div class="Main-card-header">
-				  	<div class="Main-card-header-fin">
-				    	<img src="<%= ctxPath%>/resources/images/범죄도시.jpg" class="card-img-top card-img-top-fin" alt="...">
-				    	<img src="<%= ctxPath%>/resources/images/인어공주.jpg" class="card-img-top card-img-top-fin" alt="...">
-				    </div>	
-				    <div class="Main-card-header-fin">	
-				    	<img src="<%= ctxPath%>/resources/images/분노의질주.jpg" class="card-img-top card-img-top-fin" alt="...">
-				    	<img src="<%= ctxPath%>/resources/images/가디언즈오브갤럭시.jpg" class="card-img-top card-img-top-fin" alt="...">
-				    </div>
-			    </div>			 
-			    <div class="Main-card-body3">
-			      <h5 class="card-title card-font" >선댄스영화제 월드시네마 극영화 심사위원대상 수상작</h5>
-			    </div>
-			  </div>
-		  </a>
-		  
-		  <a href = "" title="선댄스영화제 월드시네마 다큐멘터리 심사위원대상 수상작" class="Main-a">
-			  <div class="Main-card">
-				  <div class="Main-card-header">
-				  	<div class="Main-card-header-fin">
-				    	<img src="<%= ctxPath%>/resources/images/범죄도시.jpg" class="card-img-top card-img-top-fin" alt="...">
-				    	<img src="<%= ctxPath%>/resources/images/인어공주.jpg" class="card-img-top card-img-top-fin" alt="...">
-				    </div>	
-				    <div class="Main-card-header-fin">	
-				    	<img src="<%= ctxPath%>/resources/images/분노의질주.jpg" class="card-img-top card-img-top-fin" alt="...">
-				    	<img src="<%= ctxPath%>/resources/images/가디언즈오브갤럭시.jpg" class="card-img-top card-img-top-fin" alt="...">
-				    </div>
-			    </div>			 
-			    <div class="Main-card-body3">
-			      <h5 class="card-title card-font" >선댄스영화제 월드시네마 다큐멘터리 심사위원대상 수상작</h5>
-			    </div>
-			  </div>
-		  </a>
-		  
-		  <a href = "" title="로카르노영화제 황금표범상 수상작" class="Main-a">
-			  <div class="Main-card">
-				  <div class="Main-card-header">
-				  	<div class="Main-card-header-fin">
-				    	<img src="<%= ctxPath%>/resources/images/범죄도시.jpg" class="card-img-top card-img-top-fin" alt="...">
-				    	<img src="<%= ctxPath%>/resources/images/인어공주.jpg" class="card-img-top card-img-top-fin" alt="...">
-				    </div>	
-				    <div class="Main-card-header-fin">	
-				    	<img src="<%= ctxPath%>/resources/images/분노의질주.jpg" class="card-img-top card-img-top-fin" alt="...">
-				    	<img src="<%= ctxPath%>/resources/images/가디언즈오브갤럭시.jpg" class="card-img-top card-img-top-fin" alt="...">
-				    </div>
-			    </div>			 
-			    <div class="Main-card-body3">
-			      <h5 class="card-title card-font" >로카르노영화제 황금표범상 수상작</h5>
-			    </div>
-			  </div>
-		  </a>
-		  
-		  <a href = "" title="로카르노영화제 황금표범상 수상작" class="Main-a">
-			  <div class="Main-card">
-				  <div class="Main-card-header">
-				  	<div class="Main-card-header-fin">
-				    	<img src="<%= ctxPath%>/resources/images/범죄도시.jpg" class="card-img-top card-img-top-fin" alt="...">
-				    	<img src="<%= ctxPath%>/resources/images/인어공주.jpg" class="card-img-top card-img-top-fin" alt="...">
-				    </div>	
-				    <div class="Main-card-header-fin">	
-				    	<img src="<%= ctxPath%>/resources/images/분노의질주.jpg" class="card-img-top card-img-top-fin" alt="...">
-				    	<img src="<%= ctxPath%>/resources/images/가디언즈오브갤럭시.jpg" class="card-img-top card-img-top-fin" alt="...">
-				    </div>
-			    </div>			 
-			    <div class="Main-card-body3">
-			      <h5 class="card-title card-font" >로카르노영화제 황금표범상 수상작</h5>
-			    </div>
-			  </div>
-		  </a>
-		  
-		  <a href = "" title="로카르노영화제 황금표범상 수상작" class="Main-a">
-			  <div class="Main-card">
-				  <div class="Main-card-header">
-				  	<div class="Main-card-header-fin">
-				    	<img src="<%= ctxPath%>/resources/images/범죄도시.jpg" class="card-img-top card-img-top-fin" alt="...">
-				    	<img src="<%= ctxPath%>/resources/images/인어공주.jpg" class="card-img-top card-img-top-fin" alt="...">
-				    </div>	
-				    <div class="Main-card-header-fin">	
-				    	<img src="<%= ctxPath%>/resources/images/분노의질주.jpg" class="card-img-top card-img-top-fin" alt="...">
-				    	<img src="<%= ctxPath%>/resources/images/가디언즈오브갤럭시.jpg" class="card-img-top card-img-top-fin" alt="...">
-				    </div>
-			    </div>			 
-			    <div class="Main-card-body3">
-			      <h5 class="card-title card-font" >로카르노영화제 황금표범상 수상작</h5>
-			    </div>
-			  </div>
-		  </a>
-		  
-		  <a href = "" title="로카르노영화제 황금표범상 수상작" class="Main-a">
-			  <div class="Main-card">
-				  <div class="Main-card-header">
-				  	<div class="Main-card-header-fin">
-				    	<img src="<%= ctxPath%>/resources/images/범죄도시.jpg" class="card-img-top card-img-top-fin" alt="...">
-				    	<img src="<%= ctxPath%>/resources/images/인어공주.jpg" class="card-img-top card-img-top-fin" alt="...">
-				    </div>	
-				    <div class="Main-card-header-fin">	
-				    	<img src="<%= ctxPath%>/resources/images/분노의질주.jpg" class="card-img-top card-img-top-fin" alt="...">
-				    	<img src="<%= ctxPath%>/resources/images/가디언즈오브갤럭시.jpg" class="card-img-top card-img-top-fin" alt="...">
-				    </div>
-			    </div>			 
-			    <div class="Main-card-body3">
-			      <h5 class="card-title card-font" >로카르노영화제 황금표범상 수상작</h5>
-			    </div>
-			  </div>
-		  </a>
-		  
-		  <a href = "" title="로카르노영화제 황금표범상 수상작" class="Main-a">
-			  <div class="Main-card">
-				  <div class="Main-card-header">
-				  	<div class="Main-card-header-fin">
-				    	<img src="<%= ctxPath%>/resources/images/범죄도시.jpg" class="card-img-top card-img-top-fin" alt="...">
-				    	<img src="<%= ctxPath%>/resources/images/인어공주.jpg" class="card-img-top card-img-top-fin" alt="...">
-				    </div>	
-				    <div class="Main-card-header-fin">	
-				    	<img src="<%= ctxPath%>/resources/images/분노의질주.jpg" class="card-img-top card-img-top-fin" alt="...">
-				    	<img src="<%= ctxPath%>/resources/images/가디언즈오브갤럭시.jpg" class="card-img-top card-img-top-fin" alt="...">
-				    </div>
-			    </div>			 
-			    <div class="Main-card-body3">
-			      <h5 class="card-title card-font" >로카르노영화제 황금표범상 수상작</h5>
-			    </div>
-			  </div>
-		  </a>
-		  
-		  <a href = "" title="로카르노영화제 황금표범상 수상작" class="Main-a">
-			  <div class="Main-card">
-				  <div class="Main-card-header">
-				  	<div class="Main-card-header-fin">
-				    	<img src="<%= ctxPath%>/resources/images/범죄도시.jpg" class="card-img-top card-img-top-fin" alt="...">
-				    	<img src="<%= ctxPath%>/resources/images/인어공주.jpg" class="card-img-top card-img-top-fin" alt="...">
-				    </div>	
-				    <div class="Main-card-header-fin">	
-				    	<img src="<%= ctxPath%>/resources/images/분노의질주.jpg" class="card-img-top card-img-top-fin" alt="...">
-				    	<img src="<%= ctxPath%>/resources/images/가디언즈오브갤럭시.jpg" class="card-img-top card-img-top-fin" alt="...">
-				    </div>
-			    </div>			 
-			    <div class="Main-card-body3">
-			      <h5 class="card-title card-font" >로카르노영화제 황금표범상 수상작</h5>
-			    </div>
-			  </div>
-		  </a>
-		  
-		  <a href = "" title="로카르노영화제 황금표범상 수상작" class="Main-a">
-			  <div class="Main-card">
-				  <div class="Main-card-header">
-				  	<div class="Main-card-header-fin">
-				    	<img src="<%= ctxPath%>/resources/images/범죄도시.jpg" class="card-img-top card-img-top-fin" alt="...">
-				    	<img src="<%= ctxPath%>/resources/images/인어공주.jpg" class="card-img-top card-img-top-fin" alt="...">
-				    </div>	
-				    <div class="Main-card-header-fin">	
-				    	<img src="<%= ctxPath%>/resources/images/분노의질주.jpg" class="card-img-top card-img-top-fin" alt="...">
-				    	<img src="<%= ctxPath%>/resources/images/가디언즈오브갤럭시.jpg" class="card-img-top card-img-top-fin" alt="...">
-				    </div>
-			    </div>			 
-			    <div class="Main-card-body3">
-			      <h5 class="card-title card-font" >로카르노영화제 황금표범상 수상작</h5>
-			    </div>
-			  </div>
-		  </a>
-		  
-		  <a href = "" title="로카르노영화제 황금표범상 수상작" class="Main-a">
-			  <div class="Main-card">
-				  <div class="Main-card-header">
-				  	<div class="Main-card-header-fin">
-				    	<img src="<%= ctxPath%>/resources/images/범죄도시.jpg" class="card-img-top card-img-top-fin" alt="...">
-				    	<img src="<%= ctxPath%>/resources/images/인어공주.jpg" class="card-img-top card-img-top-fin" alt="...">
-				    </div>	
-				    <div class="Main-card-header-fin">	
-				    	<img src="<%= ctxPath%>/resources/images/분노의질주.jpg" class="card-img-top card-img-top-fin" alt="...">
-				    	<img src="<%= ctxPath%>/resources/images/가디언즈오브갤럭시.jpg" class="card-img-top card-img-top-fin" alt="...">
-				    </div>
-			    </div>			 
-			    <div class="Main-card-body3">
-			      <h5 class="card-title card-font" >로카르노영화제 황금표범상 수상작</h5>
-			    </div>
-			  </div>
-		  </a>
-		  
-		  <a href = "" title="로카르노영화제 황금표범상 수상작" class="Main-a">
-			  <div class="Main-card">
-				  <div class="Main-card-header">
-				  	<div class="Main-card-header-fin">
-				    	<img src="<%= ctxPath%>/resources/images/범죄도시.jpg" class="card-img-top card-img-top-fin" alt="...">
-				    	<img src="<%= ctxPath%>/resources/images/인어공주.jpg" class="card-img-top card-img-top-fin" alt="...">
-				    </div>	
-				    <div class="Main-card-header-fin">	
-				    	<img src="<%= ctxPath%>/resources/images/분노의질주.jpg" class="card-img-top card-img-top-fin" alt="...">
-				    	<img src="<%= ctxPath%>/resources/images/가디언즈오브갤럭시.jpg" class="card-img-top card-img-top-fin" alt="...">
-				    </div>
-			    </div>			 
-			    <div class="Main-card-body3">
-			      <h5 class="card-title card-font" >로카르노영화제 황금표범상 수상작</h5>
-			    </div>
-			  </div>
-		  </a>
+		  <c:forEach var="finduser" items="${requestScope.finduser}" varStatus="status">
+			   
+			   <c:set var="mergedCollectionIndex" value="${status.index}" />
+			   
+					  <a href = "" title="" class="Main-a">
+						  <div class="Main-card4">
+							  <div class="Main-card-header">
+							  	<div class="Main-card-header-fin">
+							  		 
+				 				    	<c:if  test="${not empty requestScope.mergedCollectionFinal[mergedCollectionIndex][0].poster_path}">		
+				 				    		<img src="https://image.tmdb.org/t/p/w500/${requestScope.mergedCollectionFinal[mergedCollectionIndex][0].poster_path}" class="card-img-top card-img-top-fin" alt="...">
+										</c:if>
+										<c:if  test="${empty requestScope.mergedCollectionFinal[mergedCollectionIndex][0].poster_path}">		
+				 				    		<img src="<%= ctxPath%>/resources/images/이미지없음.png" class="card-img-top card-img-top-fin" alt="...">
+										</c:if>
+										
+										<c:if  test="${not empty requestScope.mergedCollectionFinal[mergedCollectionIndex][1].poster_path}">		
+				 				    		<img src="https://image.tmdb.org/t/p/w500/${requestScope.mergedCollectionFinal[mergedCollectionIndex][1].poster_path}" class="card-img-top card-img-top-fin" alt="...">
+										</c:if>
+										<c:if  test="${empty requestScope.mergedCollectionFinal[mergedCollectionIndex][1].poster_path}">		
+				 				    		<img src="<%= ctxPath%>/resources/images/이미지없음.png" class="card-img-top card-img-top-fin" alt="...">
+										</c:if>
+					                	
+			 						 
+							    </div>	
+							    <div class="Main-card-header-fin">	
+							    	
+							    		<c:if  test="${not empty requestScope.mergedCollectionFinal[mergedCollectionIndex][2].poster_path}">		
+				 				    		<img src="https://image.tmdb.org/t/p/w500/${requestScope.mergedCollectionFinal[mergedCollectionIndex][2].poster_path}" class="card-img-top card-img-top-fin" alt="...">
+										</c:if>
+										<c:if  test="${empty requestScope.mergedCollectionFinal[mergedCollectionIndex][2].poster_path}">		
+				 				    		<img src="<%= ctxPath%>/resources/images/이미지없음.png" class="card-img-top card-img-top-fin" alt="...">
+										</c:if>
+										
+										<c:if  test="${not empty requestScope.mergedCollectionFinal[mergedCollectionIndex][3].poster_path}">		
+				 				    		<img src="https://image.tmdb.org/t/p/w500/${requestScope.mergedCollectionFinal[mergedCollectionIndex][3].poster_path}" class="card-img-top card-img-top-fin" alt="...">
+										</c:if>
+										<c:if  test="${empty requestScope.mergedCollectionFinal[mergedCollectionIndex][3].poster_path}">		
+				 				    		<img src="<%= ctxPath%>/resources/images/이미지없음.png" class="card-img-top card-img-top-fin" alt="...">
+										</c:if>
+	  						
+							    </div>
+						    </div>			 
+						    <div class="Main-card-body3">
+						      <h5 class="card-title card-font" >"${finduser.user_id}"<br>님의 컬렉션</h5>
+						    </div>
+						  </div>
+					  </a>
+					  
+		  </c:forEach>
 		  
 		</div>
 	</div>	
-	
 		    
 </div>
 
