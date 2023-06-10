@@ -147,6 +147,20 @@ public class WatchaService implements InterWatchaService {
 	    return celCheckFinal;
 	}
 
+	// 컬렉션 있는 user 가져오기 
+	@Override
+	public List<collection_movieVO> finduser() {
+		List<collection_movieVO> finduser = dao.finduser();
+	    return finduser;
+	}
+	
+	// 각자의 컬렉션 가져오기 
+	@Override
+	public List<MovieVO> findCollectionFinal(String user_id) {
+		List<MovieVO> findCollectionFinal = dao.findCollectionFinal(user_id);
+	    return findCollectionFinal;
+	}
+
 	
 
 

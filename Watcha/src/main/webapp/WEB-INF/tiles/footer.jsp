@@ -498,7 +498,7 @@
 							
 				 <ul class="row footer-row" style="margin-bottom: 0; ">
 				       <li class="col-2">
-				           <a class="nav-link-1" href="#">
+				           <a class="nav-link-1" href="<%= ctxPath%>/view/main.action">
 							  <i class="fa-solid fa-house fa-xl"></i><br>
 							  <span class="footer-link-text" style="left: 7px;">홈</span>
 						   </a>
@@ -506,25 +506,47 @@
 				       </li>
 				       
 				       <li class="col-2 offset-1">
-				           <a class="nav-link-2" href="#">
+				           <a class="nav-link-2" href="<%= ctxPath%>/goSearch.action?searchWord=null">
 				              <i class="fa-solid fa-magnifying-glass fa-xl"></i><br>
 				              <span class="footer-link-text">검색</span>
 				           </a>
 				       </li>
 				       
-				       <li class="col-2 offset-1">
-				          <a class="nav-link-3" href="#">
-				              <i class="fa-solid fa-star fa-xl"></i><br>
-				              <span class="footer-link-text" style="left: 1px;">평가</span>
-				          </a>
-				       </li>
+				       <!-- 비 로그인 시 -->
+				       <c:if test="${empty sessionScope.loginuser}"> 
+					       <li class="col-2 offset-1">
+					          <a class="nav-link-3" data-modal="#loginModal" onclick="modalOpen(this)" id="loginBtn">
+					              <i class="fa-solid fa-check fa-xl"></i><br>
+					              <span class="footer-link-text" style="right: 7px;">로그인</span>
+					          </a>
+					       </li>
+					       
+					       <li class="col-2 offset-1">
+					          <a class="nav-link-4"  id="signupBtn" data-modal="#signupModal" onclick="modalOpen(this)">
+					              <i class="fa-solid fa-user fa-xl"></i><br>
+					              <span class="footer-link-text" style="right: 16px; display: block; width: 100px; top: 3px;">회원가입</span>
+					          </a>
+					       </li>
+				       </c:if>
 				       
-				       <li class="col-2 offset-1">
-				          <a class="nav-link-4" href="#">
-				              <i class="fa-solid fa-user fa-xl"></i><br>
-				              <span class="footer-link-text" style="right: 16px; display: block; width: 100px; top: 3px;">나의 왓챠</span>
-				          </a>
-				       </li>
+				       
+				       
+				       <!--  로그인시  -->
+				       <c:if test="${not empty sessionScope.loginuser}"> 
+					       <li class="col-2 offset-1">
+					          <a class="nav-link-3" href="<%= ctxPath%>/rateMovies.action">
+					              <i class="fa-solid fa-star fa-xl"></i><br>
+					              <span class="footer-link-text" style="left: 1px;">평가</span>
+					          </a>
+					       </li>
+					       
+					       <li class="col-2 offset-1">
+					          <a class="nav-link-4" href="<%= ctxPath%>/myWatcha.action">
+					              <i class="fa-solid fa-user fa-xl"></i><br>
+					              <span class="footer-link-text" style="right: 16px; display: block; width: 100px; top: 3px;">나의 왓챠</span>
+					          </a>
+					       </li>
+				       </c:if>
 			 	  </ul>
 			</div>
 		</div>	
