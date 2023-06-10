@@ -34,6 +34,11 @@ public interface InterWatchaService {
 	String getLikeInsertCollection(Map<String, Object> paraMap);
 	String getLikeDeleteCollection(Map<String, Object> paraMap);
 
+	// 컬렉션 영화 추가
+	int getCollectionSelect(Map<String, Object> paraMap);
+	String getCollectionAddDelete(Map<String, Object> paraMap);
+	String getCollectionAddInsert(Map<String, Object> paraMap);
+
 	
 	
 

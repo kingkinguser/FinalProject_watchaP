@@ -180,10 +180,11 @@
 	/* 출연, 제작 시작*/
 	$(document).ready(function(){
 		
+	   
 		
-		$('#recipeCarousel').carousel({ 
-			  interval: 10000
-		});
+	$('#recipeCarousel').carousel({ 
+		  interval: 10000
+	});
 	
 	$('.carousel .carousel-item').each(function(){
 	    var minPerSlide = 4;
@@ -262,16 +263,24 @@
 
 	/*컬렉션 시작*/		
 	$("input:checkbox[name='check_collection']").click(function(){
-		  
-		if($('input:checkbox[name="check_collection"]').is(":checked")) {
-			 
-		 	$(".collectioni").css({"color":"#ff0558"}); 
-		 	
-			<%-- 		 	
+		 
+			if($('input:checkbox[name="check_collection"]').is(":checked")) {
+				 
+				$(".collectioni").css({"color":"#ff0558"}); 	 
+			}
+			else if(!$('input:checkbox[name="check_collection"]').is(":checked")) {
+
+				$(".collectioni").css({"background-color":"","color":""}); 
+			}
+		
+			 const commentData = { user_id : '${sessionScope.loginuser.user_id}',
+			                       movie_id : '${requestScope.movieDetail.movie_id}'
+				}
+			
 	 		  $.ajax({
 	  			 url: "<%= ctxPath%>/view/insert_collection.action",
 	  			 type: "post",
-	  			 data: ,
+	  			 data: commentData,
 	  			 dataType: "json",
 	  			 success:function(json){
 	  				 
@@ -280,24 +289,14 @@
 	   	            alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
 	     	     }	 
 	  		 }); 
-	  		 --%>
-		 	 
-		}
-		else if(!$('input:checkbox[name="check_collection"]').is(":checked")) {
-
-			$(".collectioni").css({"background-color":"","color":""}); 
-		}
 		
 		$("input:checkbox[name='check_collection']").toggle();
 		
-	  });
+	});
 	/*컬렉션 끝*/ 	
 	
-	/* 영화 등 정보 불러오기 시작 */
 	
-	/* 영화 등 정보 불러오기 끝 */
-	
-	});//end of $(document).ready(function())----------------------------------------------------------------------------------
+});//end of $(document).ready(function())----------------------------------------------------------------------------------
 </script>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
@@ -328,7 +327,6 @@
 						<c:otherwise><span style="font-weight: bold; font-size: 13px;">${genres.genre_name}</span></c:otherwise>
 					</c:choose>
 		        </c:forEach>  
-			
 				
 				<div style="margin-top: 10px; font-weight: bold; font-size: 17px;">${requestScope.movieDetail.tagline}</div>
 	

@@ -107,7 +107,7 @@
     select user_id, movie_id, movie_title, poster_path, rating_avg, rating_count
 	from     
 	(        
-    select row_number() over(order by M.movie_id desc) AS RNO, CM.user_id, M.movie_id, M.movie_title, M.runtime, M.poster_path, M.rating_avg, M.rating_count
+    select row_number() over(order by CM.collection_movie_date desc) AS RNO, CM.user_id, M.movie_id, M.movie_title, M.runtime, M.poster_path, M.rating_avg, M.rating_count
 	from collection_movie CM join movie M
 	on CM.movie_id = M.movie_id
 	where user_id = #{user_id}
@@ -171,6 +171,23 @@
 	delete from collection_like
 	where user_id_collection = #{user_id_collection} and user_id_like = #{user_id_like}
 	</insert>
+	
+	<!-- 컬렉션 영화 추가 -->
+	<select id="getCollectionSelect" parameterType="HashMap" resultType="int">
+	select count(*)
+	from collection_movie
+	where user_id = #{user_id} and movie_id = #{movie_id} 
+	</select>
+	 
+	<insert id="getCollectionAddDelete" parameterType="HashMap" >
+	delete from collection_movie
+	where user_id = #{user_id} and movie_id = #{movie_id}
+	</insert> 
+
+	<insert id="getCollectionAddInsert" parameterType="HashMap" >
+   	INSERT INTO collection_movie(movie_id, user_id) 
+	VALUES (#{movie_id},#{user_id})
+	</insert> 
 	 
 </mapper>
 

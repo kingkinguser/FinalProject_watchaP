@@ -106,5 +106,24 @@ public class WatchaService implements InterWatchaService {
 		return likeCollection;
 	}
 
+	// 컬렉션 영화 추가
+	@Override
+	public int getCollectionSelect(Map<String, Object> paraMap) {
+		int n = dao.getCollectionSelect(paraMap);
+		return n;
+	}
+	@Override
+	public String getCollectionAddDelete(Map<String, Object> paraMap) {
+		String collectionAdd = dao.getCollectionAddDelete(paraMap);
+		
+		return collectionAdd;
+	}
+	@Override
+	public String getCollectionAddInsert(Map<String, Object> paraMap) {
+		String collectionAdd = dao.getCollectionAddInsert(paraMap);
+		
+		return collectionAdd;
+	}
+
 		
 }

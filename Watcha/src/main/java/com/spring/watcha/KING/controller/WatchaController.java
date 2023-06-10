@@ -94,7 +94,6 @@ public class WatchaController {
 	            String user_id = loginuser.getUser_id();
 				String start = request.getParameter("start");
 				String len = request.getParameter("len");
-				
 				String end = String.valueOf(Integer.parseInt(start) + Integer.parseInt(len) - 1);
 				
 				Map<String, String> paraMap = new HashMap<>();
@@ -237,6 +236,37 @@ public class WatchaController {
 				}
 				JSONObject jsonObj = new JSONObject();
 				jsonObj.put("likeCollection", likeCollection);
+				
+				return jsonObj.toString();
+				
+			}
+			
+			
+			// === 좋아요 === //
+			@ResponseBody
+			@RequestMapping(value="/view/insert_collection.action", method= {RequestMethod.POST})   
+			public String insert_collection(HttpServletRequest request) {
+				
+				String collectionAdd = "";
+				String user_id = request.getParameter("user_id");
+				String movie_id = request.getParameter("movie_id");
+				
+				Map<String, Object> paraMap = new HashMap<>();
+				paraMap.put("user_id", user_id);
+				paraMap.put("movie_id", movie_id); 
+				
+				int n = service.getCollectionSelect(paraMap);
+				 
+				paraMap.put("n", n);
+				
+				if(n == 1) {
+					collectionAdd = service.getCollectionAddDelete(paraMap);
+				}
+				else {
+					collectionAdd = service.getCollectionAddInsert(paraMap);
+				}
+				JSONObject jsonObj = new JSONObject();
+				jsonObj.put("collectionAdd", collectionAdd);
 				
 				return jsonObj.toString();
 				

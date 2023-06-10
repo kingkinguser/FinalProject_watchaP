@@ -96,4 +96,21 @@ public class WatchaDAO implements InterWatchaDAO {
 			String likeCollection = sqlsession.selectOne("watcha.getLikeDeleteCollection", paraMap);
 			return likeCollection;
 		}
+
+		// 컬렉션 영화 추가
+		@Override
+		public int getCollectionSelect(Map<String, Object> paraMap) {
+			int n = sqlsession.selectOne("watcha.getCollectionSelect", paraMap);
+			return n;
+		}
+		@Override
+		public String getCollectionAddDelete(Map<String, Object> paraMap) {
+			String collectionAdd = sqlsession.selectOne("watcha.getCollectionAddDelete", paraMap);
+			return collectionAdd;
+		}
+		@Override
+		public String getCollectionAddInsert(Map<String, Object> paraMap) {
+			String collectionAdd = sqlsession.selectOne("watcha.getCollectionAddInsert", paraMap);
+			return collectionAdd;
+		}
 }

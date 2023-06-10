@@ -141,11 +141,11 @@
 		 background-repeat: no-repeat;
 		 background-size:cover;  
 		 background-position: center center; 
-		 height: 350px;
-  	     width: 100%; 
+		 height: 400px;
+  	     width: 60%; 
   	     background-blend-mode: multiply;
   	     border-radius: 10px 10px;
-  	     opacity: 0.4;
+  	     opacity: 0.9;
 	} 
 	
 	#commentInfo{
@@ -180,24 +180,24 @@
 
 <script type="text/javascript">
 
-	
 	$(document).ready(function(){
 			
 			/* 검색 엔터누를시  */ 
 			$('input#user_collection_content').on('keyup', function(event){
+				
 		    	if( event.keyCode == 13 ){
 		    		goAddUserWrite()
 		    	}
+		    	
 		    });
 		
 		    goUserViewComment(1); // 페이징 처리 한 댓글 읽어오기
 				
 			/* 카드 더보기 시작 */
-			$("span#totalHITCount").hide();
+			$("span#totalHITCount").hide(); 
 			$("span#countHIT").hide();
 			
-			displayHIT("1");
-			// HIT 상품 게시물을 더보기 위하여 "더보기..." 버튼 클릭액션 이벤트 등록하기
+			displayHIT("1"); 
 			
 			$("button#btnMoreHIT").click(function(){
 				
@@ -207,16 +207,14 @@
 					$("span#end").empty();
 					displayHIT("1");
 					$(this).text("더보기");
-					
+					 
 				}
 				else{
 					displayHIT($(this).val());
 				}
 				
-			});// end of $("button#btnMoreHIT").click() --------------------------- 	
+			});
 			/* 카드 더보기 끝 */
-				
-				
 				
 			/* 출연, 제작 시작*/	
 			$('#recipeCarousel').carousel({ 
@@ -224,15 +222,20 @@
 			});
 			
 			$('.carousel .carousel-item').each(function(){
+				
 			    var minPerSlide = 5;
 			    var next = $(this).next();
+			    
 			    if (!next.length) {
 			        next = $(this).siblings(':first');
 			    }
+
 			    next.children(':first-child').clone().appendTo($(this));
 			    
 			    for (var i=0;i<minPerSlide;i++) {
+			    	
 			        next=next.next();
+			        
 			        if (!next.length) {
 			        	next = $(this).siblings(':first');
 			      	}
@@ -255,15 +258,14 @@
 					$(".goodi").css({"background-color":"","color":""}); 
 				}
 				
-				goLikeCollection();
+					goLikeCollection();
 				
 				$("input:checkbox[name='check_good']").toggle();
 				
-			  });
+			});
 			/*좋아요 끝*/	
 		
 	});//end of $(document).ready(function()) ----------------------------------------------------------------------------
-
 
 	// Function Declaration
 
@@ -273,6 +275,7 @@
 	
 	// display 할  HIT상품 정보를 추가 요청하기(Ajax 로 처리함)
 	function displayHIT(start){
+		
 		$.ajax({
 			url:"<%= ctxPath %>/cardSeeMore.action",
 		    data:{"start":start,  
@@ -285,7 +288,7 @@
 		    	 
 		    	 if(start == "1" && json.length == 0){
 			    	
-		    		 html += "현재 상품 준비중...";
+		    		 html += "나의 컨렉션을 만들어 보세요!!";
 		    	 
 		    	 	 $("div#displayHIT").html(html);
 		    		 
@@ -348,15 +351,12 @@
     }
 	/* ==== 댓글쓰기 끝 ==== */
 	 
-    /* ==== 파일첨부가 없는 댓글쓰기 시작 ==== */
+    /* ==== 댓글쓰기 시작 ==== */
     function goAddUserWrite_noAttach() {
 		
-		const commentData = {
-				user_id_collection : '${param.user_id}',
-				user_id_comment : '${sessionScope.loginuser.user_id}',
-				user_collection_content : $("input#user_collection_content").val(),
-		}
-		
+	  const commentData = { user_id_collection : '${param.user_id}',
+					        user_id_comment : '${sessionScope.loginuser.user_id}',
+		    				user_collection_content : $("input#user_collection_content").val() }
 		
       $.ajax({
   		 url:"<%= request.getContextPath()%>/addUserComment.action",
@@ -364,6 +364,7 @@
   		 type:"post",
   		 dataType:"json",
   		 success:function(json){
+  		
   			 if(json.n == '1') {
   				goUserViewComment(1); // 페이징 처리 한 댓글 읽어오기	 
   			 } else {
@@ -371,6 +372,7 @@
   			 } 
   			 
   			 $("input#user_collection_content").val("");
+  			 
   		 },
   		 error: function(request, status, error){
 			alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
@@ -403,9 +405,9 @@
  				 }); 
 			  }   
 			  else {
-				  html += "<tr>" +
-				            "<td colspan='6' class='comment'>댓글이 없습니다</td>" +
-				          "</tr>"; 
+				    html += "<tr>" +
+				                "<td colspan='6' class='comment'>댓글이 없습니다</td>" +
+				            "</tr>"; 
 			  }
 			  
 			  $("tbody#commentDisplay").html(html);
@@ -530,16 +532,18 @@
 <body>
 
 	<div id="container">
+	
+		<img id="middle" src="https://image.tmdb.org/t/p/w1280${requestScope.collection_view[0].backdrop_path}"/>
+	
 		<div class="card">
 		    <div class="card-body"> 
-		        
-		        <img id="middle" src="https://image.tmdb.org/t/p/w1280${requestScope.collection_view[0].backdrop_path}"/>
 		        
 		        <hr style="margin: 0 30px 0 30px;">  	
 		        
 		        <span style="margin-left: 50px;"></span>
 		        
 		        <div id="commentInfo">
+		        
 			        <span>성명:&nbsp;${requestScope.collection_view[0].name}</span>
 			        
 					<span style= "width: 100px;"> 
@@ -558,17 +562,14 @@
  
 				  <div class="row" id="displayHIT" style="margin-left: 20px;"></div>
    					 
-				  <c:if test="${requestScope.totalCount.count} > 5">		 		 	
-				      <div>
+				      <div> 
 				         <p class="text-center">
 				            <span id="end" style="display:block; margin:20px 0px 0 0; font-weight:bold; font-size: 12pt;"></span> 
 				            <button type="button" class="btn" id="btnMoreHIT" style="font-weight:bold; color:#f3578d;">더보기</button>
-				            <span id="totalHITCount">${requestScope.totalCount.count}</span>
+				            <span id="totalHITCount">${requestScope.totalCount.COUNT}</span>
 				            <span id="countHIT">0</span>
 				         </p>
 				      </div>
-			      </c:if>   
-			    
 			      
 			    <hr style="margin: 0 30px 0 30px;">  
 			    		
