@@ -34,14 +34,6 @@ public class WatchaController {
 		}
 		
 		
-		// 내정보 수정 테스트페이지, 페이지 합치면서 삭제할 예정
-		@RequestMapping(value="/modifyMyInfo.action")
-		public String modifyMyInfo_test() {
-			
-			return "member/modifyMyInfo.tiles";
-		}
-		
-		
 		// 로그인 기능 구현
 		@RequestMapping(value="/loginEnd.action" , method= {RequestMethod.POST})
 		public ModelAndView loginEnd(ModelAndView mav, HttpServletRequest request) {
@@ -60,7 +52,7 @@ public class WatchaController {
 		}
 		
 		
-		// 회원가입시 아이디 중복체크 기능 구현
+		// 회원가입시 아이디 중복체크 기능 구현 ajax
 		@ResponseBody
 		@RequestMapping(value="/idDuplicateCheck.action", method= {RequestMethod.POST})
 		public String idDuplicateCheck(HttpServletRequest request) {
@@ -118,6 +110,52 @@ public class WatchaController {
 		   return mav;
 		}
 		
+
+		// 이메일 중복체크 ajax
+		@ResponseBody
+		@RequestMapping(value="/member/emailDuplicateCheck.action", method = RequestMethod.POST )
+		public String emailDuplicateCheck(HttpServletRequest request) {
+			
+			String email = request.getParameter("email");
+			
+			int isExists = service.emailDuplicateCheck(email);
+			
+			JsonObject jsonObj = new JsonObject();
+			jsonObj.addProperty("isExists", isExists);
+			
+			return new Gson().toJson(jsonObj);
+		}
+		
+		
+		// 내정보 수정
+		@RequestMapping(value="/modifyMyInfo.action", method = RequestMethod.POST )
+		public String modifyMyInfo(HttpServletRequest request) {
+			
+			return "member/modifyMyInfo.tiles";
+		}
+		
+		
+		// 회원정보수정 새암호인지 확인 ajax
+		@RequestMapping(value="/member/duplicatePwdCheck.action", method = RequestMethod.POST )
+		public String duplicatePwdCheck(HttpServletRequest request) {
+
+
+			String new_pwd = request.getParameter("new_pwd");
+			
+			String user_id = request.getParameter("user_id");
+			
+			Map<String, String> paraMap = new HashMap<>();
+
+			paraMap.put("new_pwd", new_pwd);
+			paraMap.put("user_id", user_id);
+			
+			int n = service.duplicatePwdCheck(paraMap);
+			
+			JsonObject jsonObj = new JsonObject();
+			jsonObj.addProperty("n", n);
+			
+			return new Gson().toJson(jsonObj);
+		}
 		
 		
 }

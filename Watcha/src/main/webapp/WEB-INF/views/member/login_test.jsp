@@ -512,6 +512,11 @@ function func_Signup() {
 
 </head>
 <body>
+	<!-- 로그인 체크 -->
+	현재 로그인 아이디 : ${sessionScope.loginuser.user_id}
+	<br>
+	
+
     <!-- 로그인 버튼 -->
     <button type="button" id="loginBtn" data-modal="#loginModal" onclick="modalOpen(this)">로그인</button>
 
