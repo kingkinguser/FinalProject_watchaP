@@ -514,7 +514,7 @@
 	    });
 		
 		// 검색시 검색조건 및 검색어 유지시키기
-		 $("input#search_header").val('${lastSearchWord}'); // 검색했을때 마지막 부분 유지하기 
+		 $("input#search_header").val(`${lastSearchWord}`); // 검색했을때 마지막 부분 유지하기 
 		
 
 		  $("div#showSearch").hide();    // 먼저 숨긴다.
@@ -613,7 +613,12 @@
 	// 연관검색어와 최근 검색어 나타내는 ajax
 	function goajax(switchValue){
 			
-		var searchWordsString = "${recentSearchWords}";
+		var searchWordsString = `${recentSearchWords}`.replace(/"/g, '\\"').replace(/'/g, '"').replace(/\\"/g, "'");
+
+
+
+
+
 		var searchWords = searchWordsString.split(",");
 		
 		
