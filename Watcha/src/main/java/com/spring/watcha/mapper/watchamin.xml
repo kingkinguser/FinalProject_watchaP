@@ -373,15 +373,32 @@
 	
 	
 	<!-- 컬렉션 있는 유저 가져오기  -->
-	<select id="finduser" resultType="com.spring.watcha.model.collection_movieVO">		
+	
+	<!-- 유저의 컬렉션을 가져오기 각자마다 -->
+	<resultMap id="find_Userid_Name" type="com.spring.watcha.model.collection_movieVO">	
+	    <result property="user_id" column="user_id"/>
+	    <collection property="member" javaType="java.util.List" ofType="com.spring.watcha.model.MemberVO" resultMap="memberResultMap"/>
+	</resultMap>
+	
+	<resultMap id="memberResultMap" type="com.spring.watcha.model.MemberVO">
+	    <result property="name" column="name"/>
+	</resultMap>
+	
+	<select id="finduser" resultMap="find_Userid_Name">		
 		
-		select user_id , COUNT(*) AS user_id2
+		select a.user_id , MAX(b.name) AS name, COUNT(*) AS user_id2
 		from (
 		    SELECT user_id , COUNT(*) OVER (PARTITION BY user_id) AS user_id2
 		    FROM collection_movie  
 		    order by user_id2 desc
-		) 
-		group by user_id
+		    
+		) a
+		join (
+		    select user_id, name 
+		    from member
+		) b
+		ON a.user_id = b.user_id
+		group by a.user_id
 		order by user_id2 desc, user_id asc
 	</select>
 	

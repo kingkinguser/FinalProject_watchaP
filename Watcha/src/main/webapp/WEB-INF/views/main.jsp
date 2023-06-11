@@ -243,18 +243,19 @@
 <script type="text/javascript">
 
 $(document).ready(function() {
-/* 	let resizeTimer;						// 창 크기가 빠르게 변경되면 안되는 현상을 고치기 위해 타임아웃 사용
-	$(window).on('resize', function() {    // 창 크기가 변경될 때마다 다시 실행 
-	    clearTimeout(resizeTimer);			// 타임아웃 사용 (일정시간 지난후에 실행한다.)
-	    resizeTimer = setTimeout(function() {
-	        CarouselGO();
-	    }, 150); // 150ms의 딜레이를 사용하여 타임아웃 설정
-	}); */
-	Carousel();
-	//StarRank();
-	
-	
-});
+	/* 	let resizeTimer;						// 창 크기가 빠르게 변경되면 안되는 현상을 고치기 위해 타임아웃 사용
+		$(window).on('resize', function() {    // 창 크기가 변경될 때마다 다시 실행 
+		    clearTimeout(resizeTimer);			// 타임아웃 사용 (일정시간 지난후에 실행한다.)
+		    resizeTimer = setTimeout(function() {
+		        CarouselGO();
+		    }, 150); // 150ms의 딜레이를 사용하여 타임아웃 설정
+		}); */
+		Carousel();
+
+		//StarRank();
+		
+		
+	});
 		
 function Carousel(){
 	
@@ -316,6 +317,9 @@ function Carousel(){
 
   	  ]
   	});	
+    
+    
+
 }
 
 <%-- // 평점 순위 일때 
@@ -652,10 +656,11 @@ function StarRank() {
 
 		<div class="card-deck main-carousel-card mb-5">
 		  <c:forEach var="finduser" items="${requestScope.finduser}" varStatus="status">
-			   
 			   <c:set var="mergedCollectionIndex" value="${status.index}" />
-			   
-					  <a href = "" title="" class="Main-a">
+			      <form id="form${mergedCollectionIndex}" action="<%= ctxPath%>/view/user_collection.action" method="post">
+			        <input type="hidden" name="user_id" value="${finduser.user_id}">
+			        <a href="#" title="" class="Main-a" onclick="event.preventDefault(); document.getElementById('form${mergedCollectionIndex}').submit()">
+					
 						  <div class="Main-card4">
 							  <div class="Main-card-header">
 							  	<div class="Main-card-header-fin">
@@ -695,11 +700,13 @@ function StarRank() {
 							    </div>
 						    </div>			 
 						    <div class="Main-card-body3">
-						      <h5 class="card-title card-font" >"${finduser.user_id}"<br>님의 컬렉션</h5>
+						     <c:forEach var="member" items="${finduser.member}">
+						        <h5 class="card-title card-font">&quot;${member.name}&quot;<br>님의 컬렉션</h5>
+						    </c:forEach>
 						    </div>
 						  </div>
 					  </a>
-					  
+				 </form>	  
 		  </c:forEach>
 		  
 		</div>

@@ -308,11 +308,14 @@ public class WatchaController {
 		List<List<MovieVO>> mergedCollectionFinal = new ArrayList<>();
 		
 		
-		List<collection_movieVO> finduser = service.finduser();
+		List<collection_movieVO> finduser = service.finduser();		
 		
+
 		for (collection_movieVO movie : finduser) {
-		    String user_id= movie.getUser_id(); 			
+			List<MemberVO> members = movie.getMember();    // 이름값 나타내기 위해 
 			
+			String user_id= movie.getUser_id(); 
+		    
 			List<MovieVO> findCollectionFinal = service.findCollectionFinal(user_id);
 			
 			//System.out.println(mergedCollection);
@@ -343,6 +346,7 @@ public class WatchaController {
 		mav.addObject("collection",collection);
 		mav.addObject("mergedCollectionFinal",mergedCollectionFinal);
 		mav.addObject("finduser",finduser);
+		
 		mav.setViewName("/main.tiles");
 		
 		
