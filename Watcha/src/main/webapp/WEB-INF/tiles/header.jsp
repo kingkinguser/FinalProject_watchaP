@@ -613,12 +613,7 @@
 	// 연관검색어와 최근 검색어 나타내는 ajax
 	function goajax(switchValue){
 			
-		var searchWordsString = `${recentSearchWords}`.replace(/"/g, '\\"').replace(/'/g, '"').replace(/\\"/g, "'");
-
-
-
-
-
+		var searchWordsString = `${recentSearchWords}`.replace(/"/g, '\\"').replace(/'/g, "'").replace(/\\"/g, '"');
 		var searchWords = searchWordsString.split(",");
 		
 		
