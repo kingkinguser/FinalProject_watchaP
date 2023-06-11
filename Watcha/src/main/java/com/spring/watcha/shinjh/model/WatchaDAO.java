@@ -57,4 +57,20 @@ public class WatchaDAO implements InterWatchaDAO {
 			int n = sqlsession.selectOne("watcha.duplicatePwdCheck", paraMap);
 			return n;
 		}
+
+
+		// 내정보 수정하기
+		@Override
+		public int modifyInfo(MemberVO member) {
+			int n = sqlsession.update("watcha.modifyInfo", member);
+			return n;
+		}
+
+
+		// 회원탈퇴
+		@Override
+		public int deleteMember(MemberVO loginuser) {
+			int n = sqlsession.delete("watcha.deleteMember", loginuser);
+			return n;
+		}
 }

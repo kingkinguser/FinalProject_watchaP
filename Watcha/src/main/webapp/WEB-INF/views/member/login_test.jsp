@@ -1,9 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
     
-<%
-    String ctxPath = request.getContextPath();
-%> 
+<% String ctxPath = request.getContextPath();%>    
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> 
+
+
     
 <!DOCTYPE html>
 <html>
@@ -372,8 +373,15 @@ html:lang(ko) {
 
 <script type="text/javascript">
 
+let idbool = false; // 아이디 중복체크 결과
+let emailbool = false; // 이메일 중복체크 결과
+
 $(document).ready(function() {
 
+	// 추가사항
+	$("#url").val(window.location.href);
+	
+	
     // modal 닫기 기능
     $(".login_signup-modal").click(function(e) {
         if (e.target === this) {
@@ -396,6 +404,7 @@ function modalOpen(btn) {
 function modalClose() {
     $(".login_signup-modal").css("display","none");
     $("html").removeClass("disableBodyScrolling");
+    $(".login_signup-label-input").removeClass("warn-label-input");
     resetForm();
 }
 
@@ -408,29 +417,128 @@ function resetForm(){
     $("p.warning-text").css("display","none");    
 }
 
+
+//----- 아이디 입력태그 ------ //
+function idChange(e) {
+
+	if( $(e).val().trim().length < 1 ) {
+		// 1글자 미만일 경우 
+		$("p#id-warning").css("display","block"); // 해당 부분만 error 문구 출력해주기
+		$(e).parent().parent().addClass("warn-label-input");
+	}
+	else {
+		// 2글자 이상일 경우
+		$("p#id-warning").css("display","none"); // 해당 부분만 error 문구 숨기기
+		$(e).parent().parent().removeClass("warn-label-input");
+	}
+	
+}
+
+
+//----- 아이디 입력태그2 ------ //
+function id2Change(e) {
+
+	if( $(e).val().trim().length < 1 ) {
+		// 1글자 미만일 경우 
+		$("p#id2-warning").css("display","block"); // 해당 부분만 error 문구 출력해주기
+		$(e).parent().parent().addClass("warn-label-input");
+	}
+	else {
+		// 2글자 이상일 경우
+		$("p#id2-warning").css("display","none"); // 해당 부분만 error 문구 숨기기
+		$(e).parent().parent().removeClass("warn-label-input");
+		checkId();
+	}
+	
+}
+
+
+// ----- 비밀번호 입력태그 ------ //
+function pwdChange(e) {
+
+	// 숫자/문자/특수문자/ 포함 형태의 8~15자리 이내의 암호 정규식 2
+	const regExp = /^.*(?=^.{8,15}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[^a-zA-Z0-9]).*$/g;
+	
+	const bool = regExp.test($(e).val()); // 정규표현식에 맞으면 true 아니면 false
+	
+	if($(e).val()!="" && !bool) {
+		// 암호가 정규표현식에 맞지 않는 경우
+		$(e).parent().parent().parent().find("p").css("display","block"); // 해당 부분만 error 문구 출력해주기
+		$(e).parent().parent().addClass("warn-label-input");
+	}
+	
+	else {
+		// 암호가 정규표현식에 맞거나 공백인 경우
+		$(e).parent().parent().parent().find("p").css("display","none"); // 해당 부분만 error 문구 숨기기
+		$(e).parent().parent().removeClass("warn-label-input");
+	}
+}
+
+
+//----- 이름 입력태그 ------ //
+function nameChange(e) {
+
+	if( $(e).val().trim().length < 2 ) {
+		// 2글자 미만일 경우 
+		$("p#name-warning").css("display","block"); // 해당 부분만 error 문구 출력해주기
+		$(e).parent().parent().addClass("warn-label-input");
+	}
+	else {
+		// 2글자 이상일 경우
+		$("p#name-warning").css("display","none"); // 해당 부분만 error 문구 숨기기
+		$(e).parent().parent().removeClass("warn-label-input");
+	}
+}	
+
+
+//----- 연락처 입력태그 ------ //
+function numChange(e) {
+
+	//3.연락처 체크 정규식
+	const regExp = /^010\d{8}$/g;
+	// 010 + 숫자 8자리만 들어오도록 검사해주는 객체 생성
+	const bool = regExp.test($(e).val()); // 정규표현식에 맞으면 true 아니면 false
+	
+	if(!bool) {
+		// 정규표현식에 맞지 않는 경우
+		$("p#mobile-warning").css("display","block"); // 해당 부분만 error 문구 출력해주기
+		$(e).parent().parent().addClass("warn-label-input");
+	}
+	
+	else {
+		// 정규표현식에 맞는 경우
+		$("p#mobile-warning").css("display","none"); // 해당 부분만 error 문구 숨기기
+		$(e).parent().parent().removeClass("warn-label-input");
+	}
+	
+}
+
+
+//----- 이메일 입력태그 ------ //		
+function emailChange(e) {
+
+	//3.이메일 체크 정규식
+	const regExp = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i; 
+	
+	const bool = regExp.test($(e).val()); // 정규표현식에 맞으면 true 아니면 false
+	
+	if(!bool) {
+		// 이메일이 정규표현식에 맞지 않는 경우
+		$("p#email-warning").css("display","block"); // 해당 부분만 error 문구 출력해주기
+		$(e).parent().parent().addClass("warn-label-input");
+		emailbool = false;
+	}
+	
+	else {
+		// 이메일이 정규표현식에 맞는 경우
+		$("p#email-warning").css("display","none"); // 해당 부분만 error 문구 숨기기
+		emailDuplicateCheck();
+	}
+}
+
+
 // 로그인 정규화 및 기능
 function func_Login() {
-	
-	const user_id = $("input#user_id").val(); 
-	const password = $("input#password").val(); 
-
-	/* if(user_id.trim()=="") {
-		$("p#id-warning").css("display","block"); // 해당 부분만 error 문구 출력해주기
-		return; // 종료
-	}
-	else {
-		$("p#id-warning").css("display","none"); // 해당 부분만 error 문구 숨기기
-	} */
-
-	
-	if(password.trim().length < 6) {
-		$("p#password-warning").css("display","block"); // 해당 부분만 error 문구 출력해주기
-		return; // 종료
-	}
-	else {
-		$("p#password-warning").css("display","none"); // 해당 부분만 error 문구 숨기기
-	} 
-	
 	
 	const frm = document.loginForm;
 	
@@ -443,56 +551,7 @@ function func_Login() {
 
 function func_Signup() {
 	
-	// 이메일 체크 정규식
-	const regExp = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i; 
-	
-	const bool = regExp.test($("input#email").val());
-	
-	let isExists;
-	
-	if(!bool) {
-		
-		$("p#email-warning").css("display","block"); // 해당 부분만 error 문구 출력해주기
-		return; // 종료
-		
-	}
-	
-	else {
-		// 이메일이 정규표현식에 맞는 경우
-		$("p#email-warning").css("display","none"); // 해당 부분만 error 문구 숨기기
-	
-	}
-	
-	
-	// 아이디 중복체크 시작
-	$.ajax({
-  		url:"<%= ctxPath%>/idDuplicateCheck.action",
-  		data:{"user_id":$("input#user_id2").val()},
-  		type:"post",
-  		dataType:"json",
-  		async:false,
-		success:function(json){			
-			
-			if(json.isExists == 1) { // 입력한 id가 이미 사용 중이라면
-
-				$("p#id2-warning").css("display","block");
-				isExists = 1;
-			}
-			else if( json.isExists == 0 ) { // 입력한 id가 중복되지 않는 아이디일 경우
-
-				$("p#id2-warning").css("display","none");
-				isExists = 0;
-			}
-			
-		},
-		
-		error: function(request, status, error){
-               alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
-        }
-	});
-	// 아이디 중복체크 끝
-	
-	if(isExists == 1) {	
+	if(!idbool || !emailbool) {	
 		return false;
 	}
 	
@@ -507,6 +566,67 @@ function func_Signup() {
 }
 
 
+function checkId() {
+	
+	$.ajax({
+  		url:"<%= ctxPath%>/idDuplicateCheck.action",
+  		data:{"user_id":$("input#user_id2").val()},
+  		type:"post",
+  		dataType:"json",
+  		async:false,
+		success:function(json){			
+			
+			if(json.isExists == 1) { // 입력한 id가 이미 사용 중이라면
+				$("p#id2-warning2").css("display","block");
+				$("input#user_id2").parent().parent().addClass("warn-label-input");
+				idbool = false;
+			}
+			else if( json.isExists == 0 ) { // 입력한 id가 중복되지 않는 아이디일 경우
+
+				$("p#id2-warning2").css("display","none");
+				$("input#user_id2").parent().parent().removeClass("warn-label-input");
+				idbool = true;
+			}
+			
+		},
+		
+		error: function(request, status, error){
+               alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+        }
+	});
+}
+
+
+function emailDuplicateCheck() {
+	
+   	$.ajax({
+   		url:"<%= ctxPath%>/emailDuplicateCheck.action",
+   		data:{"email":$("input#email").val()},
+   		type:"post",
+		dataType:"json",
+		success:function(json){ 
+               
+			if(json.isExists > 0) {
+				$("p#email-warning2").css("display","block"); // 해당 부분만 error 문구 출력해주기
+				$("input#email").parent().parent().addClass("warn-label-input");
+				$("p#email-warning2").val($("input#email").val()+"은 중복된 email 이므로 사용이 불가능합니다.");
+				emailbool = false;
+			}
+			else if( json.isExists == 0 ) { // 중복되지 않는 이메일인 경우
+				$("p#email-warning2").css("display","none"); // 해당 부분만 error 문구 숨기기
+				$("input#email").parent().parent().removeClass("warn-label-input");
+				emailbool = true;
+			}
+		},
+		
+		error: function(request, status, error){
+               alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+        }
+	});		
+	
+}
+
+
 </script>
 
 
@@ -516,12 +636,24 @@ function func_Signup() {
 	현재 로그인 아이디 : ${sessionScope.loginuser.user_id}
 	<br>
 	
+	<c:if test="${empty sessionScope.loginuser}">
+      <!-- 로그인 버튼 -->
+      <button type="button" id="loginBtn" data-modal="#loginModal" onclick="modalOpen(this)">로그인</button>
 
-    <!-- 로그인 버튼 -->
-    <button type="button" id="loginBtn" data-modal="#loginModal" onclick="modalOpen(this)">로그인</button>
-
-    <!-- 회원가입 버튼 -->
-    <button type="button" id="signupBtn" data-modal="#signupModal" onclick="modalOpen(this)">회원가입</button>
+      <!-- 회원가입 버튼 -->
+      <button type="button" id="signupBtn" data-modal="#signupModal" onclick="modalOpen(this)">회원가입</button>
+	</c:if>
+	
+	<c:if test="${not empty sessionScope.loginuser}">
+      <!-- 회원정보수정 버튼 -->
+      <button type="button" id="modifyBtn" onclick="location.href='<%= ctxPath %>/modifyMyInfo.action'">회원정보 수정</button>
+	
+      <!-- 로그아웃 버튼 -->
+      <button type="button" id="modifyBtn" onclick="location.href='<%= ctxPath %>/logout.action'">로그아웃</button>
+	
+      <!-- 회원탈퇴 버튼 -->
+      <button type="button" id="modifyBtn" onclick="location.href='<%= ctxPath %>/deleteMember.action'">회원탈퇴</button>
+	</c:if>
 
     <!-- 로그인 modal -->
     <div id="loginModal" class="login_signup-modal">
@@ -535,22 +667,26 @@ function func_Signup() {
                     <div class="mx20">
                         <form name="loginForm" class="form" onsubmit="return func_Login()">
                         
+                        	<!-- 추가사항 -->
+                            <input type="hidden" name="url" id="url">
+                        
                             <div class="py4">
                                 <label class="login_signup-label-input">
                                     <div class="login_signup-div-input">
-                                        <input autocomplete="off" placeholder="아이디" id="user_id" name="user_id" class="login_signup-input" required>
+                                        <input autocomplete="off" placeholder="아이디" id="user_id" name="user_id" class="login_signup-input" onblur="idChange(this)" required>
                                     </div>
                                 </label>
-                                <p class="warning-text" id="id-warning">아이디를 입력하세요.</p>
+                                <p class="warning-text" id="id-warning">아이디는 두글자 이상이어야 합니다.</p>
                             </div>
                             
                             <div class="py4">
                                 <label class="login_signup-label-input">
                                     <div class="login_signup-div-input">
-                                        <input autocomplete="off" placeholder="비밀번호" id="password" type="password" name="password" class="login_signup-input" minlength="6" required>
+                                        <input autocomplete="off" placeholder="비밀번호" id="password" type="password" name="password" class="login_signup-input" onblur="pwdChange(this)"
+                                         pattern="^.*(?=^.{8,15}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[^a-zA-Z0-9]).*$" required>
                                     </div>
                                 </label>
-                                <p class="warning-text" id="password-warning">비밀번호는 최소 6자리 이상이어야 합니다.</p>
+                                <p class="warning-text" id="password-warning">비밀번호는 영문자,숫자,특수기호가 혼합된 최소 8자리 이상이어야 합니다.</p>
                             </div>
                             <button type="submit" class="login_signup-btn" id="btnLogin">로그인</button>
                         </form>
@@ -609,26 +745,27 @@ function func_Signup() {
                             <div class="py4">
                                 <label class="login_signup-label-input">
                                     <div class="login_signup-div-input">
-                                        <input autocomplete="off" placeholder="아이디" type="text" id="user_id2" name="user_id" class="login_signup-input" title="아이디를 입력하세요." required>
+                                        <input autocomplete="off" placeholder="아이디" type="text" id="user_id2" name="user_id" class="login_signup-input" title="아이디를 입력하세요." onblur="id2Change(this)" minlength="2" required>
                                     </div>
                                 </label>
-                                <p class="warning-text" id="id2-warning">중복된 아이디 입니다.</p>
+                                <p class="warning-text" id="id2-warning">아이디는 최소 2자 이상이어야 합니다.</p>
+                                <p class="warning-text" id="id2-warning2">중복된 아이디 입니다.</p>
                             </div>
                             
                             <div class="py4">
                                 <label class="login_signup-label-input">
                                     <div class="login_signup-div-input">
-                                        <input autocomplete="off" placeholder="비밀번호" type="password" id="password2" name="password" class="login_signup-input"
-                                         pattern="^(?=.*[A-Za-z])(?=.*\d|(?=.*\W+)).{6,}$" title="비밀번호는 영문, 숫자, 특수문자 중 2개 이상을 조합하여 최소 6자리 이상이여야 합니다." required>
+                                        <input autocomplete="off" placeholder="비밀번호" type="password" id="password2" name="password" class="login_signup-input" onblur="pwdChange(this)"
+                                         pattern="^.*(?=^.{8,15}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[^a-zA-Z0-9]).*$" required>
                                     </div>
                                 </label>
-                                <p class="warning-text" id="password2-warning">비밀번호는 영문, 숫자, 특수문자 중 2개 이상을 조합하여 최소 6자리 이상이여야 합니다.</p>
+                                <p class="warning-text" id="password2-warning">비밀번호는 영문자,숫자,특수기호가 혼합된 최소 8자리 이상이어야 합니다.</p>
                             </div>
 
                             <div class="py4">
                                 <label class="login_signup-label-input">
                                     <div class="login_signup-div-input">
-                                        <input autocomplete="off" placeholder="이름" type="text" id="name" name="name" class="login_signup-input" required>
+                                        <input autocomplete="off" placeholder="이름" type="text" id="name" name="name" class="login_signup-input" onblur="nameChange(this)" minlength="2" required>
                                     </div>
                                 </label>
                                 <p class="warning-text" id="name-warning">정확하지 않은 이름입니다.</p>
@@ -638,7 +775,7 @@ function func_Signup() {
                                 <label class="login_signup-label-input">
                                     <div class="login_signup-div-input">
                                         <input autocomplete="off" placeholder="전화번호" type="text" id="mobile" name="mobile" class="login_signup-input"
-                                         pattern="^010\d{8}$" title="전화번호는 -를 제외한 01012345678 형식으로 입력하세요." required>
+                                         pattern="^010\d{8}$" title="전화번호는 -를 제외한 01012345678 형식으로 입력하세요." onblur="numChange(this)" required>
                                     </div>
                                 </label>
                                 <p class="warning-text" id="mobile-warning">정확하지 않은 번호입니다.</p>
@@ -647,10 +784,12 @@ function func_Signup() {
                             <div class="py4">
                                 <label class="login_signup-label-input">
                                     <div class="login_signup-div-input">
-                                        <input autocomplete="off" placeholder="이메일" type="email" id="email" name="email" class="login_signup-input" required>
+                                        <input autocomplete="off" placeholder="이메일" type="email" id="email" name="email" class="login_signup-input" onblur="emailChange(this)"
+                                         pattern="^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$" required>
                                     </div>
                                 </label>
                                 <p class="warning-text" id="email-warning">정확하지 않은 이메일입니다.</p>
+                                <p class="warning-text" id="email-warning2"></p>
                             </div>
                             
                             <button type="submit" class="login_signup-btn" id="btnSignup">회원가입</button>
