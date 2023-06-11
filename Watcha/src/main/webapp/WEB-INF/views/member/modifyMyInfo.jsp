@@ -50,50 +50,54 @@
   
 <style type="text/css">
 
-.custom-rl46ge {
+.modify-content {
     display: flex;
-    -webkit-box-pack: center;
     justify-content: center;
-    -webkit-box-align: center;
     align-items: center;
     height: 100%;
 }
 
-.custom-59gfth {
-    transform: scale(0.83);
-    width: 42.5781vw;
+.w60 {
+    width: 60vw;
     padding: 0px 0px 2.26562vw;
 }
 
-.custom-18z088c {
+.modify-header {
     text-align: center;
     margin: 0px 0px 3.04688vw;
 }
 
-.custom-126gohh {
+.modify-headtitle {
     font-size: 3.125vw;
     font-weight: 700;
     letter-spacing: -0.0554687vw;
     margin: 0px 0px 0.15625vw;
 }
 
-.custom-ojf8hg {
+.modify-flex {
     display: flex;
     align-items: flex-start;
 }
 
-.custom-ukz0js {
+.mr18 {
     margin: 0px 1.875vw 0px 0px;
 }
 
-.custom-h6u2zi {
+.display-none {
+    display: none;
+}
+
+.modify-img-edge {
     position: relative;
     width: 11.0938vw;
     height: 11.0938vw;
     border-radius: 50%;
+    border-width: 0.46875vw !important;
+    border-style: solid !important;
+    border-color: rgb(42, 43, 44) !important;
 }
 	
-.custom-1futllh-StyledRoundedImage-LargeProfileImage {
+.modify-img-radius {
     overflow: hidden;
     border-radius: 50%;
     position: relative;
@@ -102,53 +106,42 @@
     height: 100%;
 }
 
-.custom-1d033rf {
+.modify-img {
     vertical-align: top;
     width: 100%;
     height: 100%;
-    opacity: 1;
-    object-fit: cover;
-    transition: opacity 420ms ease 0s;
 }
 
-.custom-1m5i00r {
+.colpt15_pl03 {
     display: flex;
     flex-direction: column;
     padding: 1.5625vw 0px 0px 0.3125vw;
 }
 
-.custom-1n8p132 {
+.modify-img-btn {
     font-size: 1.09375vw;
-    font-weight: 400;
-    letter-spacing: -0.03125vw;
-    vertical-align: top;
-    white-space: nowrap;
-    padding: 0.3125vw 2.73438vw 0.46875vw;
-}
-
-.custom-lmypq6 {
-    font-size: 1.09375vw;
-    font-weight: 400;
     letter-spacing: -0.03125vw;
     vertical-align: top;
     white-space: nowrap;
     padding: 0.3125vw 2.73438vw 0.46875vw;
     margin: 7px 0px 0px;
-    visibility: visible;
 }
 
-.custom-1kg1q4l {
-    padding: 1.01562vw 0px 0px;
+.modify-section {
+	display: flex;
+	flex-direction: column;
+	width: 60vw;
+    padding: 0 0 0 5vw;
 }
 
-.custom-1ri5295 {
+.modify-label {
     display: block;
     font-size: 1.40625vw;
-    font-weight: 400;
     letter-spacing: -0.0390625vw;
+    margin-top: 1vw;
 }
 
-.custom-10fyvny {
+.requiredInfo {
     display: block;
     width: 29.5312vw;
     padding: 0.78125vw 0.9375vw;
@@ -156,28 +149,48 @@
     margin: 0.703125vw 0px 0px;
 }
 
-.custom-19ksx78 {
-    margin: 0.78125vw 0px 0px;
+.mobilenum {
+    width: 6vw;
 }
 
-.custom-1k0sbwm {
+.errorbox {
+	border: solid 1px red;
+}
+
+.modify-phoneNum {
+	display:flex;
+	align-items: center;
+}
+
+ul.pb1 {
+	list-style-type: none;
+    margin: 0;
+    padding: 0 0 1vw 0;
+}
+
+.modify-requiredText {
+	
     font-size: 1.09375vw;
-    font-weight: 400;
     letter-spacing: -0.0078125vw;
     line-height: 1.5625vw;
 }
 
-.custom-kl4b6s [class*="Button"] {
-    margin: 0px 0.390625vw;
+.error {
+	color: red;
 }
 
-.custom-8o4jzm-Button {
+.modify-btnspace {
+
+	display: flex;
+	justify-content: space-evenly;
+	
+}
+
+.modify-btn {
     background: no-repeat;
     font-size: 1.40625vw;
-    font-weight: 400;
-    letter-spacing: -0.0390625vw;
-    line-height: 2.10938vw;
     padding: 0.625vw 1.875vw 0.703125vw;
+    margin: 0px 0.390625vw;
 }
 	
 
@@ -185,295 +198,70 @@
 
 <script type="text/javascript">
 
-	let b_flag_email_change = false;
-	// 이메일을 수정했는지 안했는지 여부를 알아오기 위한 용도
-
-	let b_flag_emailDuplicate_click = false;
-	// "이메일 중복확인" 를 클릭했는지 안했는지 여부를 알아오기 위한 용도
+	let namebool = true;
+	let pwdbool = true;
+	let emailbool = true;
+	let num1bool = true;
+	let num2bool = true;
 	
 	$(document).ready(function() {
-		
-		$("span.error").hide(); <%-- 폼태그 옆에 경고문구를 에러가 나기 전엔 감추기 --%>
-		
-		
-		// ----- 이름 입력태그 ------ //
-		$("input#modifyname").blur( (e) => {
-
-			if( $(e.target).val().trim() == "" ) {
-				// 입력하지 않거나 공백만 입력했을 경우 
-			
-				$(e.target).parent().find("span.error").show(); // 해당 부분만 error 문구 출력해주기
-
-			}
-			else {
-				// 공백이 아닌 글자를 입력했을 경우
-				$(e.target).parent().find("span.error").hide();
-			}
-			
-		}); // 아이디가 name인 것은 focus를 잃어버렸을 경우(blur)  이벤트를 처리해주는 것이다. end of $("input#modifyname").blur(function()--------------------
-		
-		
-		
-		// ----- 비밀번호 입력태그 ------ //		
-		$("input#modifypwd").blur( (e) => {
-
-			// 숫자/문자/특수문자/ 포함 형태의 8~15자리 이내의 암호 정규식 2
-			const regExp = /^.*(?=^.{8,15}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[^a-zA-Z0-9]).*$/g;
-			
-			const bool = regExp.test($(e.target).val()); // 정규표현식에 맞으면 true 아니면 false
-			
-			if(!bool) {
-				
-				$(e.target).parent().find("span.error").show(); // 해당 부분만 error 문구 출력해주기
-	
-				
-				
-			}
-			
-			else {
-				// 암호가 정규표현식에 맞는 경우
-				$(e.target).parent().find("span.error").hide();
-				
-			}
-			
-			
-		}); // 아이디가 pwd인 것은 focus를 잃어버렸을 경우(blur)  이벤트를 처리해주는 것이다. end of $("input#modifyname").blur(function()--------------------	
-				
-				
-				
-		
-				
-		// ----- 비밀번호 확인 입력태그 ------ //			
-		$("input#pwdcheck").blur( (e) => {
-	 		
-	 		if( $("input#modifypwd").val() != $(e.target).val() ) {
-	 			// 암호와 암호확인값이 다른 경우
-	 			$(e.target).parent().find("span.error").show();
-	 		}
-	 		
-	 		else {
-	 			// 암호와 암호확인값이 같은 경우
-	 			$(e.target).parent().find("span.error").hide();
-	 		}
-	 		
-		}); // 아이디가 pwdcheck인 것은 focus를 잃어버렸을 경우(blur)  이벤트를 처리해주는 것이다. end of $("input#modifyname").blur(function()--------------------				
-				
-				
-				
-		
-		// ----- 이메일 입력태그 ------ //		
-		$("input#modifyemail").blur( (e) => {
-
-			//3.이메일 체크 정규식
-			const regExp = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i; 
-			
-			const bool = regExp.test($(e.target).val()); // 정규표현식에 맞으면 true 아니면 false
-			
-			if(!bool) {
-				$(e.target).parent().find("span.error").show(); // 해당 부분만 error 문구 출력해주기
-				$("span#emailCheckResult").html("");			// 이메일중복체크확인 메세지를 지워준다
-	
-			}
-			
-			else {
-				// 이메일이 정규표현식에 맞는 경우
-				
-				$(e.target).parent().find("span.error").hide(); // 해당 부분만 error 문구 출력해주기
-			}
-			
-		}); // 아이디가 email인 것은 focus를 잃어버렸을 경우(blur)  이벤트를 처리해주는 것이다. end of $("input#modifyname").blur(function()--------------------			
-				
-				
-				
-				
-		// ----- 연락처 입력태그 ------ //		
-		
-		$("input#hp2").blur( (e) => {
-
-			//3.연락처 체크 정규식
-			const regExp = /^[1-9][0-9]{2,3}$/g; // g 는 전체 i 는 대소문자 구분 
-			
-			const bool = regExp.test($(e.target).val()); // 정규표현식에 맞으면 true 아니면 false
-			
-			if(!bool) {
-				$(e.target).parent().find("span.error").show(); // 해당 부분만 error 문구 출력해주기
-			}
-			
-			else {
-				// 국번이 정규표현식에 맞는 경우
-				$(e.target).parent().find("span.error").hide();
-			}
-			
-		}); // 아이디가 hp2인 것은 focus를 잃어버렸을 경우(blur)  이벤트를 처리해주는 것이다. end of $("input#modifyname").blur(function()--------------------			
-				
-				
-				
-				
-		
-		// ----- 연락처 입력태그 ------ //		
-		
-		$("input#hp3").blur( (e) => {
-
-			//3.연락처 체크 정규식
-			//	const regExp = /^[0-9]{4}$/g; // g 는 전체 i 는 대소문자 구분 
-			// 또는
-			const regExp = /^\d{4}$/g;
-			// 숫자 4자리만 들어오도록 검사해주는 객체 생성
-			const bool = regExp.test($(e.target).val()); // 정규표현식에 맞으면 true 아니면 false
-			
-			if(!bool) {
-				$(e.target).parent().find("span.error").show(); // 해당 부분만 error 문구 출력해주기
-	
-				
-				
-			}
-			
-			else {
-				// 마지막 전화번호 네자리가 정규표현식에 맞는 경우
-				$(e.target).parent().find("span.error").hide(); // 해당 부분만 error 문구 출력해주기 
-			}
-			
-		}); // 아이디가 hp3인 것은 focus를 잃어버렸을 경우(blur)  이벤트를 처리해주는 것이다. end of $("input#modifyname").blur(function()--------------------				
-				
 
 
-		
-		////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-		
-		
-		//----- 년도 입력하기 ----- //
-		
-		
-		$("input#birthyyyy").keyup(function(e) {
-			
-			alert("생년월일을 마우스로 선택하세요");
-		
-			$(e.target).val("1950");
-			
-		});
-		
-		
-		
-		//----- 월 고르기 ----- //
-		let mm_html = "";
-		
-		for(let i=1; i<=12; i++) {
-			if(i<10) {			
-				mm_html += "<option>0"+i+"</option>";
-			}
-			else {
-				mm_html += "<option>"+i+"</option>";
-			}// javascript 반복문
-			
-		}// end of for()-------------------------------			
-				
-		
-
-		
-		//----- 일 고르기 ----- 백틱 사용해보기 //
-		$("select#birthmm").html(mm_html);	
-
-		let dd_html = ``;
-	    
-		for(let i=1; i<=31; i++) {
-	         
-	         if(i<10) {
-	            dd_html += `<option>0\${i}</option>`;
-	         }
-	         else {
-	            dd_html += `<option>\${i}</option>`;
-	         }
-	         
-	    }// end of for---------------------
-		
-	    
-	    $("select#birthdd").html(dd_html);
-	    
-	    <%-- 아래는 로그인한 아이디의 생월 및 생일을 넣어주는 것이다. --%>
-	    const birthday = "${sessionScope.loginuser.birthday}";
-	    // birthday ==> 19940308
-	    
-	    $("input#birthyyyy").val(birthday.substring(0,4));
-	    $("select#birthmm").val(birthday.substring(4,6));
-	    $("select#birthdd").val(birthday.substring(6));
-	    ////////////////////////////////////////////////////////
-	    
-
-        // ------- "우편번호찾기"를 클릭했을 때 이벤트 처리하기 ------- //
-        $("img#zipcodeSearch").click(function() {
-        	b_flag_zipcodeSearch_click = true;
-        	// "우편번호찾기" 를 클릭했는지 안했는지 여부를 알아오기 위한 용도
-		});
-        
-        // 우편번호 입력란에 키보드로 입력할 경우 이벤트 처리하기
-//        $("input:text[id='postcode']").bind("keyup", function(){});
-        // 또는
-        $("input:text[id='postcode']").keyup(function(){
-        	alert(`우편번호 입력은 "우편번호찾기"를 클릭으로만 됩니다.`);
-        	//또는
-//        	alert("우편번호 입력은 \"우편번호찾기\"를 클릭으로만 됩니다."");
-        	$(this).val("");
-        });
 	
 });// end of $(document).ready(function()
 		
 // Function Declaration
-function isExistEmailCheck() {
-	
-	b_flag_emailDuplicate_click = true;
-
-
-      	
-     	$.ajax({
-     		url:"<%= ctxPath%>/member/emailDuplicateCheck.up",
-     		data:{"email":$("input#modifyemail").val()},
-     		type:"post",
-			dataType:"json",
-			success:function(json){ 
-                
-				if(json.isExists) { 
-					$("span#emailCheckResult").html($("input#modifyemail").val()+"은 중복된 email 이므로 사용이 불가능합니다.").css("color","red");
-					$("input#modifyemail").val(""); // 중복된 이메일이므로 입력 받은 값을 비운다.
-			}
-			else if( !json.isExists && $("input#modifyemail").val().trim != "" ) { // 중복되지 않는 이메일면서 공백이 아닌 경우
-				// 입력한 email이 존재하지 않으면
-				$("span#emailCheckResult").html($("input#modifyemail").val()+"은 중복되지 않은 email 이므로 사용이 가능합니다.").css("color","blue");					}
-			
-		},
 		
-		error: function(request, status, error){
-               alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
-        }
-	});		
+// ----- 이름 입력태그 ------ //
+function nameChange(e) {
+
+	if( $(e).val().trim().length < 2 ) {
+		// 2글자 미만일 경우 
+		$(e).addClass("errorbox");
+		$("#li-name").addClass("error");
+		namebool = false;
+	}
+	else {
+		// 2글자 이상일 경우
+		$(e).removeClass("errorbox");
+		$("#li-name").removeClass("error");
+		namebool = true;
+	}
 	
 }
 
+
+
+// ----- 비밀번호 입력태그 ------ //
+function pwdChange(e) {
+
+	// 숫자/문자/특수문자/ 포함 형태의 8~15자리 이내의 암호 정규식 2
+	const regExp = /^.*(?=^.{8,15}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[^a-zA-Z0-9]).*$/g;
+	
+	const bool = regExp.test($(e).val()); // 정규표현식에 맞으면 true 아니면 false
+	
+	if(!bool) {
+		// 암호가 정규표현식에 맞지 않는 경우
+		$(e).addClass("errorbox");
+		$("#li-pwd").addClass("error");
+		pwdbool = false;
+	}
+	
+	else {
+		// 암호가 정규표현식에 맞는 경우
+		$(e).removeClass("errorbox");
+		$("#li-pwd").removeClass("error");
+		pwdbool = true;
+	}
+}
 		
-// "수정" 버튼 클릭시 호출되는 함수		
-function goEdit() {
-	
-  // **** 필수입력사항에 모두 입력이 됐는지 검사한다. **** //
-  $("input.requiredInfo").each( (index, elmt) => {
-     if($(elmt).val().trim() == "") {
-        alert("*표시된 필수입력사항은 모두 입력하셔야 합니다.");
-        return false; // break; 라는 뜻이다.
-     }
-  });
-	
-
-	
-/////////////////////////////////////////////////////////////////////////////////////////////////		
-	
-
-	
-	let gogo = true;
-	
-	///////////////////////////////////////////////////////////////////////////
-	// 변경된 암호가 현재 사용중인 암호라면 새로운 암호를 입력해야 한다.
-	///////////////////////////////////////////////////////////////////////////
+		
+///////////////////////////////////////////////////////////////////////////
+// 변경된 암호가 현재 사용중인 암호라면 새로운 암호를 입력해야 한다.
+///////////////////////////////////////////////////////////////////////////
+function dupPwdCheck() {
 	$.ajax({
-		url:"<%= ctxPath%>/member/duplicatePwdCheck.up",
+		url:"<%= ctxPath%>/member/duplicatePwdCheck.action",
 		data:{"new_pwd":$("input#modifypwd").val(),
 			"user_id":"${sessionScope.loginuser.user_id}"},
 		type:"post",
@@ -483,23 +271,119 @@ function goEdit() {
 			// json ==> {"n":1} 또는 {"n":0}
 			
 			if(json.n == 1) {
-				$("span#duplicate_pwd").html("현재 사용중인 암호로 변경은 불가합니다.");
-				gogo = false;
+				$("#li-duppwd").val("현재 사용중인 암호로 변경은 불가합니다.");
+				$("#modifypwd").addClass("errorbox");
+				$("#li-pwd").addClass("error");
+				pwdbool = false;
+			}
+			else {
+				$("#li-duppwd").val("");
+				$("#modifypwd").removeClass("errorbox");
+				$("#li-pwd").removeClass("error");
+				pwdbool = false;
 			}
 		},
 		error: function(request, status, error){
-            alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+	        alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
 		}
-	});
+	});		
+}
 
-	if( gogo ) {
+		
+// ----- 이메일 입력태그 ------ //		
+function emailChange(e) {
+
+	//3.이메일 체크 정규식
+	const regExp = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i; 
+	
+	const bool = regExp.test($(e).val()); // 정규표현식에 맞으면 true 아니면 false
+	
+	if(!bool) {
+		// 이메일이 정규표현식에 맞지 않는 경우
+		$(e).addClass("errorbox");
+		$("#li-email").addClass("error");
+		$("#li-dupmail").val("");
+		emailbool = false;
+	}
+	
+	else {
+		// 이메일이 정규표현식에 맞는 경우
+		emailDuplicateCheck();
+	}
+}
+
+
+function emailDuplicateCheck() {
+	
+   	$.ajax({
+   		url:"<%= ctxPath%>/member/emailDuplicateCheck.action",
+   		data:{"email":$("input#modifyemail").val()},
+   		type:"post",
+		dataType:"json",
+		success:function(json){ 
+               
+			if(json.isExists > 0) {
+				$("#li-dupmail").addClass("error");
+				$("#li-dupmail").val($("input#modifyemail").val()+"은 중복된 email 이므로 사용이 불가능합니다.");
+				emailbool = false;
+			}
+			else if( json.isExists == 0 ) { // 중복되지 않는 이메일인 경우
+				$("#li-dupmail").removeClass("error");
+				$("#li-dupmail").val($("input#modifyemail").val()+"은 중복되지 않은 email 이므로 사용이 가능합니다.");
+				$("#modifyemail").removeClass("errorbox");
+				$("#li-email").removeClass("error");
+				emailbool = true;
+			}
+		},
+		
+		error: function(request, status, error){
+               alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+        }
+	});		
+	
+}	
+		
+
+// ----- 연락처 입력태그 ------ //
+function numChange(e) {
+
+	//3.연락처 체크 정규식
+	const regExp = /^\d{4}$/g;
+	// 숫자 4자리만 들어오도록 검사해주는 객체 생성
+	const bool = regExp.test($(e).val()); // 정규표현식에 맞으면 true 아니면 false
+	
+	if(!bool) {
+		// 정규표현식에 맞지 않는 경우
+		$(e).addClass("errorbox");
+		$("#li-mobile").addClass("error");
+		num2bool = false;
+	}
+	
+	else {
+		// 정규표현식에 맞는 경우
+		$(e).removeClass("errorbox");
+		$("#li-mobile").removeClass("error");
+		num2bool = true;
+	}
+	
+}
+
+
+		
+// "수정" 버튼 클릭시 호출되는 함수		
+function goEdit() {
+	
+	if( namebool * pwdbool * emailbool * num1bool * num2bool == 0) {
+		alert("입력을 완료해주세요");
+		return false;
+	}
+	else {
+		
 		const frm = document.editFrm;
 		frm.action = "<%= ctxPath%>/member/modifyInfo.action";
 		frm.method = "post";
 		frm.submit();
 	}
-	// 모두 알맞게 한다면 넘겨주기.
-	
 	
 	
 	
@@ -510,63 +394,89 @@ function goEdit() {
 </head>
 <body>
 
-<div class="custom-rl46ge">
-  <section class="custom-59gfth">
-    <header class="custom-18z088c">
-      <h1 class="custom-126gohh">프로필 수정</h1>
+<div class="modify-content">
+  <section class="w60">
+    <header class="modify-header">
+      <h1 class="modify-headtitle">프로필 수정</h1>
     </header>
-    <form name="editFrm">
-      <div class="custom-ojf8hg">
-        <div class="custom-ukz0js">
-          <input type="file" class="custom-38lglc">
-          <div class="custom-h6u2zi">
-            <div class="custom-1futllh-StyledRoundedImage-LargeProfileImage e18xnnz1">
-              <img src="https://an2-img.amz.wtchn.net/image/v2/fI_WvAQSvffohcgztgGKkg.jpg?jwt=ZXlKaGJHY2lPaUpJVXpJMU5pSjkuZXlKdmNIUnpJanBiSW1SZk16QXdlRE13TUNKZExDSndJam9pTDNZeUwzTjBiM0psTDNWelpYSXZNbTEzZG1jeVRGQXhaM0ZOWVM5d2NtOW1hV3hsTHpFMk9EWXhNalF6TmpFeU56Z3lNakEyTkRnaWZRLmNnWVljemNrV0pERFRXcXpXb0VRUmFITmJvWjdGNWVWUW5zQVBsT2UtZlU"
-              class="custom-1d033rf e18xnnz0">
+    <form name="editFrm" onsubmit="return goEdit()">
+      <div class="modify-flex">
+        <div class="mr18">
+          <input type="file" class="display-none">
+          <div class="modify-img-edge">
+            <div class="modify-img-radius">
+              <c:if test="${not empty requestScope.userInfo.profile_image}">
+  			    <img id="img_profile" src="<%= ctxPath%>/resources/images/${requestScope.userInfo.profile_image}"/>
+			  </c:if>
+			  <c:if test="${empty requestScope.userInfo.profile_image}">
+  			    <img id="img_profile" src="<%= ctxPath%>/resources/images/프로필없음.jpg" class="modify-img e18xnnz0"/>
+  			    <!-- <img src="https://an2-img.amz.wtchn.net/image/v2/fI_WvAQSvffohcgztgGKkg.jpg?jwt=ZXlKaGJHY2lPaUpJVXpJMU5pSjkuZXlKdmNIUnpJanBiSW1SZk16QXdlRE13TUNKZExDSndJam9pTDNZeUwzTjBiM0psTDNWelpYSXZNbTEzZG1jeVRGQXhaM0ZOWVM5d2NtOW1hV3hsTHpFMk9EWXhNalF6TmpFeU56Z3lNakEyTkRnaWZRLmNnWVljemNrV0pERFRXcXpXb0VRUmFITmJvWjdGNWVWUW5zQVBsT2UtZlU"
+              	class="modify-img e18xnnz0"> -->
+			  </c:if>
+              
             </div>
           </div>
-          <div class="custom-1m5i00r">
-            <button type="button" class="custom-1n8p132">이미지 변경</button>
-            <button type="button" class="custom-lmypq6">이미지 삭제</button>
+          <div class="colpt15_pl03">
+            <button type="button" class="modify-img-btn">이미지 변경</button>
+            <button type="button" class="modify-img-btn">이미지 삭제</button>
           </div>
         </div>
-        <section class="custom-1kg1q4l">
-          <label for="name" class="custom-1ri5295">이름<input name="name" type="text" class="custom-10fyvny" value="시체매">
+        <section class="modify-section">
+             
+          <label autofocus for="name" class="modify-label">이름
+            <input type="text" name="name" id="modifyname" class="requiredInfo"
+         	minlength="2" maxlength="20" value="${sessionScope.loginuser.name}" oninput="nameChange(this)" />
           </label>
-          <ul class="custom-19ksx78">
-            <li class="custom-1k0sbwm">• 이름은 최소 2자, 최대 20자 까지 입력이 가능해요</li>
+          
+          <ul class="pb1">
+            <li class="modify-requiredText" id="li-name">• 이름은 최소 2자, 최대 20자 까지 입력이 가능해요</li>
           </ul>
-          <label for="name" class="custom-1ri5295">이름<input name="name" type="text" class="custom-10fyvny" value="시체매">
+          
+          <label for="name" class="modify-label">소개
+            <input type="text" name="profile_message" id="modifymessage" class="requiredInfo"
+  			maxlength="60" title="소개는 60자 까지 입력이 가능합니다." value="${sessionScope.loginuser.message}" />
           </label>
-          <ul class="custom-19ksx78">
-            <li class="custom-1k0sbwm">• 이름은 최소 2자, 최대 20자 까지 입력이 가능해요</li>
+          <ul class="pb1">
+            <li class="modify-requiredText" id="li-message">• 소개는 최대 60자 까지 입력이 가능해요</li>
           </ul>
-          <label for="name" class="custom-1ri5295">이름<input name="name" type="text" class="custom-10fyvny" value="시체매">
+          
+          <label for="name" class="modify-label">비밀번호
+            <input type="password" name="password" id="modifypwd" class="requiredInfo" oninput="pwdChange(this)" />
           </label>
-          <ul class="custom-19ksx78">
-            <li class="custom-1k0sbwm">• 이름은 최소 2자, 최대 20자 까지 입력이 가능해요</li>
+          <ul class="pb1">
+            <li class="modify-requiredText" id="li-pwd">• 비밀번호는 영문자,숫자,특수기호가 혼합된 8~15 글자로만 입력이 가능해요</li>
+            <li class="modify-requiredText error" id="li-duppwd" />
           </ul>
-          <label for="name" class="custom-1ri5295">이름<input name="name" type="text" class="custom-10fyvny" value="시체매">
+          
+          
+          <label for="name" class="modify-label">전화번호
+            <div class="modify-phoneNum">
+              <input type="text" class="requiredInfo mobilenum" id="hp1" name="hp1" size="6" maxlength="3" value="010" readonly />&nbsp;-&nbsp;
+              <input type="text" class="requiredInfo mobilenum" id="hp2" name="hp2" size="6" maxlength="4"
+               oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1'); numChange(this)" value="${ fn:substring(sessionScope.loginuser.mobile, 3, 7) }" />&nbsp;-&nbsp;
+              <input type="text" class="requiredInfo mobilenum" id="hp3" name="hp3" size="6" maxlength="4"
+               oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1'); numChange(this)" value="${ fn:substring(sessionScope.loginuser.mobile, 7, 11) }" />
+            </div>
           </label>
-          <ul class="custom-19ksx78">
-            <li class="custom-1k0sbwm">• 이름은 최소 2자, 최대 20자 까지 입력이 가능해요</li>
+          <ul class="pb1">
+            <li class="modify-requiredText" id="li-mobile">• 전화번호를 입력해주세요</li>
           </ul>
-          <label for="name" class="custom-1ri5295">이름<input name="name" type="text" class="custom-10fyvny" value="시체매">
+          
+          <label for="name" class="modify-label">이메일
+            <input type="text" name="email" id="modifyemail" value="${sessionScope.loginuser.email}"
+             class="requiredInfo" oninput="emailChange(this)" />
           </label>
-          <ul class="custom-19ksx78">
-            <li class="custom-1k0sbwm">• 이름은 최소 2자, 최대 20자 까지 입력이 가능해요</li>
+          <ul class="pb1" id="ul-email">
+            <li class="modify-requiredText" id="li-email">• 이메일을 입력해주세요</li>
+            <li class="modify-requiredText" id="li-dupmail" />
           </ul>
-          <label for="name" class="custom-1ri5295">이름<input name="name" type="text" class="custom-10fyvny" value="시체매">
-          </label>
-          <ul class="custom-19ksx78">
-            <li class="custom-1k0sbwm">• 이름은 최소 2자, 최대 20자 까지 입력이 가능해요</li>
-          </ul>
+          
         </section>
       </div>
       <hr>
-      <div class="custom-kl4b6s">
-        <button type="submit" class="custom-8o4jzm-Button">완료</button>
-        <button type="button" class="custom-8o4jzm-Button">취소</button>
+      <div class="modify-btnspace">
+        <button type="submit" class="modify-btn">완료</button>
+        <button type="button" class="modify-btn">취소</button>
       </div>
     </form>
   </section>
@@ -574,77 +484,6 @@ function goEdit() {
 
 
 
-
-
-
-  		<div style="padding: 0 50px; margin: 0px;">
-  		  <div id="div_myProfile">
-  		    <%-- 회원의 프로필  --%>
-			<div style="display: flex; margin: 0px; position: relative; top: -2rem;" class="row">
-			  <c:if test="${not empty requestScope.userInfo.profile_image}">
-  			    <img id="img_profile" src="<%= ctxPath%>/resources/images/${requestScope.userInfo.profile_image}"/>
-			  </c:if>
-			  <c:if test="${empty requestScope.userInfo.profile_image}">
-  			    <img id="img_profile" src="<%= ctxPath%>/resources/images/프로필없음.jpg"/>
-			  </c:if>
-		    </div>
-			<div style="position: relative; top: -2rem;" class="p-0 m-0">
-			  <form name="editFrm">
-  			      <h5 style="text-align: left; padding: 0 5px; font-size: 20pt; font-weight: 900; margin: 10px 0px;">
-  			        <input type="text" name="nickname" id="modifynickname" class="requiredInfo"
-  			         minlength="2" maxlength="20" title="이름은 최소 2자, 최대 20자 까지 입력이 가능합니다." value="테스트" required/>
-  			      </h5>
-  			        <p style="text-align: left; padding: 0 5px; font-weight: 600; margin-top: 5px;">
-  			          <input type="text" name="profile_message" id="modifymessage" class="requiredInfo"
-  			           maxlength="60" title="소개는 60자 까지 입력이 가능합니다." value="프로필 메세지입니다." />
-  			        </p>
-             <input type="hidden" name="userid" value="${sessionScope.loginuser.userid}" readonly />
-             <input type="text" name="name" id="modifyname" value="${sessionScope.loginuser.name}" class="requiredInfo" minlength="2" maxlength="20" title="이름은 최소 2자, 최대 20자 까지 입력이 가능합니다." required /> 
-            <span class="error">이름은 최소 2자, 최대 20자 까지 입력이 가능합니다.</span>
-            <span class="error">암호는 영문자,숫자,특수기호가 혼합된 8~15 글자로만 입력가능합니다.</span>
-            <span id="duplicate_pwd" style="color: red;"></span>
-            <span class="error">암호가 일치하지 않습니다.</span>
-             <span class="error">이메일 형식에 맞지 않습니다.</span>
-             <input type="text" id="hp1" name="hp1" size="6" maxlength="3" value="010" readonly />&nbsp;-&nbsp;
-             <input type="text" id="hp2" name="hp2" size="6" maxlength="4" value="${ fn:substring(sessionScope.loginuser.mobile, 3, 7) }" />&nbsp;-&nbsp;
-             <input type="text" id="hp3" name="hp3" size="6" maxlength="4" value="${ fn:substring(sessionScope.loginuser.mobile, 7, 11) }" />
-             
-           <%-- <input type="text" name="mobile" id="mobile" value="${sessionScope.loginuser.mobile}" size="20" maxlength="20" /> --%>  
-             <span class="error">올바른 전화번호 형식이 아닙니다.</span>
       
-        <%-- ==== 생년월일 시작 ==== --%>
-            <input type="number" id="birthyyyy" name="birthyyyy" min="1950" max="2050" step="1" value="${fn:substring(sessionScope.loginuser.birthday, 0, 4)}" style="width: 80px;" required />
-            
-            <select id="birthmm" name="birthmm" style="margin-left: 2%; width: 60px; padding: 8px;">
-            </select> 
-            
-            <select id="birthdd" name="birthdd" style="margin-left: 2%; width: 60px; padding: 8px;">
-            </select> 
-      <%-- ==== 생년월일 끝 ==== --%>      
-      
-            <input type="button" class="btn btn-secondary btn-sm mt-3" id="btnUpdate" onClick="goEdit();" value="수정" style="font-size: 15pt;" />
-            <input type="button" class="btn btn-secondary btn-sm mt-3 ml-5" onClick="self.close()" value="취소" style="font-size: 15pt;" /> 
-		        </form>
-  			  </div>  
-  		    </div>
-  		  </div>
-	  	
-<div align="center">
-
-   <div id="head" align="center">
-   </div>
-
-	</div>
-	  	
-	  	
-	  	
-	  </div>
-	 </div>
-	</div>
-	 
-  		
-
-
-
 </body>
 </html>
