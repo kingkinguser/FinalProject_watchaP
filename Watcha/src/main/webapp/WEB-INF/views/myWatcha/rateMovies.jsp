@@ -9,6 +9,9 @@
     
   <!-- Optional JavaScript -->
   <script type="text/javascript" src="<%= ctxPath%>/resources/smarteditor/js/HuskyEZCreator.js" charset="utf-8"></script> 
+
+  <!-- Font Awesome 6 Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
   <%--  ===== 스피너 및 datepicker 를 사용하기 위해  jquery-ui 사용하기 ===== --%>
   <link rel="stylesheet" type="text/css" href="<%= ctxPath%>/resources/jquery-ui-1.13.1.custom/jquery-ui.css" />
@@ -35,6 +38,9 @@ img#img_movie {border: solid 1px #f8f8f8; border-radius: 2%; box-shadow: 1px 1px
 
 	$(document).ready(function(){
 		
+		$("div#mycontent").css('padding-top','0px');
+		$("div#mycontent").css('background-color','#ffffff');
+
 		let currentShowPageNo = 1;
 		viewRateMovies(currentShowPageNo);
 		
@@ -69,13 +75,18 @@ img#img_movie {border: solid 1px #f8f8f8; border-radius: 2%; box-shadow: 1px 1px
 					
 					<%-- 평가한 영화(Ajax로 페이징 처리) --%>
 					$.each(json, function(index, item){
-						html += '<div style="width: 19%; margin: 3px; display: inline-block;" class="my-2">'
-					          +   '<div class="p-0 m-0 mx-auto" style="overflow: hidden; height: 270px; border: solid 1px #e6e6e6; border-radius: 2%;">'
+						html += '<div style="width: 19%; margin: 3px; display: inline-block;" class="my-3">'
+					          +   '<div class="p-0 m-0 mx-auto" style="overflow: hidden; height: 260px; border: solid 1px #e6e6e6; border-radius: 2%;">'
                         	  +     '<img class="img-thumnail w-100" src="https://image.tmdb.org/t/p/w780/'+item.poster_path+'">'
 				        	  +   '</div>'
-			              	  +   '<div style="overflow: hidden; height: 40px;" class="p-0 m-0 mt-2 px-3">'
-			              	  +     '<h6 class="card-title"><span style="display:none;">'+item.movie_id+'</span>'+item.movie_title+'</h6>'
-			              	  +   '</div>'
+			              	  +   '<div class="p-0 m-0 mt-2 px-2 text-center">';
+			            if(item.movie_title.length > 11){ // 영화제목이 11글자보다 큰 경우
+			            	html += '<p class="h6 card-title my-2"><span style="display:none;">'+item.movie_id+'</span>'+item.movie_title.substring(0, 12)+'...</p>';
+			            }
+			            else {
+			            	html += '<p class="h6 card-title my-2"><span style="display:none;">'+item.movie_id+'</span>'+item.movie_title+'</p>';
+			            }
+			            html += '</div>'
 			              	  +   '<div class="card-text text-center">'
 						      +     '<span style="color: #FDD346; padding: 0 10px;">'+item.rating+'</span>';
 			        	if(item.rating %1 != 0){ // 별점에 소수점 포함 (예: 3.5)
@@ -94,7 +105,12 @@ img#img_movie {border: solid 1px #f8f8f8; border-radius: 2%; box-shadow: 1px 1px
 			        		  + '</div>';
 					}); // end of $.each(json, function(index, item){})
 				}
-				$("div#div_rateMovies").html(html);
+				if(currentShowPageNo == 1){
+					$("div#div_rateMovies").html(html);
+				}
+				else {
+					$("div#div_rateMovies").append(html);
+				}
 			},
 			error: function(request, status, error){
 	            alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
@@ -103,9 +119,8 @@ img#img_movie {border: solid 1px #f8f8f8; border-radius: 2%; box-shadow: 1px 1px
 	} // end of function viewRateMovies(currentShowPageNo)
 	
 </script>
-</head>
-<body>
-  <div class="container-fluid" style="padding: 0px;">
+
+  <div class="container-fluid">
 	<div id="div_container" class="container-fluid">
 	  <div id="div_content" class="mx-auto">
 	  
@@ -120,5 +135,3 @@ img#img_movie {border: solid 1px #f8f8f8; border-radius: 2%; box-shadow: 1px 1px
     </div>
   </div>  
   
-</body>
-</html>    

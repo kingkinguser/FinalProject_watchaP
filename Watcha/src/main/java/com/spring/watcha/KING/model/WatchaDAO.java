@@ -23,8 +23,8 @@ public class WatchaDAO implements InterWatchaDAO {
 
 	   // 영화 정보 가져오기 	
 	   @Override
-	   public MovieVO getMovieDetail(String movieId) {
-	      MovieVO movie = sqlsession.selectOne("watcha.getMovieDetails", movieId); 
+	   public MovieVO getMovieDetail(Map<String, String> paraMap) {
+	      MovieVO movie = sqlsession.selectOne("watcha.getMovieDetails", paraMap); 
 	      
 	      return movie;
 	   }
@@ -39,6 +39,7 @@ public class WatchaDAO implements InterWatchaDAO {
 			
 		}
 
+		
 		// 더보기
 		@Override
 		public Map<String, String> totalCount(Map<String, String> paraMap) {
@@ -55,6 +56,7 @@ public class WatchaDAO implements InterWatchaDAO {
 			return cardSeeMore;
 		}
 
+		 
 		// 댓글쓰기 insert
 		@Override
 		public int addUserComment(user_collection_commentVO uccvo) {
@@ -64,8 +66,8 @@ public class WatchaDAO implements InterWatchaDAO {
 
 		// 페이징 처리하기
 		@Override
-		public List<user_collection_commentVO> uccListNoSearch(Map<String, String> paraMap) {
-			List<user_collection_commentVO> uccList = sqlsession.selectList("watcha.uccListNoSearchWithPaging", paraMap);
+		public List<Map<String, String>> uccListNoSearch(Map<String, String> paraMap) {
+			List<Map<String, String>> uccList = sqlsession.selectList("watcha.uccListNoSearchWithPaging", paraMap);
 			return uccList;
 		}
 
@@ -76,7 +78,7 @@ public class WatchaDAO implements InterWatchaDAO {
 			int totalPage = sqlsession.selectOne("watcha.getUserCommentTotalPage", paraMap);
 			return totalPage;
 		}
-
+		
 		// 좋아요
 		@Override
 		public int getLikeSelect(Map<String, Object> paraMap) {
@@ -95,5 +97,27 @@ public class WatchaDAO implements InterWatchaDAO {
 			return likeCollection;
 		}
 
+		// 컬렉션 영화 추가
+		@Override
+		public int getCollectionSelect(Map<String, Object> paraMap) {
+			int n = sqlsession.selectOne("watcha.getCollectionSelect", paraMap);
+			return n;
+		}
+		@Override
+		public String getCollectionAddDelete(Map<String, Object> paraMap) {
+			String collectionAdd = sqlsession.selectOne("watcha.getCollectionAddDelete", paraMap);
+			return collectionAdd;
+		}
+		@Override
+		public String getCollectionAddInsert(Map<String, Object> paraMap) {
+			String collectionAdd = sqlsession.selectOne("watcha.getCollectionAddInsert", paraMap);
+			return collectionAdd;
+		}
 
+		// 컬렉션 값 유지
+		@Override
+		public int getMoviecollectionSelect(Map<String, String> paraMap) {
+			int n = sqlsession.selectOne("watcha.getMoviecollectionSelect", paraMap);
+			return n; 
+		}
 }

@@ -26,8 +26,9 @@
 	}
 	
 	.header-list {
-	      font-size: 12pt;
-
+	      font-size: 15pt;
+		  position: relative;
+		  bottom: 3px;
 		  cursor: pointer;
 	}
 	
@@ -63,7 +64,7 @@
 	}
 	
 	.header-tag-a {
-		font-size: 27px;
+		font-size: 24px;
 		font-weight: bold;
 		color: black;
 		margin-right: 10px;
@@ -89,7 +90,7 @@
 	@media (min-width: 860px) {
 	  
 	  .header-li {
-	      margin: 0 0 0 24px;
+	      margin: 0 0 0 20px;
 	   }
 	   
 	  #header-div-input {
@@ -476,7 +477,7 @@
 <script type="text/javascript">
 
 	$(document).ready(function(){
-		
+				
 		randomInput() ; // INPUT에 PLACEHOLDER 가 랜덤하게 들어가게 하는 방법
 		$('button.btn-search1').on('click', function(event) {   // 버튼 클릭시 
 		    event.preventDefault(); // 새로고침 안함
@@ -513,7 +514,7 @@
 	    });
 		
 		// 검색시 검색조건 및 검색어 유지시키기
-		 $("input#search_header").val('${lastSearchWord}'); // 검색했을때 마지막 부분 유지하기 
+		 $("input#search_header").val(`${lastSearchWord}`); // 검색했을때 마지막 부분 유지하기 
 		
 
 		  $("div#showSearch").hide();    // 먼저 숨긴다.
@@ -565,7 +566,6 @@
 
 	}); 
 	
-		
 	// 검색창에 랜덤으로 나타내기	  
 	function randomInput(){
 	  const placeholders = [
@@ -613,7 +613,12 @@
 	// 연관검색어와 최근 검색어 나타내는 ajax
 	function goajax(switchValue){
 			
-		var searchWordsString = "${recentSearchWords}";
+		var searchWordsString = `${recentSearchWords}`.replace(/"/g, '\\"').replace(/'/g, '"').replace(/\\"/g, "'");
+
+
+
+
+
 		var searchWords = searchWordsString.split(",");
 		
 		
@@ -986,18 +991,13 @@
 					<li style="list-style: none;">
 						<a href="<%=ctxPath%>/view/main.action"><img src="<%= ctxPath%>/resources/images/watchapedia.png" style="top: 10%; position: relative; width: 85%;"></a>
 					</li>
-					<li class="header-main-li header-li" style="margin: 0;">	
-						<span class="header-list"><a href="#" style="color: #999999" class="header-a">영화</a></span>
+					<li class="header-main-li header-li">	
+						<span class="header-list"><a href="<%= ctxPath%>/view/main.action" style="color: #999999" class="header-a">영화</a></span>
 					</li>
 					<li class="header-main-li header-li">	
-						<span class="header-list"><a href="#" style="color: #999999" class="header-a">TV</a></span> 
+						<span class="header-list"><a href="#" style="color: #999999" class="header-a">커뮤니티</a></span> 
 					</li>	
-					<li class="header-main-li header-li">	
-						<span class="header-list"><a href="#" style="color: #999999" class="header-a">책</a></span>
-					</li>
-					<li class="header-main-li header-li">	
-						<span class="header-list"><a href="#" style="color: #999999" class="header-a">웹툰</a></span>
-					</li>
+					
 					<li class="header-second-li">
 						<div style=" position: relative; width: 100%;">
 						<form name="searchFrm" id="searchFrm" >
@@ -1014,28 +1014,28 @@
   	  	 			</li>	
 					<li class="header-main-li" style="margin-left: 24px;">
 						
-						<c:if test="${empty login_userid}">  <!-- 로그인 안되어있으면 login 할 수 있게 나타내기 -->
+						<c:if test="${empty sessionScope.loginuser}">  <!-- 로그인 안되어있으면 login 할 수 있게 나타내기 -->
 							 
 							 <!-- 로그인 버튼 -->
     						 <button type="button" class="header-a" id="loginBtn" data-modal="#loginModal" onclick="modalOpen(this)" style="border: none; background-color: white; padding: 0;"><span class="header-login"></span></button>
 						</c:if>
 						
 						
-						<c:if test="${not empty login_userid}"> <!--  로그인 되어 있으면 평가하기 나타내기  -->
-							<a href="#" class="header-a"><span class="header-star"></span></a>
+						<c:if test="${not empty sessionScope.loginuser}"> <!--  로그인 되어 있으면 평가하기 나타내기  -->
+							<a href="<%= ctxPath%>/rateMovies.action" class="header-a"><span class="header-star"></span></a>
 						</c:if> 
 						
 					</li>
 					<li class="header-main-li" style="margin-left: 24px;">
 						
-						<c:if test="${empty login_userid}">  <!-- 로그인 안 되어 있으면 나타내기 -->	
+						<c:if test="${empty sessionScope.loginuser}">  <!-- 로그인 안 되어 있으면 나타내기 -->	
 							 <button type="button" id="signupBtn" data-modal="#signupModal" style="border-radius: 5px; bottom: 2px; position: relative; background-color: white; border: solid 1px #999999;" onclick="modalOpen(this)" >회원가입</button>
 							 
 						</c:if>
 						
 						
-						<c:if test="${not empty login_userid}"> <!-- 로그인 되어 있으면 나타내기 -->	
-							<a href="#"><i class="fa-solid fa-user fa-lg" style="color: #999999"></i></a>
+						<c:if test="${not empty sessionScope.loginuser}"> <!-- 로그인 되어 있으면 나타내기 -->	
+							<a href="<%= ctxPath%>/myWatcha.action"><i class="fa-solid fa-user fa-lg" style="color: #999999"></i></a>
 						</c:if> 	
 					
 					
@@ -1055,20 +1055,36 @@
 			<div class="row">
 				<ul style="display: flex; padding-left: 0; margin-bottom: 30px;">
 					<li class="header-main-li">
-						<a href="#" class="header-tag-a header-a">영화</a>
+						<a href="<%= ctxPath%>/view/main.action" class="header-tag-a header-a">영화</a>
 						<span class="header-tag-a-span">|</span>
 					</li>
 					<li class="header-main-li">
-						<a href="#" class="header-tag-a header-a">TV</a>
+						<a href="#" class="header-tag-a header-a">커뮤니티</a>
 						<span class="header-tag-a-span">|</span>
 					</li>
-					<li class="header-main-li">
-						<a href="#" class="header-tag-a header-a">책</a>
-						<span class="header-tag-a-span">|</span>
-					</li>
-					<li class="header-main-li">
-						<a href="#" class="header-tag-a header-a">웹툰</a>
-					</li>
+					
+					<!-- 로그인 안했을때 -->
+					<c:if test="${empty sessionScope.loginuser}"> 
+					   	<li class="header-main-li">
+					   		<button type="button" class="header-tag-a header-a" id="loginBtn" data-modal="#loginModal" onclick="modalOpen(this)" style="border: none; background-color: white; padding: 0;"><span class="header-login"></span></button>
+							<span class="header-tag-a-span">|</span>
+						</li>
+						<li class="header-main-li">
+					    	<button type="button" class="header-tag-a header-a" id="signupBtn" data-modal="#signupModal" style="border-radius: 5px; position: relative; background-color: white; border: none" onclick="modalOpen(this)" >회원가입</button>
+							<span class="header-tag-a-span">|</span>
+						</li>
+					</c:if>
+					
+					<!-- 로그인 했을때 나오게 -->
+					<c:if test="${not empty sessionScope.loginuser}"> 
+						<li class="header-main-li">
+							<a href="<%= ctxPath%>/rateMovies.action" class="header-tag-a header-a">평가하기</a>
+							<span class="header-tag-a-span">|</span>
+						</li>
+						<li class="header-main-li">
+							<a href="<%= ctxPath%>/myWatcha.action" class="header-tag-a header-a">마이페이지</a>
+						</li>
+					</c:if>
 				</ul>
 			</div>
 		</div>	

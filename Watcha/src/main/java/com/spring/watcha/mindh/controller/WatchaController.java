@@ -25,6 +25,7 @@ import com.spring.watcha.model.GenreVO;
 import com.spring.watcha.model.MemberVO;
 import com.spring.watcha.model.MovieVO;
 import com.spring.watcha.model.Star_ratingVO;
+import com.spring.watcha.model.collection_movieVO;
 
 @Controller
 public class WatchaController {
@@ -238,8 +239,35 @@ public class WatchaController {
 			actorCheckFinal = actorCheck;   // 결과값 없게 만들기 
 		}
 		
-		
 		List<MovieVO> genrevo = service.genreRank(paraMap);   // 많이 평가한 양화 장르  (로그인안하거나 actorCheck 가 1 이면은 전체 평가중 가장많은 장르를 가져오고 로그인 하고 평가를 1개라도 했으면 평가한 영화 장르에 대해 나타냄)
+		
+		List<collection_movieVO> celCheck = service.celCheck(paraMap);   // 로그인 안했을때 또는 로그인 했지만 컬렉션한 것이 없을 경우 나오는 것 체크하기
+		
+		//System.out.println(celCheck);
+		
+		List<MovieVO> celCheckFinal;  // 로그인 안했을때 또는 로그인 했지만 컬력션이 없는 경우 나오는 가장 많은 컬렉션 (영화수) 를 가지고 있는 다른 유저의 컬렉션 가져오기 
+		
+		List<collection_movieVO> collection = new ArrayList<>();    // 컬렉션 하기 위해 
+		
+		if (celCheck.isEmpty()) {								 // 바로 위의 메소드가 결과가 공백이라면 두번째 쿼리문 실행 
+			
+			celCheckFinal = service.celCheckFinal();     // 공백을경우 가장 많은 컬렉션(영화수)을 가지고 있는 다른 유저의 컬렉션 가져오기
+			
+			for (MovieVO movie : celCheckFinal) {
+		        List<collection_movieVO> collectionMovie = movie.getCollection();
+		        if (collectionMovie != null && !collectionMovie.isEmpty()) {   // 결과값이 존재한다면 
+		        	collection.addAll(collectionMovie);               
+		        }
+			}
+		}
+		else {
+			
+			celCheckFinal = actorCheck;   // 결과값 없게 만들기 
+		}
+		
+		
+		
+		
 		List<MovieVO> usercol = service.usercol(paraMap);     // 유저의 컬렉션             (로그인한 사람의 아이디 들어가야 함)
 		
 	
@@ -274,8 +302,29 @@ public class WatchaController {
 		    }
 		}
 			
+		// user의 컬렉견을 하나하나 보여주는 곳 
+			
+		List<MovieVO> mergedCollection = new ArrayList<>();
+		List<List<MovieVO>> mergedCollectionFinal = new ArrayList<>();
 		
 		
+		List<collection_movieVO> finduser = service.finduser();		
+		
+
+		for (collection_movieVO movie : finduser) {
+			List<MemberVO> members = movie.getMember();    // 이름값 나타내기 위해 
+			
+			String user_id= movie.getUser_id(); 
+		    
+			List<MovieVO> findCollectionFinal = service.findCollectionFinal(user_id);
+			
+			//System.out.println(mergedCollection);
+			List<MovieVO> currentMergedCollection = new ArrayList<>(findCollectionFinal);
+			mergedCollectionFinal.add(currentMergedCollection);
+	
+		}
+		
+
 		mav.addObject("login_userid",login_userid);
 		mav.addObject("login_username",login_username);
 		mav.addObject("recentSearchWords", recentSearchWordsString);
@@ -293,6 +342,11 @@ public class WatchaController {
 		mav.addObject("starRating22", starRating22);
 		mav.addObject("genres", genres);
 		mav.addObject("usercol", usercol);
+		mav.addObject("celCheck",celCheck);
+		mav.addObject("collection",collection);
+		mav.addObject("mergedCollectionFinal",mergedCollectionFinal);
+		mav.addObject("finduser",finduser);
+		
 		mav.setViewName("/main.tiles");
 		
 		

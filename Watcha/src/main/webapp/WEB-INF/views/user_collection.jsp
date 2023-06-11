@@ -16,14 +16,14 @@
 
 	body {
 		border: solid 0px gray;
-		word-break: break-all; /* 공백없이 영어로만 되어질 경우 해당구역을 뚫고 빠져나감으로 이것을 막기 위해서 사용한다 */
-		padding: 0;            /* 상 우 하 좌 모두 안쪽여백을 0px을 준 것이다. 즉, 바깥여백을 없는 것으로 한 것이다.*/
+		word-break: break-all; 
+		padding: 0;           
 	}	
 
 	div#container{
 		border: solid 0px purple;
 		width: 70%;
-		margin: 20px auto; /* 상 하는 20px 우 좌는 남은 20%에서 좌우로 균등하게 주겠다. 즉, 화면의 가운데로 위치하겠다는 말이다.*/
+		margin: 20px auto; 
 	}
 
 	.profile {
@@ -47,7 +47,7 @@
 	}
 	.btnP:hover{
 	  background:#fff;
-	  color: #f3578d;
+	  color: #ff0558;
 	}
 	.btnP:before,.btnP:after{
 	  content:'';
@@ -56,7 +56,7 @@
 	  right:0;
 	  height:2px;
 	  width:0;
-	  background: #f3578d;
+	  background: #ff0558;
 	  transition:400ms ease all;
 	}
 	.btnP:after{
@@ -129,7 +129,6 @@
 	
 	#commentBack{
 	  width: 700px;
-	  height: 200px;
 	  font-size: 15px;
 	  border: 0;
 	  border-radius: 15px;
@@ -138,55 +137,109 @@
 	  margin: -25px 0 0 140px;
 	}
 	
-	img#middle {
-		 background-repeat: no-repeat;
-		 background-size:cover;  
+	img#lastest {
 		 background-position: center center; 
-		 height: 350px;
-  	     width: 100%; 
-  	     background-blend-mode: multiply;
-  	     border-radius: 10px 10px;
-  	     opacity: 0.4;
+		 height: 280px; 
+  	     width: 40%;  
+  	     border-radius: 15px;
+  	     margin: 0 0 0px 20px;  
 	} 
 	
-	#commentInfo{
-	  width: 49%;
-	  height: 300px;
+	#chart{
+	  width: 58%;   
+	  height: 340px;  
 	  border: solid 1px #eee;
 	  border-radius: 15px;
 	  float: left;
-	  margin: 10px 0 10px 0;
+	  margin: 10px 0 10px 0;  
 	}
 	
-	#chart{ 
-	  width: 49%;
-	  height: 300px;
-	  border: solid 1px #eee;
-	  border-radius: 15px;
-	  margin: -13px 0 10px 520px; 
-	}			
+	#profile_i {
+		padding: 0 15px 0 35px; 
+	} 
+	
+	#uccontent {   
+		padding: 0 185px 0 15px;  
+	}
+	 
+	
+	/* 차트 시작 */
+	.highcharts-figure,
+	.highcharts-data-table table {
+	    min-width: 320px;
+	    max-width: 800px;
+	    margin: 1em auto;
+	}
+	
+	.highcharts-data-table table {
+	    font-family: Verdana, sans-serif;
+	    border-collapse: collapse;
+	    border: 1px solid #ebebeb;
+	    margin: 10px auto;
+	    text-align: center;
+	    width: 100%;
+	    max-width: 500px;
+	}
+	
+	.highcharts-data-table caption {
+	    padding: 1em 0;
+	    font-size: 1.2em;
+	    color: #555;
+	}
+	
+	.highcharts-data-table th {
+	    font-weight: 600;
+	    padding: 0.5em;
+	}
+	
+	.highcharts-data-table td,
+	.highcharts-data-table th,
+	.highcharts-data-table caption {
+	    padding: 0.5em;
+	}
+	
+	.highcharts-data-table thead tr,
+	.highcharts-data-table tr:nth-child(even) {
+	    background: #f8f8f8;
+	}
+	
+	.highcharts-data-table tr:hover {
+	    background: #f1f7ff;
+	}
+	/* 차트 끝 */	
+	
+	.mycollection{
+		width: 300px; 
+		height: 100px;  
+		margin: 50px 0 0 380px;    
+	}
+		
+	#infoinfo {
+		width: 100%; 
+	}	
+		
 </style>
 
 <script type="text/javascript">
 
-	
 	$(document).ready(function(){
 			
 			/* 검색 엔터누를시  */ 
 			$('input#user_collection_content').on('keyup', function(event){
+				
 		    	if( event.keyCode == 13 ){
 		    		goAddUserWrite()
 		    	}
+		    	
 		    });
 		
 		    goUserViewComment(1); // 페이징 처리 한 댓글 읽어오기
 				
 			/* 카드 더보기 시작 */
-			$("span#totalHITCount").hide();
+			$("span#totalHITCount").hide(); 
 			$("span#countHIT").hide();
 			
-			displayHIT("1");
-			// HIT 상품 게시물을 더보기 위하여 "더보기..." 버튼 클릭액션 이벤트 등록하기
+			displayHIT("1"); 
 			
 			$("button#btnMoreHIT").click(function(){
 				
@@ -196,16 +249,14 @@
 					$("span#end").empty();
 					displayHIT("1");
 					$(this).text("더보기");
-					
+					 
 				}
 				else{
 					displayHIT($(this).val());
 				}
 				
-			});// end of $("button#btnMoreHIT").click() --------------------------- 	
+			});
 			/* 카드 더보기 끝 */
-				
-				
 				
 			/* 출연, 제작 시작*/	
 			$('#recipeCarousel').carousel({ 
@@ -213,15 +264,20 @@
 			});
 			
 			$('.carousel .carousel-item').each(function(){
+				
 			    var minPerSlide = 5;
 			    var next = $(this).next();
+			    
 			    if (!next.length) {
 			        next = $(this).siblings(':first');
 			    }
+
 			    next.children(':first-child').clone().appendTo($(this));
 			    
 			    for (var i=0;i<minPerSlide;i++) {
+			    	
 			        next=next.next();
+			        
 			        if (!next.length) {
 			        	next = $(this).siblings(':first');
 			      	}
@@ -236,8 +292,7 @@
 				  
 				if($('input:checkbox[name="check_good"]').is(":checked")) {
 					 
-				 	$(".goodi").css({"color":"#f3578d"}); 
-				 	
+				 	$(".goodi").css({"color":"#ff0558"}); 
 				 	
 				}
 				else if(!$('input:checkbox[name="check_good"]').is(":checked")) {
@@ -245,15 +300,57 @@
 					$(".goodi").css({"background-color":"","color":""}); 
 				}
 				
-				goLikeCollection();
+					goLikeCollection();
 				
 				$("input:checkbox[name='check_good']").toggle();
 				
-			  });
+			});
 			/*좋아요 끝*/	
-		
-	});//end of $(document).ready(function()) ----------------------------------------------------------------------------
+				
+			
+	/* 차트 시작 */		 
+	const text =
+		        'the daisies, when suddenly a White Rabbit with pink eyes ran close by her.',
+		    lines = text.replace(/[():'?0-9]+/g, '').split(/[,\. ]+/g),
+		    data = lines.reduce((arr, word) => {
+		        let obj = Highcharts.find(arr, obj => obj.name === word);
+		        if (obj) {
+		            obj.weight += 1;
+		        } else { 
+		            obj = {
+		                name: word,
+		                weight: 1
+		            };
+		            arr.push(obj);
+		        }
+		        return arr;
+		    }, []); 
 
+		Highcharts.chart('chart_container', {
+		    accessibility: {
+		        screenReaderSection: {
+		            beforeChartFormat:  '<h5>{chartTitle}</h5>' +
+						                '<div>{chartSubtitle}</div>' +
+						                '<div>{chartLongdesc}</div>' +
+						                '<div>{viewTableButton}</div>'
+		        }
+		    },
+		    series: [{
+		        type: 'wordcloud',
+		        data,
+		        name: 'Occurrences'
+		    }],
+		    title: {
+		        text: '나의 컬렉션 댓글 중 가장 많은 단어'
+		    },
+		    tooltip: {
+		        headerFormat: '<span style="font-size: 16px"><b>{point.key}</b></span><br>'
+		    }
+	});		
+	/* 차트 끝 */	 		
+			
+			
+	});//end of $(document).ready(function()) ----------------------------------------------------------------------------
 
 	// Function Declaration
 
@@ -276,7 +373,7 @@
 		    	 
 		    	 if(start == "1" && json.length == 0){
 			    	
-		    		 html += "현재 상품 준비중...";
+		    		 html += "<div class='mycollection'>나만의 컨렉션을 만들어 보세요!!</div>";
 		    	 
 		    	 	 $("div#displayHIT").html(html);
 		    		 
@@ -321,7 +418,6 @@
 	        }
 	
 		});					        
-		
 	}
 	/* ==== 더보기 끝 ==== */
 
@@ -335,62 +431,68 @@
 		  return;  // 종료 
 	  }
 	  
-	     goAddUserWrite_noAttach();
+	  goAddUserWrite_noAttach();
 	  
     }
 	/* ==== 댓글쓰기 끝 ==== */
 	 
-    /* ==== 파일첨부가 없는 댓글쓰기 시작 ==== */
+    /* ==== 댓글쓰기 시작 ==== */
     function goAddUserWrite_noAttach() {
-	 
+		
+	  const commentData = { user_id_collection : '${param.user_id}',
+					        user_id_comment : '${sessionScope.loginuser.user_id}',
+		    				user_collection_content : $("input#user_collection_content").val() }
+		
       $.ajax({
   		 url:"<%= request.getContextPath()%>/addUserComment.action",
-  		 data:{"user_id":"${requestScope.collection_view[0].user_id}" 
-  			  ,"user_collection_content":$("input#user_collection_content").val()
-  			  ,"collection_id":$("input#collection_id").val()},
+  		 data: commentData,
   		 type:"post",
   		 dataType:"json",
   		 success:function(json){
+  		
+  			 if(json.n == '1') {
+  				goUserViewComment(1); // 페이징 처리 한 댓글 읽어오기	 
+  			 } else {
+  				 alert("댓글 입력 실패");
+  			 } 
   			 
-  			 goUserViewComment(1); // 페이징 처리 한 댓글 읽어오기
+  			 $("input#user_collection_content").val("");
   			 
-  			 $("input#commentContent").val("");
   		 },
   		 error: function(request, status, error){
 			alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
 	     }
       });
-    
     }
     /* ==== 파일첨부가 없는 댓글쓰기 끝 ==== */
   
     // === Ajax로 불러온 댓글내용을  페이징 처리 하기 시작  === //
     function goUserViewComment(currentShowPageNo) {
-	  
 	  $.ajax({
 		  url:"<%= request.getContextPath()%>/user_collection_commentList.action",
-		  data:{"collection_id":$("input#collection_id").val(),
+		  data:{"user_id_collection":$("input#user_id_collection").val(),
 			    "currentShowPageNo":currentShowPageNo},
 		  dataType:"json",
 		  success:function(json){
 			  // console.log("~~ 확인용 : " + JSON.stringify(json));
 			  
-			  
 			  let html = "";
 			  if(json.length > 0) {
 				 $.each(json, function(index, item){
-					 
-					 html += "<tr>";
-					 html += "<td>"+item.collection_content+"</td>";
-		             html += "<td>"+item.user_collection_time+"</td>"; 
+					  
+					 html += "<tr>"; 
+					 html += '<td id="profile_i">'+item.profile_image+"</td>";
+					 html += "<td>"+item.user_id_comment+"</td>"; 
+					 html += '<td id="uccontent">'+item.user_collection_content+"</td>";
+		             html += '<td id="uctime">'+item.user_collection_time+"</td>";  
 		             html += "</tr>";  
 		             
  				 }); 
 			  }   
 			  else {
-				  html += "<tr>" +
-				            "<td colspan='6' class='comment'>댓글이 없습니다</td>" +
-				          "</tr>"; 
+				    html += "<tr>" +
+				                "<td colspan='6' class='comment'>댓글이 없습니다</td>" +
+				            "</tr>"; 
 			  }
 			  
 			  $("tbody#commentDisplay").html(html);
@@ -480,34 +582,40 @@
 				alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
 		  }
 	  });
-	 
   }
   <%-- === 원글에 대한 totalPage 수를 알아오려고 한다. 끝 === --%>
     
   // === 좋아요 시작  === //
   function goLikeCollection() {
 	  
+	 const commentData = { user_id_collection : '${param.user_id}',
+	   		   			   user_id_like : '${sessionScope.loginuser.user_id}'
+     }
+	  
 	  $.ajax({
 		  url:"<%= request.getContextPath()%>/likeCollection.action",
-		  data:{"collection_id":$("input#collection_id").val(), 
-			    "user_id":"${requestScope.collection_view[0].user_id}"}, 
+		  data: commentData , 
 		  type:"post", 	      
 		  dataType:"json",
 		  success:function(json){
 			   console.log("~~ 확인용 : " + JSON.stringify(json));
-			  
 			  
 		  },
 		  error: function(request, status, error){
 				alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
 		  }
 	  });
-	  
   }
   //=== 좋아요 끝  === //
   
   
 </script>
+
+<script src="<%= ctxPath %>/resources/Highcharts-10.3.1/code/highcharts.js"></script>
+<script src="<%= ctxPath %>/resources/Highcharts-10.3.1/code/modules/wordcloud.js"></script>
+<script src="<%= ctxPath %>/resources/Highcharts-10.3.1/code/modules/exporting.js"></script>
+<script src="<%= ctxPath %>/resources/Highcharts-10.3.1/code/modules/export-data.js"></script>
+<script src="<%= ctxPath %>/resources/Highcharts-10.3.1/code/modules/accessibility.js"></script>
 
 <meta charset="UTF-8">
 <title></title>
@@ -515,56 +623,77 @@
 <body>
 
 	<div id="container">
+	 
 		<div class="card">
 		    <div class="card-body"> 
-		        
-		        <img id="middle" src="https://image.tmdb.org/t/p/w1280${requestScope.collection_view[0].backdrop_path}"/>
-		        
-		        <hr style="margin: 0 30px 0 30px;">  	
-		        
-		        <span style="margin-left: 50px;"></span>
-		        
-		        <div id="commentInfo">
-			        <span>닉네임:&nbsp;</span><span style="display: inline-block; font-weight: bolder; font-size: 16px;">${requestScope.collection_view[0].nickname}</span>
-					<span style= "width: 100px;"> 
-					  <label for="check_good" style="cursor: pointer;">
-					    <i class="far fa-thumbs-up goodi"></i><span class="goodi" style="font-weight: bolder">&nbsp;&nbsp;좋아요</span></label>
-						<input type="checkbox" id="check_good" name="check_good"/>
-					</span>
-		        </div> 
-		        
-		        <div id="chart">
-		        </div> 		        
-			    
 			
+		   <div id="infoinfo">           
+		      	  
+		        <span>성명:&nbsp;${sessionScope.loginuser.name}</span> 
+	        
+				<span style= "width: 100px;"> 
+				  <label for="check_good" style="cursor: pointer;">
+				    <i class="far fa-thumbs-up goodi"></i><span class="goodi" style="font-weight: bolder">&nbsp;&nbsp;좋아요</span></label>
+					<input type="checkbox" id="check_good" name="check_good"/>
+				</span>
+		   </div> 
 			
-				<hr style="margin: 0 30px 0 30px;">  	    
-		      
+			<div id="chart">   
+				<figure class="highcharts-figure">
+				    <div id="chart_container" style="height: 300px;"></div>
+				    <p class="highcharts-description"></p> 
+				</figure>
+			</div> 
+			         
+	        <div id="">     
+	        	     
+	        	<div style="font-size: 20px; font-weight: bolder; margin: 0 0 10px 665px;">가장 최근에 컬렉션에 담은 <span style="color:#ff0558">영화</span></div>
+
+	         	<c:if test="${requestScope.collection_view[0].movie_title != null}">
+		        	<a href='project_detail.action?movie_id=${requestScope.collection_view[0].movie_id}'>
+		        		<img id="lastest" src="https://image.tmdb.org/t/p/w1280${requestScope.collection_view[0].backdrop_path}" />
+		        	</a>   		
+	        	</c:if>
+	         	
+	         	<c:if test="${requestScope.collection_view[0].movie_title == null}">
+		        	<a>   
+		        		<img id="lastest" src="<%= ctxPath%>/resources/images/왓챠피디아NULL.png" /> 
+		        	</a> 
+	        	</c:if> 
+	        	  
+	        	<c:if test="${requestScope.collection_view[0].movie_title == null}"> 
+	        		<div style="font-size: 15px; margin: 15px 0 30px 730px; ">컬렉션을 담아 보세요!!</div> 
+	         	</c:if>   	        	 
+	        	<c:if test="${requestScope.collection_view[0].movie_title != null}"> 
+	        		<div style="font-size: 22px; font-weight: bold; margin: 10px 0 20px 680px; ">${requestScope.collection_view[0].movie_title}</div>
+	         	</c:if>     
+	        </div> 	  
+		         
+		      	<hr style="margin: 0 30px 0 30px;">  	     
+		      	
 		    	<div style="font-size: 20px; font-weight: bold; margin: 20px 0 0 47px;">나의 컬렉션</div>	
  
 				  <div class="row" id="displayHIT" style="margin-left: 20px;"></div>
-   
-			      <div>
-			         <p class="text-center">
-			            <span id="end" style="display:block; margin:20px 0px 0 0; font-weight:bold; font-size: 12pt;"></span> 
-			            <button type="button" class="btn" id="btnMoreHIT" style="font-weight:bold; color:#f3578d;">더보기</button>
-			            <span id="totalHITCount">${requestScope.totalCount.COUNT}</span>
-			            <span id="countHIT">0</span>
-			         </p>
-			      </div>
-			    
+				   
+   					  <c:if test="${requestScope.totalCount.COUNT > 5}">   
+					      <div>  
+					         <p class="text-center">
+					            <span id="end" style="display:block; margin:20px 0px 0 0; font-weight:bold; font-size: 12pt;"></span> 
+					            <button type="button" class="btn" id="btnMoreHIT" style="font-weight:bold; color:#ff0558;">더보기</button>
+					            <span id="totalHITCount">${requestScope.totalCount.COUNT}</span>
+					            <span id="countHIT">0</span>
+					         </p> 
+					      </div>
+			      	  </c:if>
+			      	  
 			    <hr style="margin: 0 30px 0 30px;">  
 			    		
 			    <div style="font-size: 20px; font-weight: bold; margin: 20px 0 0 47px; display: inline-block;">댓글</div>			
 			    		
-		    	<%-- === 댓글쓰기 폼 추가 === --%> 
-		    	<%--<c:if test="${not empty sessionScope.loginuser}"> --%>
 			         <input type="hidden" name="user_id" id="user_id" value="${requestScope.collection_view[0].user_id}" />
 			         <input type="hidden" name="collection_id" id="collection_id" value="${requestScope.collection_view[0].collection_id}" /> 
-		    	<%--</c:if> --%>
 		    	 
 		    	<%-- === 댓글 내용 보여주기 === --%>
-		    	
 		    	<div id="commentBack">
 			    	<table style="">
 						<tbody id="commentDisplay"></tbody>

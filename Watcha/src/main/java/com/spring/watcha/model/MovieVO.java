@@ -20,13 +20,14 @@ public class MovieVO {
     private List<Movie_roleVO> movieRoles;  
     private List<Star_ratingVO> starRating;
     private List<ActorVO> actor;
+    private List<collection_movieVO> collection;
      
     // 기본생성자
     public MovieVO(){};
 	   
     public MovieVO(String movie_id, String movie_title, String overview, String original_language, String original_title, String release_date,
   		  String tagline, String runtime, String poster_path, String backdrop_path, String rating_avg, String rating_count,
-  		  List<GenreVO> genres, List<Movie_roleVO> movieRoles, List<Star_ratingVO> starRating, List<ActorVO> actor ) {
+  		  List<GenreVO> genres, List<Movie_roleVO> movieRoles, List<Star_ratingVO> starRating, List<ActorVO> actor, List<collection_movieVO> collection ) {
 	
 	this.movie_id = movie_id;
 	this.movie_title = movie_title;
@@ -44,6 +45,7 @@ public class MovieVO {
 	this.movieRoles = movieRoles;
 	this.starRating = starRating;
 	this.actor = actor;
+	this.collection = collection;
 	}
 
     
@@ -173,6 +175,14 @@ public class MovieVO {
 
 	public void setActor(List<ActorVO> actor) {
 		this.actor = actor;
+	}
+
+	public List<collection_movieVO> getCollection() {
+		return collection;
+	}
+
+	public void setCollection(List<collection_movieVO> collection) {
+		this.collection = collection;
 	}
 
 	

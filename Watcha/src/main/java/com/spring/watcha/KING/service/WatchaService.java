@@ -25,9 +25,9 @@ public class WatchaService implements InterWatchaService {
 
     // 영화 및 드라마 등 정보 가져오기 
 	@Override
-	public MovieVO getMovieDetail(String movie_id) {
+	public MovieVO getMovieDetail(Map<String, String> paraMap) {
 
-		MovieVO projectInfo = dao.getMovieDetail(movie_id);
+		MovieVO projectInfo = dao.getMovieDetail(paraMap);
 		
 		return projectInfo;
 	}
@@ -40,7 +40,7 @@ public class WatchaService implements InterWatchaService {
 		
 		return collection_viewList;
 	}
-
+	
 	// 더보기
 	@Override
 	public Map<String, String> totalCount(Map<String, String> paraMap) {
@@ -56,7 +56,7 @@ public class WatchaService implements InterWatchaService {
 		
 		return cardSeeMore;
 	}
-
+	
 	// 댓글쓰기
 	@Override
 	public int addUserComment(user_collection_commentVO uccvo) {
@@ -68,8 +68,8 @@ public class WatchaService implements InterWatchaService {
 
 	// 페이징 처리하기
 	@Override
-	public List<user_collection_commentVO> getuccListPaging(Map<String, String> paraMap) {
-		List<user_collection_commentVO> uccList = dao.uccListNoSearch(paraMap);
+	public List<Map<String, String>> getuccListPaging(Map<String, String> paraMap) {
+		List<Map<String, String>> uccList = dao.uccListNoSearch(paraMap);
 		return uccList;
 	}
 
@@ -106,6 +106,31 @@ public class WatchaService implements InterWatchaService {
 		return likeCollection;
 	}
 
-	
+	// 컬렉션 영화 추가
+	@Override
+	public int getCollectionSelect(Map<String, Object> paraMap) {
+		int n = dao.getCollectionSelect(paraMap);
+		return n;
+	}
+	@Override
+	public String getCollectionAddDelete(Map<String, Object> paraMap) {
+		String collectionAdd = dao.getCollectionAddDelete(paraMap);
+		
+		return collectionAdd;
+	}
+	@Override
+	public String getCollectionAddInsert(Map<String, Object> paraMap) {
+		String collectionAdd = dao.getCollectionAddInsert(paraMap);
+		
+		return collectionAdd;
+	}
+
+	// 컬렉션 값 유지
+	@Override
+	public int getMoviecollectionSelect(Map<String, String> paraMap) {
+		int n = dao.getMoviecollectionSelect(paraMap);
+		return n;
+	}
+
 		
 }
