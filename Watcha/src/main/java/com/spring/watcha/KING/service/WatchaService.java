@@ -25,9 +25,9 @@ public class WatchaService implements InterWatchaService {
 
     // 영화 및 드라마 등 정보 가져오기 
 	@Override
-	public MovieVO getMovieDetail(String movie_id) {
+	public MovieVO getMovieDetail(Map<String, String> paraMap) {
 
-		MovieVO projectInfo = dao.getMovieDetail(movie_id);
+		MovieVO projectInfo = dao.getMovieDetail(paraMap);
 		
 		return projectInfo;
 	}
@@ -123,6 +123,13 @@ public class WatchaService implements InterWatchaService {
 		String collectionAdd = dao.getCollectionAddInsert(paraMap);
 		
 		return collectionAdd;
+	}
+
+	// 컬렉션 값 유지
+	@Override
+	public int getMoviecollectionSelect(Map<String, String> paraMap) {
+		int n = dao.getMoviecollectionSelect(paraMap);
+		return n;
 	}
 
 		

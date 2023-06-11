@@ -23,8 +23,8 @@ public class WatchaDAO implements InterWatchaDAO {
 
 	   // 영화 정보 가져오기 	
 	   @Override
-	   public MovieVO getMovieDetail(String movieId) {
-	      MovieVO movie = sqlsession.selectOne("watcha.getMovieDetails", movieId); 
+	   public MovieVO getMovieDetail(Map<String, String> paraMap) {
+	      MovieVO movie = sqlsession.selectOne("watcha.getMovieDetails", paraMap); 
 	      
 	      return movie;
 	   }
@@ -112,5 +112,12 @@ public class WatchaDAO implements InterWatchaDAO {
 		public String getCollectionAddInsert(Map<String, Object> paraMap) {
 			String collectionAdd = sqlsession.selectOne("watcha.getCollectionAddInsert", paraMap);
 			return collectionAdd;
+		}
+
+		// 컬렉션 값 유지
+		@Override
+		public int getMoviecollectionSelect(Map<String, String> paraMap) {
+			int n = sqlsession.selectOne("watcha.getMoviecollectionSelect", paraMap);
+			return n; 
 		}
 }

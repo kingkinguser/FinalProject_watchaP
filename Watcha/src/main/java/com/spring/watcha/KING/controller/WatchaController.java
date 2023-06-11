@@ -38,15 +38,27 @@ public class WatchaController {
 			
 			// ==== ***** project_detail tiles 시작 ***** ==== // 
 			@RequestMapping(value="/view/project_detail.action") 
-			public String project_detail(HttpServletRequest request, Model model) {
-				
+			public String project_detail(HttpServletRequest request, Model model) { 
+	          
+				HttpSession session = request.getSession();
+	            MemberVO loginuser = (MemberVO) session.getAttribute("loginuser");
 				String movie_id = request.getParameter("movie_id");
-				MovieVO movieDetail = service.getMovieDetail(movie_id); 
 
+				Map<String, String> paraMap = new HashMap<>();
+				paraMap.put("movie_id", movie_id);
+				
+				MovieVO movieDetail = service.getMovieDetail(paraMap); 
 				model.addAttribute("movieDetail",movieDetail);
 				
+			    if(loginuser != null){
+			         String user_id = loginuser.getUser_id(); 
+			         paraMap.put("user_id", user_id);
+			         int moviecollectionSelect = service.getMoviecollectionSelect(paraMap); 
+			         model.addAttribute("moviecollectionSelect",moviecollectionSelect);
+			    } 
+				
 				/*
-				// 1대N 배열 한눈에 보기
+				// 1대N 배열 한눈에 보기 
 				Gson gson = new GsonBuilder().setPrettyPrinting().create();
 				String movieStr = gson.toJson(movieDetail);
 				System.out.println(movieStr);

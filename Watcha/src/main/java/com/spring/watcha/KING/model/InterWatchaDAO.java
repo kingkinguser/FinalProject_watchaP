@@ -10,7 +10,7 @@ import com.spring.watcha.model.user_collection_commentVO;
 public interface InterWatchaDAO {
 
 	// 영화 및 드라마 등 정보 가져오기 
-  	MovieVO getMovieDetail(String movie_id);
+  	MovieVO getMovieDetail(Map<String, String> paraMap);
 
     // 유저의 컬랙션 카드
 	List<Map<String, String>> getCollection_view(Map<String, String> paraMap);
@@ -39,6 +39,9 @@ public interface InterWatchaDAO {
 	int getCollectionSelect(Map<String, Object> paraMap);
 	String getCollectionAddDelete(Map<String, Object> paraMap);
 	String getCollectionAddInsert(Map<String, Object> paraMap);
+
+	// 컬렉션 값 유지
+	int getMoviecollectionSelect(Map<String, String> paraMap);
 	
 		
 		

@@ -176,12 +176,18 @@
 </style>
 
 <script type="text/javascript">
-	
-	/* 출연, 제작 시작*/
 	$(document).ready(function(){
-		
-	   
-		
+	
+	/* 컬렉션 값 유지 */
+	if($('#moviecollectionSelect').val() == 1) {  
+		$(".collectioni").css({"color":"#ff0558"}); 	  
+	}
+	
+	if($('#moviecollectionSelect').val() == 0) { 
+		$(".collectioni").css({"background-color":"","color":""}); 
+	}
+	
+	/* 출연, 제작 시작*/	
 	$('#recipeCarousel').carousel({ 
 		  interval: 10000
 	});
@@ -292,6 +298,8 @@
 		
 		$("input:checkbox[name='check_collection']").toggle();
 		
+		location.reload(true); 
+		
 	});
 	/*컬렉션 끝*/ 	
 	
@@ -388,8 +396,11 @@
 						    <label for="check_collection" style="cursor: pointer;">
 						    <i class="fas fa-book collectioni"></i><span class="collectioni" style="font-size: 15px; font-weight: bolder">&nbsp;컬렉션에 추가</span></label>
 							<input type="checkbox" id="check_collection" name="check_collection"/>
-						</div>
-					</div>
+							
+							<input type="hidden" name="moviecollectionSelect" id="moviecollectionSelect" value="${requestScope.moviecollectionSelect}" /> 
+		    	  
+						</div>    
+					</div>  
 				
 			</div>
 		</div>

@@ -47,7 +47,7 @@
 	}
 	.btnP:hover{
 	  background:#fff;
-	  color: #f3578d;
+	  color: #ff0558;
 	}
 	.btnP:before,.btnP:after{
 	  content:'';
@@ -56,7 +56,7 @@
 	  right:0;
 	  height:2px;
 	  width:0;
-	  background: #f3578d;
+	  background: #ff0558;
 	  transition:400ms ease all;
 	}
 	.btnP:after{
@@ -137,33 +137,22 @@
 	  margin: -25px 0 0 140px;
 	}
 	
-	img#middle {
-		 background-repeat: no-repeat;
-		 background-size:cover;  
+	img#lastest {
 		 background-position: center center; 
-		 height: 400px;
-  	     width: 60%; 
-  	     background-blend-mode: multiply;
-  	     border-radius: 10px 10px;
-  	     opacity: 0.9;
+		 height: 280px; 
+  	     width: 40%;  
+  	     border-radius: 15px;
+  	     margin: 0 0 0px 20px;  
 	} 
 	
-	#commentInfo{
-	  width: 49%;
-	  height: 300px;
+	#chart{
+	  width: 58%;   
+	  height: 340px;  
 	  border: solid 1px #eee;
 	  border-radius: 15px;
 	  float: left;
-	  margin: 10px 0 10px 0;
+	  margin: 10px 0 10px 0;  
 	}
-	
-	#chart{ 
-	  width: 49%;
-	  height: 300px;
-	  border: solid 1px #eee;
-	  border-radius: 15px;
-	  margin: -13px 0 10px 520px; 
-	}		
 	
 	#profile_i {
 		padding: 0 15px 0 35px; 
@@ -173,8 +162,61 @@
 		padding: 0 185px 0 15px;  
 	}
 	 
-	#uctime { 
+	
+	/* 차트 시작 */
+	.highcharts-figure,
+	.highcharts-data-table table {
+	    min-width: 320px;
+	    max-width: 800px;
+	    margin: 1em auto;
 	}
+	
+	.highcharts-data-table table {
+	    font-family: Verdana, sans-serif;
+	    border-collapse: collapse;
+	    border: 1px solid #ebebeb;
+	    margin: 10px auto;
+	    text-align: center;
+	    width: 100%;
+	    max-width: 500px;
+	}
+	
+	.highcharts-data-table caption {
+	    padding: 1em 0;
+	    font-size: 1.2em;
+	    color: #555;
+	}
+	
+	.highcharts-data-table th {
+	    font-weight: 600;
+	    padding: 0.5em;
+	}
+	
+	.highcharts-data-table td,
+	.highcharts-data-table th,
+	.highcharts-data-table caption {
+	    padding: 0.5em;
+	}
+	
+	.highcharts-data-table thead tr,
+	.highcharts-data-table tr:nth-child(even) {
+	    background: #f8f8f8;
+	}
+	
+	.highcharts-data-table tr:hover {
+	    background: #f1f7ff;
+	}
+	/* 차트 끝 */	
+	
+	.mycollection{
+		width: 300px; 
+		height: 100px;  
+		margin: 50px 0 0 380px;    
+	}
+		
+	#infoinfo {
+		width: 100%; 
+	}	
 		
 </style>
 
@@ -250,7 +292,7 @@
 				  
 				if($('input:checkbox[name="check_good"]').is(":checked")) {
 					 
-				 	$(".goodi").css({"color":"#f3578d"}); 
+				 	$(".goodi").css({"color":"#ff0558"}); 
 				 	
 				}
 				else if(!$('input:checkbox[name="check_good"]').is(":checked")) {
@@ -264,7 +306,50 @@
 				
 			});
 			/*좋아요 끝*/	
-		
+				
+			
+	/* 차트 시작 */		 
+	const text =
+		        'the daisies, when suddenly a White Rabbit with pink eyes ran close by her.',
+		    lines = text.replace(/[():'?0-9]+/g, '').split(/[,\. ]+/g),
+		    data = lines.reduce((arr, word) => {
+		        let obj = Highcharts.find(arr, obj => obj.name === word);
+		        if (obj) {
+		            obj.weight += 1;
+		        } else { 
+		            obj = {
+		                name: word,
+		                weight: 1
+		            };
+		            arr.push(obj);
+		        }
+		        return arr;
+		    }, []); 
+
+		Highcharts.chart('chart_container', {
+		    accessibility: {
+		        screenReaderSection: {
+		            beforeChartFormat:  '<h5>{chartTitle}</h5>' +
+						                '<div>{chartSubtitle}</div>' +
+						                '<div>{chartLongdesc}</div>' +
+						                '<div>{viewTableButton}</div>'
+		        }
+		    },
+		    series: [{
+		        type: 'wordcloud',
+		        data,
+		        name: 'Occurrences'
+		    }],
+		    title: {
+		        text: '나의 컬렉션 댓글 중 가장 많은 단어'
+		    },
+		    tooltip: {
+		        headerFormat: '<span style="font-size: 16px"><b>{point.key}</b></span><br>'
+		    }
+	});		
+	/* 차트 끝 */	 		
+			
+			
 	});//end of $(document).ready(function()) ----------------------------------------------------------------------------
 
 	// Function Declaration
@@ -288,7 +373,7 @@
 		    	 
 		    	 if(start == "1" && json.length == 0){
 			    	
-		    		 html += "나의 컨렉션을 만들어 보세요!!";
+		    		 html += "<div class='mycollection'>나만의 컨렉션을 만들어 보세요!!</div>";
 		    	 
 		    	 	 $("div#displayHIT").html(html);
 		    		 
@@ -526,51 +611,81 @@
   
 </script>
 
+<script src="<%= ctxPath %>/resources/Highcharts-10.3.1/code/highcharts.js"></script>
+<script src="<%= ctxPath %>/resources/Highcharts-10.3.1/code/modules/wordcloud.js"></script>
+<script src="<%= ctxPath %>/resources/Highcharts-10.3.1/code/modules/exporting.js"></script>
+<script src="<%= ctxPath %>/resources/Highcharts-10.3.1/code/modules/export-data.js"></script>
+<script src="<%= ctxPath %>/resources/Highcharts-10.3.1/code/modules/accessibility.js"></script>
+
 <meta charset="UTF-8">
 <title></title>
 </head>
 <body>
 
 	<div id="container">
-	
-		<img id="middle" src="https://image.tmdb.org/t/p/w1280${requestScope.collection_view[0].backdrop_path}"/>
-	
+	 
 		<div class="card">
 		    <div class="card-body"> 
-		        
-		        <hr style="margin: 0 30px 0 30px;">  	
-		        
-		        <span style="margin-left: 50px;"></span>
-		        
-		        <div id="commentInfo">
-		        
-			        <span>성명:&nbsp;${requestScope.collection_view[0].name}</span>
-			        
-					<span style= "width: 100px;"> 
-					  <label for="check_good" style="cursor: pointer;">
-					    <i class="far fa-thumbs-up goodi"></i><span class="goodi" style="font-weight: bolder">&nbsp;&nbsp;좋아요</span></label>
-						<input type="checkbox" id="check_good" name="check_good"/>
-					</span>
-		        </div> 
-		        
-		        <div id="chart">
-		        </div> 		        
 			
-				<hr style="margin: 0 30px 0 30px;">  	    
-		      
+		   <div id="infoinfo">           
+		      	  
+		        <span>성명:&nbsp;${sessionScope.loginuser.name}</span> 
+	        
+				<span style= "width: 100px;"> 
+				  <label for="check_good" style="cursor: pointer;">
+				    <i class="far fa-thumbs-up goodi"></i><span class="goodi" style="font-weight: bolder">&nbsp;&nbsp;좋아요</span></label>
+					<input type="checkbox" id="check_good" name="check_good"/>
+				</span>
+		   </div> 
+			
+			<div id="chart">   
+				<figure class="highcharts-figure">
+				    <div id="chart_container" style="height: 300px;"></div>
+				    <p class="highcharts-description"></p> 
+				</figure>
+			</div> 
+			         
+	        <div id="">     
+	        	     
+	        	<div style="font-size: 20px; font-weight: bolder; margin: 0 0 10px 665px;">가장 최근에 컬렉션에 담은 <span style="color:#ff0558">영화</span></div>
+
+	         	<c:if test="${requestScope.collection_view[0].movie_title != null}">
+		        	<a href='project_detail.action?movie_id=${requestScope.collection_view[0].movie_id}'>
+		        		<img id="lastest" src="https://image.tmdb.org/t/p/w1280${requestScope.collection_view[0].backdrop_path}" />
+		        	</a>   		
+	        	</c:if>
+	         	
+	         	<c:if test="${requestScope.collection_view[0].movie_title == null}">
+		        	<a>   
+		        		<img id="lastest" src="<%= ctxPath%>/resources/images/왓챠피디아NULL.png" /> 
+		        	</a> 
+	        	</c:if> 
+	        	  
+	        	<c:if test="${requestScope.collection_view[0].movie_title == null}"> 
+	        		<div style="font-size: 15px; margin: 15px 0 30px 730px; ">컬렉션을 담아 보세요!!</div> 
+	         	</c:if>   	        	 
+	        	<c:if test="${requestScope.collection_view[0].movie_title != null}"> 
+	        		<div style="font-size: 22px; font-weight: bold; margin: 10px 0 20px 680px; ">${requestScope.collection_view[0].movie_title}</div>
+	         	</c:if>     
+	        </div> 	  
+		         
+		      	<hr style="margin: 0 30px 0 30px;">  	     
+		      	
 		    	<div style="font-size: 20px; font-weight: bold; margin: 20px 0 0 47px;">나의 컬렉션</div>	
  
 				  <div class="row" id="displayHIT" style="margin-left: 20px;"></div>
-   					 
-				      <div> 
-				         <p class="text-center">
-				            <span id="end" style="display:block; margin:20px 0px 0 0; font-weight:bold; font-size: 12pt;"></span> 
-				            <button type="button" class="btn" id="btnMoreHIT" style="font-weight:bold; color:#f3578d;">더보기</button>
-				            <span id="totalHITCount">${requestScope.totalCount.COUNT}</span>
-				            <span id="countHIT">0</span>
-				         </p>
-				      </div>
-			      
+				   
+   					  <c:if test="${requestScope.totalCount.COUNT > 5}">   
+					      <div>  
+					         <p class="text-center">
+					            <span id="end" style="display:block; margin:20px 0px 0 0; font-weight:bold; font-size: 12pt;"></span> 
+					            <button type="button" class="btn" id="btnMoreHIT" style="font-weight:bold; color:#ff0558;">더보기</button>
+					            <span id="totalHITCount">${requestScope.totalCount.COUNT}</span>
+					            <span id="countHIT">0</span>
+					         </p> 
+					      </div>
+			      	  </c:if>
+			      	  
 			    <hr style="margin: 0 30px 0 30px;">  
 			    		
 			    <div style="font-size: 20px; font-weight: bold; margin: 20px 0 0 47px; display: inline-block;">댓글</div>			

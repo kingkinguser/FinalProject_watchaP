@@ -42,7 +42,7 @@
        <result property="profile_image_path" column="profile_image_path"/>
    </resultMap>
    
-   <select id="getMovieDetails" resultMap="movieResultMap" parameterType="String">
+   <select id="getMovieDetails" resultMap="movieResultMap" parameterType="HashMap">
        SELECT movie_id, movie_title, overview, original_language, original_title, to_char(release_date, 'yyyy-mm-dd') as release_date, tagline, to_number(runtime) as runtime, poster_path, backdrop_path, to_number(rating_count) as rating_count
        , to_number(rating_avg) as rating_avg
        FROM movie
@@ -188,6 +188,14 @@
    	INSERT INTO collection_movie(movie_id, user_id) 
 	VALUES (#{movie_id},#{user_id})
 	</insert> 
+	
+	<!-- 컬렉션 값 유지 --> 
+	<select id="getMoviecollectionSelect" parameterType="HashMap" resultType="int">
+     select count(*) as count
+     from collection_movie
+     where user_id = #{user_id} and movie_id = #{movie_id}
+	</select>
+	
 	 
 </mapper>
 
