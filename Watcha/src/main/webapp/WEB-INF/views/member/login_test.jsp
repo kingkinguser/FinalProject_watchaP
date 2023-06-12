@@ -657,6 +657,9 @@ function emailDuplicateCheck() {
       <!-- 회원탈퇴 버튼 -->
       <button type="button" id="modifyBtn" onclick="location.href='<%= ctxPath %>/deleteMember.action'">회원탈퇴</button>
 	</c:if>
+	
+    <!-- aop 버튼 -->
+    <button type="button" id="modifyBtn" onclick="location.href='<%= ctxPath %>/aop_login_test.action'">aop test</button>
 
     <!-- 로그인 modal -->
     <div id="loginModal" class="login_signup-modal">
