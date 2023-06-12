@@ -670,9 +670,6 @@ function emailDuplicateCheck() {
                     <div class="mx20">
                         <form name="loginForm" class="form" onsubmit="return func_Login()">
                         
-                        	<!-- 현재 페이지 주소 -->
-                            <input type="hidden" name="url" id="url">
-                        
                             <div class="py4">
                                 <label class="login_signup-label-input">
                                     <div class="login_signup-div-input">

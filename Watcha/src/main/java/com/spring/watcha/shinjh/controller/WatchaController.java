@@ -51,8 +51,7 @@ public class WatchaController {
 			
 			mav.addObject("needLogin", true);
 			
-			mav.setViewName("member/login_test");
-//			mav.setViewName("member/view/main.action");
+			mav.setViewName("/main.tiles");
 			
 			return mav;
 			
