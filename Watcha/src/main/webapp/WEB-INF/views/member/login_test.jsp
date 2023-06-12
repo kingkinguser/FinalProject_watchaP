@@ -378,8 +378,11 @@ let emailbool = false; // 이메일 중복체크 결과
 
 $(document).ready(function() {
 
-	// 추가사항
-	$("#url").val(window.location.href);
+	// 로그인이 필요할 시, 로그인 모달 띄우기
+	if("${requestScope.needLogin}") {
+	    $("#loginModal").css("display","flex");
+	    $("html").addClass("disableBodyScrolling");
+	};
 	
 	
     // modal 닫기 기능
@@ -421,8 +424,8 @@ function resetForm(){
 //----- 아이디 입력태그 ------ //
 function idChange(e) {
 
-	if( $(e).val().trim().length < 1 ) {
-		// 1글자 미만일 경우 
+	if( $(e).val().trim().length < 2 ) {
+		// 2글자 미만일 경우 
 		$("p#id-warning").css("display","block"); // 해당 부분만 error 문구 출력해주기
 		$(e).parent().parent().addClass("warn-label-input");
 	}
@@ -438,8 +441,8 @@ function idChange(e) {
 //----- 아이디 입력태그2 ------ //
 function id2Change(e) {
 
-	if( $(e).val().trim().length < 1 ) {
-		// 1글자 미만일 경우 
+	if( $(e).val().trim().length < 2 ) {
+		// 2글자 미만일 경우 
 		$("p#id2-warning").css("display","block"); // 해당 부분만 error 문구 출력해주기
 		$(e).parent().parent().addClass("warn-label-input");
 	}
@@ -667,13 +670,13 @@ function emailDuplicateCheck() {
                     <div class="mx20">
                         <form name="loginForm" class="form" onsubmit="return func_Login()">
                         
-                        	<!-- 추가사항 -->
+                        	<!-- 현재 페이지 주소 -->
                             <input type="hidden" name="url" id="url">
                         
                             <div class="py4">
                                 <label class="login_signup-label-input">
                                     <div class="login_signup-div-input">
-                                        <input autocomplete="off" placeholder="아이디" id="user_id" name="user_id" class="login_signup-input" onblur="idChange(this)" required>
+                                        <input autocomplete="off" placeholder="아이디" id="user_id" name="user_id" class="login_signup-input" oninput="idChange(this)" required>
                                     </div>
                                 </label>
                                 <p class="warning-text" id="id-warning">아이디는 두글자 이상이어야 합니다.</p>
@@ -682,7 +685,7 @@ function emailDuplicateCheck() {
                             <div class="py4">
                                 <label class="login_signup-label-input">
                                     <div class="login_signup-div-input">
-                                        <input autocomplete="off" placeholder="비밀번호" id="password" type="password" name="password" class="login_signup-input" onblur="pwdChange(this)"
+                                        <input autocomplete="off" placeholder="비밀번호" id="password" type="password" name="password" class="login_signup-input" oninput="pwdChange(this)"
                                          pattern="^.*(?=^.{8,15}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[^a-zA-Z0-9]).*$" required>
                                     </div>
                                 </label>
@@ -745,7 +748,7 @@ function emailDuplicateCheck() {
                             <div class="py4">
                                 <label class="login_signup-label-input">
                                     <div class="login_signup-div-input">
-                                        <input autocomplete="off" placeholder="아이디" type="text" id="user_id2" name="user_id" class="login_signup-input" title="아이디를 입력하세요." onblur="id2Change(this)" minlength="2" required>
+                                        <input autocomplete="off" placeholder="아이디" type="text" id="user_id2" name="user_id" class="login_signup-input" title="아이디를 입력하세요." oninput="id2Change(this)" minlength="2" required>
                                     </div>
                                 </label>
                                 <p class="warning-text" id="id2-warning">아이디는 최소 2자 이상이어야 합니다.</p>
@@ -755,7 +758,7 @@ function emailDuplicateCheck() {
                             <div class="py4">
                                 <label class="login_signup-label-input">
                                     <div class="login_signup-div-input">
-                                        <input autocomplete="off" placeholder="비밀번호" type="password" id="password2" name="password" class="login_signup-input" onblur="pwdChange(this)"
+                                        <input autocomplete="off" placeholder="비밀번호" type="password" id="password2" name="password" class="login_signup-input" oninput="pwdChange(this)"
                                          pattern="^.*(?=^.{8,15}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[^a-zA-Z0-9]).*$" required>
                                     </div>
                                 </label>
@@ -765,7 +768,7 @@ function emailDuplicateCheck() {
                             <div class="py4">
                                 <label class="login_signup-label-input">
                                     <div class="login_signup-div-input">
-                                        <input autocomplete="off" placeholder="이름" type="text" id="name" name="name" class="login_signup-input" onblur="nameChange(this)" minlength="2" required>
+                                        <input autocomplete="off" placeholder="이름" type="text" id="name" name="name" class="login_signup-input" oninput="nameChange(this)" minlength="2" required>
                                     </div>
                                 </label>
                                 <p class="warning-text" id="name-warning">정확하지 않은 이름입니다.</p>
@@ -775,7 +778,7 @@ function emailDuplicateCheck() {
                                 <label class="login_signup-label-input">
                                     <div class="login_signup-div-input">
                                         <input autocomplete="off" placeholder="전화번호" type="text" id="mobile" name="mobile" class="login_signup-input"
-                                         pattern="^010\d{8}$" title="전화번호는 -를 제외한 01012345678 형식으로 입력하세요." onblur="numChange(this)" required>
+                                         pattern="^010\d{8}$" title="전화번호는 -를 제외한 01012345678 형식으로 입력하세요." oninput="numChange(this)" required>
                                     </div>
                                 </label>
                                 <p class="warning-text" id="mobile-warning">정확하지 않은 번호입니다.</p>
@@ -784,7 +787,7 @@ function emailDuplicateCheck() {
                             <div class="py4">
                                 <label class="login_signup-label-input">
                                     <div class="login_signup-div-input">
-                                        <input autocomplete="off" placeholder="이메일" type="email" id="email" name="email" class="login_signup-input" onblur="emailChange(this)"
+                                        <input autocomplete="off" placeholder="이메일" type="email" id="email" name="email" class="login_signup-input" oninput="emailChange(this)"
                                          pattern="^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$" required>
                                     </div>
                                 </label>

@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +34,30 @@ public class WatchaController {
 		public String login_test(HttpServletRequest request) {
 			
 			return "member/login_test";
+		} 
+		
+		
+		// AOP 테스트페이지, 페이지 합치면서 삭제할 예정
+		@RequestMapping(value="/aop_login_test.action")
+		public String requiredLogin_login_test(HttpServletRequest request, HttpServletResponse response) {
+			
+			return "member/login_test";
 		}
+		
+		
+		// 로그인 기능 구현
+		@RequestMapping(value="/login.action")
+		public ModelAndView needLogin(ModelAndView mav, HttpServletRequest request) {
+			
+			mav.addObject("needLogin", true);
+			
+			mav.setViewName("member/login_test");
+//			mav.setViewName("member/view/main.action");
+			
+			return mav;
+			
+		}
+		
 		
 		
 		// 로그인 기능 구현
@@ -44,16 +68,9 @@ public class WatchaController {
 			
 			String password = request.getParameter("password");
 			
-			String url = request.getParameter("url");
-			
-			HttpSession session = request.getSession();
-			
-			session.setAttribute("goBackURL", url);
-			
 			Map<String, String> paraMap = new HashMap<>();
 			paraMap.put("user_id", user_id);
 			paraMap.put("password", Sha256.encrypt(password));
-			paraMap.put("go", Sha256.encrypt(password));
 			
 			mav = service.loginEnd(mav, request, paraMap);
 			
