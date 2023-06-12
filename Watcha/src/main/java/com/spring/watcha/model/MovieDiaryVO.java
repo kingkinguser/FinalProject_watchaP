@@ -15,7 +15,7 @@ public class MovieDiaryVO {
     
     // 파라미터 생성자
     public MovieDiaryVO(String diary_id, String movie_id, String user_id, String watching_date, String photo_front,
-						String photo_back) {
+    		String photo_back) {
 		this.diary_id = diary_id;
 		this.movie_id = movie_id;
 		this.user_id = user_id;

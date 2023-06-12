@@ -20,12 +20,12 @@
 	</select>
 
 	<!-- 회원의 평균 별점, 평가한 영화개수 -->
-	<resultMap type="HashMap" id="userInfo_Map">
-		<result property="avg_rating" 	column="avg_rating" 	  javaType="String"/>
-		<result property="count_rating" column="count_rating" 	  javaType="String"/>
+	<resultMap type="HashMap" id="rating_Map">
+		<result property="rating_avg" 	column="rating_avg" 	  javaType="String"/>
+		<result property="rating_count" column="rating_count" 	  javaType="String"/>
 	</resultMap>
-	<select id="userInfo" parameterType="String" resultMap="userInfo_Map">
-	    select nvl(round(avg(rating),2), 0) as avg_rating, count(rating) as count_rating
+	<select id="userInfo" parameterType="String" resultMap="rating_Map">
+	    select nvl(round(avg(rating),2), 0) as rating_avg, count(rating) as rating_count
         from star_rating
         where user_id = #{user_id}
 	</select>
@@ -35,6 +35,22 @@
 	    select count(review_id)
 	    from movie_review
 	    where user_id = #{user_id}
+	</select>
+
+	<!-- 포토티켓List 가져오기 -->
+	<resultMap type="HashMap" id="userPhotoTicket_Map">
+		<result property="diary_id" 	 column="diary_id" 		javaType="String"/>
+		<result property="movie_id" 	 column="movie_id" 		javaType="String"/>
+		<result property="movie_title"   column="movie_title" 	javaType="String"/>
+		<result property="poster_path" 	 column="poster_path" 	javaType="String"/>
+		<result property="photo_front" 	 column="photo_front" 	javaType="String"/>
+		<result property="photo_back" 	 column="photo_back" 	javaType="String"/>
+	</resultMap>
+	<select id="userPhotoTicket" parameterType="String" resultMap="userPhotoTicket_Map">
+		select diary_id, M.movie_id, movie_title, poster_path, photo_front, photo_back
+		from movie_diary D join movie M
+		on D.movie_id = M.movie_id
+		where user_id = #{user_id}
 	</select>
 
 	<!-- 검색하기 - 모든 종류의 장르 가져오기 -->
@@ -91,13 +107,13 @@
 	    select movie_id, movie_title, poster_path, rating
 	    from
 	    (
-	        select row_number() over(order by R.rating_date desc) AS rno
+	        select row_number() over(order by R.${order}) AS rno
 	             , M.movie_id, M.movie_title, M.poster_path
 	             , R.rating
 	        from movie M right join star_rating R
 	        on M.movie_id = R.movie_id
 	        where user_id = #{user_id}
-	        order by rating_date desc
+	        order by ${order}
 	    ) A
 	    where rno between #{startRno} and #{endRno}
 	</select>
@@ -113,13 +129,13 @@
 		<result property="number_of_comments" column="number_of_comments" javaType="String"/>
 		<result property="user_id" 			  column="user_id" 			  javaType="String"/>
 		<result property="profile_image" 	  column="profile_image" 	  javaType="String"/>
-		<result property="nickname" 		  column="nickname" 		  javaType="String"/>
+		<result property="name" 		  	  column="name" 		  	  javaType="String"/>
 		<result property="rating" 			  column="rating" 			  javaType="String"/>
 		<result property="like_review" 		  column="like_review" 		  javaType="String"/>
 	</resultMap>
 	<select id="movieReviewPaging" parameterType="HashMap" resultMap="movieReviewPaging_Map">
 	    select A.review_id, A.movie_id, A.review_content, A.review_date, A.spoiler_status, A.number_of_likes, A.number_of_comments
-	         , A.user_id, A.profile_image, A.nickname
+	         , A.user_id, A.profile_image, A.name
 	         , nvl(B.rating, 0) AS rating 
 	         ,( select case Y.user_id when #{user_id} then 1 else 0 end as like_review
 	            from movie_review X join review_like Y
@@ -132,7 +148,7 @@
 	             , R.review_id, R.movie_id, R.review_content
 	             , to_char(R.review_date, 'yyyy-mm-dd') AS review_date
 	             , R.spoiler_status, R.number_of_likes, R.number_of_comments
-	             , M.user_id, M.profile_image, M.nickname  
+	             , M.user_id, M.profile_image, M.name  
 	        from movie_review R join member M
 	        on R.user_id = M.user_id
 	    ) A join star_rating B
@@ -163,15 +179,16 @@
 		<result property="review_id" 	 	  column="review_id" 		  javaType="String"/>
 		<result property="user_id" 			  column="user_id" 			  javaType="String"/>
 		<result property="profile_image" 	  column="profile_image" 	  javaType="String"/>
-		<result property="nickname" 		  column="nickname" 		  javaType="String"/>
+		<result property="name" 		  column="name" 		  javaType="String"/>
 		<result property="content" 	  		  column="content" 	  		  javaType="String"/>
 		<result property="comment_date" 	  column="comment_date" 	  javaType="String"/>
 	</resultMap>
 	<select id="commentList" parameterType="String" resultMap="commentList_Map">
-	    select C.comment_id, C.review_id, M.user_id, M.profile_image, M.nickname, C.content, to_char(C.comment_date, 'yyyy-mm-dd') AS comment_date
+	    select C.comment_id, C.review_id, M.user_id, M.profile_image, M.name, C.content, to_char(C.comment_date, 'yyyy-mm-dd') AS comment_date
 	    from review_comment C join member M
 	    on C.user_id = M.user_id 
 	    where review_id = #{review_id}
+	    order by C.comment_date desc
 	</select>
 	
 	<!-- 한줄평 - 로그인한 회원이 해당 영화에 대해 작성한 한줄평 유무 및 한줄평 정보 -->
@@ -331,5 +348,40 @@
 	                         , rating_date = sysdate
 	    where movie_id = #{movie_id} and user_id = #{user_id}
 	</update>
+
+	<!-- 해당 영화에 대한 평균별점 값 읽어오기 -->
+	<select id="getAvgRating" parameterType="String" resultMap="rating_Map">
+		select nvl(round(avg(rating),2), 0) as rating_avg, count(rating) as rating_count
+        from star_rating
+        where movie_id = #{movie_id}	
+    </select>
 	
+	<!-- 변경된 평균별점 값 update(movie 테이블에서 update) -->
+	<update id="updateAvgRating" parameterType="HashMap">
+		update movie set rating_avg = #{rating_avg}
+					   , rating_count = #{rating_count}
+	    where movie_id = #{movie_id}
+	</update>
+	
+	<!-- 포토티켓 등록하기 -->
+	<update id="registerPhoto" parameterType="com.spring.watcha.model.MovieDiaryVO">
+		update movie_diary set photo_front = #{photo_front}
+							 , photo_back = #{photo_back}
+		where diary_id = #{diary_id}	
+	</update>
+	
+	<!-- 무비다이어리List 가져오기 -->
+	<resultMap type="HashMap" id="showMovieDiary_Map">
+		<result property="diary_id" 	 column="diary_id" 		javaType="String"/>
+		<result property="movie_id" 	 column="movie_id" 		javaType="String"/>
+		<result property="movie_title"   column="movie_title" 	javaType="String"/>
+		<result property="poster_path" 	 column="poster_path" 	javaType="String"/>
+		<result property="watching_date" column="watching_date" javaType="String"/>
+	</resultMap>
+	<select id="showMovieDiary" parameterType="String" resultMap="showMovieDiary_Map">
+		select diary_id, M.movie_id, movie_title, poster_path, watching_date
+		from movie_diary D join movie M
+		on D.movie_id = M.movie_id
+		where user_id = #{user_id}
+	</select>
 </mapper>

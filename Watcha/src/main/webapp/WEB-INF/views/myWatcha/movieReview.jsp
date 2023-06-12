@@ -87,7 +87,7 @@ p.movieRate{height: 30px; border: solid 1px #e6e6e6; border-radius: 20%/40%; pad
 				        else {
 					       	html +=   '<img id="img_profile" src="<%= request.getContextPath()%>/resources/images/'+item.profile_image+'"/>';
 				        }
-				        html +=       '<h5 style="text-align: left; padding: 0 5px; font-weight: 600; margin: 8px 10px;">'+item.nickname+'</h5>'
+				        html +=       '<h5 style="text-align: left; padding: 0 5px; font-weight: 600; margin: 8px 10px;">'+item.name+'</h5>'
 				       		  +     '</div>'
 				       		  +     '<div class="mx-auto my-auto p-2">';
 				       		  
@@ -107,7 +107,7 @@ p.movieRate{height: 30px; border: solid 1px #e6e6e6; border-radius: 20%/40%; pad
 				       	}
 				       	
 				       	html +=       '<div style="display: flex;">'
-				       		  +         '<p style="padding-left: 10px; margin: 10px 0px; font-size: 11pt; color: gray;">작성일자&nbsp;<span class="ml-2">'+item.review_date+'</span></p>';
+				       		  +         '<p style="padding-left: 10px; margin: 10px 0px; font-size: 11pt; color: gray;">작성일자&nbsp;<span class="ml-1">'+item.review_date+'</span></p>';
 				       		  
 				        if(item.rating == 0){ // 별점평가를 하지 않은 경우
 					       	html +=   	'<p class="movieRate">평가안함</p>';
@@ -152,7 +152,7 @@ p.movieRate{height: 30px; border: solid 1px #e6e6e6; border-radius: 20%/40%; pad
 					      +	'</div>';
 				}
 				else {
-					html += '<h4 style="text-align: left; padding: 5px; font-weight: 600;">이 영화에 대한 한줄평이 존재하지 않아요.</h4>';
+					html += '<h5 style="text-align: center; padding: 5px; margin: 20px; font-weight: 600;">이 영화에 대한 한줄평이 존재하지 않아요.</h5>';
 				}
 				$("div#container").html(html);
 			},

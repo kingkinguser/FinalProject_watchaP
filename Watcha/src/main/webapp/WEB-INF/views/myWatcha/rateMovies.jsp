@@ -29,9 +29,10 @@
 div#div_container {width: 100%; display: flex; background-color: #ffffff; cursor: default;
 				 /*font-family: 'IBM Plex Sans KR', sans-serif;*/
 				  font-family: 'Noto Sans KR', sans-serif;}
-div#div_content {width: 80%; margin: 0px 30px auto; padding-bottom: 30px;}
+div#div_content {width: 100%; margin: 0px 30px auto; padding-bottom: 30px;}
 span#count_rating {padding-left: 10px; font-weight: 400; color: #666666; font-size: 14px;}
 img#img_movie {border: solid 1px #f8f8f8; border-radius: 2%; box-shadow: 1px 1px 1px #cccccc; width: 100%;}
+label {cursor: pointer; margin: 0px 8px;}
 </style>
 
 <script>
@@ -58,14 +59,33 @@ img#img_movie {border: solid 1px #f8f8f8; border-radius: 2%; box-shadow: 1px 1px
 			}
 		}); // end of $(window).scroll(function(){})
 		
+		// 정렬순서 변경하기
+		$("input:radio[name='order']").click(function(){
+			$("input:radio[name='order']").each(function(index, item){
+				let check_icon = $(item).next();
+
+				if($(this).prop("checked")){ // 라디오박스 체크
+	 				check_icon.css({'color':'#ff0558'});
+	 			}
+				else {
+					check_icon.css({'color':'#cccccc'});
+				}
+			});
+			currentShowPageNo = 1;
+			viewRateMovies(currentShowPageNo);
+
+		}); // end of $("input:radio[name='order']").click(function(){})
+		
 		
 	}); // end of $(document).ready(function(){})
 
 	// 평가한 영화 전체 보여주기
 	function viewRateMovies(currentShowPageNo){
+		console.log($("input:radio[name='order']").val());
 		$.ajax({
 			url:"<%= ctxPath%>/myWatcha/viewRateMovies.action",
-			data:{"currentShowPageNo":currentShowPageNo},
+			data:{"currentShowPageNo":currentShowPageNo,
+				  "order":$("input:radio[name='order']:checked").val()},
 			dataType:"json",
 			success:function(json){
 			//	console.log("확인용 : "+JSON.stringify(json));
@@ -76,7 +96,7 @@ img#img_movie {border: solid 1px #f8f8f8; border-radius: 2%; box-shadow: 1px 1px
 					<%-- 평가한 영화(Ajax로 페이징 처리) --%>
 					$.each(json, function(index, item){
 						html += '<div style="width: 19%; margin: 3px; display: inline-block;" class="my-3">'
-					          +   '<div class="p-0 m-0 mx-auto" style="overflow: hidden; height: 260px; border: solid 1px #e6e6e6; border-radius: 2%;">'
+					          +   '<div class="p-0 m-0 mx-auto" style="overflow: hidden; height: 280px; border: solid 1px #e6e6e6; border-radius: 2%;">'
                         	  +     '<img class="img-thumnail w-100" src="https://image.tmdb.org/t/p/w780/'+item.poster_path+'">'
 				        	  +   '</div>'
 			              	  +   '<div class="p-0 m-0 mt-2 px-2 text-center">';
@@ -106,10 +126,14 @@ img#img_movie {border: solid 1px #f8f8f8; border-radius: 2%; box-shadow: 1px 1px
 					}); // end of $.each(json, function(index, item){})
 				}
 				if(currentShowPageNo == 1){
+					$("div#div_rateMovies").hide();
 					$("div#div_rateMovies").html(html);
+					$("div#div_rateMovies").fadeIn('30');
 				}
 				else {
+					$("div#div_rateMovies").hide();
 					$("div#div_rateMovies").append(html);
+					$("div#div_rateMovies").fadeIn('30');
 				}
 			},
 			error: function(request, status, error){
@@ -121,11 +145,34 @@ img#img_movie {border: solid 1px #f8f8f8; border-radius: 2%; box-shadow: 1px 1px
 </script>
 
   <div class="container-fluid">
-	<div id="div_container" class="container-fluid">
+	<div id="div_container" class="container">
 	  <div id="div_content" class="mx-auto">
 	  
   		<h2 style="text-align: left; padding: 10px; font-weight: 800; margin: 15px;">평가한 영화<span id="count_rating">${requestScope.userInfo.count_rating}</span></h2>
 	  	<div id="div_nav_content" class="container py-3" style="margin-bottom: 30px;"> 
+		  
+		  <%-- 정렬순서 선택하기 --%>
+		  <div style="display: flex;">
+		    <h5 class="mx-3">정렬순서를 바꿀 수 있어요.</h5>
+		    <div style="font-weight: 500; margin-left: 15px;">
+		      <label for="orderbyDateDesc">
+		        <input type="radio" id="orderbyDateDesc" name="order" value="rating_date desc" style="display: none;" checked/>
+			    <i class="fa-solid fa-check fa-lg" style="color: #ff0558;"></i><span class="px-2">별점평가 최신순</span>
+		      </label>
+		      <label for="orderbyDateAsc">
+		        <input type="radio" id="orderbyDateAsc" name="order" value="rating_date asc" style="display: none;"/>
+			    <i class="fa-solid fa-check fa-lg" style="color: #cccccc;"></i><span class="px-2">별점평가 오래된순</span>
+		      </label>
+		      <label for="orderbyRatingDesc">
+		        <input type="radio" id="orderbyRatingDesc" name="order" value="rating desc" style="display: none;"/>
+			    <i class="fa-solid fa-check fa-lg" style="color: #cccccc;"></i><span class="px-2">별점평가 높은순</span>
+		      </label>
+		      <label for="orderbyRatingAsc">
+		        <input type="radio" id="orderbyRatingAsc" name="order" value="rating asc" style="display: none;"/>
+			    <i class="fa-solid fa-check fa-lg" style="color: #cccccc;"></i><span class="px-2">별점평가 낮은순</span>
+		      </label>
+		    </div>
+		  </div>
 
  		  <%-- 평가한 영화(Ajax로 페이징 처리) --%>
 	      <div id="div_rateMovies" class="p-1"></div>

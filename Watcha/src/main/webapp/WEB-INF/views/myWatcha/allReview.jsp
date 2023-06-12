@@ -29,7 +29,7 @@
 div#div_container {width: 100%; display: flex; z-index: 4; position: relative; top: 0rem; background-color: #ffffff; cursor: default;
 				 /*font-family: 'IBM Plex Sans KR', sans-serif;*/
 				  font-family: 'Noto Sans KR', sans-serif;}
-div#div_content {width: 80%; margin: 0px 30px auto; padding-bottom: 30px;}
+div#div_content {width: 90%; margin: 0px 30px auto; padding-bottom: 30px;}
 img#img_wallPaper {position: relative; z-index:1; object-fit:cover; width: 100%; opacity: 0.8;}
 img#img_movie {z-index:5; border: solid 1px #f8f8f8; border-radius: 2%; box-shadow: 1px 1px 1px #cccccc; width: 100%;}
 span#collectionCount, span#reviewCount {padding-left: 10px; font-weight: 400; color: #666666; font-size: 14px;}
@@ -138,7 +138,7 @@ div#commentRegister textarea:focus, div#commentEdit textarea:focus, div#review_m
 					       	html +=   '<img id="img_profile" src="<%= ctxPath%>/resources/images/'+item.profile_image+'"/>';
 				        }
 				        
-				        html +=       '<h5 style="text-align: left; padding: 0 5px; font-weight: 600; margin: 8px 10px;">'+item.nickname+'</h5>'
+				        html +=       '<h5 style="text-align: left; padding: 0 5px; font-weight: 600; margin: 8px 10px;">'+item.name+'</h5>'
 
 				        if(item.user_id == "qwer1234"){ // 로그인한 회원이 작성한 한줄평일 경우
 					       	html +=   '<h6 style="padding: 0px; margin: 12px 0px; color: gray; font-size: 10pt;">내가 쓴 한줄평</h6>';
@@ -291,7 +291,7 @@ div#commentRegister textarea:focus, div#commentEdit textarea:focus, div#review_m
 		let html = "";
 		
 		html += '<div style="display: flex;">'
-	    	  +   '<h4 style="text-align: left; padding: 5px; font-weight: 600; margin: 10px;">'+reviewObj.nickname+'님의 한줄평</h4>'
+	    	  +   '<h4 style="text-align: left; padding: 5px; font-weight: 600; margin: 10px;">'+reviewObj.name+'님의 한줄평</h4>'
 		  	  +   '<button onclick="userReviewPaging(1)" type="button" style="color: gray; border: none; background-color: transparent;">한줄평 전체보기</button>'
 		  	  + '</div>'
 		  	  + '<div id="reviewDetail'+reviewObj.review_id+'" class="my-2 p-2" style="background-color: #f8f8f8; border: solid 1px #e6e6e6; border-radius: 2%;">';
@@ -305,11 +305,11 @@ div#commentRegister textarea:focus, div#commentEdit textarea:focus, div#review_m
       	else {
 	       	html +=   '<img id="img_profile" src="<%= ctxPath%>/resources/images/'+reviewObj.profile_image+'"/>';
       	}
-      	html +=       '<h5 style="text-align: left; padding: 0 5px; font-weight: 600; margin: 8px 10px;">'+reviewObj.nickname+'</h5>'
+      	html +=       '<h5 style="text-align: left; padding: 0 5px; font-weight: 600; margin: 8px 10px;">'+reviewObj.name+'</h5>'
       	
         if(reviewObj.user_id == "qwer1234"){ // 로그인한 회원이 작성한 한줄평일 경우
 	       	html +=   '<p class="pr-2" style="color: gray; font-size: 10pt; padding: 0px; margin: 10px 0 0 0;">내가 쓴 한줄평</p>'
-	       		  +	  '<button type="button" data-toggle="modal" data-target="#editReview" style="font-weight: bold; color: #ff0558; border: none; background-color: transparent;">수정</button>'
+	       		  +	  '<button type="button" data-toggle="modal" data-backdrop="static" data-target="#editReview" style="font-weight: bold; color: #ff0558; border: none; background-color: transparent;">수정</button>'
 	       		  +	  "<button type='button' onclick='delReview("+reviewObj.review_id+")' style='font-weight: bold; color: #ff0558; border: none; background-color: transparent;'>삭제</button>"
 				  + '</div>';
         } // end of if(로그인한 회원이 작성한 한줄평일 경우)
@@ -458,10 +458,10 @@ div#commentRegister textarea:focus, div#commentEdit textarea:focus, div#review_m
 						html +=     '<div style="text-align: left;">'
 							  
 						if(item.user_id == reviewObj.user_id){ // 한줄평 작성자가 자신의 한줄평에 댓글을 단 경우
-							html +=   '<p style="padding: 0 5px; margin: 0px 0px 5px 0px; font-weight: 600;">'+item.nickname+'<span class="pl-2" style="color: #ff0558; font-size: 10pt;">작성자</span></p>'
+							html +=   '<p style="padding: 0 5px; margin: 0px 0px 5px 0px; font-weight: 600;">'+item.name+'<span class="pl-2" style="color: #ff0558; font-size: 10pt;">작성자</span></p>'
 						}
 						else {
-							html +=   '<p style="padding: 0 5px; margin: 0px 0px 5px 0px; font-weight: 600;">'+item.nickname+'</p>'
+							html +=   '<p style="padding: 0 5px; margin: 0px 0px 5px 0px; font-weight: 600;">'+item.name+'</p>'
 						}
 
 						html += 	  '<p style="padding: 0 5px; margin: 0px;">'+item.content+'</p>'
@@ -623,7 +623,6 @@ div#commentRegister textarea:focus, div#commentEdit textarea:focus, div#review_m
 		let html = "";
 	    <%-- 댓글 수정 --%>
 	    html +=     '<div id="commentEdit" class="mx-auto my-2 p-1">'
-	    	  + 	  '<input type="hidden" name="review_id" value="'+reviewObj.review_id+'" />'
 	    	  + 	  '<div class="flex-container mx-auto my-auto p-2 text-center" style="padding-left: 10px; display: flex;">';
 	    <%--	  
 		if(${empty sessionScope.profile_image}){ // 유저의 프로필이미지가 없는 경우
@@ -700,14 +699,14 @@ div#commentRegister textarea:focus, div#commentEdit textarea:focus, div#review_m
 </script>
 
   <div class="container-fluid">
-    <div style="background-color: #333333; overflow: hidden; height: 350px;" class="row mx-auto">
-      <div style="width: 15%; box-shadow: 50px 10px 20px #333333; z-index: 3;"></div>
-      <div style="width: 70%;">
+    <div style="background-color: #333333; overflow: hidden; height: 350px;" class="row container mx-auto">
+      <div style="width: 10%; box-shadow: 50px 10px 20px #333333; z-index: 3;"></div>
+      <div style="width: 80%;">
 	    <img id="img_wallPaper" src="https://image.tmdb.org/t/p/w1280/${requestScope.movieInfo.backdrop_path}" />
       </div>
-      <div style="width: 15%; box-shadow:-50px -10px 20px #333333; z-index: 2;"></div>
+      <div style="width: 10%; box-shadow:-50px -10px 20px #333333; z-index: 2;"></div>
     </div>
-	<div id="div_container" class="container-fluid">
+	<div id="div_container" class="container">
 	  <div id="div_content" class="mx-auto">
   		<div style="height: 150px; padding: 0 15px;">
 		  <div style="display: flex; margin: 0px; padding: 0px; text-align: center; font-weight: 500; height: 150px;" class="row">
