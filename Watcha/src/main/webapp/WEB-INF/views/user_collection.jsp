@@ -151,7 +151,7 @@
 	  border: solid 1px #eee;
 	  border-radius: 15px;
 	  float: left;
-	  margin: 10px 0 10px 0;  
+	  margin: 10px 0 10px 0;   
 	}
 	
 	#profile_i {
@@ -217,13 +217,17 @@
 	#infoinfo {
 		width: 100%; 
 	}	
+	
+	#infoinfo > div:nth-child(2) {
+		margin: 0 0 20px 480px; 
+	}  
+	
 		
 </style>
 
 <script type="text/javascript">
 
 	$(document).ready(function(){
-			
 			
 			/* 검색 엔터누를시  */ 
 			$('input#user_collection_content').on('keyup', function(event){
@@ -240,7 +244,14 @@
 			$("span#totalHITCount").hide(); 
 			$("span#countHIT").hide();
 			
-			displayHIT("1"); 
+			if("${requestScope.collection_viewA}")	{ 
+				displayHITA("1"); 
+			}
+			else if("${requestScope.collection_viewB}") {
+				displayHITB("1"); 
+			}
+			
+			
 			
 			$("button#btnMoreHIT").click(function(){
 				
@@ -342,7 +353,7 @@
 		        name: 'Occurrences'
 		    }],
 		    title: {
-		        text: '나의 컬렉션 댓글 중 가장 많은 단어'
+		        text: '댓글 중 가장 많은 단어' 
 		    },
 		    tooltip: {
 		        headerFormat: '<span style="font-size: 16px"><b>{point.key}</b></span><br>'
@@ -350,7 +361,11 @@
 	});		
 	/* 차트 끝 */	 		
 			
-			
+	/* 좋아요 총수 */	
+	goLikeTotal() 
+	
+
+	
 	});//end of $(document).ready(function()) ----------------------------------------------------------------------------
 
 	// Function Declaration
@@ -360,14 +375,79 @@
 	// HIT 상품 "더보기..." 버튼을 클릭할때 보여줄 상품의 개수(단위)크기
 	
 	// display 할  HIT상품 정보를 추가 요청하기(Ajax 로 처리함)
-	function displayHIT(start){
-		
+	function displayHITA(start){
+		 
+		    const Data = { "start":start,  
+				    	   "len"  :lenHIT,
+				    	   "user_id_collection" : '${requestScope.collection_viewA[0].user_id}' 
+			}
+	    	
 		$.ajax({
 			url:"<%= ctxPath %>/cardSeeMore.action",
-		    data:{"start":start,  
-		    	  "len"  :lenHIT,
-		    	  "user_id_collection" : '${requestScope.collection_view[0].user_id}'
+		    data: Data,
+		    dataType:"json",
+		    success:function(json){
+		    	
+		    	 let html = "";
+		    	 
+		    	 if(start == "1" && json.length == 0){
+			    	
+		    		 html += "<div class='mycollection'>나만의 컨렉션을 만들어 보세요!!</div>";
+		    	 
+		    	 	 $("div#displayHIT").html(html);
+		    		 
+		    	 }
+		    	 else if(json.length > 0){
+		    		 // 데이터가 존재하는 경우
+		    		 
+		    		 $.each(json, function(index, item){  
+					    			    
+				        html +=    "<div class='card mb-3' style='width: 10rem; display: inline-block; margin: 20px 0 0 30px;'>" +
+									  "<img src='https://image.tmdb.org/t/p/w780"+item.poster_path+"' class='card-img-top' style='width: 100%; height: 220px;'/>" +
+									  "<div class='card-body'>" +
+									    "<h6 class='card-title' style='font-size: 14px; font-weight: bold; text-align: center; height: 20px;'>"+item.movie_title+"</h6>"+
+									    "<p class='card-text'></p>" +
+									    "<a href='project_detail.action?movie_id="+item.movie_id+"' class='stretched-link'></a>" +
+									  "</div>" +
+									"</div>"			 
+								    		 
+		    		 }); // end of $.each(json, function(index, item) -------------------------------------------
+		    		
+		    		 // 상품결과 출력하기		 
+		    		 $("div#displayHIT").append(html);	
+		    		 
+	    			// >>> !!! 중요 !!! 더보기 버튼의 value 속성에 값을 지정하기 <<< //
+	    			$("button#btnMoreHIT").val(Number(start) + lenHIT); 
+	    			
+	    			// span#countHIT 에 지금까지 출력된 상품의 개수를 누적해서 기록한다.
+	    			$("span#countHIT").text(Number($("span#countHIT").text()) + json.length);
+	    			
+	    			// 더보기... 버튼을 계속해서 클릭하여 countHIT 값과 totalHITCount 값이 일치하는 경우 
+	    			if( Number($("span#totalHITCount").text()) == Number($("span#countHIT").text()) ){
+	    				$("span#end").html("더이상 조회할 제품이 없습니다.");
+	    				$("button#btnMoreHIT").text("처음으로");
+	    				$("span#countHIT").text("0");
+	    			} 
+		    		 
+		    	 } // end of else if(json.length > 0){} --------------------------------------
+		    	
 		    },
+	        error: function(request, status, error){ // 페이지없으면 404 에러
+	            alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+	        }
+	
+		});					        
+	}
+	function displayHITB(start){
+		
+		    const Data = { "start":start,  
+				    	   "len"  :lenHIT,
+				    	   "user_id_collection" : '${requestScope.collection_viewB[0].user_id}' 
+			}
+ 	    	
+		$.ajax({
+			url:"<%= ctxPath %>/cardSeeMore.action",
+		    data: Data,
 		    dataType:"json",
 		    success:function(json){
 		    	
@@ -441,7 +521,7 @@
     /* ==== 댓글쓰기 시작 ==== */ 
     function goAddUserWrite_noAttach() {
 		 
-	  const commentData = { user_id_collection : '${requestScope.collection_view[0].user_id}',
+	  const commentData = { user_id_collection : '${requestScope.collection_viewA[0].user_id}',
 					        user_id_comment : '${sessionScope.loginuser.user_id}',
 		    				user_collection_content : $("input#user_collection_content").val() }
 		
@@ -588,9 +668,9 @@
   <%-- === 원글에 대한 totalPage 수를 알아오려고 한다. 끝 === --%>
     
   // === 좋아요 시작  === //
-  function goLikeCollection() {
+  function goLikeCollection() { 
 	  
-	 const commentData = { user_id_collection : '${param.user_id}',
+	 const commentData = { user_id_collection : '${requestScope.collection_viewA[0].user_id}',
 	   		   			   user_id_like : '${sessionScope.loginuser.user_id}'
      }
 	  
@@ -600,7 +680,7 @@
 		  type:"post", 	      
 		  dataType:"json",
 		  success:function(json){
-			   console.log("~~ 확인용 : " + JSON.stringify(json));
+			  // console.log("~~ 확인용 : " + JSON.stringify(json));
 			  
 		  },
 		  error: function(request, status, error){
@@ -609,6 +689,33 @@
 	  });
   }
   //=== 좋아요 끝  === //
+  
+  
+  //== 좋아요 총수 시작 ==//
+  function goLikeTotal() { 
+	  
+	 const commentData = { user_id_collection : '${requestScope.collection_viewA[0].user_id}',
+	   		   			   user_id_like : '${sessionScope.loginuser.user_id}'
+     }
+	  
+	  $.ajax({
+		  url:"<%= request.getContextPath()%>/likeTotal.action",
+		  data: commentData , 
+		  type:"post", 	      
+		  dataType:"json",
+		  success:function(json){
+			   console.log("~~ 확인용 : " + JSON.stringify(json));
+			   
+			   let html = "<span>"+json.likeTotal+"</span>";   
+				           
+				  $("#likeTotal").html(html); 
+		  },
+		  error: function(request, status, error){
+				alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+		  }
+	  });
+  }  
+  //== 좋아요 총수 끝 ==//  
   
   
 </script>
@@ -622,98 +729,191 @@
 <meta charset="UTF-8">
 <title></title>
 </head>
-<body>
 
-	<div id="container">
-	 
-		<div class="card">
-		    <div class="card-body"> 
-			
-		   <div id="infoinfo">           
-		      	  
-		        <span>성명:&nbsp;${sessionScope.loginuser.name}</span> 
-	          
-	          <c:if test="${sessionScope.loginuser.user_id != param.user_id}">
-				<span style= "width: 100px;"> 
-				  <label for="check_good" style="cursor: pointer;">
-				    <i class="far fa-thumbs-up goodi"></i><span class="goodi" style="font-weight: bolder">&nbsp;&nbsp;좋아요</span></label>
-				  <input type="checkbox" id="check_good" name="check_good"/>
-				</span>
-			  </c:if>		
-		   </div> 
-			
-			<div id="chart">   
-				<figure class="highcharts-figure">
-				    <div id="chart_container" style="height: 300px;"></div>
-				    <p class="highcharts-description"></p> 
-				</figure>
-			</div> 
-			         
-	        <div id="">     
-	        	     
-	        	<div style="font-size: 20px; font-weight: bolder; margin: 0 0 10px 665px;">가장 최근에 컬렉션에 담은 <span style="color:#ff0558">영화</span></div>
 
-	         	<c:if test="${requestScope.collection_view[0].movie_title != null}">
-		        	<a href='project_detail.action?movie_id=${requestScope.collection_view[0].movie_id}'>
-		        		<img id="lastest" src="https://image.tmdb.org/t/p/w1280${requestScope.collection_view[0].backdrop_path}" />
-		        	</a>   		
-	        	</c:if>
-	         	
-	         	<c:if test="${requestScope.collection_view[0].movie_title == null}">
-		        	<a>   
-		        		<img id="lastest" src="<%= ctxPath%>/resources/images/왓챠피디아NULL.png" /> 
-		        	</a> 
-	        	</c:if> 
-	        	  
-	        	<c:if test="${requestScope.collection_view[0].movie_title == null}"> 
-	        		<div style="font-size: 15px; margin: 15px 0 30px 730px; ">컬렉션을 담아 보세요!!</div> 
-	         	</c:if>   	        	  
-	        	<c:if test="${requestScope.collection_view[0].movie_title != null}">    
-	        		<div style="font-size: 22px; font-weight: bold; margin: 10px 0 20px 740px; ">${requestScope.collection_view[0].movie_title}</div>
-	         	</c:if>     
-	        </div> 	   
-		          
-		      	<hr style="margin: 0 30px 0 30px;">  	     
-		      	
-		    	<div style="font-size: 20px; font-weight: bold; margin: 20px 0 0 47px;">나의 컬렉션</div>	
- 
-				  <div class="row" id="displayHIT" style="margin-left: 20px;"></div>
+<c:if test="${not empty requestScope.collection_viewA}"> 
+	<body>
+		<div id="container">
+		 
+			<div class="card">
+			    <div class="card-body"> 
 				   
-   					  <c:if test="${requestScope.totalCount.COUNT > 5}">   
-					      <div>  
-					         <p class="text-center">
-					            <span id="end" style="display:block; margin:20px 0px 0 0; font-weight:bold; font-size: 12pt;"></span> 
-					            <button type="button" class="btn" id="btnMoreHIT" style="font-weight:bold; color:#ff0558;">더보기</button>
-					            <span id="totalHITCount">${requestScope.totalCount.COUNT}</span>
-					            <span id="countHIT">0</span>
-					         </p> 
-					      </div>
-			      	  </c:if>
+			   <div id="infoinfo">               
 			      	  
-			    <hr style="margin: 0 30px 0 30px;">  
-			    		
-			    <div style="font-size: 20px; font-weight: bold; margin: 20px 0 0 47px; display: inline-block;">댓글</div>			
-			    		
-			         <input type="hidden" name="user_id" id="user_id" value="${requestScope.collection_view[0].user_id}" />
-			         <input type="hidden" name="collection_id" id="collection_id" value="${requestScope.collection_view[0].collection_id}" /> 
-		    	 
-		    	<%-- === 댓글 내용 보여주기 === --%>
-		    	<div id="commentBack">
-			    	<table style="">
-						<tbody id="commentDisplay"></tbody>
-					</table>
-		    	</div>
-		    	
-	    	   	<div style="display: flex;">  
-		    	   <div id="pageBar" style="margin: 10px 0 0 400px; text-align: center;"></div>
-		    	</div>	
-		    	
-		    	<input style="margin-left: 140px;" class="commentP" type="text" name="user_collection_content" id="user_collection_content">
-		    	<button style="margin-left: 20px;" class="btnP" onclick="goAddUserWrite()"><i class="far fa-comment"></i>제출</button>
-		    		
-		    </div>
-		</div>
-	</div> 
+			      	<div style="font-size: 30px; margin: 0 0 5px 370px; font-weight: bold;"><span style="color:#ff0558">"</span>${requestScope.collection_viewA[0].name}<span style="color:#ff0558">"</span>님의 <span style="color:#ff0558">컬렉션</span></div>   
+		             
+					  <div style="margin: 0 0 0 460px; font-weight: bold;">좋아요 총수: <span id="likeTotal" style="color:#ff0558"></span></div>
+						 
+					  <label for="check_good" style="cursor: pointer; margin: 0 0 15px 470px;">   
+					    <i class="far fa-thumbs-up goodi"></i><span class="goodi" style="font-weight: bolder">&nbsp;&nbsp;좋아요 </span> 
+					  </label>
+ 
+					  <input type="checkbox" id="check_good" name="check_good"/>
+					 
+					
+			   </div> 
+				  
+				<div id="chart">   
+					<figure class="highcharts-figure">
+					    <div id="chart_container" style="height: 300px;"></div>
+					    <p class="highcharts-description"></p> 
+					</figure>
+				</div> 
+				         
+		        	     
+		        	<div style="font-size: 20px; font-weight: bolder; margin: 0 0 10px 665px;"><span style="color:#ff0558">"</span>${requestScope.collection_viewA[0].name}<span style="color:#ff0558">"</span>님이 가장 최근에 담은 <span style="color:#ff0558">영화</span></div>
 	
-</body>
+		         	<c:if test="${requestScope.collection_viewA[0].movie_title != null}">
+			        	<a href='project_detail.action?movie_id=${requestScope.collection_viewA[0].movie_id}'>
+			        		<img id="lastest" src="https://image.tmdb.org/t/p/w1280${requestScope.collection_viewA[0].backdrop_path}" />
+			        	</a>   		
+		        	</c:if>
+		         	
+		         	<c:if test="${requestScope.collection_viewA[0].movie_title == null}">
+			        	<a>   
+			        		<img id="lastest" src="<%= ctxPath%>/resources/images/왓챠피디아NULL.png" /> 
+			        	</a> 
+		        	</c:if> 
+		        	  
+		        	<c:if test="${requestScope.collection_viewA[0].movie_title == null}"> 
+		        		<div style="font-size: 15px; margin: 15px 0 30px 730px; ">컬렉션을 담아 보세요!!</div> 
+		         	</c:if>   	        	  
+		        	<c:if test="${requestScope.collection_viewA[0].movie_title != null}">    
+		        		<div style="font-size: 22px; font-weight: bold; text-align: center; margin-bottom: 25px;">${requestScope.collection_viewA[0].movie_title}</div>
+		         	</c:if>     
+ 			          
+			      	<hr style="margin: 0 30px 0 30px;">  	     
+			      	
+			    	<div style="font-size: 20px; font-weight: bold; margin: 20px 0 0 47px;">나의 컬렉션</div>	
+	 
+					  <div class="row" id="displayHIT" style="margin-left: 20px;"></div>
+					   
+	   					  <c:if test="${requestScope.totalCount.COUNT > 5}">   
+						      <div>  
+						         <p class="text-center">
+						            <span id="end" style="display:block; margin:20px 0px 0 0; font-weight:bold; font-size: 12pt;"></span> 
+						            <button type="button" class="btn" id="btnMoreHIT" style="font-weight:bold; color:#ff0558;">더보기</button>
+						            <span id="totalHITCount">${requestScope.totalCount.COUNT}</span>
+						            <span id="countHIT">0</span>
+						         </p> 
+						      </div>
+				      	  </c:if>
+				      	  
+				    <hr style="margin: 0 30px 0 30px;">  
+				    		
+				    <div style="font-size: 20px; font-weight: bold; margin: 20px 0 0 47px; display: inline-block;">댓글</div>			
+				    		
+				         <input type="hidden" name="user_id" id="user_id" value="${requestScope.collection_viewA[0].user_id}" />
+				         <input type="hidden" name="collection_id" id="collection_id" value="${requestScope.collection_viewA[0].collection_id}" /> 
+			    	 
+			    	<%-- === 댓글 내용 보여주기 === --%>
+			    	<div id="commentBack">
+				    	<table style="">
+							<tbody id="commentDisplay"></tbody>
+						</table>
+			    	</div>
+			    	
+		    	   	<div style="display: flex;">  
+			    	   <div id="pageBar" style="margin: 10px 0 0 400px; text-align: center;"></div>
+			    	</div>	
+			    	
+			    	<input style="margin-left: 140px;" class="commentP" type="text" name="user_collection_content" id="user_collection_content">
+			    	<button style="margin-left: 20px;" class="btnP" onclick="goAddUserWrite()"><i class="far fa-comment"></i>제출</button>
+			    		
+			    </div>
+			</div>
+		</div> 
+	</body>
+</c:if> 
+
+<c:if test="${not empty requestScope.collection_viewB}"> 
+	<body> 
+		<div id="container">
+		 
+			<div class="card">
+			    <div class="card-body">    
+				     
+			   <div id="infoinfo">                  
+			      	       
+			        <div style="font-size: 30px;  margin: 0 0 5px 430px; font-weight: bold;">나만의 <span style="color:#ff0558">컬렉션 </span></div>   
+		            
+		            <div style="margin: 0 0 15px 435px; font-weight: bold;">내가 받은 좋아요 총수: <span id="likeTotal" style="color:#ff0558"></span></div>
+		             
+			   </div>   
+				
+				<div id="chart">   
+					<figure class="highcharts-figure">
+					    <div id="chart_container" style="height: 300px;"></div>
+					    <p class="highcharts-description"></p> 
+					</figure>
+				</div> 
+				         
+		        <div id="">     
+		        	     
+		        	<div style="font-size: 20px; font-weight: bolder; margin: 0 0 10px 665px;">가장 최근에 컬렉션에 담은 <span style="color:#ff0558">영화</span></div>
+	
+		         	<c:if test="${requestScope.collection_viewB[0].movie_title != null}">
+			        	<a href='project_detail.action?movie_id=${requestScope.collection_viewB[0].movie_id}'>
+			        		<img id="lastest" src="https://image.tmdb.org/t/p/w1280${requestScope.collection_viewB[0].backdrop_path}" />
+			        	</a>   		
+		        	</c:if>
+		         	
+		         	<c:if test="${requestScope.collection_viewB[0].movie_title == null}">
+			        	<a>   
+			        		<img id="lastest" src="<%= ctxPath%>/resources/images/왓챠피디아NULL.png" /> 
+			        	</a> 
+		        	</c:if> 
+		        	  
+		        	<c:if test="${requestScope.collection_viewB[0].movie_title == null}"> 
+		        		<div style="font-size: 15px; margin: 15px 0 30px 730px; ">컬렉션을 담아 보세요!!</div> 
+		         	</c:if>   	        	   
+		        	<c:if test="${requestScope.collection_viewB[0].movie_title != null}">      
+		        		<div style="font-size: 22px; font-weight: bold; text-align: center; margin-bottom: 25px;">${requestScope.collection_viewB[0].movie_title}</div>
+		         	</c:if>      
+		        </div> 	     
+			          
+			      	<hr style="margin: 0 30px 0 30px;">  	     
+			      	
+			    	<div style="font-size: 20px; font-weight: bold; margin: 20px 0 0 47px;">나의 컬렉션</div>	
+	 
+					  <div class="row" id="displayHIT" style="margin-left: 20px;"></div>
+					   
+	   					  <c:if test="${requestScope.totalCount.COUNT > 5}">   
+						      <div>  
+						         <p class="text-center">
+						            <span id="end" style="display:block; margin:20px 0px 0 0; font-weight:bold; font-size: 12pt;"></span> 
+						            <button type="button" class="btn" id="btnMoreHIT" style="font-weight:bold; color:#ff0558;">더보기</button>
+						            <span id="totalHITCount">${requestScope.totalCount.COUNT}</span>
+						            <span id="countHIT">0</span>
+						         </p> 
+						      </div>
+				      	  </c:if>
+				      	  
+				    <hr style="margin: 0 30px 0 30px;">  
+				    		
+				    <div style="font-size: 20px; font-weight: bold; margin: 20px 0 0 47px; display: inline-block;">댓글</div>			
+				    		
+				         <input type="hidden" name="user_id" id="user_id" value="${requestScope.collection_viewB[0].user_id}" />
+				         <input type="hidden" name="collection_id" id="collection_id" value="${requestScope.collection_viewB[0].collection_id}" /> 
+			    	 
+			    	<%-- === 댓글 내용 보여주기 === --%>
+			    	<div id="commentBack">
+				    	<table style="">
+							<tbody id="commentDisplay"></tbody>
+						</table>
+			    	</div>
+			    	
+		    	   	<div style="display: flex;">  
+			    	   <div id="pageBar" style="margin: 10px 0 0 400px; text-align: center;"></div>
+			    	</div>	
+			    	
+			    	<input style="margin-left: 140px;" class="commentP" type="text" name="user_collection_content" id="user_collection_content">
+			    	<button style="margin-left: 20px;" class="btnP" onclick="goAddUserWrite()"><i class="far fa-comment"></i>제출</button>
+			    		
+			    </div>
+			</div>
+		</div> 
+	</body>
+</c:if>
+
 </html>

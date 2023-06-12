@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.spring.watcha.KING.service.InterWatchaService;
@@ -74,30 +73,33 @@ public class WatchaController {
 			@RequestMapping(value="/view/user_collection.action")
 			public String user_collection(HttpServletRequest request, Model model) {
 				
-				String user_id = "";
-				
 	            HttpSession session = request.getSession();
 	            MemberVO loginuser = (MemberVO) session.getAttribute("loginuser");
+	            
 				String movie_id = request.getParameter("movie_id");
-				
 				String user_id_collection = request.getParameter("user_id"); // 메인에서 넘어오는 user_id
 				
 				Map<String, String> paraMap = new HashMap<>();
 				paraMap.put("movie_id", movie_id);
-
+				
 				if(user_id_collection != null) {
 					// 메인에서 유저의 컬렉션 클릭
 					paraMap.put("user_id", user_id_collection);
+					List<Map<String, String>> collection_viewA = service.getCollection_view(paraMap); 
+					model.addAttribute("collection_viewA", collection_viewA);
 				}
 				else if(user_id_collection == null && loginuser != null) {
 					// 로그인한 유저가 내 컬렉션을 클릭한 경우
 					paraMap.put("user_id", loginuser.getUser_id());
+					List<Map<String, String>> collection_viewB = service.getCollection_view(paraMap); 
+					model.addAttribute("collection_viewB", collection_viewB);
+					
+			        int likeMaintain = service.getLikeMaintain(paraMap); 
+			        model.addAttribute("likeMaintain",likeMaintain);
 				}
 				
-				List<Map<String, String>> collection_view = service.getCollection_view(paraMap); 
 				Map<String, String> totalCount = service.totalCount(paraMap); 
 				
-				model.addAttribute("collection_view", collection_view);
 				model.addAttribute("totalCount", totalCount);
 				 
 				return "user_collection.tiles";
@@ -231,7 +233,7 @@ public class WatchaController {
 			// === 좋아요 === //
 			@ResponseBody
 			@RequestMapping(value="/likeCollection.action", method= {RequestMethod.POST})   
-			public String likeCollection(HttpServletRequest request) {
+			public String likeCollection(HttpServletRequest request, HttpServletResponse response) {
 				
 				String likeCollection = "";
 				String user_id_collection = request.getParameter("user_id_collection");
@@ -258,8 +260,7 @@ public class WatchaController {
 				
 			}
 			
-			
-			// === 컬렉션 값 유지 === //
+			// === 컬렉션 값 === //
 			@ResponseBody
 			@RequestMapping(value="/view/insert_collection.action", method= {RequestMethod.POST})   
 			public String insert_collection(HttpServletRequest request) {
@@ -288,6 +289,27 @@ public class WatchaController {
 				return jsonObj.toString();
 				
 			}
+			
+			// === 좋아요 총수 === //
+			@ResponseBody
+			@RequestMapping(value="/likeTotal.action", method= {RequestMethod.POST})   
+			public String likeTotal(HttpServletRequest request, HttpServletResponse response) {
+				
+				String user_id_collection = request.getParameter("user_id_collection");
+				String user_id_like = request.getParameter("user_id_like");
+				
+				Map<String, Object> paraMap = new HashMap<>();
+				paraMap.put("user_id_collection", user_id_collection);
+				paraMap.put("user_id_like", user_id_like); 
+				
+				int likeTotal = service.getLikeTotal(paraMap);
+			 		 
+				JSONObject jsonObj = new JSONObject();
+				jsonObj.put("likeTotal", likeTotal);
+				
+				return jsonObj.toString();
+				
+			}			
 			
 			
 		   // =============================================== 기능 끝 ======================================================== //	

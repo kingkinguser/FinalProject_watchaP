@@ -195,5 +195,11 @@
      where user_id = #{user_id} and movie_id = #{movie_id}
 	</select>
 	
+	<!-- 좋아요 총수 -->
+	<select id="getLikeTotal" parameterType="HashMap" resultType="int">
+    select count(*)
+    from collection_like                   
+    where user_id_collection = #{user_id_collection}   
+	</select>
 </mapper>
 

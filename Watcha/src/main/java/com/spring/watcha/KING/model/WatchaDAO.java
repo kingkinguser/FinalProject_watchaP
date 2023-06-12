@@ -115,17 +115,18 @@ public class WatchaDAO implements InterWatchaDAO {
 			return collectionAdd;
 		}
 
-		// 컬렉션 값 유지
+		// 컬렉션 값
 		@Override
 		public int getMoviecollectionSelect(Map<String, String> paraMap) {
 			int n = sqlsession.selectOne("watcha.getMoviecollectionSelect", paraMap);
 			return n; 
 		}
 
-		// groupno 최댓값 알기  
+		// 좋아요 총수
 		@Override
-		public int getGroupno_max() { 
-			int n = sqlsession.selectOne("watcha.getGroupno_max");
-			return n; 
+		public int getLikeTotal(Map<String, Object> paraMap) {
+			int n = sqlsession.selectOne("watcha.getLikeTotal", paraMap);
+			return n;
 		}
+
 }
