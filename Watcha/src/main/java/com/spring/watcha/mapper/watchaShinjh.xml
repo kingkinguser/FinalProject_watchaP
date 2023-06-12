@@ -6,11 +6,12 @@
 
 	<!-- 로그인 기능 구현 -->
 	<select id="getLoginMember" parameterType="HashMap" resultType="com.spring.watcha.model.MemberVO">
-        SELECT user_id, name, mobile, email, date_joined, pwdchangegap
+        SELECT user_id, name, mobile, email, date_joined, profile_message, profile_image, pwdchangegap
 		FROM
 		(
 			select user_id, name, mobile, email
                 , to_char(date_joined, 'yyyy-mm-dd') AS date_joined
+                , profile_message, profile_image
                 , trunc( months_between(sysdate, last_password_change) ) AS pwdchangegap
 			from member
 			where user_id = #{user_id} and password = #{password}
@@ -47,5 +48,34 @@
 		from member
 		where user_id = #{user_id} and password = #{new_pwd}
 	</select>
-
+	
+	
+	<!-- 내정보 수정하기 -->
+	<update id="modifyInfo" parameterType="com.spring.watcha.model.MemberVO">
+		update member set user_id = #{user_id}
+		
+						<if test='password != ""'>
+						, password = #{password}, last_password_change = sysdate
+						</if>
+						
+						, name = #{name}, mobile = #{mobile}, email = #{email}
+						
+						<if test='profile_message != ""'>
+						, profile_message = #{profile_message}
+						</if>
+						
+						<if test='profile_image != null'>
+						, profile_image = #{profile_image}
+						</if>
+						
+		where user_id = #{user_id}
+	</update>
+	
+	
+	<!-- 회원탈퇴 -->
+	<delete id="deleteMember" parameterType="com.spring.watcha.model.MemberVO">
+		delete from member 
+		where user_id = #{user_id}
+	</delete>
+	
 </mapper>

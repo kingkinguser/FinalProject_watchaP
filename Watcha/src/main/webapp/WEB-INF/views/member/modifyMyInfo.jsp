@@ -240,7 +240,7 @@ function pwdChange(e) {
 	
 	const bool = regExp.test($(e).val()); // 정규표현식에 맞으면 true 아니면 false
 	
-	if(!bool) {
+	if($(e).val()!="" && !bool) {
 		// 암호가 정규표현식에 맞지 않는 경우
 		$(e).addClass("errorbox");
 		$("#li-pwd").addClass("error");
@@ -248,7 +248,7 @@ function pwdChange(e) {
 	}
 	
 	else {
-		// 암호가 정규표현식에 맞는 경우
+		// 암호가 정규표현식에 맞거나 공백인 경우
 		$(e).removeClass("errorbox");
 		$("#li-pwd").removeClass("error");
 		pwdbool = true;
@@ -261,7 +261,7 @@ function pwdChange(e) {
 ///////////////////////////////////////////////////////////////////////////
 function dupPwdCheck() {
 	$.ajax({
-		url:"<%= ctxPath%>/member/duplicatePwdCheck.action",
+		url:"<%= ctxPath%>/duplicatePwdCheck.action",
 		data:{"new_pwd":$("input#modifypwd").val(),
 			"user_id":"${sessionScope.loginuser.user_id}"},
 		type:"post",
@@ -316,7 +316,7 @@ function emailChange(e) {
 function emailDuplicateCheck() {
 	
    	$.ajax({
-   		url:"<%= ctxPath%>/member/emailDuplicateCheck.action",
+   		url:"<%= ctxPath%>/emailDuplicateCheck.action",
    		data:{"email":$("input#modifyemail").val()},
    		type:"post",
 		dataType:"json",
@@ -380,7 +380,7 @@ function goEdit() {
 	else {
 		
 		const frm = document.editFrm;
-		frm.action = "<%= ctxPath%>/member/modifyInfo.action";
+		frm.action = "<%= ctxPath%>/modifyInfo.action";
 		frm.method = "post";
 		frm.submit();
 	}
@@ -434,7 +434,7 @@ function goEdit() {
           
           <label for="name" class="modify-label">소개
             <input type="text" name="profile_message" id="modifymessage" class="requiredInfo"
-  			maxlength="60" title="소개는 60자 까지 입력이 가능합니다." value="${sessionScope.loginuser.message}" />
+  			maxlength="60" title="소개는 60자 까지 입력이 가능합니다." value="${sessionScope.loginuser.profile_message}" />
           </label>
           <ul class="pb1">
             <li class="modify-requiredText" id="li-message">• 소개는 최대 60자 까지 입력이 가능해요</li>
@@ -476,7 +476,7 @@ function goEdit() {
       <hr>
       <div class="modify-btnspace">
         <button type="submit" class="modify-btn">완료</button>
-        <button type="button" class="modify-btn">취소</button>
+        <button type="button" class="modify-btn" onclick="location.href='<%= ctxPath%>/myWatcha.action'">취소</button>
       </div>
     </form>
   </section>
