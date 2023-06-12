@@ -145,28 +145,23 @@
 	
 	    /* modal 기능 css 시작 */
 	        /* modal 테두리 회색 부분  */
-	        .modal-gray {
-				display: none;
-				position: fixed;
-				inset: 0px;
-				z-index: 10000;
-				background: rgba(0, 0, 0, 0.56);
-				overflow: hidden scroll;
-	        
-	        }
-	        
 	        /* 모바일 */
-	        .py20 {
-	            position: absolute;
+	        .login_signup-modal {
+	            display: none;
+	            text-align: center;
+	            position: fixed;
 	            inset: 0px;
-	            z-index: 10001;
+	            z-index: 10000;
+	            background-color: rgba(0,0,0,0.4);
+	            align-items: center;
+	            justify-content: center;
 	        }
 	        /* pc버전 추가사항 */
 	        @media (min-width: 719px) {
-	            .py20 {
-	            	text-align: center;
+	            .login_signup-modal {
 	                padding: 20px 0px;
 	                overflow: auto;
+	                vertical-align: middle;
 	            }
 	        }
 	    /* modal 기능 css 끝 */
@@ -189,7 +184,6 @@
 	                display: inline-block;
 				    position: relative;
 				    vertical-align: middle;
-				    text-align: left;
 				    width: 375px;
 				    height: auto;
 				    min-height: 540px;
@@ -206,14 +200,6 @@
 	
 	
 	    /* modal header 시작 */
-	    	/* watchapedia 이미지 */
-	    	.login_signup-modal-imgtitle {
-	    	    text-align: center;
-			    margin: 0px 0px 14px;
-			    overflow: hidden;
-		    }
-	    
-	    
 	        /* modal 제목 */
 	        .login_signup-modal-title {
 	            font-size: 17px;
@@ -556,16 +542,29 @@
 		
 		///////////////////////////////////////////////////
 		
+
+
+		let idbool = false; // 아이디 중복체크 결과
+		let emailbool = false; // 이메일 중복체크 결과
+	
+	
+		// 로그인이 필요할 시, 로그인 모달 띄우기
+		if("${requestScope.needLogin}") {
+		    $("#loginModal").css("display","flex");
+		    $("html").addClass("disableBodyScrolling");
+		};
 		
-		// modal 닫기 기능
-	    $(".py20").click(function(e) {
+		
+	    // modal 닫기 기능
+	    $(".login_signup-modal").click(function(e) {
 	        if (e.target === this) {
 	            modalClose();
 	        }
 	    });
 
-	}); 
+	});// end of $(document).ready(function(){
 	
+		
 	// 검색창에 랜덤으로 나타내기	  
 	function randomInput(){
 	  const placeholders = [
@@ -853,14 +852,15 @@
 	    $(modalId).css("display","flex");
 	    $("html").addClass("disableBodyScrolling");
 	}
-	
+
 	// modal 바깥을 클릭했을 때 닫는 기능
 	function modalClose() {
-	    $(".modal-gray").css("display","none");
+	    $(".login_signup-modal").css("display","none");
 	    $("html").removeClass("disableBodyScrolling");
+	    $(".login_signup-label-input").removeClass("warn-label-input");
 	    resetForm();
 	}
-	
+
 	// modal 창에서 입력된 값 초기화 시키기
 	function resetForm(){
 	    const modal_frmArr = $("form.form");
@@ -869,30 +869,129 @@
 	    }
 	    $("p.warning-text").css("display","none");    
 	}
-	
+
+
+	//----- 아이디 입력태그 ------ //
+	function idChange(e) {
+
+		if( $(e).val().trim().length < 2 ) {
+			// 2글자 미만일 경우 
+			$("p#id-warning").css("display","block"); // 해당 부분만 error 문구 출력해주기
+			$(e).parent().parent().addClass("warn-label-input");
+		}
+		else {
+			// 2글자 이상일 경우
+			$("p#id-warning").css("display","none"); // 해당 부분만 error 문구 숨기기
+			$(e).parent().parent().removeClass("warn-label-input");
+		}
+		
+	}
+
+
+	//----- 아이디 입력태그2 ------ //
+	function id2Change(e) {
+
+		if( $(e).val().trim().length < 2 ) {
+			// 2글자 미만일 경우 
+			$("p#id2-warning").css("display","block"); // 해당 부분만 error 문구 출력해주기
+			$(e).parent().parent().addClass("warn-label-input");
+		}
+		else {
+			// 2글자 이상일 경우
+			$("p#id2-warning").css("display","none"); // 해당 부분만 error 문구 숨기기
+			$(e).parent().parent().removeClass("warn-label-input");
+			checkId();
+		}
+		
+	}
+
+
+	// ----- 비밀번호 입력태그 ------ //
+	function pwdChange(e) {
+
+		// 숫자/문자/특수문자/ 포함 형태의 8~15자리 이내의 암호 정규식 2
+		const regExp = /^.*(?=^.{8,15}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[^a-zA-Z0-9]).*$/g;
+		
+		const bool = regExp.test($(e).val()); // 정규표현식에 맞으면 true 아니면 false
+		
+		if($(e).val()!="" && !bool) {
+			// 암호가 정규표현식에 맞지 않는 경우
+			$(e).parent().parent().parent().find("p").css("display","block"); // 해당 부분만 error 문구 출력해주기
+			$(e).parent().parent().addClass("warn-label-input");
+		}
+		
+		else {
+			// 암호가 정규표현식에 맞거나 공백인 경우
+			$(e).parent().parent().parent().find("p").css("display","none"); // 해당 부분만 error 문구 숨기기
+			$(e).parent().parent().removeClass("warn-label-input");
+		}
+	}
+
+
+	//----- 이름 입력태그 ------ //
+	function nameChange(e) {
+
+		if( $(e).val().trim().length < 2 ) {
+			// 2글자 미만일 경우 
+			$("p#name-warning").css("display","block"); // 해당 부분만 error 문구 출력해주기
+			$(e).parent().parent().addClass("warn-label-input");
+		}
+		else {
+			// 2글자 이상일 경우
+			$("p#name-warning").css("display","none"); // 해당 부분만 error 문구 숨기기
+			$(e).parent().parent().removeClass("warn-label-input");
+		}
+	}	
+
+
+	//----- 연락처 입력태그 ------ //
+	function numChange(e) {
+
+		//3.연락처 체크 정규식
+		const regExp = /^010\d{8}$/g;
+		// 010 + 숫자 8자리만 들어오도록 검사해주는 객체 생성
+		const bool = regExp.test($(e).val()); // 정규표현식에 맞으면 true 아니면 false
+		
+		if(!bool) {
+			// 정규표현식에 맞지 않는 경우
+			$("p#mobile-warning").css("display","block"); // 해당 부분만 error 문구 출력해주기
+			$(e).parent().parent().addClass("warn-label-input");
+		}
+		
+		else {
+			// 정규표현식에 맞는 경우
+			$("p#mobile-warning").css("display","none"); // 해당 부분만 error 문구 숨기기
+			$(e).parent().parent().removeClass("warn-label-input");
+		}
+		
+	}
+
+
+	//----- 이메일 입력태그 ------ //		
+	function emailChange(e) {
+
+		//3.이메일 체크 정규식
+		const regExp = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i; 
+		
+		const bool = regExp.test($(e).val()); // 정규표현식에 맞으면 true 아니면 false
+		
+		if(!bool) {
+			// 이메일이 정규표현식에 맞지 않는 경우
+			$("p#email-warning").css("display","block"); // 해당 부분만 error 문구 출력해주기
+			$(e).parent().parent().addClass("warn-label-input");
+			emailbool = false;
+		}
+		
+		else {
+			// 이메일이 정규표현식에 맞는 경우
+			$("p#email-warning").css("display","none"); // 해당 부분만 error 문구 숨기기
+			emailDuplicateCheck();
+		}
+	}
+
+
 	// 로그인 정규화 및 기능
 	function func_Login() {
-		
-		const user_id = $("input#user_id").val(); 
-		const password = $("input#password").val(); 
-	
-		/* if(user_id.trim()=="") {
-			$("p#id-warning").css("display","block"); // 해당 부분만 error 문구 출력해주기
-			return; // 종료
-		}
-		else {
-			$("p#id-warning").css("display","none"); // 해당 부분만 error 문구 숨기기
-		} */
-	
-		
-		if(password.trim().length == 6) {
-			$("p#password-warning").css("display","block"); // 해당 부분만 error 문구 출력해주기
-			return; // 종료
-		}
-		else {
-			$("p#password-warning").css("display","none"); // 해당 부분만 error 문구 숨기기
-		} 
-		
 		
 		const frm = document.loginForm;
 		
@@ -901,60 +1000,11 @@
 		frm.submit();
 		
 	}// end of function func_Login()---------
-	
-	
+
+
 	function func_Signup() {
 		
-		// 이메일 체크 정규식
-		const regExp = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i; 
-		
-		const bool = regExp.test($("input#email").val());
-		
-		let isExists;
-		
-		if(!bool) {
-			
-			$("p#email-warning").css("display","block"); // 해당 부분만 error 문구 출력해주기
-			return; // 종료
-			
-		}
-		
-		else {
-			// 이메일이 정규표현식에 맞는 경우
-			$("p#email-warning").css("display","none"); // 해당 부분만 error 문구 숨기기
-		
-		}
-		
-		
-		// 아이디 중복체크 시작
-		$.ajax({
-	  		url:"<%= ctxPath%>/idDuplicateCheck.action",
-	  		data:{"user_id":$("input#user_id2").val()},
-	  		type:"post",
-	  		dataType:"json",
-	  		async:false,
-			success:function(json){			
-				
-				if(json.isExists == 1) { // 입력한 id가 이미 사용 중이라면
-	
-					$("p#id2-warning").css("display","block");
-					isExists = 1;
-				}
-				else if( json.isExists == 0 ) { // 입력한 id가 중복되지 않는 아이디일 경우
-	
-					$("p#id2-warning").css("display","none");
-					isExists = 0;
-				}
-				
-			},
-			
-			error: function(request, status, error){
-	               alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
-	        }
-		});
-		// 아이디 중복체크 끝
-		
-		if(isExists == 1) {	
+		if(!idbool || !emailbool) {	
 			return false;
 		}
 		
@@ -969,8 +1019,66 @@
 	}
 
 
+	function checkId() {
+		
+		$.ajax({
+	  		url:"<%= ctxPath%>/idDuplicateCheck.action",
+	  		data:{"user_id":$("input#user_id2").val()},
+	  		type:"post",
+	  		dataType:"json",
+	  		async:false,
+			success:function(json){			
+				
+				if(json.isExists == 1) { // 입력한 id가 이미 사용 중이라면
+					$("p#id2-warning2").css("display","block");
+					$("input#user_id2").parent().parent().addClass("warn-label-input");
+					idbool = false;
+				}
+				else if( json.isExists == 0 ) { // 입력한 id가 중복되지 않는 아이디일 경우
+
+					$("p#id2-warning2").css("display","none");
+					$("input#user_id2").parent().parent().removeClass("warn-label-input");
+					idbool = true;
+				}
+				
+			},
+			
+			error: function(request, status, error){
+	               alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+	        }
+		});
+	}
 
 
+	function emailDuplicateCheck() {
+		
+	   	$.ajax({
+	   		url:"<%= ctxPath%>/emailDuplicateCheck.action",
+	   		data:{"email":$("input#email").val()},
+	   		type:"post",
+			dataType:"json",
+			success:function(json){ 
+	               
+				if(json.isExists > 0) {
+					$("p#email-warning2").css("display","block"); // 해당 부분만 error 문구 출력해주기
+					$("input#email").parent().parent().addClass("warn-label-input");
+					$("p#email-warning2").val($("input#email").val()+"은 중복된 email 이므로 사용이 불가능합니다.");
+					emailbool = false;
+				}
+				else if( json.isExists == 0 ) { // 중복되지 않는 이메일인 경우
+					$("p#email-warning2").css("display","none"); // 해당 부분만 error 문구 숨기기
+					$("input#email").parent().parent().removeClass("warn-label-input");
+					emailbool = true;
+				}
+			},
+			
+			error: function(request, status, error){
+	               alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+	        }
+		});		
+		
+	}
+	
 	
 </script>
 
@@ -1091,34 +1199,34 @@
 	<!-- ////////////////////////////////////////////////////////// -->
 		
     <!-- 로그인 modal -->
-    <div id="loginModal" class="modal-gray">
-      <div class="py20">
+    <div id="loginModal" class="login_signup-modal">
         <div class="login_signup-modal-dialog">
             <div class="pt32_pb16">
-                <div class="login_signup-modal-imgtitle">
+                <div>
                 	<img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUxIiBoZWlnaHQ9IjI5IiB2aWV3Qm94PSIwIDAgMTUxIDI5IiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogIDxwYXRoIGQ9Ik03My40MjQyIDE0LjYzOTFINjkuODAxOFY2LjEzNTE5SDY1LjEwMTNWMjcuNzIyMUg2OS44MDE4VjE5LjEzMDlINzMuNDI0MlYyNy43MjIxSDc4LjEyNDhWNi4xMzUxOUg3My40MjQyVjE0LjYzOTFaIiBmaWxsPSIjRkYwNTU4Ii8+CiAgPHBhdGggZD0iTTM3Ljg0NjggMTAuNjI3SDQxLjY0MTdWMjcuNzIyMUg0Ni4zNDIyVjEwLjYyN0g0OS45MjE1VjYuMTM1MTlIMzcuODQ2OFYxMC42MjdaIiBmaWxsPSIjRkYwNTU4Ii8+CiAgPHBhdGggZD0iTTI4LjQwMjcgNi4xMzUxOUwyNC42MDc3IDI3LjcyMjFIMjkuMTc4OUwyOS42OTIxIDI0LjIzMzNIMzQuMDIxN0wzNC41MjYzIDI3LjcyMjFIMzkuMTQwNUwzNS4zMDI1IDYuMTM1MTlIMjguNDAyN1pNMzAuMjY5OSAyMC4zMDg0TDMxLjU5MzggMTEuMzI0OEgzMi4xNTQ0TDMzLjQ1NDYgMjAuMzA4NEgzMC4yNjk5WiIgZmlsbD0iI0ZGMDU1OCIvPgogIDxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNMjAuMzA5IDBMMTguOTAyMiAyMC42NTAyTDE4LjUyNDEgMjAuNjcwMUwxNS4xNzgyIDYuMDYwNUgxMS4wNDM4TDguNTQwNzYgMjEuMTk4NEw4LjAwNDI5IDIxLjIyNjdMNS43NjMyNiA2LjA2MDVIMEw1LjI0MzMxIDI4LjYzNzlMMTEuMTA0NSAyOC4yNDczTDEzLjAxMTQgMTQuMjMzM0wxMy41NzA3IDE0LjIwMjZMMTYuMTI0MiAyNy45MDg3TDIxLjczNCAyNy41MzIzTDI2LjE4ODkgMEgyMC4zMDlaIiBmaWxsPSIjRkYwNTU4Ii8+CiAgPHBhdGggZD0iTTU3LjE2NjQgNS45MTcxMkM1Mi45NDAyIDUuOTE3MTIgNTAuOTEzNCA4LjIyODQ1IDUwLjkxMzQgMTEuODA0NVYyMi4wNTI4QzUwLjkxMzQgMjUuNjI4OCA1Mi45NDAyIDI3Ljk0MDEgNTcuMTY2NCAyNy45NDAxQzYxLjM5MjYgMjcuOTQwMSA2My40MTk0IDI1LjYyODggNjMuNDE5NCAyMi4wNTI4VjE4LjM0Nkg1OC43MTg5VjIyLjQ4ODlDNTguNzE4OSAyMy42MjI4IDU4LjI4NzYgMjQuMDE1MiA1Ny4xNjY0IDI0LjAxNTJDNTYuMDQ1MiAyNC4wMTUyIDU1LjYxMzkgMjMuNjIyOCA1NS42MTM5IDIyLjQ4ODlWMTEuMzY4NEM1NS42MTM5IDEwLjIzNDUgNTYuMDQ1MiA5Ljg0MjAxIDU3LjE2NjQgOS44NDIwMUM1OC4yODc2IDkuODQyMDEgNTguNzE4OSAxMC4yMzQ1IDU4LjcxODkgMTEuMzY4NFYxMy44MTA1SDYzLjQxOTRWMTEuODA0NUM2My40MTk0IDguMjI4NDUgNjEuMzkyNiA1LjkxNzEyIDU3LjE2NjQgNS45MTcxMloiIGZpbGw9IiNGRjA1NTgiLz4KICA8cGF0aCBkPSJNODMuMDQwOCA2LjEzNTE5TDc5LjI0NTkgMjcuNzIyMUg4My44MTcxTDg0LjMzMDIgMjQuMjMzM0g4OC42NTk5TDg5LjE2NDUgMjcuNzIyMUg5My43Nzg3TDg5Ljk0MDcgNi4xMzUxOUg4My4wNDA4Wk04NC45MDgxIDIwLjMwODRMODYuMjMyIDExLjMyNDhIODYuNzkyNkw4OC4wOTI4IDIwLjMwODRIODQuOTA4MVoiIGZpbGw9IiNGRjA1NTgiLz4KICA8cGF0aCBkPSJNMTI1LjY4NiA2LjEzNTI1SDEyMC45NDNWMjcuNzIyMkgxMjUuNjg2QzEyOC4zNiAyNy43MjIyIDEzMC4xMjggMjYuNjc1NSAxMzAuOTkxIDI0Ljc1NjdDMTMxLjUwOCAyMy42MjI4IDEzMS42MzggMjIuNTc2MiAxMzEuNjM4IDE2LjkwNjlDMTMxLjYzOCAxMS4yODEyIDEzMS41MDggMTAuMjM0NiAxMzAuOTkxIDkuMTAwNzNDMTMwLjEyOCA3LjE4MTg5IDEyOC4zNiA2LjEzNTI1IDEyNS42ODYgNi4xMzUyNVpNMTI4LjM2IDIzLjUzNTZDMTI3LjkyOSAyNC41ODIzIDEyNy4wMjMgMjUuMTQ5MiAxMjUuNDI4IDI1LjE0OTJIMTIzLjc0NlY4LjcwODI0SDEyNS40MjhDMTI3LjAyMyA4LjcwODI0IDEyNy45MjkgOS4yNzUxNyAxMjguMzYgMTAuMzIxOEMxMjguNzA1IDExLjA2MzIgMTI4Ljc5MSAxMS43MTczIDEyOC43OTEgMTYuOTUwNUMxMjguNzkxIDIyLjE0MDEgMTI4LjcwNSAyMi43OTQyIDEyOC4zNiAyMy41MzU2WiIgZmlsbD0iIzI5MkEzMiIvPgogIDxwYXRoIGQ9Ik0xNDcuMDc2IDYuMTM1MjVIMTQyLjgwN0wxMzguODM5IDI3LjcyMjJIMTQxLjY0MkwxNDIuMzMyIDIzLjM2MTJIMTQ3LjUwN0wxNDguMjQgMjcuNzIyMkgxNTFMMTQ3LjA3NiA2LjEzNTI1Wk0xNDIuNzY0IDIwLjkxOUwxNDQuODc3IDguNDAyOTdIMTQ0Ljk2M0wxNDcuMDc2IDIwLjkxOUgxNDIuNzY0WiIgZmlsbD0iIzI5MkEzMiIvPgogIDxwYXRoIGQ9Ik0xMzYuODEyIDYuMTM1MjVIMTM0LjAwOVYyNy43MjIySDEzNi44MTJWNi4xMzUyNVoiIGZpbGw9IiMyOTJBMzIiLz4KICA8cGF0aCBkPSJNMTAzLjk1MiA2LjEzNTI1SDk4Ljg2MzNWMjcuNzIyMkgxMDEuNjIzVjE3LjY0ODNIMTAzLjk1MkMxMDYuMTA4IDE3LjY0ODMgMTA3LjQ4OCAxNy4wMzc3IDEwOC4wOTIgMTUuNjg1OEMxMDguMzk0IDE0LjkwMDggMTA4LjQ4IDE0LjI5MDMgMTA4LjQ4IDExLjg5MThDMTA4LjQ4IDkuNDkzMjIgMTA4LjM5NCA4LjgzOTA3IDEwOC4wOTIgOC4xNDEzMUMxMDcuNDg4IDYuNzQ1NzkgMTA2LjEwOCA2LjEzNTI1IDEwMy45NTIgNi4xMzUyNVpNMTA1LjQ2MSAxNC4xMTU5QzEwNS4xNTkgMTQuOTAwOCAxMDQuNDI2IDE1LjA3NTMgMTAzLjI2MiAxNS4wNzUzSDEwMS42MjNWOC41MzM4SDEwMy4yNjJDMTA0LjQyNiA4LjUzMzggMTA1LjE1OSA4Ljc1MTg1IDEwNS40NjEgOS40OTMyMkMxMDUuNjM0IDkuODg1NzEgMTA1LjY3NyAxMC4xMDM4IDEwNS42NzcgMTEuODA0NUMxMDUuNjc3IDEzLjQ2MTcgMTA1LjYzNCAxMy43NjcgMTA1LjQ2MSAxNC4xMTU5WiIgZmlsbD0iIzI5MkEzMiIvPgogIDxwYXRoIGQ9Ik0xMTAuNTA3IDI3LjcyMjJIMTE4LjM1NVYyNS4xNDkySDExMy4zMVYxNy41NjExSDExOC4yMjZWMTQuOTg4MUgxMTMuMzFWOC43MDgyNEgxMTguMzU1VjYuMTM1MjVIMTEwLjUwN1YyNy43MjIyWiIgZmlsbD0iIzI5MkEzMiIvPgo8L3N2Zz4K" width="198px" height="38.03px">
                 </div>
                 <h2 class="login_signup-modal-title">로그인</h2>
                 <section>
                     <div class="mx20">
                         <form name="loginForm" class="form" onsubmit="return func_Login()">
-                        
+                                                
                             <div class="py4">
                                 <label class="login_signup-label-input">
                                     <div class="login_signup-div-input">
-                                        <input autocomplete="off" placeholder="아이디" id="user_id" name="user_id" class="login_signup-input" required>
+                                        <input autocomplete="off" placeholder="아이디" id="user_id" name="user_id" class="login_signup-input" oninput="idChange(this)" required>
                                     </div>
                                 </label>
-                                <p class="warning-text" id="id-warning">아이디를 입력하세요.</p>
+                                <p class="warning-text" id="id-warning">아이디는 두글자 이상이어야 합니다.</p>
                             </div>
                             
                             <div class="py4">
                                 <label class="login_signup-label-input">
                                     <div class="login_signup-div-input">
-                                        <input autocomplete="off" placeholder="비밀번호" id="password" type="password" name="password" class="login_signup-input" minlength="6" required>
+                                        <input autocomplete="off" placeholder="비밀번호" id="password" type="password" name="password" class="login_signup-input" oninput="pwdChange(this)"
+                                         pattern="^.*(?=^.{8,15}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[^a-zA-Z0-9]).*$" required>
                                     </div>
                                 </label>
-                                <p class="warning-text" id="password-warning">비밀번호는 최소 6자리 이상이어야 합니다.</p>
+                                <p class="warning-text" id="password-warning">비밀번호는 영문자,숫자,특수기호가 혼합된 최소 8자리 이상이어야 합니다.</p>
                             </div>
                             <button type="submit" class="login_signup-btn" id="btnLogin">로그인</button>
                         </form>
@@ -1159,16 +1267,14 @@
                 </section>
             </div>
         </div>
-      </div>
     </div>
 
 
     <!-- 회원가입 modal -->
-    <div id="signupModal" class="modal-gray">
-      <div class="py20">
+    <div id="signupModal" class="login_signup-modal">
         <div class="login_signup-modal-dialog">
             <div class="pt32_pb16">
-                <div class="login_signup-modal-imgtitle">
+                <div>
                     <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUxIiBoZWlnaHQ9IjI5IiB2aWV3Qm94PSIwIDAgMTUxIDI5IiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogIDxwYXRoIGQ9Ik03My40MjQyIDE0LjYzOTFINjkuODAxOFY2LjEzNTE5SDY1LjEwMTNWMjcuNzIyMUg2OS44MDE4VjE5LjEzMDlINzMuNDI0MlYyNy43MjIxSDc4LjEyNDhWNi4xMzUxOUg3My40MjQyVjE0LjYzOTFaIiBmaWxsPSIjRkYwNTU4Ii8+CiAgPHBhdGggZD0iTTM3Ljg0NjggMTAuNjI3SDQxLjY0MTdWMjcuNzIyMUg0Ni4zNDIyVjEwLjYyN0g0OS45MjE1VjYuMTM1MTlIMzcuODQ2OFYxMC42MjdaIiBmaWxsPSIjRkYwNTU4Ii8+CiAgPHBhdGggZD0iTTI4LjQwMjcgNi4xMzUxOUwyNC42MDc3IDI3LjcyMjFIMjkuMTc4OUwyOS42OTIxIDI0LjIzMzNIMzQuMDIxN0wzNC41MjYzIDI3LjcyMjFIMzkuMTQwNUwzNS4zMDI1IDYuMTM1MTlIMjguNDAyN1pNMzAuMjY5OSAyMC4zMDg0TDMxLjU5MzggMTEuMzI0OEgzMi4xNTQ0TDMzLjQ1NDYgMjAuMzA4NEgzMC4yNjk5WiIgZmlsbD0iI0ZGMDU1OCIvPgogIDxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNMjAuMzA5IDBMMTguOTAyMiAyMC42NTAyTDE4LjUyNDEgMjAuNjcwMUwxNS4xNzgyIDYuMDYwNUgxMS4wNDM4TDguNTQwNzYgMjEuMTk4NEw4LjAwNDI5IDIxLjIyNjdMNS43NjMyNiA2LjA2MDVIMEw1LjI0MzMxIDI4LjYzNzlMMTEuMTA0NSAyOC4yNDczTDEzLjAxMTQgMTQuMjMzM0wxMy41NzA3IDE0LjIwMjZMMTYuMTI0MiAyNy45MDg3TDIxLjczNCAyNy41MzIzTDI2LjE4ODkgMEgyMC4zMDlaIiBmaWxsPSIjRkYwNTU4Ii8+CiAgPHBhdGggZD0iTTU3LjE2NjQgNS45MTcxMkM1Mi45NDAyIDUuOTE3MTIgNTAuOTEzNCA4LjIyODQ1IDUwLjkxMzQgMTEuODA0NVYyMi4wNTI4QzUwLjkxMzQgMjUuNjI4OCA1Mi45NDAyIDI3Ljk0MDEgNTcuMTY2NCAyNy45NDAxQzYxLjM5MjYgMjcuOTQwMSA2My40MTk0IDI1LjYyODggNjMuNDE5NCAyMi4wNTI4VjE4LjM0Nkg1OC43MTg5VjIyLjQ4ODlDNTguNzE4OSAyMy42MjI4IDU4LjI4NzYgMjQuMDE1MiA1Ny4xNjY0IDI0LjAxNTJDNTYuMDQ1MiAyNC4wMTUyIDU1LjYxMzkgMjMuNjIyOCA1NS42MTM5IDIyLjQ4ODlWMTEuMzY4NEM1NS42MTM5IDEwLjIzNDUgNTYuMDQ1MiA5Ljg0MjAxIDU3LjE2NjQgOS44NDIwMUM1OC4yODc2IDkuODQyMDEgNTguNzE4OSAxMC4yMzQ1IDU4LjcxODkgMTEuMzY4NFYxMy44MTA1SDYzLjQxOTRWMTEuODA0NUM2My40MTk0IDguMjI4NDUgNjEuMzkyNiA1LjkxNzEyIDU3LjE2NjQgNS45MTcxMloiIGZpbGw9IiNGRjA1NTgiLz4KICA8cGF0aCBkPSJNODMuMDQwOCA2LjEzNTE5TDc5LjI0NTkgMjcuNzIyMUg4My44MTcxTDg0LjMzMDIgMjQuMjMzM0g4OC42NTk5TDg5LjE2NDUgMjcuNzIyMUg5My43Nzg3TDg5Ljk0MDcgNi4xMzUxOUg4My4wNDA4Wk04NC45MDgxIDIwLjMwODRMODYuMjMyIDExLjMyNDhIODYuNzkyNkw4OC4wOTI4IDIwLjMwODRIODQuOTA4MVoiIGZpbGw9IiNGRjA1NTgiLz4KICA8cGF0aCBkPSJNMTI1LjY4NiA2LjEzNTI1SDEyMC45NDNWMjcuNzIyMkgxMjUuNjg2QzEyOC4zNiAyNy43MjIyIDEzMC4xMjggMjYuNjc1NSAxMzAuOTkxIDI0Ljc1NjdDMTMxLjUwOCAyMy42MjI4IDEzMS42MzggMjIuNTc2MiAxMzEuNjM4IDE2LjkwNjlDMTMxLjYzOCAxMS4yODEyIDEzMS41MDggMTAuMjM0NiAxMzAuOTkxIDkuMTAwNzNDMTMwLjEyOCA3LjE4MTg5IDEyOC4zNiA2LjEzNTI1IDEyNS42ODYgNi4xMzUyNVpNMTI4LjM2IDIzLjUzNTZDMTI3LjkyOSAyNC41ODIzIDEyNy4wMjMgMjUuMTQ5MiAxMjUuNDI4IDI1LjE0OTJIMTIzLjc0NlY4LjcwODI0SDEyNS40MjhDMTI3LjAyMyA4LjcwODI0IDEyNy45MjkgOS4yNzUxNyAxMjguMzYgMTAuMzIxOEMxMjguNzA1IDExLjA2MzIgMTI4Ljc5MSAxMS43MTczIDEyOC43OTEgMTYuOTUwNUMxMjguNzkxIDIyLjE0MDEgMTI4LjcwNSAyMi43OTQyIDEyOC4zNiAyMy41MzU2WiIgZmlsbD0iIzI5MkEzMiIvPgogIDxwYXRoIGQ9Ik0xNDcuMDc2IDYuMTM1MjVIMTQyLjgwN0wxMzguODM5IDI3LjcyMjJIMTQxLjY0MkwxNDIuMzMyIDIzLjM2MTJIMTQ3LjUwN0wxNDguMjQgMjcuNzIyMkgxNTFMMTQ3LjA3NiA2LjEzNTI1Wk0xNDIuNzY0IDIwLjkxOUwxNDQuODc3IDguNDAyOTdIMTQ0Ljk2M0wxNDcuMDc2IDIwLjkxOUgxNDIuNzY0WiIgZmlsbD0iIzI5MkEzMiIvPgogIDxwYXRoIGQ9Ik0xMzYuODEyIDYuMTM1MjVIMTM0LjAwOVYyNy43MjIySDEzNi44MTJWNi4xMzUyNVoiIGZpbGw9IiMyOTJBMzIiLz4KICA8cGF0aCBkPSJNMTAzLjk1MiA2LjEzNTI1SDk4Ljg2MzNWMjcuNzIyMkgxMDEuNjIzVjE3LjY0ODNIMTAzLjk1MkMxMDYuMTA4IDE3LjY0ODMgMTA3LjQ4OCAxNy4wMzc3IDEwOC4wOTIgMTUuNjg1OEMxMDguMzk0IDE0LjkwMDggMTA4LjQ4IDE0LjI5MDMgMTA4LjQ4IDExLjg5MThDMTA4LjQ4IDkuNDkzMjIgMTA4LjM5NCA4LjgzOTA3IDEwOC4wOTIgOC4xNDEzMUMxMDcuNDg4IDYuNzQ1NzkgMTA2LjEwOCA2LjEzNTI1IDEwMy45NTIgNi4xMzUyNVpNMTA1LjQ2MSAxNC4xMTU5QzEwNS4xNTkgMTQuOTAwOCAxMDQuNDI2IDE1LjA3NTMgMTAzLjI2MiAxNS4wNzUzSDEwMS42MjNWOC41MzM4SDEwMy4yNjJDMTA0LjQyNiA4LjUzMzggMTA1LjE1OSA4Ljc1MTg1IDEwNS40NjEgOS40OTMyMkMxMDUuNjM0IDkuODg1NzEgMTA1LjY3NyAxMC4xMDM4IDEwNS42NzcgMTEuODA0NUMxMDUuNjc3IDEzLjQ2MTcgMTA1LjYzNCAxMy43NjcgMTA1LjQ2MSAxNC4xMTU5WiIgZmlsbD0iIzI5MkEzMiIvPgogIDxwYXRoIGQ9Ik0xMTAuNTA3IDI3LjcyMjJIMTE4LjM1NVYyNS4xNDkySDExMy4zMVYxNy41NjExSDExOC4yMjZWMTQuOTg4MUgxMTMuMzFWOC43MDgyNEgxMTguMzU1VjYuMTM1MjVIMTEwLjUwN1YyNy43MjIyWiIgZmlsbD0iIzI5MkEzMiIvPgo8L3N2Zz4K" width="198px" height="38.03px">
                 </div>
                 <h2 class="login_signup-modal-title">회원가입</h2>
@@ -1179,26 +1285,27 @@
                             <div class="py4">
                                 <label class="login_signup-label-input">
                                     <div class="login_signup-div-input">
-                                        <input autocomplete="off" placeholder="아이디" type="text" id="user_id2" name="user_id" class="login_signup-input" title="아이디를 입력하세요." required>
+                                        <input autocomplete="off" placeholder="아이디" type="text" id="user_id2" name="user_id" class="login_signup-input" title="아이디를 입력하세요." oninput="id2Change(this)" minlength="2" required>
                                     </div>
                                 </label>
-                                <p class="warning-text" id="id2-warning">중복된 아이디 입니다.</p>
+                                <p class="warning-text" id="id2-warning">아이디는 최소 2자 이상이어야 합니다.</p>
+                                <p class="warning-text" id="id2-warning2">중복된 아이디 입니다.</p>
                             </div>
                             
                             <div class="py4">
                                 <label class="login_signup-label-input">
                                     <div class="login_signup-div-input">
-                                        <input autocomplete="off" placeholder="비밀번호" type="password" id="password2" name="password" class="login_signup-input"
-                                         pattern="^(?=.*[A-Za-z])(?=.*\d|(?=.*\W+)).{6,}$" title="비밀번호는 영문, 숫자, 특수문자 중 2개 이상을 조합하여 최소 6자리 이상이여야 합니다." required>
+                                        <input autocomplete="off" placeholder="비밀번호" type="password" id="password2" name="password" class="login_signup-input" oninput="pwdChange(this)"
+                                         pattern="^.*(?=^.{8,15}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[^a-zA-Z0-9]).*$" required>
                                     </div>
                                 </label>
-                                <p class="warning-text" id="password2-warning">비밀번호는 영문, 숫자, 특수문자 중 2개 이상을 조합하여 최소 6자리 이상이여야 합니다.</p>
+                                <p class="warning-text" id="password2-warning">비밀번호는 영문자,숫자,특수기호가 혼합된 최소 8자리 이상이어야 합니다.</p>
                             </div>
 
                             <div class="py4">
                                 <label class="login_signup-label-input">
                                     <div class="login_signup-div-input">
-                                        <input autocomplete="off" placeholder="이름" type="text" id="name" name="name" class="login_signup-input" required>
+                                        <input autocomplete="off" placeholder="이름" type="text" id="name" name="name" class="login_signup-input" oninput="nameChange(this)" minlength="2" required>
                                     </div>
                                 </label>
                                 <p class="warning-text" id="name-warning">정확하지 않은 이름입니다.</p>
@@ -1208,7 +1315,7 @@
                                 <label class="login_signup-label-input">
                                     <div class="login_signup-div-input">
                                         <input autocomplete="off" placeholder="전화번호" type="text" id="mobile" name="mobile" class="login_signup-input"
-                                         pattern="^010\d{8}$" title="전화번호는 -를 제외한 01012345678 형식으로 입력하세요." required>
+                                         pattern="^010\d{8}$" title="전화번호는 -를 제외한 01012345678 형식으로 입력하세요." oninput="numChange(this)" required>
                                     </div>
                                 </label>
                                 <p class="warning-text" id="mobile-warning">정확하지 않은 번호입니다.</p>
@@ -1217,10 +1324,12 @@
                             <div class="py4">
                                 <label class="login_signup-label-input">
                                     <div class="login_signup-div-input">
-                                        <input autocomplete="off" placeholder="이메일" type="email" id="email" name="email" class="login_signup-input" required>
+                                        <input autocomplete="off" placeholder="이메일" type="email" id="email" name="email" class="login_signup-input" oninput="emailChange(this)"
+                                         pattern="^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$" required>
                                     </div>
                                 </label>
                                 <p class="warning-text" id="email-warning">정확하지 않은 이메일입니다.</p>
+                                <p class="warning-text" id="email-warning2"></p>
                             </div>
                             
                             <button type="submit" class="login_signup-btn" id="btnSignup">회원가입</button>
@@ -1257,7 +1366,6 @@
                     </div>
                 </section>
             </div>
-          </div>
         </div>
     </div>
 

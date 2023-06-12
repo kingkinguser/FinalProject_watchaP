@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.spring.watcha.model.ActorVO;
 import com.spring.watcha.model.GenreVO;
@@ -368,25 +369,85 @@ public class WatchaController {
 	
 	
 	
-	// 검색하고 나서 더보기를 누를때 
-	@RequestMapping(value="/goSearchDetail.action")
-	public ModelAndView goSearchDetail(ModelAndView mav, HttpServletRequest request) {
+	/*
+	 * // 검색하고 나서 더보기를 누를때
+	 * 
+	 * @RequestMapping(value="/goSearchDetail.action") public ModelAndView
+	 * goSearchDetail(ModelAndView mav, HttpServletRequest request) {
+	 * 
+	 * String lastSearchWord = request.getParameter("lastSearchWord");
+	 * 
+	 * Map<String, String> paraMap = new HashMap<>();
+	 * 
+	 * paraMap.put("searchWord",lastSearchWord);
+	 * 
+	 * //List<MovieVO> showMovie = service.showMovie(paraMap);
+	 * 
+	 * mav.addObject("lastSearchWord",lastSearchWord); //mav.addObject("showMovie",
+	 * showMovie); mav.setViewName("/search/searchDetail.tiles"); return mav; }
+	 */
+		
 	
+	// 더보기 페이지에서 10 개 이후 더보기 버튼을 눌렀을때 
+	@ResponseBody
+	@RequestMapping(value="/goSearchDetail.action")
+	public String showMoreMovie(HttpServletRequest request, RedirectAttributes redirectAttributes) {
+	
+		String start = request.getParameter("start");
+		String lenShow = request.getParameter("lenShow");
 		String lastSearchWord = request.getParameter("lastSearchWord");
 		
-		Map<String, String> paraMap = new HashMap<>();
+		System.out.println(start);
+		System.out.println(lenShow);
+		System.out.println(lastSearchWord);
 		
-		paraMap.put("searchWord",lastSearchWord);
-		
-		List<MovieVO> showMovie = service.showMovie(paraMap);
-		
-		mav.addObject("lastSearchWord",lastSearchWord);
-		mav.addObject("showMovie", showMovie);
-		mav.setViewName("/search/searchDetail.tiles");
-		return mav;
-	}
-		
+		if(start != null) {
+			
+			Map<String, String> paraMap = new HashMap<>();
+			
+			paraMap.put("start", start);
+			paraMap.put("lastSearchWord", lastSearchWord);	
+			
+			String end = String.valueOf(Integer.parseInt(start) + Integer.parseInt(lenShow) -1);  
+												 
+			paraMap.put("end", end);
+			
+			List<MovieVO> showMovieAll = service.showMovieAll(paraMap);
+			
+			JSONArray jsonArr = new JSONArray();
+			
+			if(showMovieAll.size() > 0) {
+				// DB 에서 조회해 온 결과물이 있을 경우
 	
+				for(MovieVO Showvo : showMovieAll) {
+					
+					JSONObject jsonObj = new JSONObject();  			
+					jsonObj.put("movie_id", Showvo.getMovie_id());     		
+					jsonObj.put("movie_title", Showvo.getMovie_title());   
+					jsonObj.put("original_language", Showvo.getOriginal_language());   
+					jsonObj.put("release_date", Showvo.getRelease_date());   
+					jsonObj.put("poster_path", Showvo.getPoster_path());   
+					jsonObj.put("rating_avg", Showvo.getRating_avg());   
+					
+					
+		            jsonArr.put(jsonObj);  
+		            
+					
+				}// end of for
+					
+			}
+			
+			
+			String json = jsonArr.toString();
+			System.out.println(json);
+			
+		    return json;
+			
+		}
+		
+		return lastSearchWord;
+		
+	}
 	
 	
 }

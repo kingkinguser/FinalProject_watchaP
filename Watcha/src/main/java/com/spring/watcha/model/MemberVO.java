@@ -29,16 +29,35 @@ public class MemberVO {
 	
 	public MemberVO() {}
 	
-	public MemberVO(String user_id, String name, String mobile, String email, String date_joined, int pwdchangegap) {
+	// loginuser값 받아오기
+	public MemberVO(String user_id, String name, String mobile, String email, String date_joined
+					, String profile_message, String profile_image, int pwdchangegap) {
 		
 		this.user_id = user_id;
 		this.name = name;
 		this.mobile = mobile;
 		this.email = email;
 		this.date_joined = date_joined;
+		this.profile_message = profile_message;
+		this.profile_image = profile_image;
 		this.pwdchangegap = pwdchangegap;
 		
 	}
+	
+	
+	// 내정보수정
+	public MemberVO(String user_id, String password, String name, String mobile, String email
+			, String profile_message, String profile_image) {
+
+		this.user_id = user_id;
+		this.password = password;
+		this.name = name;
+		this.mobile = mobile;
+		this.email = email;
+		this.profile_message = profile_message;
+		this.profile_image = profile_image;
+	}
+	
 
 	public String getUser_id() {
 		return user_id;

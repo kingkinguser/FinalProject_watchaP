@@ -139,6 +139,14 @@ public class WatchaDAO implements InterWatchaDAO {
 		return findCollectionFinal;
 	}
 
+	// 검색한 영화 정보 모두 가져오기 
+	@Override
+	public List<MovieVO> showMovieAll(Map<String, String> paraMap) {
+		List<MovieVO> showMovieAll = sqlsession_1.selectList("watchamin.showMovieAll", paraMap);	
+		
+		return showMovieAll;
+	}
+
 
 	
 

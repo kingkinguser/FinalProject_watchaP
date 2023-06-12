@@ -27,7 +27,7 @@ public class WatchaDAO implements InterWatchaDAO {
 		}
 
 
-		// 회원가입시 아이디 중복체크 기능 구현
+		// 회원가입시 아이디 중복체크 기능 구현 ajax
 		@Override
 		public int idDuplicateCheck(String user_id) {
 			int n = sqlsession.selectOne("watcha.idDuplicateCheck", user_id);
@@ -41,6 +41,36 @@ public class WatchaDAO implements InterWatchaDAO {
 			int n = sqlsession.insert("watcha.signupEnd", paraMap);
 			return n;
 		}
-		
-		
+
+
+		// 이메일 중복체크 ajax
+		@Override
+		public int emailDuplicateCheck(String email) {
+			int n = sqlsession.selectOne("watcha.emailDuplicateCheck", email);
+			return n;
+		}
+
+
+		// 회원정보수정 새암호인지 확인 ajax
+		@Override
+		public int duplicatePwdCheck(Map<String, String> paraMap) {
+			int n = sqlsession.selectOne("watcha.duplicatePwdCheck", paraMap);
+			return n;
+		}
+
+
+		// 내정보 수정하기
+		@Override
+		public int modifyInfo(MemberVO member) {
+			int n = sqlsession.update("watcha.modifyInfo", member);
+			return n;
+		}
+
+
+		// 회원탈퇴
+		@Override
+		public int deleteMember(MemberVO loginuser) {
+			int n = sqlsession.delete("watcha.deleteMember", loginuser);
+			return n;
+		}
 }

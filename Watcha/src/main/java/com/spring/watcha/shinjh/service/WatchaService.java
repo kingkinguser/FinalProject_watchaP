@@ -44,8 +44,7 @@ public class WatchaService implements InterWatchaService {
 			if(loginuser.isRequirePwdChange() == true) { // 암호를 마지막으로 변경한 것이 3개월이 경과한 경우
 				
 				String message = "비밀번호를 변경하신지 3개월이 지났습니다.\\n 암호를 변경하시는 것을 추천합니다.";
-				String loc = request.getContextPath()+"/view/main.action";
-				// 원래는 위와 같이 /view/main.action 이 아니라 사용자의 암호를 변경해주는 페이지로 잡아주어야 한다.
+				String loc = request.getContextPath()+"/modifyMyInfo.action";
 				
 				mav.addObject("message", message);
 				mav.addObject("loc", loc);
@@ -61,7 +60,6 @@ public class WatchaService implements InterWatchaService {
 	            // 화면에 보여주는 페이지는 시작페이지로 가는 것이 아니라
 	            // 조금전 사용자가 시도하였던 로그인을 해야만 접근할 수 있는 페이지로 가기 위한 것이다.
 				 String goBackURL = (String) session.getAttribute("goBackURL");
-				 System.out.println("로그인 성공"); // 로그인 확인용 나중에 지울것
 				
 				 if(goBackURL != null) {
 					 mav.setViewName("redirect:"+goBackURL);
@@ -91,7 +89,7 @@ public class WatchaService implements InterWatchaService {
 	}
 
 
-   // 회원가입시 아이디 중복체크 기능 구현
+   // 회원가입시 아이디 중복체크 기능 구현 ajax
 	@Override
 	public int idDuplicateCheck(String user_id) {
 		
@@ -101,6 +99,7 @@ public class WatchaService implements InterWatchaService {
 	}
 
 
+	// 회원가입 기능 구현
    @Override
 	public int signupEnd(ModelAndView mav,	Map<String, String> paraMap) {
 	   
@@ -109,5 +108,45 @@ public class WatchaService implements InterWatchaService {
 	   return n;
 	   
    }
+
+
+	// 이메일 중복체크 ajax
+	@Override
+	public int emailDuplicateCheck(String email) {
+		
+		int n = dao.emailDuplicateCheck(email);
+		
+		return n;
+	}
+
+
+	// 회원정보수정 새암호인지 확인 ajax
+	@Override
+	public int duplicatePwdCheck(Map<String, String> paraMap) {
+		
+		int n = dao.duplicatePwdCheck(paraMap);
+		
+		return n;
+	}
+
+
+	// 내정보 수정하기
+	@Override
+	public int modifyInfo(MemberVO member) {
+		
+		int n = dao.modifyInfo(member);
+		
+		return n;
+	}
+
+
+	// 회원탈퇴
+	@Override
+	public int deleteMember(MemberVO loginuser) {
+		
+		int n = dao.deleteMember(loginuser);
+		
+		return n;
+	}
 		
 }

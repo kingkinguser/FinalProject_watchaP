@@ -14,6 +14,18 @@ public interface InterWatchaDAO {
 
 	// 회원가입 기능 구현
 	int signupEnd(Map<String, String> paraMap);
+
+	// 이메일 중복체크 ajax
+	int emailDuplicateCheck(String email);
+
+	// 회원정보수정 새암호인지 확인 ajax
+	int duplicatePwdCheck(Map<String, String> paraMap);
+
+	// 내정보 수정하기
+	int modifyInfo(MemberVO member);
+
+	// 회원탈퇴
+	int deleteMember(MemberVO loginuser);
 		
 		
 }
