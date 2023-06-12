@@ -165,10 +165,12 @@ public class WatchaController {
 	
 	
 
-	@RequestMapping(value="/view/main.action")
+	@RequestMapping(value="/view/main.action", method = RequestMethod.GET )
 	public ModelAndView main(ModelAndView mav, HttpServletRequest request) {
 		
 		HttpSession session = request.getSession();
+		
+		String needLogin = (String) session.getAttribute("needLogin");
 	    
 	    String[] searchWordsArray = (String[]) session.getAttribute("searchWords");
  	    
@@ -325,6 +327,7 @@ public class WatchaController {
 	
 		}
 		
+		mav.addObject("needLogin",needLogin);
 
 		mav.addObject("login_userid",login_userid);
 		mav.addObject("login_username",login_username);

@@ -45,13 +45,14 @@ public class WatchaController {
 		}
 		
 		
-		// 로그인 기능 구현
+		// aop 로그인 기능 구현
 		@RequestMapping(value="/login.action")
 		public ModelAndView needLogin(ModelAndView mav, HttpServletRequest request) {
 			
-			mav.addObject("needLogin", true);
+			String needLogin = "true";
 			
-			mav.setViewName("/main.tiles");
+			mav.addObject("needLogin", needLogin);
+			mav.setViewName("redirect:/view/main.action");
 			
 			return mav;
 			
