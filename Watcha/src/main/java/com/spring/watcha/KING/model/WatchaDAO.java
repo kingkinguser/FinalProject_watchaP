@@ -60,6 +60,7 @@ public class WatchaDAO implements InterWatchaDAO {
 		// 댓글쓰기 insert
 		@Override
 		public int addUserComment(user_collection_commentVO uccvo) {
+			
 			int n = sqlsession.insert("watcha.addUserComment", uccvo);
 			return n;
 		}
@@ -118,6 +119,13 @@ public class WatchaDAO implements InterWatchaDAO {
 		@Override
 		public int getMoviecollectionSelect(Map<String, String> paraMap) {
 			int n = sqlsession.selectOne("watcha.getMoviecollectionSelect", paraMap);
+			return n; 
+		}
+
+		// groupno 최댓값 알기  
+		@Override
+		public int getGroupno_max() { 
+			int n = sqlsession.selectOne("watcha.getGroupno_max");
 			return n; 
 		}
 }

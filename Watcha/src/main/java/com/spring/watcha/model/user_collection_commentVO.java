@@ -10,6 +10,23 @@ public class user_collection_commentVO {
 	private String user_collection_time;  	  // 작성시간
 	private String user_collection_status;    // 글삭제여부
 	
+	private String groupno;
+	private String depthno;
+	
+	public user_collection_commentVO() {}
+	
+	public user_collection_commentVO(String user_collection_seq, String user_id_collection, String user_id_comment,
+			String user_collection_content, String user_collection_time, String user_collection_status, String groupno, String depthno) {
+		super();
+		this.user_collection_seq = user_collection_seq;
+		this.user_id_collection = user_id_collection;
+		this.user_id_comment = user_id_comment;
+		this.user_collection_content = user_collection_content;
+		this.user_collection_time = user_collection_time;
+		this.user_collection_status = user_collection_status;
+		this.groupno = groupno;
+		this.depthno = depthno;
+	}
 	public String getUser_collection_seq() {
 		return user_collection_seq;
 	}
@@ -45,6 +62,22 @@ public class user_collection_commentVO {
 	}
 	public void setUser_collection_status(String user_collection_status) {
 		this.user_collection_status = user_collection_status;
+	}
+
+	public String getGroupno() {
+		return groupno;
+	}
+
+	public void setGroupno(String groupno) {
+		this.groupno = groupno;
+	}
+
+	public String getDepthno() {
+		return depthno;
+	}
+
+	public void setDepthno(String depthno) {
+		this.depthno = depthno;
 	}
 	
 	

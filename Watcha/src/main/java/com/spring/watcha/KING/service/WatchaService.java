@@ -132,5 +132,12 @@ public class WatchaService implements InterWatchaService {
 		return n;
 	}
 
+	// groupno 최댓값 알기 
+	@Override
+	public int getGroupno_max() {
+		int groupno = dao.getGroupno_max();
+		return groupno;
+	}
+
 		
 }

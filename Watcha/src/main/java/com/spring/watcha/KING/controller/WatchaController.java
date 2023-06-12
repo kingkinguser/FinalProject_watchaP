@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.json.JSONArray;
@@ -69,18 +70,29 @@ public class WatchaController {
 			}	
 		   // ==== ***** project_detail tiles 끝 ***** ==== // 
 			
-			// ==== ***** project_detail tiles 시작 ***** ==== // 
+			// ==== ***** user_collection tiles 시작 ***** ==== // 
 			@RequestMapping(value="/view/user_collection.action")
 			public String user_collection(HttpServletRequest request, Model model) {
 				
+				String user_id = "";
+				
 	            HttpSession session = request.getSession();
 	            MemberVO loginuser = (MemberVO) session.getAttribute("loginuser");
-	            String user_id = loginuser.getUser_id();
 				String movie_id = request.getParameter("movie_id");
+				
+				String user_id_collection = request.getParameter("user_id"); // 메인에서 넘어오는 user_id
 				
 				Map<String, String> paraMap = new HashMap<>();
 				paraMap.put("movie_id", movie_id);
-				paraMap.put("user_id", user_id);
+
+				if(user_id_collection != null) {
+					// 메인에서 유저의 컬렉션 클릭
+					paraMap.put("user_id", user_id_collection);
+				}
+				else if(user_id_collection == null && loginuser != null) {
+					// 로그인한 유저가 내 컬렉션을 클릭한 경우
+					paraMap.put("user_id", loginuser.getUser_id());
+				}
 				
 				List<Map<String, String>> collection_view = service.getCollection_view(paraMap); 
 				Map<String, String> totalCount = service.totalCount(paraMap); 
@@ -91,7 +103,7 @@ public class WatchaController {
 				return "user_collection.tiles";
 				// /WEB-INF/views/tiles1/tiles1/tiles_test
 			}	
-		   // ==== ***** project_detail tiles 끝 ***** ==== // 
+		   // ==== ***** user_collection tiles 끝 ***** ==== // 
 		
 			
 		   // ============================================== 기능 시작 ======================================================= //	
@@ -100,16 +112,14 @@ public class WatchaController {
 			@ResponseBody
 			@RequestMapping(value="/cardSeeMore.action")
 			public String cardSeeMore(HttpServletRequest request) {
-
-	            HttpSession session = request.getSession();
-	            MemberVO loginuser = (MemberVO) session.getAttribute("loginuser");
-	            String user_id = loginuser.getUser_id();
-				String start = request.getParameter("start");
+				
+				String user_id_collection = request.getParameter("user_id_collection");
+	            String start = request.getParameter("start");
 				String len = request.getParameter("len");
 				String end = String.valueOf(Integer.parseInt(start) + Integer.parseInt(len) - 1);
 				
 				Map<String, String> paraMap = new HashMap<>();
-				paraMap.put("user_id", user_id);
+				paraMap.put("user_id", user_id_collection);
 				paraMap.put("start", start);
 				paraMap.put("end", end);
 				
@@ -137,20 +147,15 @@ public class WatchaController {
 			@ResponseBody
 			@RequestMapping(value="/addUserComment.action", method= {RequestMethod.POST}, produces="text/plain;charset=UTF-8") 
 			public String addUserComment(user_collection_commentVO uccvo) {
-				// 댓글쓰기에 첨부파일이 없는 경우 
 				
-				int n = 0;
-			/*	
-			Gson gson = new GsonBuilder().setPrettyPrinting().create();
-			System.out.println(gson.toJson(uccvo));
-			*/ 	
-				try {
-					n = service.addUserComment(uccvo);
+				/*	
+				Gson gson = new GsonBuilder().setPrettyPrinting().create();
+				System.out.println(gson.toJson(uccvo)); 
+				*/ 	
+				 
+				    int n = service.addUserComment(uccvo); 
 					// 댓글쓰기(insert)
 					
-				} catch (Throwable e) {
-				    e.printStackTrace(); 
-				}
 				
 				JSONObject jsonObj = new JSONObject();
 				jsonObj.put("n", n);
@@ -254,7 +259,7 @@ public class WatchaController {
 			}
 			
 			
-			// === 좋아요 === //
+			// === 컬렉션 값 유지 === //
 			@ResponseBody
 			@RequestMapping(value="/view/insert_collection.action", method= {RequestMethod.POST})   
 			public String insert_collection(HttpServletRequest request) {

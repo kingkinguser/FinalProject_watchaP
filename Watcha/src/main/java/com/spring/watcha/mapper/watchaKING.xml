@@ -88,7 +88,6 @@
 
 
    <!-- 더보기 시작-->	
-   
    <select id="totalCount" parameterType="HashMap" resultType="HashMap" >
     select count(*) as count
     from collection_movie 
@@ -143,7 +142,7 @@
 	         CC.user_collection_seq, CC.user_id_comment, CC.user_id_collection, CC.user_collection_content,
 	         to_char(CC.user_collection_time, 'YYYY-MM-DD HH24:MI:SS') AS user_collection_time
 	  from user_collection_comment CC join member M
-      on CC.user_id_collection = M.user_id
+      on CC.user_id_collection = M.user_id 
     ) V 
 	where rno between #{startRno} and #{endRno} 
 	</select>
@@ -196,6 +195,5 @@
      where user_id = #{user_id} and movie_id = #{movie_id}
 	</select>
 	
-	 
 </mapper>
 

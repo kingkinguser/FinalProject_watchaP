@@ -42,6 +42,9 @@ public interface InterWatchaService {
 	// 컬렉션 값 유지
 	int getMoviecollectionSelect(Map<String, String> paraMap);
 
+	// groupno 최댓값 알기 
+	int getGroupno_max();
+
 	
 	
 

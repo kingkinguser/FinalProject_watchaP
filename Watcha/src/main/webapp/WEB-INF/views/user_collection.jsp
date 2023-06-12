@@ -224,6 +224,7 @@
 
 	$(document).ready(function(){
 			
+			
 			/* 검색 엔터누를시  */ 
 			$('input#user_collection_content').on('keyup', function(event){
 				
@@ -364,7 +365,8 @@
 		$.ajax({
 			url:"<%= ctxPath %>/cardSeeMore.action",
 		    data:{"start":start,  
-		    	  "len"  :lenHIT 
+		    	  "len"  :lenHIT,
+		    	  "user_id_collection" : '${requestScope.collection_view[0].user_id}'
 		    },
 		    dataType:"json",
 		    success:function(json){
@@ -436,10 +438,10 @@
     }
 	/* ==== 댓글쓰기 끝 ==== */
 	 
-    /* ==== 댓글쓰기 시작 ==== */
+    /* ==== 댓글쓰기 시작 ==== */ 
     function goAddUserWrite_noAttach() {
-		
-	  const commentData = { user_id_collection : '${param.user_id}',
+		 
+	  const commentData = { user_id_collection : '${requestScope.collection_view[0].user_id}',
 					        user_id_comment : '${sessionScope.loginuser.user_id}',
 		    				user_collection_content : $("input#user_collection_content").val() }
 		
@@ -630,12 +632,14 @@
 		   <div id="infoinfo">           
 		      	  
 		        <span>성명:&nbsp;${sessionScope.loginuser.name}</span> 
-	        
+	          
+	          <c:if test="${sessionScope.loginuser.user_id != param.user_id}">
 				<span style= "width: 100px;"> 
 				  <label for="check_good" style="cursor: pointer;">
 				    <i class="far fa-thumbs-up goodi"></i><span class="goodi" style="font-weight: bolder">&nbsp;&nbsp;좋아요</span></label>
-					<input type="checkbox" id="check_good" name="check_good"/>
+				  <input type="checkbox" id="check_good" name="check_good"/>
 				</span>
+			  </c:if>		
 		   </div> 
 			
 			<div id="chart">   
@@ -663,12 +667,12 @@
 	        	  
 	        	<c:if test="${requestScope.collection_view[0].movie_title == null}"> 
 	        		<div style="font-size: 15px; margin: 15px 0 30px 730px; ">컬렉션을 담아 보세요!!</div> 
-	         	</c:if>   	        	 
-	        	<c:if test="${requestScope.collection_view[0].movie_title != null}"> 
-	        		<div style="font-size: 22px; font-weight: bold; margin: 10px 0 20px 680px; ">${requestScope.collection_view[0].movie_title}</div>
+	         	</c:if>   	        	  
+	        	<c:if test="${requestScope.collection_view[0].movie_title != null}">    
+	        		<div style="font-size: 22px; font-weight: bold; margin: 10px 0 20px 740px; ">${requestScope.collection_view[0].movie_title}</div>
 	         	</c:if>     
-	        </div> 	  
-		         
+	        </div> 	   
+		          
 		      	<hr style="margin: 0 30px 0 30px;">  	     
 		      	
 		    	<div style="font-size: 20px; font-weight: bold; margin: 20px 0 0 47px;">나의 컬렉션</div>	
