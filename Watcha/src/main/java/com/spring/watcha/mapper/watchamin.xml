@@ -253,11 +253,17 @@
 	
 	<!-- 검색했을때 처음 콘텐츠 내보내기 -->
 	<select id="showMovie1" resultType="com.spring.watcha.model.MovieVO" parameterType="HashMap">
-	
-		SELECT movie_id, movie_title, original_language, CONCAT('20', release_date) AS release_date, poster_path, rating_avg
-		FROM movie
-		WHERE LOWER(movie_title) LIKE '%' || LOWER(#{searchWord}) || '%'
-
+		
+		<![CDATA[
+			SELECT movie_id, movie_title, original_language, '20' || release_date AS release_date, poster_path, rating_avg
+			FROM (
+			  SELECT movie_id, movie_title, original_language, release_date, poster_path, rating_avg
+			  FROM movie
+			  WHERE LOWER(movie_title) LIKE '%' || LOWER(#{searchWord}) || '%'
+			)
+			WHERE ROWNUM <= 30
+			
+		]]>
 	</select>
 	
 	

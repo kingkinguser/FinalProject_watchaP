@@ -173,7 +173,16 @@
 
 	  	  ]
 	  	});	
-	    
+	}
+	
+	
+	function moreMovie() {
+		const searchText = $('input#lastSearchWord').val();
+		
+		const FrmMovieSearchDetail = document.FrmMovieSearchDetail;
+		FrmMovieSearchDetail.action="<%=ctxPath%>/goSearchDetail.action";     /* // action 인것 바꾸기 */ 
+		FrmMovieSearchDetail.method="get";
+		FrmMovieSearchDetail.submit();	
 	}
 	
 	
@@ -185,7 +194,7 @@
 
 	<div class="searchWord_header">
 		<div class="container">
-			<h5 class="h5" style="margin: 0;">"${lastSearchWord}"의 검색결과</h5>
+			<h5 class="h5" style="margin: 0;">"  <c:out value="${lastSearchWord.replace('<', ' ').replace('>', ' ')}" />  "의 검색결과</h5>  <!-- 스크립트 공격 방어 -->
 		</div>
 	</div>
 		
@@ -212,10 +221,16 @@
 			</nav>
 		</div>
 		
+		<div>
+			<span class="h5 mb-4">찾으신 영화가 없으면 영화 더보기를 눌러주세요</span>
+			<button type="button"  class="btn btn-outline-danger" style="float: right; bottom: 5px; position: relative;" onclick="moreMovie()">더보기</button>
+			<form id="FrmMovieSearchDetail" name="FrmMovieSearchDetail">
+				
+				<input type="hidden" id="lastSearchWord" name="lastSearchWord" value="${lastSearchWord.replace('<', ' ').replace('>', ' ')}" />
+			</form>
+		</div>
 		
-
 		<div class="container my-4" style="border-bottom: solid 1px #cccccc;">
-		
 			<div class="card-deck searchWord-carousel-card mb-1" style="border-bottom: 1px black;">
 			  
 			  <c:forEach var="showMovie" items="${requestScope.showMovie}" varStatus="status">
@@ -236,14 +251,6 @@
 			  </c:forEach>
 			</div>
 		</div>	 
-		
-		
-		<div class="mt-1">
-			didi
-		</div>
-		
-		
-		
 
 		
 	</div>

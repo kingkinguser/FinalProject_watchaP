@@ -368,5 +368,25 @@ public class WatchaController {
 	
 	
 	
+	// 검색하고 나서 더보기를 누를때 
+	@RequestMapping(value="/goSearchDetail.action")
+	public ModelAndView goSearchDetail(ModelAndView mav, HttpServletRequest request) {
+	
+		String lastSearchWord = request.getParameter("lastSearchWord");
+		
+		Map<String, String> paraMap = new HashMap<>();
+		
+		paraMap.put("searchWord",lastSearchWord);
+		
+		List<MovieVO> showMovie = service.showMovie(paraMap);
+		
+		mav.addObject("lastSearchWord",lastSearchWord);
+		mav.addObject("showMovie", showMovie);
+		mav.setViewName("/search/searchDetail.tiles");
+		return mav;
+	}
+		
+	
+	
 	
 }

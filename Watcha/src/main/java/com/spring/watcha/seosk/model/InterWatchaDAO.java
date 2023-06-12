@@ -3,6 +3,7 @@ package com.spring.watcha.seosk.model;
 import java.util.*;
 
 import com.spring.watcha.model.GenreVO;
+import com.spring.watcha.model.MovieDiaryVO;
 import com.spring.watcha.model.MovieReviewVO;
 import com.spring.watcha.model.MovieVO;
 import com.spring.watcha.model.ReviewCommentVO;
@@ -19,6 +20,9 @@ public interface InterWatchaDAO {
 
 	// 한줄평 개수(로그인한 회원의 한줄평)
 	int reviewCount(String user_id);
+
+	// 무비다이어리 - 포토티켓List 가져오기
+	List<Map<String, String>> userPhotoTicket(String user_id);
 
 	// 검색하기 - 모든 종류의 장르 가져오기
 	List<GenreVO> genreInfo();
@@ -90,6 +94,18 @@ public interface InterWatchaDAO {
 	
 	// 별점평가 수정하기
 	int updateRating(Map<String, String> paraMap);
+	
+	// 해당 영화에 대한 평균별점, 별점개수 값 읽어오기
+	Map<String, String> getAvgRating(String movie_id);
+
+	// 변경된 평균별점 값 update(movie 테이블에서 update)
+	int updateAvgRating(Map<String, String> paraMap);
+	
+	// 포토티켓 등록하기
+	int registerPhoto(MovieDiaryVO diaryvo);
+	
+	// 무비다이어리List 가져오기
+	List<Map<String, String>> showMovieDiary(String user_id);
 
 
 }
