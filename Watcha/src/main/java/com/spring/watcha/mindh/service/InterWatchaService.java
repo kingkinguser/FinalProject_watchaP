@@ -58,6 +58,9 @@ public interface InterWatchaService {
 	// 각자의 컬렉션 가져오기 
 	List<MovieVO> findCollectionFinal(String user_id);
 
+	// 검색한 영화 정보 모두 가져오기 
+	List<MovieVO> showMovieAll(Map<String, String> paraMap);
+
 	
 
 

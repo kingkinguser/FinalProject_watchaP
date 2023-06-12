@@ -658,7 +658,7 @@ function StarRank() {
 		  <c:forEach var="finduser" items="${requestScope.finduser}" varStatus="status">
 			   <c:set var="mergedCollectionIndex" value="${status.index}" />
 			      <form id="form${mergedCollectionIndex}" action="<%= ctxPath%>/view/user_collection.action" method="post">
-			        <input type="hidden" name="user_id" value="${finduser.user_id}">
+			        <input type="hidden" name="user_id_collection" value="${finduser.user_id}">
 			        <a href="#" title="" class="Main-a" onclick="event.preventDefault(); document.getElementById('form${mergedCollectionIndex}').submit()">
 					
 						  <div class="Main-card4">

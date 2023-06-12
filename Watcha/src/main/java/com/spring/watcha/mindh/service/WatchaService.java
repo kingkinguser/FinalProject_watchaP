@@ -161,6 +161,13 @@ public class WatchaService implements InterWatchaService {
 	    return findCollectionFinal;
 	}
 
+	// 검색한 영화 정보 모두 가져오기 
+	@Override
+	public List<MovieVO> showMovieAll(Map<String, String> paraMap) {
+		List<MovieVO> showMovieAll = dao.showMovieAll(paraMap);
+	    return showMovieAll;
+	}
+
 	
 
 
