@@ -401,7 +401,12 @@ public class WatchaController {
 		System.out.println(lenShow);
 		System.out.println(lastSearchWord);
 		
-		if(start != null) {
+		if(lenShow != null) {
+			
+
+			System.out.println(start);
+			System.out.println(lenShow);
+			System.out.println(lastSearchWord);
 			
 			Map<String, String> paraMap = new HashMap<>();
 			
@@ -444,8 +449,13 @@ public class WatchaController {
 		    return json;
 			
 		}
+		else {		
+			System.out.println("dsgjkngkjsnagd");
+			return "redirect:/search/searchDetail?lastSearchWord={lastSearchWord}";
+			// /WEB-INF/views/test/test_insert.jsp 페이지를 만들어야 한다.	
+		}
 		
-		return lastSearchWord;
+		
 		
 	}
 	
