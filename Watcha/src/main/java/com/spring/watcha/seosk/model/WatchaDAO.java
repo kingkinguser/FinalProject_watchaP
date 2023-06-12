@@ -9,6 +9,7 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.spring.watcha.model.GenreVO;
+import com.spring.watcha.model.MovieDiaryVO;
 import com.spring.watcha.model.MovieReviewVO;
 import com.spring.watcha.model.MovieVO;
 import com.spring.watcha.model.ReviewCommentVO;
@@ -38,6 +39,13 @@ public class WatchaDAO implements InterWatchaDAO {
 	public int reviewCount(String user_id) {
 		int reviewCount = sqlsession.selectOne("watcha.reviewCount", user_id);
 		return reviewCount;
+	}
+
+	// 무비다이어리 - 포토티켓List 가져오기
+	@Override
+	public List<Map<String, String>> userPhotoTicket(String user_id) {
+		List<Map<String, String>> userPhotoTicketList = sqlsession.selectList("watcha.userPhotoTicket", user_id);
+		return userPhotoTicketList;
 	}
 
 	// 검색하기 - 모든 종류의 장르 가져오기
@@ -233,9 +241,38 @@ public class WatchaDAO implements InterWatchaDAO {
 	}
 	
 	// 별점평가 수정하기
+	@Override
 	public int updateRating(Map<String, String> paraMap) {
 		int n = sqlsession.update("watcha.updateRating", paraMap);
 		return n;
+	}
+
+	// 해당 영화에 대한 평균별점, 별점개수 값 읽어오기
+	@Override
+	public Map<String, String> getAvgRating(String movie_id) {
+		Map<String, String> ratingInfo = sqlsession.selectOne("watcha.getAvgRating", movie_id); 
+		return ratingInfo;
+	}
+
+	// 변경된 평균별점 값 update(movie 테이블에서 update)
+	@Override
+	public int updateAvgRating(Map<String, String> paraMap) {
+		int n = sqlsession.update("watcha.updateAvgRating", paraMap); 
+		return n;
+	}
+
+	// 포토티켓 등록하기
+	@Override
+	public int registerPhoto(MovieDiaryVO diaryvo) {
+		int n = sqlsession.update("watcha.registerPhoto", diaryvo);
+		return n;
+	}
+
+	// 무비다이어리List 가져오기
+	@Override
+	public List<Map<String, String>> showMovieDiary(String user_id) {
+		List<Map<String, String>> movieDiaryList = sqlsession.selectList("watcha.showMovieDiary", user_id);
+		return movieDiaryList;
 	}
 
 }

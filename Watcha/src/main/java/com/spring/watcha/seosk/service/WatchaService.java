@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.spring.watcha.model.GenreVO;
+import com.spring.watcha.model.MovieDiaryVO;
 import com.spring.watcha.model.MovieReviewVO;
 import com.spring.watcha.model.MovieVO;
 import com.spring.watcha.model.ReviewCommentVO;
@@ -42,6 +43,13 @@ public class WatchaService implements InterWatchaService {
 	public int reviewCount(String user_id) {
 		int reviewCount = dao.reviewCount(user_id);
 		return reviewCount;
+	}
+	
+	// 무비다이어리 - 포토티켓List 가져오기
+	@Override
+	public List<Map<String, String>> userPhotoTicket(String user_id) {
+		List<Map<String, String>> userPhotoTicketList = dao.userPhotoTicket(user_id);
+		return userPhotoTicketList;
 	}
 
 	// 검색하기 - 모든 종류의 장르 가져오기
@@ -280,9 +288,38 @@ public class WatchaService implements InterWatchaService {
 	}
 
 	// 별점평가 수정하기
+	@Override
+	@Transactional(propagation=Propagation.REQUIRED, isolation=Isolation.READ_COMMITTED, rollbackFor= {Throwable.class})
 	public int updateRating(Map<String, String> paraMap) {
-		int n = dao.updateRating(paraMap);
+
+		int n=0, result=0; 
+		n = dao.updateRating(paraMap); // 회원의 별점평가 수정(star_rating 테이블에서 update)
+		
+		Map<String, String> ratingInfo = null;
+		if(n == 1) {
+			ratingInfo = dao.getAvgRating(paraMap.get("movie_id")); // 해당 영화에 대한 평균별점, 별점개수 값 읽어오기
+		}
+		if(ratingInfo != null) {
+			paraMap.put("rating_avg", ratingInfo.get("rating_avg"));
+			paraMap.put("rating_count", ratingInfo.get("rating_count"));
+			result = dao.updateAvgRating(paraMap); // 변경된 평균별점 값 update(movie 테이블에서 update)
+		}
+		
+		return result;
+	}
+
+	// 포토티켓 등록하기
+	@Override
+	public int registerPhoto(MovieDiaryVO diaryvo) {
+		int n = dao.registerPhoto(diaryvo);
 		return n;
+	}
+
+	// 무비다이어리List 가져오기
+	@Override
+	public List<Map<String, String>> showMovieDiary(String user_id) {
+		List<Map<String, String>> movieDiaryList = dao.showMovieDiary(user_id);
+		return movieDiaryList;
 	}
 
 }
