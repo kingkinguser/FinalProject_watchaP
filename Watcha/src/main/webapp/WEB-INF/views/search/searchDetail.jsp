@@ -89,6 +89,8 @@
 		$("span#totalMovieCount").hide();
 		$("span#countMovie").hide();
 		
+		console.log("dnsfjkdsn");
+		
 		displayMovie(1);
 		
 		
@@ -116,7 +118,7 @@
 	
 	// display 할  HIT상품 정보를 추가 요청하기(Ajax 로 처리함)
 	function displayMovie(start) {     
-				
+						
 		$.ajax({
 			url:"<%= ctxPath%>/goSearchDetail.action",
 			type:"get",
@@ -126,6 +128,8 @@
 			dataType:"json",
 			async:true,			
 			success:function(json) {
+				
+				console.log("dsgjn");
 				
 				let html = "";
 				
