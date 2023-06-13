@@ -405,10 +405,10 @@ function goEdit() {
           <input type="file" class="display-none">
           <div class="modify-img-edge">
             <div class="modify-img-radius">
-              <c:if test="${not empty requestScope.userInfo.profile_image}">
-  			    <img id="img_profile" src="<%= ctxPath%>/resources/images/${requestScope.userInfo.profile_image}"/>
+              <c:if test="${not empty sessionScope.loginuser.profile_image}">
+  			    <img id="img_profile" src="<%= ctxPath%>/resources/images/${sessionScope.loginuser.profile_image}"/>
 			  </c:if>
-			  <c:if test="${empty requestScope.userInfo.profile_image}">
+			  <c:if test="${empty sessionScope.loginuser.profile_image}">
   			    <img id="img_profile" src="<%= ctxPath%>/resources/images/프로필없음.jpg" class="modify-img e18xnnz0"/>
   			    <!-- <img src="https://an2-img.amz.wtchn.net/image/v2/fI_WvAQSvffohcgztgGKkg.jpg?jwt=ZXlKaGJHY2lPaUpJVXpJMU5pSjkuZXlKdmNIUnpJanBiSW1SZk16QXdlRE13TUNKZExDSndJam9pTDNZeUwzTjBiM0psTDNWelpYSXZNbTEzZG1jeVRGQXhaM0ZOWVM5d2NtOW1hV3hsTHpFMk9EWXhNalF6TmpFeU56Z3lNakEyTkRnaWZRLmNnWVljemNrV0pERFRXcXpXb0VRUmFITmJvWjdGNWVWUW5zQVBsT2UtZlU"
               	class="modify-img e18xnnz0"> -->

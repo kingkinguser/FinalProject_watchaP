@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
 import com.spring.watcha.model.ActorVO;
 import com.spring.watcha.model.GenreVO;
@@ -95,6 +95,7 @@ public class WatchaController {
 		Map<String, String> paraMap = new HashMap<>();
 		
 		paraMap.put("searchWord",searchWord);
+		paraMap.put("lastSearchWord",searchWord);
 		
 		String[] searchWords = service.goSearch(request, paraMap);
 		 
@@ -120,9 +121,11 @@ public class WatchaController {
 	    // 처음에 콘텐츠를 검색하는 것이므로 영화를 보여준다.
 	    List<MovieVO> showMovie = service.showMovie(paraMap);
 	    
+	    // 총 개수를 나타내주자 
+	    int total_count = service.total_count(paraMap);
 	    
 	    
-		
+		mav.addObject("total_count", total_count);
 		mav.addObject("recentSearchWords", recentSearchWordsString);
 		mav.addObject("lastSearchWord", lastSearchWord);
 		mav.addObject("showMovie", showMovie);
@@ -165,12 +168,10 @@ public class WatchaController {
 	
 	
 
-	@RequestMapping(value="/view/main.action", method = RequestMethod.GET )
+	@RequestMapping(value="/view/main.action")
 	public ModelAndView main(ModelAndView mav, HttpServletRequest request) {
 		
 		HttpSession session = request.getSession();
-		
-		String needLogin = (String) session.getAttribute("needLogin");
 	    
 	    String[] searchWordsArray = (String[]) session.getAttribute("searchWords");
  	    
@@ -327,7 +328,6 @@ public class WatchaController {
 	
 		}
 		
-		mav.addObject("needLogin",needLogin);
 
 		mav.addObject("login_userid",login_userid);
 		mav.addObject("login_username",login_username);
@@ -392,64 +392,123 @@ public class WatchaController {
 		
 	
 	// 더보기 페이지에서 10 개 이후 더보기 버튼을 눌렀을때 
-	@ResponseBody
-	@RequestMapping(value="/goSearchDetail.action")
-	public String showMoreMovie(HttpServletRequest request, RedirectAttributes redirectAttributes) {
 	
-		String start = request.getParameter("start");
-		String lenShow = request.getParameter("lenShow");
-		String lastSearchWord = request.getParameter("lastSearchWord");
-		
-		System.out.println(start);
-		System.out.println(lenShow);
-		System.out.println(lastSearchWord);
-		
-		if(start != null) {
-			
-			Map<String, String> paraMap = new HashMap<>();
-			
-			paraMap.put("start", start);
-			paraMap.put("lastSearchWord", lastSearchWord);	
-			
-			String end = String.valueOf(Integer.parseInt(start) + Integer.parseInt(lenShow) -1);  
-												 
-			paraMap.put("end", end);
-			
-			List<MovieVO> showMovieAll = service.showMovieAll(paraMap);
-			
-			JSONArray jsonArr = new JSONArray();
-			
-			if(showMovieAll.size() > 0) {
-				// DB 에서 조회해 온 결과물이 있을 경우
+	/*
+	 * @RequestMapping(value="/goSearchDetail.action") public String
+	 * goSearchDetail(HttpServletRequest request) {
+	 * 
+	 * String novalue = request.getParameter("novalue"); String lastSearchWord =
+	 * request.getParameter("lastSearchWord"); System.out.println(novalue);
+	 * if(!novalue.equals("0")) { System.out.println("dbsakjf"); String start =
+	 * request.getParameter("start"); String lenShow =
+	 * request.getParameter("lenShow");
+	 * 
+	 * 
+	 * System.out.println("");
+	 * 
+	 * Map<String, String> paraMap = new HashMap<>();
+	 * 
+	 * paraMap.put("start", start); paraMap.put("lastSearchWord", lastSearchWord);
+	 * 
+	 * String end = String.valueOf(Integer.parseInt(start) +
+	 * Integer.parseInt(lenShow) -1);
+	 * 
+	 * paraMap.put("end", end);
+	 * 
+	 * List<MovieVO> showMovieAll = service.showMovieAll(paraMap);
+	 * 
+	 * JSONArray jsonArr = new JSONArray();
+	 * 
+	 * if(showMovieAll.size() > 0) { // DB 에서 조회해 온 결과물이 있을 경우
+	 * 
+	 * for(MovieVO Showvo : showMovieAll) {
+	 * 
+	 * JSONObject jsonObj = new JSONObject(); jsonObj.put("movie_id",
+	 * Showvo.getMovie_id()); jsonObj.put("movie_title", Showvo.getMovie_title());
+	 * jsonObj.put("original_language", Showvo.getOriginal_language());
+	 * jsonObj.put("release_date", Showvo.getRelease_date());
+	 * jsonObj.put("poster_path", Showvo.getPoster_path());
+	 * jsonObj.put("rating_avg", Showvo.getRating_avg());
+	 * 
+	 * 
+	 * jsonArr.put(jsonObj);
+	 * 
+	 * 
+	 * }// end of for
+	 * 
+	 * }
+	 * 
+	 * 
+	 * 
+	 * String json = jsonArr.toString(); return json; }
+	 * 
+	 * else { novalue = "1"; return "search/searchDetail.tiles"; }
+	 * 
+	 * 
+	 * }
+	 */
 	
-				for(MovieVO Showvo : showMovieAll) {
-					
-					JSONObject jsonObj = new JSONObject();  			
-					jsonObj.put("movie_id", Showvo.getMovie_id());     		
-					jsonObj.put("movie_title", Showvo.getMovie_title());   
-					jsonObj.put("original_language", Showvo.getOriginal_language());   
-					jsonObj.put("release_date", Showvo.getRelease_date());   
-					jsonObj.put("poster_path", Showvo.getPoster_path());   
-					jsonObj.put("rating_avg", Showvo.getRating_avg());   
-					
-					
-		            jsonArr.put(jsonObj);  
-		            
-					
-				}// end of for
-					
-			}
-			
-			
-			String json = jsonArr.toString();
-			System.out.println(json);
-			
-		    return json;
-			
-		}
-		
-		return lastSearchWord;
-		
+	@RequestMapping(value = "/goSearchDetail.action")
+	public ModelAndView goSearchDetail(HttpServletRequest request) {
+	    String novalue = request.getParameter("novalue");
+	    String lastSearchWord = request.getParameter("lastSearchWord");
+	    
+	    if (!novalue.equals("0")) {
+	        // Process for Ajax request
+	        String start = request.getParameter("start");
+	        String lenShow = request.getParameter("lenShow");
+
+	        System.out.println(start);
+	        System.out.println(lastSearchWord);
+	        Map<String, String> paraMap = new HashMap<>();
+	        paraMap.put("start", start);
+	        paraMap.put("lastSearchWord", lastSearchWord);
+
+	        String end = String.valueOf(Integer.parseInt(start) + Integer.parseInt(lenShow) - 1);
+	        System.out.println(end+"end 부분");	        
+	        paraMap.put("end", end);	     
+	        
+	        int total_count = service.total_count(paraMap);   // 총 개수를 나타내자 
+	        List<MovieVO> showMovieAll = service.showMovieAll(paraMap);  // 영화 가져오자 
+
+	        JSONArray jsonArr = new JSONArray();
+
+	        if (showMovieAll.size() > 0) {
+	            // DB에서 조회한 결과물이 있을 경우
+	            for (MovieVO Showvo : showMovieAll) {
+	                JSONObject jsonObj = new JSONObject();
+	                jsonObj.put("movie_id", Showvo.getMovie_id());
+	                jsonObj.put("movie_title", Showvo.getMovie_title());
+	                jsonObj.put("release_date", Showvo.getRelease_date());
+	                jsonObj.put("poster_path", Showvo.getPoster_path());
+	                jsonObj.put("rating_avg", Showvo.getRating_avg());
+
+	                jsonArr.put(jsonObj);
+	            }
+	        }
+
+	        JSONObject jsonRes = new JSONObject();
+	        jsonRes.put("total_count", total_count);
+	        jsonRes.put("movie_list", jsonArr);
+
+	        String json = jsonRes.toString();
+	        return new ModelAndView(new MappingJackson2JsonView(), Collections.singletonMap("jsonResponse", json));
+	    
+	        /*
+	        	이 특정 사례에서 MappingJackson2JsonView는 JSON 응답을 렌더링할 수 있는 Spring MVC에서 제공하는 보기 구현입니다.
+	        	 이 보기로 ModelAndView를 생성하면 응답을 JSON으로 렌더링해야 함을 나타냅니다.
+
+				Collections.singletonMap("jsonResponse", json) 부분은 모델에서 단일 항목을 설정하는 데 사용됩니다. 
+				"jsonResponse" 키는 응답에 포함하려는 JSON 문자열인 json 값과 연결됩니다.
+				
+				이 ModelAndView 개체를 반환함으로써 Spring MVC 프레임워크는 
+				구성된 MappingJackson2JsonView를 사용하여 지정된 JSON 데이터로 응답을 렌더링합니다.	     
+	        */
+	    } else {
+	    	ModelAndView mav = new ModelAndView("search/searchDetail.tiles");
+	        mav.addObject("lastSearchWord", lastSearchWord);
+	        return mav;
+	    }
 	}
 	
 	

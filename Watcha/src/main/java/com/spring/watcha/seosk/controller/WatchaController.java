@@ -35,65 +35,71 @@ public class WatchaController {
 	// === 마이왓챠 페이지 요청(view단 페이지) === //
 	@RequestMapping(value="/myWatcha.action")
 	public String myWatcha(HttpServletRequest request) {
-		/*
+
 		HttpSession session = request.getSession();
 		MemberVO loginuser = (MemberVO) session.getAttribute("loginuser");
-		String user_id = loginuser.getUser_id();
-		*/
-		
-		String user_id = "qwer1234";
 
-		// *** 1. 마이왓챠 기본정보
-		// 최근 평가한 영화 5개(프로필배경)
-		List<MovieVO> ratingFiveList = service.ratingFive(user_id);
-
-		// 평균 별점, 평가한 영화개수
-		Map<String, String> userInfo = service.userInfo(user_id);
-		
-		// 한줄평 개수
-		int reviewCount = service.reviewCount(user_id);
-		
-		// *** 2. 평가한 영화 - 평가한 영화 전체
-		List<Map<String, String>> ratingMoviesList = service.ratingMovies(user_id);
-		
-		// *** 3. 무비다이어리 - 포토티켓List 가져오기
-		List<Map<String, String>> userPhotoTicketList = service.userPhotoTicket(user_id);
-		
-		// *** 4. 검색하기 - 모든 종류의 장르 가져오기
-		List<GenreVO> genreList = service.genreInfo();
-
-		// 추후 수정예정
-		// 로그인한 회원이 해당 영화에 대해 작성한 한줄평 유무 및 한줄평 정보
-		Map<String, String> paraMap = new HashMap<>();
-		paraMap.put("user_id", user_id);
-		paraMap.put("movie_id", "290859"); // 수정예정 - 페이지 합치기 전 movie_id 만 넘겨준 것
-		MovieReviewVO reviewInfo = service.reviewInfo(paraMap);
-
-		request.setAttribute("ratingFiveList", ratingFiveList);
-		request.setAttribute("userInfo", userInfo);
-		request.setAttribute("reviewCount", reviewCount);
-		request.setAttribute("ratingMoviesList", ratingMoviesList);
-		request.setAttribute("userPhotoTicketList", userPhotoTicketList);
-		request.setAttribute("photoTicketCount", userPhotoTicketList.size());
-		request.setAttribute("genreList", genreList);
-
-		request.setAttribute("reviewInfo", reviewInfo);
-		
-		return "myWatcha/myWatcha.tiles";
-		// /WEB-INF/views/myWatcha/myWatcha.jsp
+		if(loginuser != null) {
+			String user_id = loginuser.getUser_id();
+	
+			// *** 1. 마이왓챠 기본정보
+			// 최근 평가한 영화 5개(프로필배경)
+			List<MovieVO> ratingFiveList = service.ratingFive(user_id);
+	
+			// 평균 별점, 평가한 영화개수
+			Map<String, String> userInfo = service.userInfo(user_id);
+			
+			// 한줄평 개수
+			int reviewCount = service.reviewCount(user_id);
+			
+			// *** 2. 평가한 영화 - 평가한 영화 전체
+			List<Map<String, String>> ratingMoviesList = service.ratingMovies(user_id);
+			
+			// *** 3. 무비다이어리 - 포토티켓List 가져오기
+			List<Map<String, String>> userPhotoTicketList = service.userPhotoTicket(user_id);
+			
+			// *** 4. 검색하기 - 모든 종류의 장르 가져오기
+			List<GenreVO> genreList = service.genreInfo();
+	
+			// 추후 수정예정
+			// 로그인한 회원이 해당 영화에 대해 작성한 한줄평 유무 및 한줄평 정보
+			Map<String, String> paraMap = new HashMap<>();
+			paraMap.put("user_id", user_id);
+			paraMap.put("movie_id", "290859"); // 수정예정 - 페이지 합치기 전 movie_id 만 넘겨준 것
+			
+			Map<String, String> reviewInfo = null;
+			if(user_id != null) {
+				reviewInfo = service.reviewInfo(paraMap);
+			}
+	
+			request.setAttribute("ratingFiveList", ratingFiveList);
+			request.setAttribute("userInfo", userInfo);
+			request.setAttribute("reviewCount", reviewCount);
+			request.setAttribute("ratingMoviesList", ratingMoviesList);
+			request.setAttribute("userPhotoTicketList", userPhotoTicketList);
+			request.setAttribute("photoTicketCount", userPhotoTicketList.size());
+			request.setAttribute("genreList", genreList);
+	
+			request.setAttribute("reviewInfo", reviewInfo);
+			
+			return "myWatcha/myWatcha.tiles";
+			// /WEB-INF/views/myWatcha/myWatcha.jsp
+		}
+		else { // 링크 클릭이 아니라 잘못된 URL 을 입력한 경우
+			request.setAttribute("message", "잘못된 접근입니다.");
+			request.setAttribute("loc", "javascript:history.back()");
+			return "msg"; // /WEB-INF/views/msg.jsp
+		}
 	}
 
 	// === 내 한줄평 - 한줄평 8개씩 페이징 처리(Ajax) === //
 	@ResponseBody
 	@RequestMapping(value="/myWatcha/myReviewPaging.action", produces="text/plain;charset=UTF-8")
 	public String myReviewPaging(HttpServletRequest request) {
-		/*
+
 		HttpSession session = request.getSession();
 		MemberVO loginuser = (MemberVO) session.getAttribute("loginuser");
 		String user_id = loginuser.getUser_id();
-		*/
-		
-		String user_id = "qwer1234";
 
 		String str_currentShowPageNo = request.getParameter("currentShowPageNo");
 		
@@ -147,13 +153,10 @@ public class WatchaController {
 	@ResponseBody
 	@RequestMapping(value="/myWatcha/showReviewPageBar.action", produces="text/plain;charset=UTF-8")
 	public String showReviewPageBar(HttpServletRequest request) {
-		/*
+
 		HttpSession session = request.getSession();
 		MemberVO loginuser = (MemberVO) session.getAttribute("loginuser");
 		String user_id = loginuser.getUser_id();
-		*/
-		
-		String user_id = "qwer1234";
 
 		// *** 페이징 처리 - 현재 페이지
 		String str_currentShowPageNo = request.getParameter("currentShowPageNo");
@@ -184,35 +187,37 @@ public class WatchaController {
 	}	
 	
 	// === 평가한 영화들 전체보기 페이지 요청(view단 페이지) === //
-	@RequestMapping(value="/rateMovies.action")
+	@RequestMapping(value="/myWatcha/rateMovies.action")
 	public String rateMovies(HttpServletRequest request) {
-		/*
+
 		HttpSession session = request.getSession();
 		MemberVO loginuser = (MemberVO) session.getAttribute("loginuser");
-		String user_id = loginuser.getUser_id();
-		*/
-		
-		String user_id = "qwer1234";
 
-		// 회원정보, 평균 별점, 평가한 영화개수, 한줄평 개수, 컬렉션 개수
-		Map<String, String> userInfo = service.userInfo(user_id);
-		request.setAttribute("userInfo", userInfo);
-		
-		return "myWatcha/rateMovies.tiles";
-		// /WEB-INF/views/myWatcha/rateMovies.jsp
+		if(loginuser != null) {
+			String user_id = loginuser.getUser_id();
+
+			// 회원정보, 평균 별점, 평가한 영화개수, 한줄평 개수, 컬렉션 개수
+			Map<String, String> userInfo = service.userInfo(user_id);
+			request.setAttribute("userInfo", userInfo);
+			
+			return "myWatcha/rateMovies.tiles";
+			// /WEB-INF/views/myWatcha/rateMovies.jsp
+		}
+		else { // 링크 클릭이 아니라 잘못된 URL 을 입력한 경우
+			request.setAttribute("message", "잘못된 접근입니다.");
+			request.setAttribute("loc", "javascript:history.back()");
+			return "msg"; // /WEB-INF/views/msg.jsp
+		}
 	}
 	
 	// === 평가한 영화 전체 - 10개씩 페이징 처리(Ajax) === //
 	@ResponseBody
 	@RequestMapping(value="/myWatcha/viewRateMovies.action", produces="text/plain;charset=UTF-8")
 	public String viewRateMovies(HttpServletRequest request) {
-		/*
+
 		HttpSession session = request.getSession();
 		MemberVO loginuser = (MemberVO) session.getAttribute("loginuser");
 		String user_id = loginuser.getUser_id();
-		*/
-		
-		String user_id = "qwer1234";
 
 		// *** 페이징 처리 - 현재 페이지
 		String str_currentShowPageNo = request.getParameter("currentShowPageNo");
@@ -275,14 +280,15 @@ public class WatchaController {
 	@ResponseBody
 	@RequestMapping(value="/movieReview.action", produces="text/plain;charset=UTF-8")
 	public String movieReview(HttpServletRequest request) {
-		/*
+
 		HttpSession session = request.getSession();
 		MemberVO loginuser = (MemberVO) session.getAttribute("loginuser");
-		String user_id = loginuser.getUser_id();
-		*/
-		
-		String user_id = "qwer1234";
 
+		String user_id = "";
+		if(loginuser != null) {
+			user_id = loginuser.getUser_id();
+		}
+		
 		String movie_id = request.getParameter("movie_id");
 		
 		Map<String, String> paraMap = new HashMap<>();
@@ -333,7 +339,7 @@ public class WatchaController {
 	    		jsonObj.put("number_of_comments", review.get("number_of_comments"));
 	    		jsonObj.put("user_id", review.get("user_id"));
 	    		jsonObj.put("profile_image", review.get("profile_image"));
-	    		jsonObj.put("nickname", review.get("nickname"));
+	    		jsonObj.put("name", review.get("name"));
 	    		jsonObj.put("rating", review.get("rating"));
 	    		jsonObj.put("like_review", review.get("like_review"));
 	    		
@@ -406,7 +412,7 @@ public class WatchaController {
 	    		jsonObj.put("review_id", comment.get("review_id"));
 	    		jsonObj.put("user_id", comment.get("user_id"));
 	    		jsonObj.put("profile_image", comment.get("profile_image"));
-	    		jsonObj.put("nickname", comment.get("nickname"));
+	    		jsonObj.put("name", comment.get("name"));
 	    		jsonObj.put("content", comment.get("content"));
 	    		jsonObj.put("comment_date", comment.get("comment_date"));
 	    		
@@ -471,13 +477,10 @@ public class WatchaController {
 	@ResponseBody
 	@RequestMapping(value="/reviewLike.action", produces="text/plain;charset=UTF-8", method= {RequestMethod.POST})
 	public String reviewLike(HttpServletRequest request) {
-		/*
+		
 		HttpSession session = request.getSession();
 		MemberVO loginuser = (MemberVO) session.getAttribute("loginuser");
 		String user_id = loginuser.getUser_id();
-		*/
-		
-		String user_id = "qwer1234";
 
 		String review_id = request.getParameter("review_id");
 		String like_review = request.getParameter("like_review");
@@ -543,13 +546,10 @@ public class WatchaController {
 	@ResponseBody
 	@RequestMapping(value="/myWatcha/searchResult.action", produces="text/plain;charset=UTF-8")
 	public String viewSearch(HttpServletRequest request) {
-		/*
+
 		HttpSession session = request.getSession();
 		MemberVO loginuser = (MemberVO) session.getAttribute("loginuser");
 		String user_id = loginuser.getUser_id();
-		*/
-		
-		String user_id = "qwer1234";
 
 		String searchWord = request.getParameter("searchWord");
 		String str_genre_id = request.getParameter("str_genre_id");
@@ -598,36 +598,40 @@ public class WatchaController {
 	// === 검색상세 페이지 요청(view단 페이지) === //
 	@RequestMapping(value="/myWatcha/searchDetail.action")
 	public ModelAndView searchDetail(ModelAndView mav, HttpServletRequest request) {
-		/*
+
 		HttpSession session = request.getSession();
 		MemberVO loginuser = (MemberVO) session.getAttribute("loginuser");
-		String user_id = loginuser.getUser_id();
-		*/
 		
-		String user_id = "qwer1234";
-
-		String movie_id = request.getParameter("movie_id");
-
-		Map<String, String> paraMap = new HashMap<>();
-		paraMap.put("user_id", user_id);
-		paraMap.put("movie_id", movie_id);
-		
-		if(movie_id != null) {
-			mav.setViewName("myWatcha/searchDetail.tiles"); // /WEB-INF/views/myWatcha/searchDetail.jsp
-
-			// 검색상세 - 영화정보(장르포함), 무비다이어리 가져오기
-			Map<String, String> searchDetail = service.searchDetail(paraMap);
+		if(loginuser != null) {
+			String user_id = loginuser.getUser_id();
+	
+			String movie_id = request.getParameter("movie_id");
+	
+			Map<String, String> paraMap = new HashMap<>();
+			paraMap.put("user_id", user_id);
+			paraMap.put("movie_id", movie_id);
 			
-			if(searchDetail != null && searchDetail.size() > 0) {
-				
-				// 해당 영화의 한줄평 및 한줄평에 달린 댓글 가져오기
-				MovieReviewVO searchReview = service.searchReview(paraMap);
-				if(searchReview != null) {
-					mav.addObject("searchReview", searchReview);
-				}
-				
-				mav.addObject("searchDetail", searchDetail);
+			if(movie_id != null) {
 				mav.setViewName("myWatcha/searchDetail.tiles"); // /WEB-INF/views/myWatcha/searchDetail.jsp
+	
+				// 검색상세 - 영화정보(장르포함), 무비다이어리 가져오기
+				Map<String, String> searchDetail = service.searchDetail(paraMap);
+				
+				if(searchDetail != null && searchDetail.size() > 0) {
+					
+					// 해당 영화의 한줄평 및 한줄평에 달린 댓글 가져오기
+					MovieReviewVO searchReview = service.searchReview(paraMap);
+					if(searchReview != null) {
+						mav.addObject("searchReview", searchReview);
+					}
+					mav.addObject("searchDetail", searchDetail);
+					mav.setViewName("myWatcha/searchDetail.tiles"); // /WEB-INF/views/myWatcha/searchDetail.jsp
+				}
+				else { // 링크 클릭이 아니라 잘못된 URL 을 입력한 경우
+					mav.addObject("message", "잘못된 접근입니다.");
+					mav.addObject("loc", "javascript:history.back()");
+					mav.setViewName("msg"); // /WEB-INF/views/msg.jsp
+				}
 			}
 			else { // 링크 클릭이 아니라 잘못된 URL 을 입력한 경우
 				mav.addObject("message", "잘못된 접근입니다.");
@@ -640,7 +644,30 @@ public class WatchaController {
 			mav.addObject("loc", "javascript:history.back()");
 			mav.setViewName("msg"); // /WEB-INF/views/msg.jsp
 		}
+			
 		return mav;
+	}
+
+	// === 별점평가 등록하기(Ajax) === //
+	@ResponseBody
+	@RequestMapping(value="/myWatcha/registerRating.action", produces="text/plain;charset=UTF-8", method= {RequestMethod.POST})
+	public String registerRating(HttpServletRequest request) {
+	
+		String movie_id = request.getParameter("movie_id");
+		String user_id = request.getParameter("user_id");
+		String rating = request.getParameter("rating");
+		
+		Map<String, String> paraMap = new HashMap<>();
+		paraMap.put("movie_id", movie_id);
+		paraMap.put("user_id", user_id);
+		paraMap.put("rating", rating);
+		
+		int n = service.registerRating(paraMap);
+		
+		JSONObject jsonObj = new JSONObject();
+		jsonObj.put("n", n);
+		
+		return jsonObj.toString();
 	}
 	
 	// === 별점평가 수정하기(Ajax) === //
@@ -707,15 +734,12 @@ public class WatchaController {
 
 	// === 무비다이어리 보여주기(Ajax) === //
 	@ResponseBody
-	@RequestMapping(value="/showMovieDiary.action", produces="text/plain;charset=UTF-8")
+	@RequestMapping(value="/myWatcha/showMovieDiary.action", produces="text/plain;charset=UTF-8")
 	public String showMovieDiary(HttpServletRequest request) {
-		/*
+
 		HttpSession session = request.getSession();
 		MemberVO loginuser = (MemberVO) session.getAttribute("loginuser");
 		String user_id = loginuser.getUser_id();
-		*/
-		
-		String user_id = "qwer1234";
 
 		// *** 무비다이어리List 가져오기
 	    List<Map<String, String>> movieDiaryList = service.showMovieDiary(user_id);
@@ -737,4 +761,36 @@ public class WatchaController {
 		return jsonArr.toString();
 	}
 	
+	
+	// === 무비다이어리(관람일자) 등록하기(Ajax) === //
+	@ResponseBody
+	@RequestMapping(value="/myWatcha/registerDiary.action", produces="text/plain;charset=UTF-8", method= {RequestMethod.POST})
+	public String registerDiary(HttpServletRequest request, MovieDiaryVO diaryvo) {
+
+		HttpSession session = request.getSession();
+		MemberVO loginuser = (MemberVO) session.getAttribute("loginuser");
+		String user_id = loginuser.getUser_id();
+		
+		diaryvo.setUser_id(user_id);
+		int n = service.registerDiary(diaryvo);
+		
+		JSONObject jsonObj = new JSONObject();
+		jsonObj.put("n", n);
+	    
+		return jsonObj.toString();
+	}
+	
+	// === 무비다이어리(관람일자) 수정하기(Ajax) === //
+	@ResponseBody
+	@RequestMapping(value="/myWatcha/updateDiary.action", produces="text/plain;charset=UTF-8", method= {RequestMethod.POST})
+	public String updateDiary(MovieDiaryVO diaryvo) {
+		
+		int n = service.updateDiary(diaryvo);
+		
+		JSONObject jsonObj = new JSONObject();
+		jsonObj.put("n", n);
+	    
+		return jsonObj.toString();
+	}
+
 }

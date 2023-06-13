@@ -81,7 +81,6 @@ label {cursor: pointer; margin: 0px 8px;}
 
 	// 평가한 영화 전체 보여주기
 	function viewRateMovies(currentShowPageNo){
-		console.log($("input:radio[name='order']").val());
 		$.ajax({
 			url:"<%= ctxPath%>/myWatcha/viewRateMovies.action",
 			data:{"currentShowPageNo":currentShowPageNo,
@@ -99,14 +98,16 @@ label {cursor: pointer; margin: 0px 8px;}
 					          +   '<div class="p-0 m-0 mx-auto" style="overflow: hidden; height: 280px; border: solid 1px #e6e6e6; border-radius: 2%;">'
                         	  +     '<img class="img-thumnail w-100" src="https://image.tmdb.org/t/p/w780/'+item.poster_path+'">'
 				        	  +   '</div>'
-			              	  +   '<div class="p-0 m-0 mt-2 px-2 text-center">';
+			              	  +   '<div class="p-0 m-0 mt-2 px-2 text-center">'
+				        	  +     '<a href="<%= ctxPath %>/myWatcha/searchDetail.action?movie_id='+item.movie_id+'" style="text-decoration: none; color: black;">';
 			            if(item.movie_title.length > 11){ // 영화제목이 11글자보다 큰 경우
-			            	html += '<p class="h6 card-title my-2"><span style="display:none;">'+item.movie_id+'</span>'+item.movie_title.substring(0, 12)+'...</p>';
+			            	html +=   '<p class="h6 card-title my-2"><span style="display:none;">'+item.movie_id+'</span>'+item.movie_title.substring(0, 12)+'...</p>';
 			            }
 			            else {
-			            	html += '<p class="h6 card-title my-2"><span style="display:none;">'+item.movie_id+'</span>'+item.movie_title+'</p>';
+			            	html +=   '<p class="h6 card-title my-2"><span style="display:none;">'+item.movie_id+'</span>'+item.movie_title+'</p>';
 			            }
-			            html += '</div>'
+			            html +=     '</a>'
+			            	  +   '</div>'
 			              	  +   '<div class="card-text text-center">'
 						      +     '<span style="color: #FDD346; padding: 0 10px;">'+item.rating+'</span>';
 			        	if(item.rating %1 != 0){ // 별점에 소수점 포함 (예: 3.5)
@@ -124,16 +125,21 @@ label {cursor: pointer; margin: 0px 8px;}
 			        	html +=   '</div>'
 			        		  + '</div>';
 					}); // end of $.each(json, function(index, item){})
-				}
-				if(currentShowPageNo == 1){
-					$("div#div_rateMovies").hide();
-					$("div#div_rateMovies").html(html);
-					$("div#div_rateMovies").fadeIn('30');
-				}
+
+					if(currentShowPageNo == 1){
+						$("div#div_rateMovies").hide();
+						$("div#div_rateMovies").html(html);
+						$("div#div_rateMovies").fadeIn('30');
+					}
+					else {
+						$("div#div_rateMovies").hide();
+						$("div#div_rateMovies").append(html);
+						$("div#div_rateMovies").fadeIn('30');
+					}
+				} // end of if(평가한 영화가 존재하는 경우)
 				else {
-					$("div#div_rateMovies").hide();
-					$("div#div_rateMovies").append(html);
-					$("div#div_rateMovies").fadeIn('30');
+			          html = '<p class="h5 text-center my-3">평가한 영화가 없어요.</p>';
+			          $("div#div_nav_content").html(html);
 				}
 			},
 			error: function(request, status, error){

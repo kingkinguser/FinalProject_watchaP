@@ -50,7 +50,7 @@
 		select diary_id, M.movie_id, movie_title, poster_path, photo_front, photo_back
 		from movie_diary D join movie M
 		on D.movie_id = M.movie_id
-		where user_id = #{user_id}
+		where user_id = #{user_id} and photo_front is not null
 	</select>
 
 	<!-- 검색하기 - 모든 종류의 장르 가져오기 -->
@@ -153,7 +153,7 @@
 	        on R.user_id = M.user_id
 	    ) A join star_rating B
 	    on A.movie_id = B.movie_id
-	    where A.movie_id = #{movie_id}
+	    where A.movie_id = #{movie_id} and B.user_id = A.user_id
 	  <if test='startRno != "" and endRno != ""'>
 	    and rno between #{startRno} and #{endRno}
 	  </if>	    
@@ -173,13 +173,13 @@
 	    where movie_id = #{movie_id}
 	</select>
 
-	<!-- 영한줄평 - 해당 한줄평에 달린 댓글List 가져오기 -->
+	<!-- 한줄평 - 해당 한줄평에 달린 댓글List 가져오기 -->
 	<resultMap type="HashMap" id="commentList_Map">
 		<result property="comment_id" 	 	  column="comment_id" 		  javaType="String"/>
 		<result property="review_id" 	 	  column="review_id" 		  javaType="String"/>
 		<result property="user_id" 			  column="user_id" 			  javaType="String"/>
 		<result property="profile_image" 	  column="profile_image" 	  javaType="String"/>
-		<result property="name" 		  column="name" 		  javaType="String"/>
+		<result property="name" 		  	  column="name" 		  	  javaType="String"/>
 		<result property="content" 	  		  column="content" 	  		  javaType="String"/>
 		<result property="comment_date" 	  column="comment_date" 	  javaType="String"/>
 	</resultMap>
@@ -191,11 +191,27 @@
 	    order by C.comment_date desc
 	</select>
 	
-	<!-- 한줄평 - 로그인한 회원이 해당 영화에 대해 작성한 한줄평 유무 및 한줄평 정보 -->
-	<select id="reviewInfo" parameterType="HashMap" resultType="com.spring.watcha.model.MovieReviewVO">
-	    select review_id, review_content, spoiler_status
-	    from movie_review
-	    where movie_id = #{movie_id} and user_id = #{user_id}
+	<!-- 한줄평 - 로그인한 회원이 해당 영화에 대해 작성한 한줄평 정보 및 별점평가 점수 -->
+	<resultMap type="HashMap" id="reviewInfo_Map">
+		<result property="review_id" 	 	  column="review_id" 		  javaType="String"/>
+		<result property="review_content" 	  column="review_content" 	  javaType="String"/>
+		<result property="spoiler_status" 	  column="spoiler_status" 	  javaType="String"/>
+		<result property="rating" 		  	  column="rating" 		  	  javaType="String"/>
+	</resultMap>
+	<select id="reviewInfo" parameterType="HashMap" resultMap="reviewInfo_Map">
+	    select A.review_id, A.review_content, A.spoiler_status, B.rating
+	    from
+	    (
+	        select movie_id, user_id, review_id, review_content, spoiler_status
+	        from movie_review
+		    where movie_id = #{movie_id} and user_id = #{user_id}
+	    )A full outer join 
+	    (
+	        select movie_id, user_id, rating
+	        from star_rating
+		    where movie_id = #{movie_id} and user_id = #{user_id}
+	    )B
+	    on A.movie_id = B.movie_id
 	</select>
 
 	<!-- 한줄평 추가 -->
@@ -274,7 +290,7 @@
 	            , (select to_char(watching_date, 'yyyy-mm-dd') from movie_diary where movie_id = M.movie_id) AS watching_date
 	        from movie M join star_rating R
 	        on M.movie_id = R.movie_id
-	        where R.user_id = 'qwer1234'
+	        where R.user_id = #{user_id}
 	    ) A join movie_genre G
 	    on A.movie_id = G.movie_id
 	    where lower(A.movie_title) like '%'|| lower(#{searchWord}) ||'%'
@@ -342,6 +358,12 @@
 	    where movie_id = #{movie_id} and user_id = #{user_id} 
 	</select>
 	
+	<!-- 별점평가 등록하기 -->
+	<insert id="registerRating" parameterType="HashMap">
+    	insert into star_rating(movie_id, user_id, rating, rating_date) 
+    	values(#{movie_id}, #{user_id}, #{rating}, sysdate)
+	</insert>
+	
 	<!-- 별점평가 수정하기 -->
 	<update id="updateRating" parameterType="HashMap">
 		update star_rating set rating = #{rating}
@@ -377,11 +399,27 @@
 		<result property="movie_title"   column="movie_title" 	javaType="String"/>
 		<result property="poster_path" 	 column="poster_path" 	javaType="String"/>
 		<result property="watching_date" column="watching_date" javaType="String"/>
+		<result property="photo_front" 	 column="photo_front" javaType="String"/>
+		<result property="phtoto_back" 	 column="phtoto_back" javaType="String"/>
 	</resultMap>
 	<select id="showMovieDiary" parameterType="String" resultMap="showMovieDiary_Map">
-		select diary_id, M.movie_id, movie_title, poster_path, watching_date
+		select diary_id, M.movie_id, movie_title, poster_path, watching_date, photo_front, photo_back
 		from movie_diary D join movie M
 		on D.movie_id = M.movie_id
 		where user_id = #{user_id}
 	</select>
+	
+	<!-- 무비다이어리(관람일자) 등록하기 -->
+	<insert id="registerDiary" parameterType="com.spring.watcha.model.MovieDiaryVO">
+		insert into movie_diary(diary_id, movie_id, user_id, watching_date)
+		values(diary_seq.nextval, #{movie_id}, #{user_id}, #{watching_date})
+	</insert>
+	
+	<!-- 무비다이어리(관람일자) 수정하기 -->
+	<insert id="updateDiary" parameterType="com.spring.watcha.model.MovieDiaryVO">
+		update movie_diary set watching_date = #{watching_date}
+		where diary_id = #{diary_id}	
+	</insert>
+	
+	
 </mapper>

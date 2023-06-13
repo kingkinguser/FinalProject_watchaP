@@ -168,6 +168,13 @@ public class WatchaService implements InterWatchaService {
 	    return showMovieAll;
 	}
 
+	// 검색한 영화 총 몇개인지 가져오기 
+	@Override
+	public int total_count(Map<String, String> paraMap) {
+		int total_count = dao.total_count(paraMap);
+		return total_count;
+	}
+
 	
 
 

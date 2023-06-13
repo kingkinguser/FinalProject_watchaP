@@ -543,17 +543,14 @@
 		///////////////////////////////////////////////////
 		
 
-
 		let idbool = false; // 아이디 중복체크 결과
 		let emailbool = false; // 이메일 중복체크 결과
 		
-		let urlParams = new URLSearchParams(window.location.search);
-		let needLogin = urlParams.get('needLogin');
-		
 		// 로그인이 필요할 시, 로그인 모달 띄우기
-		if(needLogin) {
+		if("${sessionScope.needLogin}" == "true") {
 		    $("#loginModal").css("display","flex");
 		    $("html").addClass("disableBodyScrolling");
+		    <% session.removeAttribute("needLogin"); %>
 		};
 		
 		
@@ -1084,14 +1081,11 @@
 	
 </script>
 
-
-
 </head>
 <body>
 	<div class="d-none d-md-block fixed-top"  style="background-color: white;">
 		<div class="container ">
 		
-		<input type="text" id="needLogin" value="${requestScope.needLogin}">
 		
 			<div class="row">
 				<ul style="display: flex; padding: 0; margin: 0; width: 100%;">
