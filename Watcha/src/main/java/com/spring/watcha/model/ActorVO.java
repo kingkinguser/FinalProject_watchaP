@@ -5,14 +5,14 @@ public class ActorVO {
 
 	private String actor_id;      // 배우 ID
 	private String actor_name;    // 배우명 
-	private int gender;           // 성별
+	private String gender;           // 성별
 	private String date_of_birth; // 생년월일
 	private String place_of_birth;// 출생지
 	private String profile_image_path;  // 프로필 이미지 주소 
 	
 	public ActorVO(){};
 	
-	public ActorVO(String actor_id, String actor_name, int gender, String date_of_birth,
+	public ActorVO(String actor_id, String actor_name, String gender, String date_of_birth,
 			       String place_of_birth, String profile_image_path) {
 		 
 		this.actor_id = actor_id;
@@ -39,11 +39,12 @@ public class ActorVO {
 		this.actor_name = actor_name;
 	}
 
-	public int getGender() {
+
+	public String getGender() {
 		return gender;
 	}
 
-	public void setGender(int gender) {
+	public void setGender(String gender) {
 		this.gender = gender;
 	}
 

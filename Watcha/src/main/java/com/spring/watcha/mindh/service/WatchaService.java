@@ -10,6 +10,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.spring.watcha.model.ActorVO;
 import com.spring.watcha.model.MovieVO;
 import com.spring.watcha.model.collection_movieVO;
 import com.spring.watcha.mindh.model.InterWatchaDAO;
@@ -173,6 +174,20 @@ public class WatchaService implements InterWatchaService {
 	public int total_count(Map<String, String> paraMap) {
 		int total_count = dao.total_count(paraMap);
 		return total_count;
+	}
+
+	// 검색한 인물의 총 개수를 가져오자
+	@Override
+	public int total_count_people(Map<String, String> paraMap) {
+		int total_count_people = dao.total_count_people(paraMap);
+		return total_count_people;
+	}
+
+	// 검색한 인물 총 몇개인지 가져오기 
+	@Override
+	public List<ActorVO> showPeopleAll(Map<String, String> paraMap) {
+		List<ActorVO> showPeopleAll = dao.showPeopleAll(paraMap);
+	    return showPeopleAll;
 	}
 
 	

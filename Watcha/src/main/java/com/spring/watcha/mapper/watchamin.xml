@@ -450,9 +450,38 @@
 			WHERE rn BETWEEN #{start} AND #{end}			
 	</select>
 	
-	<!-- Retrieve total count -->
+	<!-- 영화 총 숫자 (검색기준) -->
 	<select id="total_count" resultType="int" parameterType="HashMap">
-	    SELECT COUNT(*) FROM movie WHERE LOWER(movie_title) LIKE '%' || LOWER(#{lastSearchWord}) || '%'
+	    SELECT COUNT(*) 
+	    FROM movie 
+	    WHERE LOWER(movie_title) LIKE '%' || LOWER(#{lastSearchWord}) || '%'
+	</select>
+	
+	
+	<!-- 인물 총 숫자 (검색기준) -->
+	<select id="total_count_people" resultType="int" parameterType="HashMap">
+	    SELECT COUNT(*) 
+	    FROM actor 
+	    WHERE LOWER(actor_name) LIKE '%' || LOWER(#{lastSearchWord}) || '%'
+	</select>
+	
+	
+	<!-- 검색한 인물 정보 모두 가져오기  -->
+	<select id="showPeopleAll" resultType="com.spring.watcha.model.ActorVO" parameterType="HashMap">			
+		SELECT actor_id, actor_name, case when gender = 1 then '여성' 
+		                                  when gender = 2 then '남성' 
+		                                  else '업데이트 중' end as gender,
+		       nvl(date_of_birth, '업데이트중') as date_of_birth, profile_image_path
+		FROM (
+		  SELECT rownum AS rn,  actor_id, actor_name, gender, date_of_birth, profile_image_path
+		  FROM (
+		    SELECT rownum, actor_id, actor_name, gender, date_of_birth, profile_image_path
+		    FROM actor
+		    WHERE LOWER(actor_name) LIKE '%' || LOWER(#{lastSearchWord}) || '%' 
+		    ORDER BY CASE WHEN LOWER(actor_name) LIKE LOWER(#{lastSearchWord}) || '%' THEN 0 ELSE 1 END, actor_name ASC
+		  )
+		)
+		where rn between #{start} AND #{end}			
 	</select>
 	
 	

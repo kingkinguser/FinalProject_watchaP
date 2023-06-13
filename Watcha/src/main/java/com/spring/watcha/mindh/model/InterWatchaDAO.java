@@ -3,6 +3,7 @@ package com.spring.watcha.mindh.model;
 import java.util.List;
 import java.util.Map;
 
+import com.spring.watcha.model.ActorVO;
 import com.spring.watcha.model.MovieVO;
 import com.spring.watcha.model.collection_movieVO;
 
@@ -60,6 +61,12 @@ public interface InterWatchaDAO {
 
 	// 검색한 영화 총 몇개인지 가져오기 
 	int total_count(Map<String, String> paraMap);
+
+	// 검색한 인물의 총 개수를 가져오자
+	int total_count_people(Map<String, String> paraMap);
+
+	// 검색한 인물 총 몇개인지 가져오기 
+	List<ActorVO> showPeopleAll(Map<String, String> paraMap);
 
 
 

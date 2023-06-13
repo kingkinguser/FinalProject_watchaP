@@ -669,14 +669,14 @@ function StarRank() {
 				 				    		<img src="https://image.tmdb.org/t/p/w500/${requestScope.mergedCollectionFinal[mergedCollectionIndex][0].poster_path}" class="card-img-top card-img-top-fin" alt="...">
 										</c:if>
 										<c:if  test="${empty requestScope.mergedCollectionFinal[mergedCollectionIndex][0].poster_path}">		
-				 				    		<img src="<%= ctxPath%>/resources/images/이미지없음.png" class="card-img-top card-img-top-fin" alt="...">
+				 				    		<img src="<%= ctxPath%>/resources/images/왓챠피디아NULL.png" class="card-img-top card-img-top-fin" alt="...">
 										</c:if>
 										
 										<c:if  test="${not empty requestScope.mergedCollectionFinal[mergedCollectionIndex][1].poster_path}">		
 				 				    		<img src="https://image.tmdb.org/t/p/w500/${requestScope.mergedCollectionFinal[mergedCollectionIndex][1].poster_path}" class="card-img-top card-img-top-fin" alt="...">
 										</c:if>
 										<c:if  test="${empty requestScope.mergedCollectionFinal[mergedCollectionIndex][1].poster_path}">		
-				 				    		<img src="<%= ctxPath%>/resources/images/이미지없음.png" class="card-img-top card-img-top-fin" alt="...">
+				 				    		<img src="<%= ctxPath%>/resources/images/왓챠피디아NULL.png" class="card-img-top card-img-top-fin" alt="...">
 										</c:if>
 					                	
 			 						 
@@ -687,14 +687,14 @@ function StarRank() {
 				 				    		<img src="https://image.tmdb.org/t/p/w500/${requestScope.mergedCollectionFinal[mergedCollectionIndex][2].poster_path}" class="card-img-top card-img-top-fin" alt="...">
 										</c:if>
 										<c:if  test="${empty requestScope.mergedCollectionFinal[mergedCollectionIndex][2].poster_path}">		
-				 				    		<img src="<%= ctxPath%>/resources/images/이미지없음.png" class="card-img-top card-img-top-fin" alt="...">
+				 				    		<img src="<%= ctxPath%>/resources/images/왓챠피디아NULL.png" class="card-img-top card-img-top-fin" alt="...">
 										</c:if>
 										
 										<c:if  test="${not empty requestScope.mergedCollectionFinal[mergedCollectionIndex][3].poster_path}">		
 				 				    		<img src="https://image.tmdb.org/t/p/w500/${requestScope.mergedCollectionFinal[mergedCollectionIndex][3].poster_path}" class="card-img-top card-img-top-fin" alt="...">
 										</c:if>
 										<c:if  test="${empty requestScope.mergedCollectionFinal[mergedCollectionIndex][3].poster_path}">		
-				 				    		<img src="<%= ctxPath%>/resources/images/이미지없음.png" class="card-img-top card-img-top-fin" alt="...">
+				 				    		<img src="<%= ctxPath%>/resources/images/왓챠피디아NULL.png" class="card-img-top card-img-top-fin" alt="...">
 										</c:if>
 	  						
 							    </div>

@@ -50,7 +50,7 @@
 	}
 	
 	.MvTitle {
-		padding-top: 5%;
+		padding-top: 2%;
 		color: black;
 	}
 	
@@ -97,7 +97,7 @@
 			if($(this).text() == "처음으로") { // $(this) 는 여기서 button 을 말함 
 				
 				$("ul#displayMovie").empty();  // 비운다.
-				$("span#end").empty();    // 비운다 				
+				$("span#end").empty();    // 비운다 	
 				displayMovie(1);            // 처음부터 다시 가기 위해 비운 후 함수 다시 실행 
 				$(this).text("더보기");
 				
@@ -181,6 +181,7 @@
 						$("span#end").html("더이상 조회할 영화가 없습니다.");		// id 가 end 인 span 태그에 추가하겠다.
 						$("button#btnMoreMovie").text("처음으로");
 						$("span#countMovie").text(0);
+					
 					}
 	
 				} // end of else if 				
@@ -222,42 +223,21 @@
 			<ul style="padding: 0; margin: 0;" id="displayMovie">
 			
 			</ul>
-		</div>
-		
-		<%-- <div>
-			<ul style="padding: 0; margin: 0;">
-				<c:forEach var="showMovie" items="${requestScope.showMovie}" varStatus="status">
-					<li class = "SMDLi">
-						<a href = "<%= ctxPath%>/view/project_detail.action?movie_id=${showMovie.movie_id}" title="${showMovie.movie_title}" style="text-decoration: none;">
-						
-							<div class="SMD">
-								<img src="https://image.tmdb.org/t/p/w500/${showMovie.poster_path}" class="card-img-top" alt="...">
-								<div class = "MvTitle">
-									<p class="TitleM">${showMovie.movie_title}</p>
-									<p class="colorChange">${showMovie.release_date} ● ${showMovie.original_language}</p>
-									<p class="colorChange">★ ${showMovie.rating_avg}</p>
-								</div>
-							</div>
-						</a>
-					</li>
-				</c:forEach>
-			</ul>
-		</div> --%>
-		
-		
-		<div>
-	         <p class="text-center">
-	            <span id="end" style="display:block; font-size: 14pt; font-weight: bold; color: red;"></span> 
-	            <button type="button" class="btn btn-secondary btn-lg" id="btnMoreMovie" value="" style="margin-top : 20px;">더보기</button>   <%-- value 값이 초기에는 없었는데 값을 집어넣어주면  --%>
-	            <span style=" position: relative; top: 11px;">
-		            <span id="countMovie"></span>
-		            <span id="totalMovieCount"></span>    
-	            </span>        
-	         </p>
-        </div>
-		
-		
-		
+		</div>		
+
 	</div>
+	
+	<div id="odd_number">
+         <p class="text-center">
+            <span id="end" style="display:block; font-size: 14pt; font-weight: bold; color: red;"></span> 
+            <button type="button" class="btn btn-secondary btn-lg" id="btnMoreMovie" value="" style="margin-top : 20px;">더보기</button>   <%-- value 값이 초기에는 없었는데 값을 집어넣어주면  --%>
+            <span style=" position: relative; top: 11px;">
+	            <span id="countMovie"></span>
+	            <span id="totalMovieCount"></span>    
+            </span>        
+         </p>
+    </div>
+	
+	
 </body>
 </html>
