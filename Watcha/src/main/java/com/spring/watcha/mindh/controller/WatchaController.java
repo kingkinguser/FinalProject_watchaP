@@ -89,8 +89,10 @@ public class WatchaController {
 	@RequestMapping(value="/goSearch.action")
 	public ModelAndView goSearch(ModelAndView mav, HttpServletRequest request) {
 		
-		String searchWord = request.getParameter("searchWord");
-		//System.out.println(searchWord);
+		String searchWord = request.getParameter("searchWord");		
+		if(searchWord == null) {
+			searchWord = request.getParameter("lastSearchWord");	
+		}	
 		
 		Map<String, String> paraMap = new HashMap<>();
 		
@@ -371,83 +373,7 @@ public class WatchaController {
 	}
 	
 	
-	
-	/*
-	 * // 검색하고 나서 더보기를 누를때
-	 * 
-	 * @RequestMapping(value="/goSearchDetail.action") public ModelAndView
-	 * goSearchDetail(ModelAndView mav, HttpServletRequest request) {
-	 * 
-	 * String lastSearchWord = request.getParameter("lastSearchWord");
-	 * 
-	 * Map<String, String> paraMap = new HashMap<>();
-	 * 
-	 * paraMap.put("searchWord",lastSearchWord);
-	 * 
-	 * //List<MovieVO> showMovie = service.showMovie(paraMap);
-	 * 
-	 * mav.addObject("lastSearchWord",lastSearchWord); //mav.addObject("showMovie",
-	 * showMovie); mav.setViewName("/search/searchDetail.tiles"); return mav; }
-	 */
-		
-	
-	// 더보기 페이지에서 10 개 이후 더보기 버튼을 눌렀을때 
-	
-	/*
-	 * @RequestMapping(value="/goSearchDetail.action") public String
-	 * goSearchDetail(HttpServletRequest request) {
-	 * 
-	 * String novalue = request.getParameter("novalue"); String lastSearchWord =
-	 * request.getParameter("lastSearchWord"); System.out.println(novalue);
-	 * if(!novalue.equals("0")) { System.out.println("dbsakjf"); String start =
-	 * request.getParameter("start"); String lenShow =
-	 * request.getParameter("lenShow");
-	 * 
-	 * 
-	 * System.out.println("");
-	 * 
-	 * Map<String, String> paraMap = new HashMap<>();
-	 * 
-	 * paraMap.put("start", start); paraMap.put("lastSearchWord", lastSearchWord);
-	 * 
-	 * String end = String.valueOf(Integer.parseInt(start) +
-	 * Integer.parseInt(lenShow) -1);
-	 * 
-	 * paraMap.put("end", end);
-	 * 
-	 * List<MovieVO> showMovieAll = service.showMovieAll(paraMap);
-	 * 
-	 * JSONArray jsonArr = new JSONArray();
-	 * 
-	 * if(showMovieAll.size() > 0) { // DB 에서 조회해 온 결과물이 있을 경우
-	 * 
-	 * for(MovieVO Showvo : showMovieAll) {
-	 * 
-	 * JSONObject jsonObj = new JSONObject(); jsonObj.put("movie_id",
-	 * Showvo.getMovie_id()); jsonObj.put("movie_title", Showvo.getMovie_title());
-	 * jsonObj.put("original_language", Showvo.getOriginal_language());
-	 * jsonObj.put("release_date", Showvo.getRelease_date());
-	 * jsonObj.put("poster_path", Showvo.getPoster_path());
-	 * jsonObj.put("rating_avg", Showvo.getRating_avg());
-	 * 
-	 * 
-	 * jsonArr.put(jsonObj);
-	 * 
-	 * 
-	 * }// end of for
-	 * 
-	 * }
-	 * 
-	 * 
-	 * 
-	 * String json = jsonArr.toString(); return json; }
-	 * 
-	 * else { novalue = "1"; return "search/searchDetail.tiles"; }
-	 * 
-	 * 
-	 * }
-	 */
-	
+	// 영화 모든 정보 보기위해 더보기를 눌렀을때 
 	@RequestMapping(value = "/goSearchDetail.action")
 	public ModelAndView goSearchDetail(HttpServletRequest request) {
 	    String novalue = request.getParameter("novalue");
@@ -458,14 +384,12 @@ public class WatchaController {
 	        String start = request.getParameter("start");
 	        String lenShow = request.getParameter("lenShow");
 
-	        System.out.println(start);
-	        System.out.println(lastSearchWord);
 	        Map<String, String> paraMap = new HashMap<>();
 	        paraMap.put("start", start);
 	        paraMap.put("lastSearchWord", lastSearchWord);
 
 	        String end = String.valueOf(Integer.parseInt(start) + Integer.parseInt(lenShow) - 1);
-	        System.out.println(end+"end 부분");	        
+	                
 	        paraMap.put("end", end);	     
 	        
 	        int total_count = service.total_count(paraMap);   // 총 개수를 나타내자 
@@ -511,5 +435,65 @@ public class WatchaController {
 	    }
 	}
 	
+	
+	
+	// 영화 검색 페이지에서 인물 눌렀을때 
+	@RequestMapping(value = "/goSearchPeople.action", method = {RequestMethod.GET} )
+	public ModelAndView goSearchPeople(ModelAndView mav, HttpServletRequest request) {
+
+		String lastSearchWord = request.getParameter("lastSearchWord");
+		
+		mav.addObject("lastSearchWord",lastSearchWord);
+		
+		mav.setViewName("/search/searchPeople.tiles");
+		return mav;
+	}
+	
+	// 영화 검색 페이지에서 인물 눌렀을때 
+	@ResponseBody
+	@RequestMapping(value = "/goSearchPeople.action", method = {RequestMethod.POST} )
+	public ModelAndView goSearchPeople1(HttpServletRequest request) {
+
+		String lastSearchWord = request.getParameter("lastSearchWord");
+
+        // Process for Ajax request
+        String start = request.getParameter("start");
+        String lenShow = request.getParameter("lenShow");
+
+        Map<String, String> paraMap = new HashMap<>();
+        paraMap.put("start", start);
+        paraMap.put("lastSearchWord", lastSearchWord);
+
+        String end = String.valueOf(Integer.parseInt(start) + Integer.parseInt(lenShow) - 1);
+                
+        paraMap.put("end", end);	     
+        
+        int total_count_people = service.total_count_people(paraMap);   // 총 개수를 나타내자 
+        List<ActorVO> showPeopleAll = service.showPeopleAll(paraMap);  // 인물 가져오자 
+
+        JSONArray jsonArr = new JSONArray();
+
+        if (showPeopleAll.size() > 0) {
+            // DB에서 조회한 결과물이 있을 경우
+            for (ActorVO Showvo : showPeopleAll) {
+                JSONObject jsonObj = new JSONObject();
+                jsonObj.put("actor_id", Showvo.getActor_id());
+                jsonObj.put("actor_name", Showvo.getActor_name());
+                jsonObj.put("gender", Showvo.getGender());
+                jsonObj.put("date_of_birth", Showvo.getDate_of_birth());
+                jsonObj.put("profile_image_path", Showvo.getProfile_image_path());
+
+                jsonArr.put(jsonObj);
+            }
+        }
+
+        JSONObject jsonRes = new JSONObject();
+        jsonRes.put("totalPeopleCount", total_count_people);
+        jsonRes.put("People_list", jsonArr);
+
+        String json = jsonRes.toString();
+        return new ModelAndView(new MappingJackson2JsonView(), Collections.singletonMap("jsonResponse", json));
+        
+	}
 	
 }

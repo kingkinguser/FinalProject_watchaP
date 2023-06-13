@@ -9,6 +9,7 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
+import com.spring.watcha.model.ActorVO;
 import com.spring.watcha.model.MovieVO;
 import com.spring.watcha.model.collection_movieVO;
 
@@ -153,6 +154,22 @@ public class WatchaDAO implements InterWatchaDAO {
 		int total_count = sqlsession_1.selectOne("watchamin.total_count", paraMap);	
 		
 		return total_count;
+	}
+
+	// 검색한 인물의 총 개수를 가져오자
+	@Override
+	public int total_count_people(Map<String, String> paraMap) {
+		int total_count_people = sqlsession_1.selectOne("watchamin.total_count_people", paraMap);	
+		
+		return total_count_people;
+	}
+
+	// 검색한 인물 총 몇개인지 가져오기 
+	@Override
+	public List<ActorVO> showPeopleAll(Map<String, String> paraMap) {
+		List<ActorVO> showPeopleAll = sqlsession_1.selectList("watchamin.showPeopleAll", paraMap);	
+		
+		return showPeopleAll;
 	}
 
 

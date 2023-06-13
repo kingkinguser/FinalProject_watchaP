@@ -92,10 +92,32 @@
 
 <script type="text/javascript">
 	
-	let status = 0;
-	
 	$(document).ready(function(){
 		
+		$("#contants").css({'border-bottom': 'solid 1px black'});
+		Carousel();
+		
+		/*영화 눌렀을때 */
+		$("button#contants").click(function(){
+			SearchContants();
+		});
+		
+		/* 인물 눌렀을때  */
+		$("button#people").click(function(){
+			SearchPeople();
+		});
+		
+		/* 컬렉션 눌렀을때 */
+		$("button#collection").click(function(){
+			SearchCollection();
+		});
+		
+		/* 유저 눌렀을때 */
+		$("button#user").click(function(){
+			SearchUser();
+		});
+		
+		/* 
 		if(status == 0){
 			$("#contants").css({'border-bottom': 'solid 1px black'});
 			Carousel();
@@ -139,7 +161,7 @@
 		    }
 		    
 		});
-		
+		 */
 	});
 	
 	
@@ -175,7 +197,7 @@
 	  	});	
 	}
 	
-	
+	// 더보기 눌렀을때 
 	function moreMovie() {
 		const searchText = $('input#lastSearchWord').val();
 		const novalueInput = $('input#novalue').val();
@@ -184,6 +206,56 @@
 		FrmMovieSearchDetail.action="<%=ctxPath%>/goSearchDetail.action";     /* // action 인것 바꾸기 */ 
 		FrmMovieSearchDetail.method="get";
 		FrmMovieSearchDetail.submit();	
+	}
+	
+	
+	
+	// 영화 버튼을 눌렀을때 
+	function SearchContants() {
+		
+		const searchText = $('input#lastSearchWord').val();
+		
+		const FrmMovieSearchMovie = document.FrmMovieSearchDetail;
+		FrmMovieSearchMovie.action="<%=ctxPath%>/goSearch.action";     /* // action 인것 바꾸기 */ 
+		FrmMovieSearchMovie.method="get";
+		FrmMovieSearchMovie.submit();	
+	}
+	
+	
+	// 인물 버튼을 눌렀을때 
+	function SearchPeople() {
+		
+		const searchText = $('input#lastSearchWord').val();
+		
+		const FrmMovieSearchPeople = document.FrmMovieSearchDetail;
+		FrmMovieSearchPeople.action="<%=ctxPath%>/goSearchPeople.action";     /* // action 인것 바꾸기 */ 
+		FrmMovieSearchPeople.method="get";
+		FrmMovieSearchPeople.submit();	
+		
+	}
+	
+	// 컬렉션 버튼을 눌렀을때 
+	function SearchCollection() {
+		
+		const searchText = $('input#lastSearchWord').val();
+		
+		const FrmMovieSearchCollection = document.FrmMovieSearchDetail;
+		FrmMovieSearchCollection.action="<%=ctxPath%>/goSearchCollection.action";     /* // action 인것 바꾸기 */ 
+		FrmMovieSearchCollection.method="get";
+		FrmMovieSearchCollection.submit();	
+		
+	}
+	
+	// 유저 버튼을 눌렀을때 
+	function SearchUser() {
+		
+		const searchText = $('input#lastSearchWord').val();
+		
+		const FrmMovieSearchUser = document.FrmMovieSearchDetail;
+		FrmMovieSearchUser.action="<%=ctxPath%>/goSearchUser.action";     /* // action 인것 바꾸기 */ 
+		FrmMovieSearchUser.method="get";
+		FrmMovieSearchUser.submit();	
+		
 	}
 	
 	
@@ -196,7 +268,7 @@
 	<div class="searchWord_header">
 		<div class="container">
 			<span class="h5" style="margin: 0;">"  <c:out value="${lastSearchWord.replace('<', ' ').replace('>', ' ')}" />  "의 검색결과</span>  <!-- 스크립트 공격 방어 -->
-			<span>[ 영화 검색결과 숫자 : ${requestScope.total_count}개 ]</span>
+			<span>[ 영화 검색결과 숫자 : ${requestScope.total_count} 개 ]</span>
 		</div>
 	</div>
 		
@@ -225,7 +297,10 @@
 		
 		<div>
 			<c:if test="${empty requestScope.showMovie}">
-				<p class="h5 mb-4" style="text-align: center;">검색한 영화 정보가 없습니다.</p>
+				<div style='text-align: center; padding: 100px 0;' class='h4'>
+					<p style='margin-bottom: 40px;'><i class='fa-solid fa-question fa-2xl' style='color: #9a9da2;'></i></p>
+					<p class="h4 mb-4" style="text-align: center;">검색한 영화 정보가 없습니다.</p>
+				</div>
 			</c:if>
 			<c:if test="${not empty requestScope.showMovie}">
 				<span class="h5 mb-4">찾으신 영화가 없으면 영화 더보기를 눌러주세요</span>

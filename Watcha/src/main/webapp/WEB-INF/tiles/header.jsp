@@ -831,7 +831,7 @@
 	}
 	
 	function goSearchWord(){
-		// console.log( '확인용 ~~')
+
 		const searchText = $('input#search_header').val();
 		
 		const searchFrm = document.searchFrm;
