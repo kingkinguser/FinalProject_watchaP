@@ -83,6 +83,7 @@
     join member MB
     on CM. user_id = MB.user_id
     where MB.user_id = #{user_id}
+    order by collection_movie_date desc
    </select>   
    <!-- 유저의 컬랙션  끝 -->
 
@@ -211,12 +212,32 @@
     where user_id_collection = #{user_id_collection} and user_id_like = #{user_id_like}  
 	</select>
 	
-	<!-- 차트 2 --> 
+	<!-- 차트 1 --> 
+	<resultMap type="HashMap" id="getWordcloud_Map"> 
+       <result property="user_collection_content"      column="user_collection_content"      javaType="String" />
+    </resultMap>  
+	<select id="getWordcloud" parameterType="HashMap" resultMap="getWordcloud_Map">
+      select CC.user_collection_content
+	  from user_collection_comment CC join member M 
+      on CC.user_id_collection = M.user_id 
+      where user_id_collection = #{user_id_collection} 
+	</select>	
 	
+	<!-- 차트 2 --> 
 	<resultMap type="HashMap" id="getPieBasicMap"> 
        <result property="genre_name"      column="genre_name"      javaType="String" />
+       <result property="cnt"             column="cnt"             javaType="String" />
+       <result property="percentage"      column="percentage"      javaType="String" />
     </resultMap>  
 	<select id="getPieBasic" parameterType="HashMap" resultMap="getPieBasicMap">
+    select genre_name, count(*) as cnt ,round(count(*)/(select count(*)
+                                                        from collection_movie CM join movie M
+                                                        on CM.movie_id = M.movie_id
+                                                        join movie_genre MG
+                                                        on M.movie_id = MG.movie_id
+                                                        where CM.user_id = #{user_id})*100, 2) as percentage  
+    from 
+    (
     select G.genre_name
     from collection_movie CM join movie M
     on CM.movie_id = M.movie_id
@@ -225,6 +246,8 @@
     join genre G
     on MG.genre_id = G.genre_id
     where CM.user_id = #{user_id}
+    ) V
+    group by genre_name
 	</select>	
 </mapper>
 

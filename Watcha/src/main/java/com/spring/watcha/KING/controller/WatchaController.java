@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.spring.watcha.KING.service.InterWatchaService;
@@ -64,7 +63,7 @@ public class WatchaController {
 		         reviewMap.put("user_id", user_id);
 		         reviewMap.put("movie_id", movie_id);
 		         
-		         Map<String, String> reviewInfo = null;
+		         Map<String, String> reviewInfo = null; 
 		         if(user_id != null) {
 		            reviewInfo = service.reviewInfo(paraMap);
 		         }
@@ -332,27 +331,69 @@ public class WatchaController {
 				
 			}			
 			
+			// === 차트1 시작  === //
+			@ResponseBody
+			@RequestMapping(value="/wordcloud.action", method= {RequestMethod.POST})   
+			public String wordcloud(HttpServletRequest request, HttpServletResponse response) {
+				
+		         String user_id_collection = request.getParameter("user_id_collection"); 
+				
+				Map<String, Object> paraMap = new HashMap<>();
+				paraMap.put("user_id_collection", user_id_collection);
+				 
+				List<Map<String, String>> wordcloudList = service.getWordcloud(paraMap);
+			 		 
+		    	JsonArray jsonArr = new JsonArray();
+		    	
+		    	if(wordcloudList != null && wordcloudList.size() > 0) {
+		    		for(Map<String, String> map :wordcloudList) { 
+		    			 
+		    			JsonObject jsonObj = new JsonObject();  
+		    			jsonObj.addProperty("user_collection_content", map.get("user_collection_content"));
+		    			
+		    			jsonArr.add(jsonObj);
+		    			
+		    		}//end of for -----------------------------------------------------
+		    	}
+		    	
+		    	return new Gson().toJson(jsonArr);
+			}
+			
 			// === 차트 2 시작  === //
 			@ResponseBody
 			@RequestMapping(value="/pieBasic.action", method= {RequestMethod.POST})   
 			public String pieBasic(HttpServletRequest request, HttpServletResponse response) {
 				
-				String user_id = request.getParameter("user_id");
+				 HttpSession session = request.getSession();
+		         MemberVO loginuser = (MemberVO) session.getAttribute("loginuser");
+		         
+		         String user_id = "";
+				 
+		         if(loginuser != null) {
+		        	 user_id = request.getParameter("user_id"); 
+			      }
 				
 				Map<String, Object> paraMap = new HashMap<>();
 				paraMap.put("user_id", user_id);
 				 
-				List<Map<String, String>> pieBasic = service.getPieBasic(paraMap);
+				List<Map<String, String>> pieBasicList = service.getPieBasic(paraMap);
 			 		 
-				JSONObject jsonObj = new JSONObject();
-				jsonObj.put("pieBasic", pieBasic);
-				
-				Gson gson = new GsonBuilder().setPrettyPrinting().create();
-				String movieStr = gson.toJson(pieBasic);
-				System.out.println(movieStr); 
-				
-				return jsonObj.toString();
-				
+		    	JsonArray jsonArr = new JsonArray();
+		    	
+		    	if(pieBasicList != null && pieBasicList.size() > 0) {
+		    		for(Map<String, String> map :pieBasicList) {
+		    			 
+		    			JsonObject jsonObj = new JsonObject();  
+		    			jsonObj.addProperty("genre_name", map.get("genre_name"));
+		    			jsonObj.addProperty("cnt", map.get("cnt"));
+		    			jsonObj.addProperty("percentage", map.get("percentage"));
+		    			
+		    			jsonArr.add(jsonObj);
+		    			
+		    		}//end of for -----------------------------------------------------
+		    	}
+		    	
+		    	return new Gson().toJson(jsonArr);
 			}
 			
 			

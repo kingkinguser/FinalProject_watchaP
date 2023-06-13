@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.spring.watcha.model.MovieVO;
-import com.spring.watcha.model.collection_likeVO;
 import com.spring.watcha.model.user_collection_commentVO;
 
 public interface InterWatchaService {
@@ -48,6 +47,9 @@ public interface InterWatchaService {
 	// 좋아요 유지
 	int getLikeMaintain(Map<String, String> paraMap);
 
+	// 차트 1
+	List<Map<String, String>> getWordcloud(Map<String, Object> paraMap);
+	
 	// 차트 2
 	List<Map<String, String>> getPieBasic(Map<String, Object> paraMap);
 
@@ -55,6 +57,8 @@ public interface InterWatchaService {
 	// 한줄평 - 로그인한 회원이 해당 영화에 대해 작성한 한줄평 유무 및 한줄평 정보
 	Map<String, String> reviewInfo(Map<String, String> paraMap);
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	
 	   
 	
 

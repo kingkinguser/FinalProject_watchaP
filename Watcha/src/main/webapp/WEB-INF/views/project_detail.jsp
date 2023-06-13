@@ -343,7 +343,7 @@
 
      // 영화에 대한 별점 등록 또는 수정 하는 경우
      $("input:radio[name='rating']").change(function(){
-        if("${empty requestScope.reviewInfo.rating}"){ // 별점 등록하는 경우
+        if(${empty requestScope.reviewInfo.rating}){ // 별점 등록하는 경우
             $.ajax({
               url:"<%= ctxPath%>/myWatcha/registerRating.action",
               data:{"movie_id":"${requestScope.movieDetail.movie_id}",
@@ -586,7 +586,6 @@
 		<div id="Comment">
 		
 			<h4 style="margin: 30px 0 0 30px; font-weight: bolder; ">한줄평</h4>
-				
 		     <%-- 한줄평 등록 모달창 --%>
 		      <c:if test="${empty requestScope.reviewInfo}">
 		      <div class="modal fade registerReview" id="registerReview" data-keyboard="false">

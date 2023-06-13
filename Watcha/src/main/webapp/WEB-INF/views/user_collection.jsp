@@ -286,7 +286,9 @@
 <script type="text/javascript">
 
 	$(document).ready(function(){
-			
+		
+		console.log("${requestScope.collection_viewA}");
+		
 		/* 좋아요 값 유지 */
 		if($('#likeMaintain').val() == 1) {  
 			$(".goodi").css({"color":"#ff0558"}); 	  
@@ -408,7 +410,12 @@
 	goLikeTotal() 
 	
 	/* 차트 2 */
-	pieBasic()
+	if("${requestScope.collection_viewA}") {
+		wordcloud(); 
+	}
+	else if("${requestScope.collection_viewB}") {
+		pieBasic(); 
+	}
 	
 	});//end of $(document).ready(function()) ----------------------------------------------------------------------------
 
@@ -666,54 +673,6 @@
 			  // === 페이지바 함수 호출 === //
 			  makeUserCommentPageBarA(currentShowPageNo);
 			  	
-			// == 차트 시작 == //
-			let htmlchart = ""; 
-			
-			 $.each(json, function(index, item){
-					 
-				 	htmlchart += item.user_collection_content + " ";
-				 	
- 				 });  
-			
-			const text = htmlchart,
-		    lines = text.replace(/[():'?0-9]+/g, '').split(/[,\. ]+/g),
-		    data = lines.reduce((arr, word) => {
-		        let obj = Highcharts.find(arr, obj => obj.name === word);
-		        if (obj) {
-		            obj.weight += 1;
-		        } else { 
-		            obj = {
-		                name: word,
-		                weight: 1
-		            };
-		            arr.push(obj);
-		        }
-		        return arr;
-		    }, []); 
-
-			Highcharts.chart('chart_container', {
-			    accessibility: {
-			        screenReaderSection: {
-			            beforeChartFormat:  '<h5>{chartTitle}</h5>' +
-							                '<div>{chartSubtitle}</div>' +
-							                '<div>{chartLongdesc}</div>' +
-							                '<div>{viewTableButton}</div>'
-			        }
-			    },
-			    series: [{
-			        type: 'wordcloud',
-			        data,
-			        name: 'Occurrences'
-			    }],
-			    title: {
-			        text: '댓글 중 가장 많은 단어' 
-			    },
-			    tooltip: {
-			        headerFormat: '<span style="font-size: 16px"><b>{point.key}</b></span><br>'
-			    }
-		});				
-			// == 차트 끝 == //  
-			  
 		  },
 		  error: function(request, status, error){
 				alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
@@ -963,6 +922,70 @@
 	  });
   }  
   //== 좋아요 총수 끝 ==//  
+
+  //== 차트 1 시작 ==//
+  function wordcloud() { 
+	  
+	  $.ajax({
+		  url:"<%= request.getContextPath()%>/wordcloud.action",
+		  data: {user_id_collection : '${requestScope.collection_viewA[0].user_id}'} , 
+		  type:"post", 	       
+		  dataType:"json",
+		  success:function(json){
+			   // console.log("~~ 확인용 : " + JSON.stringify(json));
+			   
+			let htmlchart = ""; 
+			
+			 $.each(json, function(index, item){
+					 
+				 	htmlchart += item.user_collection_content + " ";
+				 	
+ 			 });  
+			
+				const text = htmlchart,
+			    lines = text.replace(/[():'?0-9]+/g, '').split(/[,\. ]+/g),
+			    data = lines.reduce((arr, word) => {
+			        let obj = Highcharts.find(arr, obj => obj.name === word);
+			        if (obj) {
+			            obj.weight += 1;
+			        } else { 
+			            obj = {
+			                name: word,
+			                weight: 1
+			            };
+			            arr.push(obj);
+			        }
+			        return arr;
+			    }, []); 
+	
+				Highcharts.chart('chart_container', {
+				    accessibility: {
+				        screenReaderSection: {
+				            beforeChartFormat:  '<h5>{chartTitle}</h5>' +
+								                '<div>{chartSubtitle}</div>' +
+								                '<div>{chartLongdesc}</div>' +
+								                '<div>{viewTableButton}</div>'
+				        }
+				    },
+				    series: [{
+				        type: 'wordcloud',
+				        data,
+				        name: 'Occurrences'
+				    }],
+				    title: {
+				        text: '댓글 중 가장 많은 단어' 
+				    },
+				    tooltip: {
+				        headerFormat: '<span style="font-size: 16px"><b>{point.key}</b></span><br>'
+				    }
+			});				
+		  },
+		  error: function(request, status, error){
+				alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+		  }
+	  });
+  }  
+  //== 차트 1 끝 ==//     
   
   //== 차트 2 시작 ==//
   function pieBasic() { 
@@ -970,10 +993,30 @@
 	  $.ajax({
 		  url:"<%= request.getContextPath()%>/pieBasic.action",
 		  data: {user_id : '${requestScope.collection_viewB[0].user_id}'} , 
-		  type:"post", 	      
+		  type:"post", 	       
 		  dataType:"json",
 		  success:function(json){
 			   // console.log("~~ 확인용 : " + JSON.stringify(json));
+			   
+			   		let resultArr = [];
+					
+					for(let i=0; i<json.length; i++){
+						
+						let obj;
+						
+						if(i==0) { 
+							obj = {name: json[i].genre_name,
+								   y: Number(json[i].percentage),
+								   sliced: true,
+						           selected: true};							
+						}
+						else {
+							obj = {name: json[i].genre_name, 
+								   y: Number(json[i].percentage)};
+						}
+						
+						resultArr.push(obj);	
+					}//end of for(let i=0; i<json.length; i++) ----------------------------------
 			   
 				Highcharts.chart('chart_container2', {
 				       chart: {
@@ -1006,36 +1049,7 @@
 					    series: [{
 					        name: 'Brands',
 					        colorByPoint: true,
-					        data: [{
-					            name: 'Chrome',
-					            y: 70.67,
-					            sliced: true,
-					            selected: true
-					        }, {
-					            name: 'Edge',
-					            y: 14.77
-					        },  {
-					            name: 'Firefox',
-					            y: 4.86
-					        }, {
-					            name: 'Safari',
-					            y: 2.63
-					        }, {
-					            name: 'Internet Explorer',
-					            y: 1.53
-					        },  {
-					            name: 'Opera',
-					            y: 1.40
-					        }, {
-					            name: 'Sogou Explorer',
-					            y: 0.84
-					        }, {
-					            name: 'QQ',
-					            y: 0.51
-					        }, {
-					            name: 'Other',
-					            y: 2.6
-					        }]
+					        data: resultArr
 					    }]
 					}); 
 		  },
@@ -1065,17 +1079,19 @@
 		 
 			<div class="card">
 			    <div class="card-body"> 
-				   
+				    
 			   <div id="infoinfo">               
 			      	  
-			      	<div style="font-size: 30px; margin: 0 0 5px 370px; font-weight: bold;"><span style="color:#ff0558">"</span>${requestScope.collection_viewA[0].name}<span style="color:#ff0558">"</span>님의 <span style="color:#ff0558">컬렉션</span></div>   
+			      	  <div style="font-size: 30px; margin: 0 0 5px 370px; font-weight: bold;"><span style="color:#ff0558">"</span>${requestScope.collection_viewA[0].name}<span style="color:#ff0558">"</span>님의 <span style="color:#ff0558">컬렉션</span></div>   
 		             
 					  <div style="margin: 0 0 0 460px; font-weight: bold;">좋아요 총수: <span id="likeTotal" style="color:#ff0558"></span></div>
-						 
-					  <label for="check_good" style="cursor: pointer; margin: 0 0 15px 470px;">   
-					    <i class="far fa-thumbs-up goodi"></i><span class="goodi" style="font-weight: bolder">&nbsp;&nbsp;좋아요 </span> 
-					  </label>
- 
+					    
+					  <c:if test="${requestScope.collection_viewA[0].user_id != sessionScope.loginuser.user_id}"> 
+						  <label for="check_good" style="cursor: pointer; margin: 0 0 15px 470px;">   
+						    <i class="far fa-thumbs-up goodi"></i><span class="goodi" style="font-weight: bolder">&nbsp;&nbsp;좋아요 </span> 
+						  </label>
+ 					  </c:if>	 
+ 					   
 					  <input type="checkbox" id="check_good" name="check_good"/>
 					
 					  <input type="hidden" name="likeMaintain" id="likeMaintain" value="${requestScope.likeMaintain}" /> 

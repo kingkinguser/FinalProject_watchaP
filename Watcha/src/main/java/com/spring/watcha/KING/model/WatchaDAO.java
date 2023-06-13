@@ -135,7 +135,14 @@ public class WatchaDAO implements InterWatchaDAO {
 			int n = sqlsession.selectOne("watcha.getLikeMaintain", paraMap);
 			return n;
 		}
-
+		
+		// 차트 1
+		@Override
+		public List<Map<String, String>> getWordcloud(Map<String, Object> paraMap) {
+			List<Map<String, String>> wordcloud = sqlsession.selectList("watcha.getWordcloud", paraMap);
+			return wordcloud;
+		}
+		
 		// 차트 2
 		@Override
 		public List<Map<String, String>> getPieBasic(Map<String, Object> paraMap) {
@@ -151,6 +158,8 @@ public class WatchaDAO implements InterWatchaDAO {
 			return reviewInfo;
 		}		
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 		
 		
 }
