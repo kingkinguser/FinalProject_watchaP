@@ -29,7 +29,7 @@
 <%-- 유저한줄평 --%>
 div#userReview {font-family: 'Noto Sans KR', sans-serif; cursor: default;}
 img#img_profile {width: 40px; height: 40px; box-sizing: inherit; border:solid 1px #e6e6e6; border-radius: 50%; box-shadow: 1px 1px 1px #cccccc; margin: 0 6px;}
-p.movieRate{height: 30px; border: solid 1px #e6e6e6; border-radius: 20%/40%; padding: 0 10px; margin: 5px 15px; background-color: #ffffff;}
+p.movieRate{width: 30%; height: 30px; border: solid 1px #e6e6e6; border-radius: 20%/40%; padding: 0 10px; margin: 5px; background-color: #ffffff;}
 </style>
 
 <script>
@@ -51,7 +51,7 @@ p.movieRate{height: 30px; border: solid 1px #e6e6e6; border-radius: 20%/40%; pad
 	function userReview(){
 		$.ajax({
 			url:"<%= ctxPath%>/movieReview.action",
-			data:{"movie_id":"${requestScope.movie_id}"},
+			data:{"movie_id":"${requestScope.movieDetail.movie_id}"},
 			dataType:"json",
 			success:function(json){
 			//	console.log("확인용 : "+JSON.stringify(json));
@@ -61,7 +61,7 @@ p.movieRate{height: 30px; border: solid 1px #e6e6e6; border-radius: 20%/40%; pad
 					
 					html += '<div id="userReview" class="container" style="padding: 0px;">'
 					      +   '<div style="position: relative; float: right; z-index: 2;">'
-					      +     '<a href="<%= request.getContextPath()%>/allReview.action?movie_id='+${requestScope.movie_id}+'" style="color: black; text-decoration: none;">전체보기</a>'
+					      +     '<a href="<%= request.getContextPath()%>/allReview.action?movie_id='+${requestScope.movieDetail.movie_id}+'" style="color: black; text-decoration: none;">전체보기</a>'
 						  +   '</div>'
 						  +   '<div id="review" style="z-index: 1;" class="mx-auto mt-2 mb-3 p-1 carousel slide w-100" data-ride="carousel">'
 						  +     '<div class="p-0 carousel-inner w-90 mx-auto">';
@@ -107,13 +107,13 @@ p.movieRate{height: 30px; border: solid 1px #e6e6e6; border-radius: 20%/40%; pad
 				       	}
 				       	
 				       	html +=       '<div style="display: flex;">'
-				       		  +         '<p style="padding-left: 10px; margin: 10px 0px; font-size: 11pt; color: gray;">작성일자&nbsp;<span class="ml-1">'+item.review_date+'</span></p>';
+				       		  +         '<p style="width: 70%; padding-left: 10px; margin: 10px 0px; font-size: 11pt; color: gray;">작성일자&nbsp;<span class="ml-1">'+item.review_date+'</span></p>';
 				       		  
 				        if(item.rating == 0){ // 별점평가를 하지 않은 경우
-					       	html +=   	'<p class="movieRate">평가안함</p>';
+					       	html +=   	'<p class="movieRate text-center">평가안함</p>';
 				        }
 				        else {
-					       	html +=   	'<p class="movieRate">★&nbsp;<span>'+item.rating+'</span></p>';
+					       	html +=   	'<p class="movieRate text-center">★&nbsp;<span>'+item.rating+'</span></p>';
 				        }
 
 				       	html +=   	 '</div>'

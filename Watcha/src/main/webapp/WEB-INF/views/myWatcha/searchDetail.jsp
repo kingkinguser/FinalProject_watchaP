@@ -41,12 +41,13 @@ select#collection{border: none; font-size: 11pt;}
 select#collection:focus{outline: none;}
 
 input[type="checkbox"] {opacity: 0;}
+input#watching_date:focus{outline: none;}
 
 <%-- 별점 --%>
 .rate { display: inline-block;border: 0;margin-right: 15px;}
 .rate > input {display: none;}
 .rate > label {float: right;color: #ddd}
-.rate > label:before {display: inline-block;font-size: 2rem;padding: .3rem .2rem;margin: 0;cursor: pointer;font-family: FontAwesome;content: "\f005 ";}
+.rate > label:before {display: inline-block;font-size: 2.5rem;padding: .3rem .2rem;margin: 0;cursor: pointer;font-family: FontAwesome;content: "\f005 ";}
 .rate .half:before {content: "\f089 "; position: absolute;padding-right: 0;}
 .rate input:checked ~ label, 
 .rate label:hover,.rate label:hover ~ label { color: #FDD346} 
@@ -60,7 +61,7 @@ div#registerReview{font-family: 'Noto Sans KR', sans-serif; cursor: default;}
 div#editReview{font-family: 'Noto Sans KR', sans-serif; cursor: default;}
 .modal-body textarea:focus,
 .modal-body input:focus {outline: none;}
-.fa-face-meh:hover{color: #ff0558; cursor: pointer;}
+.fa-face-meh:hover{cursor: pointer;}
 
 <%-- 한줄평 상세모달 --%>
 div.reviewDetail{font-family: 'Noto Sans KR', sans-serif; cursor: default;}
@@ -146,14 +147,50 @@ div#makePhotoTicket{font-family: 'Noto Sans KR', sans-serif;}
  				return false;
  			}
  		}); // end of $("input:radio[name='rating']").each(function(index, item){})
-
+<%--
+ 		// 영화에 대한 별점 등록 또는 수정 하는 경우
+ 		$("input:radio[name='rating']").change(function(){
+ 			if("${empty requestScope.searchDetail.rating}"){ // 별점 등록하는 경우
+ 	 			$.ajax({
+ 					url:"<%= ctxPath%>/myWatcha/registerRating.action",
+ 					data:{"movie_id":"${requestScope.movieDetail.movie_id}",
+ 						  "user_id":"${sessionScope.loginuser.user_id}",
+ 						  "rating":Number($(this).val())/2}, 
+ 					type:"post",
+ 					dataType:"json",
+ 					success:function(json){
+ 					//	console.log("확인용 : "+JSON.stringify(json));
+ 					},
+ 					error: function(request, status, error){
+ 			            alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+ 			        }			
+ 	 			});
+ 			}
+ 			else { // 별점 수정하는 경우
+ 	 			$.ajax({
+ 					url:"<%= ctxPath%>/myWatcha/updateRating.action",
+ 					data:{"movie_id":"${requestScope.movieDetail.movie_id}",
+ 						  "user_id":"${sessionScope.loginuser.user_id}",
+ 						  "rating":Number($(this).val())/2}, 
+ 					type:"post",
+ 					dataType:"json",
+ 					success:function(json){
+ 					//	console.log("확인용 : "+JSON.stringify(json));
+ 					},
+ 					error: function(request, status, error){
+ 			            alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+ 			        }			
+ 	 			});
+ 			}
+ 		}); // end of $("input:radio[name='rating']").change(function(){})
+--%> 		
  		// 영화에 대한 별점을 수정하는 경우
  		$("input:radio[name='rating']").change(function(){
  			$.ajax({
 				url:"<%= ctxPath%>/myWatcha/updateRating.action",
 				data:{"movie_id":"${requestScope.searchDetail.movie_id}",
-					  "user_id":"qwer1234",
-					  "rating":Number($(this).val())/2}, // 세션 수정 
+					  "user_id":"${sessionScope.loginuser.user_id}",
+					  "rating":Number($(this).val())/2}, 
 				type:"post",
 				dataType:"json",
 				success:function(json){
@@ -165,6 +202,54 @@ div#makePhotoTicket{font-family: 'Noto Sans KR', sans-serif;}
  			});
  		}); // end of $("input:radio[name='rating']").change(function(){})
 
+ 		// 관람일자 등록 또는 수정  datepicker
+ 	    $.datepicker.setDefaults({
+ 	         dateFormat: 'yy-mm-dd'  // Input Display Format 변경
+ 	        ,showOtherMonths: true   // 빈 공간에 현재월의 앞뒤월의 날짜를 표시
+ 	        ,showMonthAfterYear:true // 연도 먼저 나오고, 뒤에 월 표시
+ 	        ,changeYear: true        // 콤보박스에서 연 선택 가능
+ 	        ,changeMonth: true       // 콤보박스에서 월 선택 가능                
+ 	        ,monthNamesShort: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'] // 달력의 월 부분 텍스트
+        	,dayNamesMin: ['일','월','화','수','목','금','토'] //달력의 요일 부분 텍스트
+ 	    });
+ 	    $("input#watching_date").datepicker();
+
+ 	    // 관람일자 등록 또는 수정하기
+ 	    $("input#watching_date").change(function(){
+			const queryString = $("form[name='movieDiaryFrm']").serialize();
+			
+ 	    	if(${empty requestScope.searchDetail.watching_date}){ // 관람일자 등록하는 경우
+ 	    		$.ajax({
+ 					url:"<%= ctxPath%>/myWatcha/registerDiary.action",
+					data:queryString, 
+ 					type:"post",
+ 					dataType:"json",
+ 					success:function(json){
+ 					//	console.log("확인용 : "+JSON.stringify(json));
+ 					    history.go(0); // 새로고침
+ 					},
+ 					error: function(request, status, error){
+ 			            alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+ 			        }			
+ 				});
+ 	    	}
+ 	    	else { // 관람일자 수정하는 경우
+ 	    		$.ajax({
+ 					url:"<%= ctxPath%>/myWatcha/updateDiary.action",
+					data:queryString, 
+ 					type:"post",
+ 					dataType:"json",
+ 					success:function(json){
+ 					//	console.log("확인용 : "+JSON.stringify(json));
+ 					},
+ 					error: function(request, status, error){
+ 			            alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+ 			        }			
+ 				});
+ 	    	}
+ 	    	
+ 	    }); // end of $("input#watching_date").change(function(){})
+ 	    
  		// 한줄평 "등록" 버튼 클릭 시
  		$("button#btnAdd").click(function(){
 
@@ -299,7 +384,7 @@ div#makePhotoTicket{font-family: 'Noto Sans KR', sans-serif;}
 					        }
 							
 						  	html += '<div style="text-align: left;">';
-						  	if(item.user_id == "qwer1234"){ // 로그인한 회원이 작성한 한줄평일 경우
+						  	if(item.user_id == "${sessionScope.loginuser.user_id}"){ // 로그인한 회원이 작성한 한줄평일 경우
 						       	html += '<p style="padding: 0 5px; margin: 0px 0px 5px 0px; font-weight: 600;">'+item.name+'<span class="pl-2" style="color: #ff0558; font-size: 10pt;">작성자</span></p>';
 					        }
 						  	else {
@@ -307,7 +392,7 @@ div#makePhotoTicket{font-family: 'Noto Sans KR', sans-serif;}
 						  	}
 						    html += 	'<p style="padding: 0 5px; margin: 0px;">'+item.content+'</p>'
 						    	  + 	'<p style="display: inline-block; margin: 10px 0px 0px 0px; font-size: 10pt; color: gray;">작성일자&nbsp;<span class="pl-2">'+item.comment_date+'</span></p>';
-						  	if(item.user_id == "qwer1234"){ // 로그인한 회원이 작성한 한줄평일 경우
+						  	if(item.user_id == "${sessionScope.loginuser.user_id}"){ // 로그인한 회원이 작성한 한줄평일 경우
 						       	html += '<div style="display: inline-block;">'
 						       		  +	  "<button type='button' class='p-0 m-0 mx-1 ml-2' onclick='updateComment1("+JSON.stringify(item)+")' style='font-weight: bold; color: #ff0558; border: none; background-color: transparent; font-size: 10pt;'>수정</button>"
 						       		  +   '<button type="button" class="p-0 m-0 mx-1" onclick="delComment('+item.comment_id+')" style="font-weight: bold; color: #ff0558; border: none; background-color: transparent; font-size: 10pt;">삭제</button>'
@@ -345,7 +430,7 @@ div#makePhotoTicket{font-family: 'Noto Sans KR', sans-serif;}
 			  	html += 	'<div style="width: 100%;">'
 					  +		  '<div style="display: flex;" class="mb-2">'
 					  +		    '<p style="text-align: left; padding: 0 5px; margin: 0px 10px 5px 0px; font-weight: 600;">작성자이름</p>'
-					  +		    '<input type="hidden" name="user_id" value="qwer1234" />'
+					  +		    '<input type="hidden" name="user_id" value="${sessionScope.loginuser.user_id}" />'
 					  +		  '</div>'
 					  +		  '<textarea id="content" name="content" style="width: 100%; height: 70px; resize: none; border: solid 1px #e6e6e6; border-radius: 1%; font-size: 11pt;" placeholder="이 한줄평에 대한 댓글을 적어주세요."></textarea>'
 					  +		  '<div style="display: flex; position: relative; float: right;">'
@@ -544,7 +629,9 @@ div#makePhotoTicket{font-family: 'Noto Sans KR', sans-serif;}
 	<div id="div_container" class="container">
 	  <div id="div_myContent">
 	  	<div style="overflow: hidden; height: 300px;">
-	  	  <img id="img_wallPaper" src="https://image.tmdb.org/t/p/w1280/${requestScope.searchDetail.backdrop_path}" />
+	      <a href="<%= ctxPath %>/view/project_detail.action?movie_id=${requestScope.movieInfo.movie_id}" style="text-decoration: none; color: black;">
+	  	    <img id="img_wallPaper" src="https://image.tmdb.org/t/p/w1280/${requestScope.searchDetail.backdrop_path}" />
+	  	  </a>
 	  	</div>
   		
   		<div style="height: 280px; padding: 0 50px; margin-bottom: 20px;">
@@ -553,18 +640,11 @@ div#makePhotoTicket{font-family: 'Noto Sans KR', sans-serif;}
               <div class="col-md-4">
                 <img id="img_movie" class="img-thumnail" src="https://image.tmdb.org/t/p/w780/${requestScope.searchDetail.poster_path}">
               </div>
-  			  <div class="col-md-8" style="position: relative; top: 3rem;">
-	  			<h4 style="text-align: left; padding: 0 5px; font-size: 20pt; font-weight: 900; margin-top: 10px;">${requestScope.searchDetail.movie_title}</h4>
-			    <div style="display: flex; margin: 5px;">
-			      <div class="col-md-6 text-left my-auto">
-			        <p class="h5 my-2 mx-1" style="color: #ff0558;">${requestScope.searchDetail.genre_name}</p>
-			      </div>
-			      <div class="col-md-6 text-left my-auto">
-			        <p class="h6 my-2 mx-1">개봉일자&nbsp;${requestScope.searchDetail.release_date}</p>
-			      </div>
-			    </div>
-     		  	<div class="h5 pl-2 my-1 p-2" style="padding: 5px;">
-				  <fieldset class="rate">
+  			  <div class="col-md-8" style="text-align: left; position: relative; top: 3rem;">
+	  			<h4 style="padding: 0 5px; font-weight: 700; margin: 10px;">${requestScope.searchDetail.movie_title}</h4>
+	            <h5 class="pt-3 pl-4" style="color: #ff0558; font-weight: 500;">${requestScope.searchDetail.genre_name}</h5>
+   		  	  	<div class="mx-2 text-center" style="padding: 5px; border-bottom: solid 1px #e6e6e6;">
+		    	  <fieldset class="rate">
                     <input type="radio" id="rating10" name="rating" value="10"><label for="rating10" title="5점"></label>
                     <input type="radio" id="rating9" name="rating" value="9"><label class="half" for="rating9" title="4.5점"></label>
                     <input type="radio" id="rating8" name="rating" value="8"><label for="rating8" title="4점"></label>
@@ -576,25 +656,23 @@ div#makePhotoTicket{font-family: 'Noto Sans KR', sans-serif;}
                     <input type="radio" id="rating2" name="rating" value="2"><label for="rating2" title="1점"></label>
                     <input type="radio" id="rating1" name="rating" value="1"><label class="half" for="rating1" title="0.5점"></label>
                   </fieldset>
-     		  	</div>
-			    <div style="display: flex; margin: 5px auto; padding: 5px; border-top: solid 1px #e6e6e6; text-align: center;">
-                 <label for="check_wantsee" style="cursor: pointer; width: 28%;" class="my-2 mx-2">
-                   <i class="seechange1 fas fa-plus wantseei" style="color: gray; width: 14px;"></i>
-                   <i class="seechange2 fas fa-bookmark" style="color: gray; width: 14px;"></i>
-                   <span class="wantseei">&nbsp;&nbsp;보고싶어요</span>
-                   <input type="checkbox" id="check_wantsee" name="check_wantsee"/>
-                 </label>
-                 <label for="check_seeing" style="cursor: pointer; width: 20%;" class="my-2 mx-2">
-                   <i class="far fa-eye seeingi" style="color: gray;"></i>
-                   <span class="seeingi">&nbsp;&nbsp;보는중</span>
-                   <input type="checkbox" id="check_seeing" name="check_seeing"/>
-                 </label>
+   		  	  	</div>
+			    <div class="py-2 pl-3 text-center" style="display: flex;">
+		         <p class="h6 py-2 mx-2" style="width: 45%;">개봉일자&nbsp;${requestScope.searchDetail.release_date}</p>
+                 <form name="movieDiaryFrm" style="width: 55%;">
 				 <c:if test="${not empty requestScope.searchDetail.watching_date}">
-			       <p class="my-2 mx-2" style="width: 50%;">관람일자<span class="ml-1">${requestScope.searchDetail.watching_date}</span></p>
+			       <p class="h6 py-2 mx-2" data-toggle="tooltip" title="관람일자를 수정하려면 클릭하세요.">관람일자
+    			     <input type="text" id="watching_date" name="watching_date" value="${requestScope.searchDetail.watching_date}" readonly="readonly" style="width: 110px; border: none; cursor: pointer; color: gray;" />
+			       </p>
+			       <input type="hidden" name="diary_id" value="${requestScope.searchDetail.diary_id}" />
 				 </c:if>
 				 <c:if test="${empty requestScope.searchDetail.watching_date}">
-			       <p class="my-2 mx-2" style="width: 50%;">관람일자<button type="button" class="ml-1" style="background-color: transparent; border: none; font-weight: 500; color: #ff0558;">등록</button></p>
+			       <p class="h6 py-2 mx-2">관람일자
+    			     <input type="text" id="watching_date" name="watching_date" value="" readonly="readonly" placeholder="등록하기" style="width: 110px; border: none; cursor: pointer; color: gray;" />
+			       </p>
+			       <input type="hidden" name="movie_id" value="${requestScope.searchDetail.movie_id}" />
 				 </c:if>
+                 </form>
 			    </div>
   			  </div>
 		    </div>
@@ -607,7 +685,7 @@ div#makePhotoTicket{font-family: 'Noto Sans KR', sans-serif;}
 		  
 	  	    <div id="comment" class="mx-auto p-1 m-2" style="width: 45%;">
 	 	      <h5 style="padding-left: 10px; font-weight: 600;">이 영화에 대한 한줄평</h5>
-	          <div class="mx-auto mt-2 mb-3 p-1">
+	          <div class="mx-auto my-3 p-1">
        		    <div class="mx-auto my-auto p-2" style="background-color: #f8f8f8; border: solid 1px #e6e6e6; border-radius: 2%;">
      		  	  
     		  	<c:if test="${not empty requestScope.searchReview}">
@@ -662,11 +740,12 @@ div#makePhotoTicket{font-family: 'Noto Sans KR', sans-serif;}
                       <img class="img-thumnail rounded img-fluid" style="width: 100%;" src="<%= ctxPath%>/resources/photoTicket/${requestScope.searchDetail.photo_back}">
 	    	        </div>
 				  </div>
+				  <p style="color: gray;">포토티켓을 다시 만들 수도 있어요!<button type="button" data-toggle="modal" data-backdrop="static" data-target="#makePhotoTicket" style="border:none; background-color: transparent; font-weight: bold; color: #ff0558;">포토티켓 만들기</button></p>
 				  </c:if>
 				  
 				  <c:if test="${empty requestScope.searchDetail.photo_front}">
-		          <div class="m-1 w-100 text-center my-3">
-   		  	        <p style="padding: 10px;" class="h5">등록된 포토티켓이 없어요.</p>
+		          <div class="m-1 w-100 text-center my-3 pt-1">
+   		  	        <p style="padding: 10px;" class="h6">등록된 포토티켓이 없어요.</p>
    		  	        <c:if test="${not empty requestScope.searchDetail.watching_date}">
 	                  <button type="button" class="btn btn-md btn-secondary p-2 m-2" data-toggle="modal" data-backdrop="static" data-target="#makePhotoTicket">포토티켓 만들기</button>
    		  	        </c:if>
@@ -696,7 +775,7 @@ div#makePhotoTicket{font-family: 'Noto Sans KR', sans-serif;}
 			    <div class="row mx-auto mt-3 mb-2" style="display: flex; padding: 10px 0; height: 450px;">
 		          <div id="div_photo_front" class="col p-1 pt-3 mx-1 text-center" style="width: 98%; height: 420px; border: solid 1px #e6e6e6; border-radius: 2%;">
                     <img id="img_photo_front" class="img-thumnail" style="width: 90%; border-radius: 3%;" src="<%= ctxPath %>/resources/images/photoTicket/${requestScope.searchDetail.poster_path}">
-			        <input type="text" id="photoText" style="width: 98%; text-align: center; border: none; font-size: 10pt; margin: 8px;" placeholder="포토티켓에 문구를 넣어보세요."/>
+			        <input type="text" id="photoText" style="width: 98%; text-align: center; border: none; font-size: 10pt; margin: 8px;" placeholder="포토티켓에 문구를 넣어보세요." autocomplete="off" />
     	          </div>
 		          <div id="div_photo_back" class="col p-1 py-3 mx-1" style="width: 98%; height: 420px; border: solid 1px #e6e6e6; border-radius: 2%;">
 		      	    <div>
@@ -743,7 +822,7 @@ div#makePhotoTicket{font-family: 'Noto Sans KR', sans-serif;}
       <c:if test="${empty requestScope.searchReview}">
 		<div class="modal fade registerReview" id="registerReview" data-keyboard="false">
 		<form name="registerReviewFrm">
-		  <input type="hidden" name="user_id" value="qwer1234" />
+		  <input type="hidden" name="user_id" value="${sessionScope.loginuser.user_id}" />
 		  <input type="hidden" name="movie_id" value="${requestScope.searchDetail.movie_id}" />
 		  <div class="modal-dialog modal-dialog-centered">
 		    <div class="modal-content">

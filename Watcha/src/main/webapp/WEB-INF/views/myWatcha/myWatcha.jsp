@@ -83,17 +83,19 @@ input#searchWord{width: 100%; border: none; font-size: 11pt;}
 input#searchWord:focus{outline: none;}
 select {border: none; font-size: 11pt;}
 select :focus{outline: none;}
+input#fromDate:focus, input#toDate:focus{outline: none;}
 
 div#div_rating label {min-width: 30px; padding: 4px; margin: 0px 10px; border-radius: 10%; box-shadow: 1px 1px 1px #e6e6e6; cursor: pointer;}
 div#div_rating input {display: none;}
 
 div#searchResult td {padding: 4px; margin: 0px; text-align: center;}
 
-<%-- 한줄평등록 모달 --%>
+<%-- 한줄평등록/수정 모달 --%>
 div#registerReview{font-family: 'Noto Sans KR', sans-serif; cursor: default;}
 div#editReview{font-family: 'Noto Sans KR', sans-serif; cursor: default;}
 .modal-body textarea:focus,
 .modal-body input:focus {outline: none;}
+.fa-face-meh:hover{cursor: pointer;}
 
 <%-- 무비다이어리 모달 --%>
 div#makeMovieDiary{font-family: 'Noto Sans KR', sans-serif;}
@@ -141,32 +143,17 @@ a, a:hover, .fc-daygrid {color: #000; text-decoration: none; background-color: t
 			}
  		});		
  		
- 		// 한줄평 등록/수정 모달에서 checkbox 를 체크했을 때
- 		$("input#spoiler_status").change(function(){
- 			if($(this).prop("checked")){ // 체크박스 체크 ==> 스포일러 포함
- 				$(this).prev().css("color","#ff0558");
- 				$(this).next().text("한줄평에 스포일러가 포함되었어요.");
- 				$(this).val("1");
- 			}
- 			else { // 체크박스 체크해제 ==> 스포일러 미포함
- 				$(this).prev().css("color","#cccccc");
- 				$(this).next().text("스포일러가 포함된 한줄평을 가려보세요.");
- 				$(this).val("0");
- 			}
- 		}); // end of $("input#spoiler_status").change(function(){})
- 		
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  		
 		// 포토티켓 다운로드 
- 		$(".photoTitle").find('.download').hide();
+ 		$(".photoTitle").next().hide();
 
  		$(".photoTitle").hover(function(){
- 				$(this).find('.download').slideDown('fast');
+ 				$(this).next().slideDown('fast');
 	 		}, function(){
-	 			$(this).find('.download').slideUp('fast');
+	 			$(this).next().slideUp('fast');
  		});
 
-	
  		// 무비다이어리 - 풀캘린더
  		var calendarEl = document.getElementById('movieCalendar');
  		
@@ -176,9 +163,9 @@ a, a:hover, .fc-daygrid {color: #000; text-decoration: none; background-color: t
  	        selectable: true,
  		    editable: false,
  		    headerToolbar: {
- 		    	  left: 'prev,next today',
+ 		    	  left: 'prev',
  		          center: 'title',
- 		          right: 'dayGridMonth dayGridWeek dayGridDay'
+ 		          right: 'today next'
  		    },
  		    dayMaxEventRows: true, // for all non-TimeGrid views
  		    views: {
@@ -188,16 +175,17 @@ a, a:hover, .fc-daygrid {color: #000; text-decoration: none; background-color: t
  		    },
  			
  		    // ===================== DB 와 연동하는 법 시작 ===================== //
- 	    	events:function(info, successCallback, failureCallback) {
+			events:function(info, successCallback, failureCallback) {
  		
- 		    	 $.ajax({
- 	                 url: "<%= ctxPath%>/showMovieDiary.action",
- 	                 dataType: "json",
- 	                 success:function(json) {
- 	                	 var events = [];
- 	                     if(json.length > 0){
- 	                         
-                         	$.each(json, function(index, item) {
+ 		    	$.ajax({
+ 	                url: "<%= ctxPath%>/myWatcha/showMovieDiary.action",
+ 	                dataType: "json",
+ 	                success:function(json) {
+						var events = [];
+ 	                    if(json.length > 0){
+ 	                        
+ 	                    	var diaryExists = []; // 관람일자가 이미 등록된 영화의 movie_id를 담을 배열
+                        	$.each(json, function(index, item) {
 	                        	var watching_date = moment(item.watching_date).format('YYYY-MM-DD');
 	                              
                          		events.push({
@@ -207,14 +195,16 @@ a, a:hover, .fc-daygrid {color: #000; text-decoration: none; background-color: t
                                     color: item.color,
                                     url: "<%= ctxPath%>/myWatcha/searchDetail.action?movie_id="+item.movie_id
                          		}); // end of events.push({})
-                                 		
+                                
+                         		diaryExists.push(item.movie_id); // 관람일자가 이미 등록된 영화의 movie_id 를 push
 	                     	}); // end of $.each(json, function(index, item) {})
- 	                     } // end of if                         
- 	                         successCallback(events);                               
- 	                  },
- 					  error: function(request, status, error){
- 				            alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
- 				      }	
+	                     	$("input.movie_id").val(diaryExists);
+ 	                    } // end of if                         
+ 	                    successCallback(events);                               
+ 	                },
+ 					error: function(request, status, error){
+ 				    	alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+ 				    }	
  	                                            
  	          }); // end of $.ajax({})
  	        
@@ -226,12 +216,12 @@ a, a:hover, .fc-daygrid {color: #000; text-decoration: none; background-color: t
  	      	 // alert('클릭한 Date: ' + info.dateStr); // 클릭한 Date: 2021-11-20
  	      	    $(".fc-day").css('background','none'); // 현재 날짜 배경색 없애기
  	      	    info.dayEl.style.backgroundColor = '#b1b8cd'; // 클릭한 날짜의 배경색 지정하기
- 	      	 	console.log(info.dateStr);
+ 	      	 	movieDiaryModal(info.dateStr);
  	      	},
- 	    	eventDidMount: function (arg) {
+ 	    	eventDidMount: function(arg) {
             	arg.el.style.display = "block"; // 풀캘린더에서 일정을 보여준다.
- 			}
- 	  	});
+            }
+ 	    });
  	    
 		calendar.render();  // 풀캘린더 보여주기
 		calendar.refetchEvents();  // 모든 소스의 이벤트를 다시 가져와 화면에 다시 표시합니다.
@@ -243,31 +233,43 @@ a, a:hover, .fc-daygrid {color: #000; text-decoration: none; background-color: t
 			let html = "";
 
 			if(movie_id == "0"){ // "영화를 선택하세요." 일 경우
-				$("div_movie_poster").html('');
+				$("div#div_movie_poster").html('');
+				$("div#div_rating").html('');
 			}
 			else {
-				let ratingMoviesList = "${requestScope.ratingMoviesList}";
-				
-				ratingMoviesList.each(function(index, item){
-					if(movie_id == item.movie_id){
-						$("div_movie_poster").html('<img class="img-thumnail" style="width: 90%; border-radius: 3%;" src="https://image.tmdb.org/t/p/w780/'+item.poster_path+'">');
-
-						if(item.rating %1 != 0){ // 별점에 소수점 포함 (예: 3.5)
-			        		let starCount = Math.floor(item.rating);
-			        		for(let i=0; i<starCount; i++){
-			        			html += '<i class="fa-solid fa-star" style="color: #fdd346;"></i>';
-			        		}
-							html += '<i class="fa-solid fa-star-half" style="color: #fdd346;"></i>';
-			        	}
-			        	else {
-			        		for(let i=0; i<item.rating; i++){
-			        			html += '<i class="fa-solid fa-star" style="color: #fdd346;"></i>';
-			        		}
-			        	}
-						$("div#div_rating").append(html);
+				let poster_path;
+				$("input.poster_path").each(function(index, item){
+					if($(item).attr('name') == movie_id){
+						poster_path = $(item).val();
 						return;
 					}
-				}); // end of ratingMoviesList.each(function(index, item){})
+				});
+
+				$("div#div_movie_poster").html('<img class="img-thumnail" style="width: 90%; border-radius: 3%; border: solid 1px gray;" src="https://image.tmdb.org/t/p/w780/'+poster_path+'">');
+				
+				let rating;
+				$("input.rating").each(function(index, item){
+					if($(item).attr('name') == movie_id){
+						rating = $(item).val();
+						return;
+					}
+				});
+				
+				html += '<p class="h5 py-2">${sessionScope.loginuser.name}님의 별점평가</p>';
+				
+				if(rating %1 != 0){ // 별점에 소수점 포함 (예: 3.5)
+	        		let starCount = Math.floor(rating);
+	        		for(let i=0; i<starCount; i++){
+	        			html += '<i class="fa-solid fa-star fa-2xl" style="color: #fdd346;"></i>';
+	        		}
+					html += '<i class="fa-solid fa-star-half fa-2xl" style="color: #fdd346;"></i>';
+	        	}
+	        	else {
+	        		for(let i=0; i<rating; i++){
+	        			html += '<i class="fa-solid fa-star fa-2xl" style="color: #fdd346;"></i>';
+	        		}
+	        	}
+				$("div#div_rating").html(html);
 			}
 		}); // end of $("select#movie_id").change(function(){})
 		
@@ -352,6 +354,21 @@ a, a:hover, .fc-daygrid {color: #000; text-decoration: none; background-color: t
  		
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  	    
+		// 한줄평 등록/수정 모달에서 checkbox 를 체크했을 때
+ 		$("input#spoiler_status").change(function(){
+ 			if($(this).prop("checked")){ // 체크박스 체크 ==> 스포일러 포함
+ 				$(this).prev().css("color","#ff0558");
+ 				$(this).next().text("한줄평에 스포일러가 포함되었어요.");
+ 				$(this).val("1");
+ 			}
+ 			else { // 체크박스 체크해제 ==> 스포일러 미포함
+ 				$(this).prev().css("color","#cccccc");
+ 				$(this).next().text("스포일러가 포함된 한줄평을 가려보세요.");
+ 				$(this).val("0");
+ 			}
+ 		}); // end of $("input#spoiler_status").change(function(){})
+ 		
+
   		// 한줄평 "등록" 버튼 클릭 시
  		$("button#btnAdd").click(function(){
 
@@ -412,6 +429,8 @@ a, a:hover, .fc-daygrid {color: #000; text-decoration: none; background-color: t
    	    		if(frm != null){
    		    		frm.reset();
    	    		}
+				$("div#div_movie_poster").html('');
+				$("div#div_rating").html('');
    	    	});
     	}); // end of $(".modal").each(function(index, item){})
    	
@@ -457,9 +476,14 @@ a, a:hover, .fc-daygrid {color: #000; text-decoration: none; background-color: t
 						  	  +   '</div>'
 						  	  + '</div>';
 					}); // end of $.each(json, function(index, item){})
+					
+					$("div#div_review").html(html);
+					showReviewPageBar(Number(currentShowPageNo));
+				} // end of if (작성한 한줄평이 있는 경우)
+				else {
+			          html = '<p class="h5 text-center">작성한 한줄평이 없어요.</p>';
+					  $("div#review").html(html);
 				}
-				$("div#div_review").html(html);
-				showReviewPageBar(Number(currentShowPageNo));
 			},
 			error: function(request, status, error){
 	            alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
@@ -484,14 +508,47 @@ a, a:hover, .fc-daygrid {color: #000; text-decoration: none; background-color: t
 	} // end of function showReviewPageBar(currentShowPageNo)
 	
 	// 포토티켓 다운로드
-	function downloadPhoto(){
+	function downloadPhoto(diary_id){
 		
-	}
+	} // end of function downloadPhoto(diary_id)
 	
 	// 무비다이어리 모달창 보여주기
-	function movieDiaryModal(){
+	function movieDiaryModal(watching_date){
+		$("input#watching_date").val(watching_date);
+ 	    $("input#watching_date").datepicker();
+ 	    
+ 	    // 관람일자가 이미 등록된 영화는 무비다이어리 등록에서 제외하도록 한다.
+		let diaryExists_arr = $("input.movie_id").val().split(",");
+		
+		$("option#movie_id").each(function(index, item){
+			for(let i=0; i<diaryExists_arr.length; i++){
+				if($(item).val() == diaryExists_arr[i]){
+					$(item).remove();
+				}
+			} // end of for
+		}); // end of $("option#movie_id").each(function(index, item){})
+
 		$("div#makeMovieDiary").modal('show');
-	} // end of function movieDiaryModal()
+ 	    
+	} // end of function movieDiaryModal(watching_date)
+	
+	// 무비다이어리 등록하기
+	function registerDiary(){
+		const queryString = $("form[name='movieDiaryFrm']").serialize();
+		$.ajax({
+			url:"<%= ctxPath%>/myWatcha/registerDiary.action",
+			data:queryString,
+			type:"post",
+			dataType:"json",
+			success:function(json){
+			//	console.log("확인용 : "+JSON.stringify(json));
+				location.href="<%= ctxPath %>/myWatcha/searchDetail.action?movie_id="+$('select#movie_id').val();
+			},
+			error: function(request, status, error){
+	            alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+	        }
+		});		
+	} // end of function registerDiary()
 	
 	// 검색하기 - 검색결과
 	function searchResult(){
@@ -572,7 +629,7 @@ a, a:hover, .fc-daygrid {color: #000; text-decoration: none; background-color: t
 					}); // end of $.each(json, function(index, item){})
 				}
 				else {
-					html += "<p>검색조건에 해당하는 검색결과가 없어요.</p>";
+					html += "<p class='h5 text-center'>검색조건에 해당하는 검색결과가 없어요.</p>";
 				}
 				
 				$("div#searchResult").html(html);
@@ -592,7 +649,7 @@ a, a:hover, .fc-daygrid {color: #000; text-decoration: none; background-color: t
 	  	  <div class="row">
 			<div class="col-md-12 text-right">
 			  <%-- 마이페이지로 이동 --%>
-			  <a id="goMyPage" href="#"><i class="fa-solid fa-gear fa-2xl" style="color: #cccccc;"></i></a>
+			  <a id="goMyPage" href="<%= ctxPath %>/modifyMyInfo.action"><i class="fa-solid fa-gear fa-2xl" style="color: #cccccc;"></i></a>
 			</div>
 	  	  </div>
 	  	  <%-- 배경이미지(회원이 평가한 영화 중 최근 5개) --%>
@@ -670,31 +727,31 @@ a, a:hover, .fc-daygrid {color: #000; text-decoration: none; background-color: t
 					<div class="carousel-item active">
 					  <div class="col-md-3 p-1">
 						<div class="card">
-						  <a href="#" style="text-decoration: none; color: black;">
-					        <div class="p-0 m-0 mx-auto" style="overflow: hidden; height: 240px;">
-	                          <img class="img card-img-top" src="https://image.tmdb.org/t/p/w780/${movie.poster_path}">
-					        </div>
-		                    <div class="card-body text-center px-0">
-		                      <div style="overflow: hidden; height: 40px;" class="p-0 m-0 px-3">
+				          <div class="p-0 m-0 mx-auto" style="overflow: hidden; height: 240px;">
+                            <img class="img card-img-top" src="https://image.tmdb.org/t/p/w780/${movie.poster_path}">
+				          </div>
+	                      <div class="card-body text-center px-0">
+	                        <div style="overflow: hidden; height: 40px;" class="p-0 m-0 px-3">
+						      <a href="<%= ctxPath %>/myWatcha/searchDetail.action?movie_id=${movie.movie_id}" style="text-decoration: none; color: black;">
 						        <h6 class="card-title"><span style="display:none;">${movie.movie_id}</span>${movie.movie_title}</h6>
-		                      </div>
-						      <div class="card-text px-1">
-						       <span style="color: #FDD346;">${movie.rating}</span>
-						       <c:if test="${movie.rating %1 ne 0}"> <%-- 별점에 소수점 포함 (예: 3.5) --%>
+		                      </a>
+		                    </div>
+						    <div class="card-text px-1">
+						      <span style="color: #FDD346;">${movie.rating}</span>
+						      <c:if test="${movie.rating %1 ne 0}"> <%-- 별점에 소수점 포함 (예: 3.5) --%>
 						        <fmt:parseNumber var="rating" value="${movie.rating}" integerOnly="true" />
 						        <c:forEach begin="1" end="${rating}">
-					             <i class="fa-solid fa-star" style="color: #FDD346;"></i>
+					              <i class="fa-solid fa-star" style="color: #FDD346;"></i>
 						        </c:forEach>
-								 <i class="fa-solid fa-star-half" style="color: #FDD346;"></i>						       
-						       </c:if>
-						       <c:if test="${movie.rating %1 eq 0}"> <%-- 별점에 소수점 포함X (예: 4) --%>
+								  <i class="fa-solid fa-star-half" style="color: #FDD346;"></i>						       
+						      </c:if>
+						      <c:if test="${movie.rating %1 eq 0}"> <%-- 별점에 소수점 포함X (예: 4) --%>
 						        <c:forEach begin="1" end="${movie.rating}">
-					             <i class="fa-solid fa-star" style="color: #FDD346;"></i>
+					              <i class="fa-solid fa-star" style="color: #FDD346;"></i>
 						        </c:forEach>
-						       </c:if>
-						      </div>
-					  	    </div>
-						  </a>
+						      </c:if>
+						    </div>
+					  	  </div>
 				    	</div>
 					  </div>
 					</div>
@@ -703,31 +760,31 @@ a, a:hover, .fc-daygrid {color: #000; text-decoration: none; background-color: t
 					<div class="carousel-item">
 					  <div class="col-md-3 p-1">
 						<div class="card">
-						  <a href="#" style="text-decoration: none; color: black;">
-					        <div class="p-0 m-0 mx-auto" style="overflow: hidden; height: 240px;">
-	                          <img class="img card-img-top" src="https://image.tmdb.org/t/p/w780/${movie.poster_path}">
-					        </div>
-		                    <div class="card-body text-center px-0">
-		                      <div style="overflow: hidden; height: 40px;" class="p-0 m-0 px-3">
+				          <div class="p-0 m-0 mx-auto" style="overflow: hidden; height: 240px;">
+                            <img class="img card-img-top" src="https://image.tmdb.org/t/p/w780/${movie.poster_path}">
+				          </div>
+	                      <div class="card-body text-center px-0">
+	                        <div style="overflow: hidden; height: 40px;" class="p-0 m-0 px-3">
+						      <a href="<%= ctxPath %>/myWatcha/searchDetail.action?movie_id=${movie.movie_id}" style="text-decoration: none; color: black;">
 						        <h6 class="card-title"><span style="display:none;">${movie.movie_id}</span>${movie.movie_title}</h6>
-		                      </div>
-						      <div class="card-text px-1">
-						       <span style="color: #FDD346;">${movie.rating}</span>
-						       <c:if test="${movie.rating %1 ne 0}"> <%-- 별점에 소수점 포함 (예: 3.5) --%>
+		                      </a>
+		                    </div>
+						    <div class="card-text px-1">
+						      <span style="color: #FDD346;">${movie.rating}</span>
+						      <c:if test="${movie.rating %1 ne 0}"> <%-- 별점에 소수점 포함 (예: 3.5) --%>
 						        <fmt:parseNumber var="rating" value="${movie.rating}" integerOnly="true" />
 						        <c:forEach begin="1" end="${rating}">
-					             <i class="fa-solid fa-star" style="color: #FDD346;"></i>
+					              <i class="fa-solid fa-star" style="color: #FDD346;"></i>
 						        </c:forEach>
-								 <i class="fa-solid fa-star-half" style="color: #FDD346;"></i>						       
-						       </c:if>
-						       <c:if test="${movie.rating %1 eq 0}"> <%-- 별점에 소수점 포함X (예: 4) --%>
+								  <i class="fa-solid fa-star-half" style="color: #FDD346;"></i>						       
+						      </c:if>
+						      <c:if test="${movie.rating %1 eq 0}"> <%-- 별점에 소수점 포함X (예: 4) --%>
 						        <c:forEach begin="1" end="${movie.rating}">
-					             <i class="fa-solid fa-star" style="color: #FDD346;"></i>
+					              <i class="fa-solid fa-star" style="color: #FDD346;"></i>
 						        </c:forEach>
-						       </c:if>
-						      </div>
-					  	    </div>
-						  </a>
+						      </c:if>
+						    </div>
+					  	  </div>
 				    	</div>
 					  </div>
 					</div>
@@ -751,31 +808,31 @@ a, a:hover, .fc-daygrid {color: #000; text-decoration: none; background-color: t
 					<div class="row mx-auto">
 					  <div class="col-md-3 p-1">
 						<div class="card">
-						  <a href="#" style="text-decoration: none; color: black;">
-					        <div class="p-0 m-0 mx-auto" style="overflow: hidden; height: 240px;">
-	                          <img class="img card-img-top" src="https://image.tmdb.org/t/p/w780/${movie.poster_path}">
-					        </div>
-		                    <div class="card-body text-center px-0">
-		                      <div style="overflow: hidden; height: 40px;" class="p-0 m-0 px-3">
+				          <div class="p-0 m-0 mx-auto" style="overflow: hidden; height: 240px;">
+                            <img class="img card-img-top" src="https://image.tmdb.org/t/p/w780/${movie.poster_path}">
+				          </div>
+	                      <div class="card-body text-center px-0">
+	                        <div style="overflow: hidden; height: 40px;" class="p-0 m-0 px-3">
+						      <a href="<%= ctxPath %>/myWatcha/searchDetail.action?movie_id=${movie.movie_id}" style="text-decoration: none; color: black;">
 						        <h6 class="card-title"><span style="display:none;">${movie.movie_id}</span>${movie.movie_title}</h6>
-		                      </div>
-						      <div class="card-text px-1">
-						       <span style="color: #FDD346;">${movie.rating}</span>
-						       <c:if test="${movie.rating %1 ne 0}"> <%-- 별점에 소수점 포함 (예: 3.5) --%>
+		                      </a>
+		                    </div>
+						    <div class="card-text px-1">
+						      <span style="color: #FDD346;">${movie.rating}</span>
+						      <c:if test="${movie.rating %1 ne 0}"> <%-- 별점에 소수점 포함 (예: 3.5) --%>
 						        <fmt:parseNumber var="rating" value="${movie.rating}" integerOnly="true" />
 						        <c:forEach begin="1" end="${rating}">
-					             <i class="fa-solid fa-star" style="color: #FDD346;"></i>
+					              <i class="fa-solid fa-star" style="color: #FDD346;"></i>
 						        </c:forEach>
-								 <i class="fa-solid fa-star-half" style="color: #FDD346;"></i>						       
-						       </c:if>
-						       <c:if test="${movie.rating %1 eq 0}"> <%-- 별점에 소수점 포함X (예: 4) --%>
+								  <i class="fa-solid fa-star-half" style="color: #FDD346;"></i>						       
+						      </c:if>
+						      <c:if test="${movie.rating %1 eq 0}"> <%-- 별점에 소수점 포함X (예: 4) --%>
 						        <c:forEach begin="1" end="${movie.rating}">
-					             <i class="fa-solid fa-star" style="color: #FDD346;"></i>
+					              <i class="fa-solid fa-star" style="color: #FDD346;"></i>
 						        </c:forEach>
-						       </c:if>
-						      </div>
-					  	    </div>
-						  </a>
+						      </c:if>
+						    </div>
+					  	  </div>
 				    	</div>
 					  </div>
 					</div>
@@ -813,7 +870,7 @@ a, a:hover, .fc-daygrid {color: #000; text-decoration: none; background-color: t
 	          <c:if test="${status.index == 0}">
 	            <div class="carousel-item active">
 		          <div class="col-md-3 p-1">
-		            <div class="flip-card" style="height: 250px;">
+		            <div class="flip-card" style="height: 280px;">
 		              <div class="flip-card-inner">
 					    <div class="flip-card-front m-1">
 	                      <img class="img-thumnail rounded img-fluid" style="width: 100%;" src="<%= ctxPath%>/resources/photoTicket/${photoTicket.photo_front}">
@@ -823,14 +880,17 @@ a, a:hover, .fc-daygrid {color: #000; text-decoration: none; background-color: t
 			    	    </div>
 		              </div>
 				    </div>
-			        <h6 class="photoTitle card-title p-2" style="position: relative; top: 0.5rem; cursor: pointer;">${photoTicket.movie_title}<i class="download fa-regular fa-circle-down ml-2" style="color: gray;" onclick="downloadPhoto()"></i></h6>
+                    <div style="height: 80px;" class="p-0 my-2 text-center">
+			          <h6 class="photoTitle card-title p-0 m-0" style="cursor: pointer; overflow: hidden; max-height: 50px;">${photoTicket.movie_title}</h6>
+			          <i class="download fa-regular fa-circle-down" style="color: gray; background-color:#fff; width: 100%;" onclick="downloadPhoto(${photoTicket.diary_id})">&nbsp;<span style="font-size: 10pt;">다운로드</span></i>
+                    </div>
 		          </div>
 			    </div>
 			  </c:if>
 	          <c:if test="${status.index != 0}">
 	            <div class="carousel-item">
 		          <div class="col-md-3 p-1">
-		            <div class="flip-card" style="height: 250px;">
+		            <div class="flip-card" style="height: 280px;">
 		              <div class="flip-card-inner">
 					    <div class="flip-card-front m-1">
 	                      <img class="img-thumnail rounded img-fluid" style="width: 100%;" src="<%= ctxPath%>/resources/photoTicket/${photoTicket.photo_front}">
@@ -840,7 +900,10 @@ a, a:hover, .fc-daygrid {color: #000; text-decoration: none; background-color: t
 			    	    </div>
 		              </div>
 				    </div>
-			        <h6 class="photoTitle card-title p-2" style="position: relative; top: 0.5rem; cursor: pointer;">${photoTicket.movie_title}<i class="download fa-regular fa-circle-down ml-2" style="color: gray;" onclick="downloadPhoto()"></i></h6>
+                    <div style="height: 80px;" class="p-0 my-2 text-center">
+			          <h6 class="photoTitle card-title p-0 m-0" style="cursor: pointer; overflow: hidden; max-height: 50px;">${photoTicket.movie_title}</h6>
+			          <i class="download fa-regular fa-circle-down" style="color: gray; background-color:#fff; width: 100%;" onclick="downloadPhoto(${photoTicket.diary_id})">&nbsp;<span style="font-size: 10pt;">다운로드</span></i>
+                    </div>
 		          </div>
 			    </div>
 			  </c:if>
@@ -872,7 +935,10 @@ a, a:hover, .fc-daygrid {color: #000; text-decoration: none; background-color: t
 			    	    </div>
 		              </div>
 				    </div>
-			        <h6 class="photoTitle card-title p-2" style="position: relative; top: 0.5rem; cursor: pointer;">${photoTicket.movie_title}<i class="download fa-regular fa-circle-down ml-2" style="color: gray;" onclick="downloadPhoto()"></i></h6>
+                    <div style="height: 80px;" class="p-0 my-2 text-center">
+			          <h6 class="photoTitle card-title p-0 m-0" style="cursor: pointer; overflow: hidden; max-height: 50px;">${photoTicket.movie_title}</h6>
+			          <i class="download fa-regular fa-circle-down" style="color: gray; background-color:#fff; width: 100%;" onclick="downloadPhoto(${photoTicket.diary_id})">&nbsp;<span style="font-size: 10pt;">다운로드</span></i>
+                    </div>
 		          </div>
 			  </c:forEach>
 			  </div>
@@ -883,7 +949,7 @@ a, a:hover, .fc-daygrid {color: #000; text-decoration: none; background-color: t
 	          <p class="h5 text-center my-1">등록한 포토티켓이 없어요.</p>
 	        </c:if>
 	        
-	  	    <div style="display: flex; padding: 0 50px;" class="mt-5">
+	  	    <div style="display: flex; padding: 0 50px;" class="mt-3">
 	 	      <h5 style="padding-left: 5px; font-weight: 600;">무비다이어리</h5>
 	        </div>
 	        <div class="mx-auto my-1 mb-3" style="padding: 0 50px;">
@@ -985,9 +1051,9 @@ a, a:hover, .fc-daygrid {color: #000; text-decoration: none; background-color: t
               <%-- 관람일자로 검색하기 --%>
               <div class="m-2 my-2" style="width: 100%; display: inline-block;">
 			    <span class="pr-3 h6">관람일자</span>
-				<input type="text" id="fromDate" readonly="readonly" style="width: 15%; border: none; cursor: pointer; color: gray;">
+				<input type="text" id="fromDate" readonly="readonly" placeholder="&nbsp;&nbsp;&nbsp;시작일자" style="width: 15%; border: none; cursor: pointer; color: gray;">
 	            <span>&nbsp;~&nbsp;</span> 
-	            <input type="text" id="toDate" readonly="readonly" style="width: 15%; border: none; cursor: pointer; color: gray;">
+	            <input type="text" id="toDate" readonly="readonly" placeholder="&nbsp;&nbsp;&nbsp;종료일자" style="width: 15%; border: none; cursor: pointer; color: gray;">
                 <button type="button" id="btnDateReset" class="btn btn-sm btn-secondary m-1">날짜 지우기</button>
                 <button type="button" class="btn btn-md m-1" onclick="searchResult()" style="position: relative; float: right; background-color: #ff0558; color: #fff;">검색하기</button>
                 <button type="button" id="btnSearchReset" class="btn btn-md m-1" style="position: relative; float: right; background-color: #ff80aa; color: #fff;">초기화</button>
@@ -1010,35 +1076,36 @@ a, a:hover, .fc-daygrid {color: #000; text-decoration: none; background-color: t
 		<form name="movieDiaryFrm">
 		  <div class="modal-dialog modal-dialog-centered mx-auto">
 		    <div class="modal-content mx-auto" style="width: 85%;">
-		      <div class="modal-body text-center" style="height: 620px; margin: 10px;">
+		      <div class="modal-body text-center" style="margin: 10px;">
 		        <h5 class="modal-title" style="font-weight: bold;">무비다이어리 - 관람일자 등록하기<button type="button" class="close" data-dismiss="modal">&times;</button></h5>
 		        <p style="color: gray;">별점평가를 한 영화에 한해서만 관람일자 등록이 가능해요.</p>
-			    <div class="row mx-auto mt-3 mb-2" style="display: flex; padding: 10px 0; height: 450px;">
-		          <div id="div_movie_poster" class="col p-1 pt-3 mx-1 text-center" style="width: 98%; height: 420px; border: solid 1px #e6e6e6; border-radius: 2%;"></div>
-		          <div class="col p-1 py-3 mx-1" style="width: 98%; height: 420px; border: solid 1px #e6e6e6; border-radius: 2%;">
-		      	    <div>
-		      	      <div class="py-2">
-		      	        <label>등록할 영화</label>
-		      	        <select id="movie_id" name="movie_id">
-		      	          <option value="0">영화를 선택하세요.</option>
-	             		  <c:forEach var="movie" items="${requestScope.ratingMoviesList}">
-		      	            <option value="${movie.movie_id}">${movie.movie_title}</option>
-		      	          </c:forEach>
-		      	        </select>
-		      	      </div>
-		      	      <div class="py-2">
-		      	        <label>관람일자</label>
-					    <input type="text" id="watching_date" name="watching_date" readonly="readonly" style="width: 15%; border: none; cursor: pointer; color: gray;">
-					  </div>
-			          <div id="div_rating" class="py-2">
-		      	        <label>별점평가</label>
-			          </div>
-		      	    </div>
-    	          </div>
+			    <div class="row mx-auto mt-3 mb-2" style="display: flex; padding: 10px 0;">
+			      <div class="col-md-6">
+	      	        <p class="h5 my-3 p-1">등록할 영화를 선택해주세요.</p>
+      	            <select id="movie_id" name="movie_id" style="width: 200px;" class="my-2">
+      	              <option value="0">영화를 선택하세요.</option>
+            		  <c:forEach var="movie" items="${requestScope.ratingMoviesList}" varStatus="status">
+    	                <option id="movie_id" value="${movie.movie_id}">${movie.movie_title}</option>
+      	              </c:forEach>
+      	            </select>
+      	            <input type="hidden" name="diaryExists" class="movie_id" value="" />
+            	    <c:forEach var="movie" items="${requestScope.ratingMoviesList}">
+      	              <input type="hidden" name="${movie.movie_id}" class="poster_path" value="${movie.poster_path}" />
+      	              <input type="hidden" name="${movie.movie_id}" class="rating" value="${movie.rating}" />
+      	            </c:forEach>
+      	            <div style="display: flex;" class="my-3">
+	      	          <p class="h5 py-2 m-0 mx-3">관람일자</p>
+			          <input type="text" id="watching_date" name="watching_date" readonly="readonly" style="width: 130px; border: none; cursor: pointer; color: gray;" />
+      	            </div>
+	      	        <div id="div_rating" class="my-3"></div>
+			      </div>
+			      <div class="col-md-6">
+		            <div id="div_movie_poster" class="p-1 pt-3 mx-1 text-center" style="width: 98%;"></div>
+			      </div>
 			    </div>
 		        <button type="button" class="btn" onclick="registerDiary()" style="padding: 10px 30px; color: #ffffff; background-color: #ff0558;">등록하기</button>
 		        <button type="reset" class="btn btn-secondary" style="padding: 10px 30px;">취소하기</button>
-		      </div>
+    	      </div>
 		    </div>
 		  </div>
 		</form>
@@ -1067,12 +1134,12 @@ a, a:hover, .fc-daygrid {color: #000; text-decoration: none; background-color: t
       <c:if test="${empty requestScope.reviewInfo}">
 		<div class="modal fade registerReview" id="registerReview" data-keyboard="false">
 		<form name="registerReviewFrm">
-		  <input type="hidden" name="user_id" value="qwer1234" />
-		  <input type="hidden" name="movie_id" value="${requestScope.searchDetail.movie_id}" /> <%-- 수정해야함 --%>
+		  <input type="hidden" name="user_id" value="${sessionScope.loginuser.user_id}" />
+		  <input type="hidden" name="movie_id" value="${requestScope.movieDetail.movie_id}" />
 		  <div class="modal-dialog modal-dialog-centered">
 		    <div class="modal-content">
 		      <div class="modal-body">
-		        <h5 class="modal-title" style="font-weight: bold;">${requestScope.searchDetail.movie_title}<button type="button" class="close" data-dismiss="modal">&times;</button></h5> <%-- 수정해야함 --%>
+		        <h5 class="modal-title" style="font-weight: bold;">${requestScope.movieDetail.movie_title}<button type="button" class="close" data-dismiss="modal">&times;</button></h5>
 	      		<div class="my-2">
 	      		  <textarea id="review_content" name="review_content" style="width: 100%; height: 450px; resize: none; border: none;" placeholder="이 작품에 대한 생각을 자유롭게 표현해주세요."></textarea>
 	      		</div>
@@ -1104,7 +1171,7 @@ a, a:hover, .fc-daygrid {color: #000; text-decoration: none; background-color: t
 		  <div class="modal-dialog modal-dialog-centered">
 			<div class="modal-content">
 			  <div class="modal-body">
-			  	<h5 class="modal-title" style="font-weight: bold;">${requestScope.searchDetail.movie_title}<button type="button" class="close" data-dismiss="modal">&times;</button></h5> <%-- 수정해야 함 --%>
+			  	<h5 class="modal-title" style="font-weight: bold;">${requestScope.movieDetail.movie_title}<button type="button" class="close" data-dismiss="modal">&times;</button></h5>
 			  	<div class="my-2">
 			  	  <textarea id="review_content" name="review_content" style="width: 100%; height: 450px; resize: none; border: none;">${requestScope.reviewInfo.review_content}</textarea>
 			  	</div>

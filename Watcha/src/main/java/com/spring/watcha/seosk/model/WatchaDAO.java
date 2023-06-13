@@ -108,8 +108,8 @@ public class WatchaDAO implements InterWatchaDAO {
 
 	// 한줄평 - 로그인한 회원이 해당 영화에 대해 작성한 한줄평 유무 및 한줄평 정보
 	@Override
-	public MovieReviewVO reviewInfo(Map<String, String> paraMap) {
-		MovieReviewVO reviewInfo = sqlsession.selectOne("watcha.reviewInfo", paraMap);
+	public Map<String, String> reviewInfo(Map<String, String> paraMap) {
+		Map<String, String> reviewInfo = sqlsession.selectOne("watcha.reviewInfo", paraMap);
 		return reviewInfo;
 	}
 	
@@ -217,18 +217,20 @@ public class WatchaDAO implements InterWatchaDAO {
 		
 		Map<String, String> searchDetail = sqlsession.selectOne("watcha.searchDetail", paraMap);
 
-		// 영화에 따른 장르 이름 알아오기
-		List<GenreVO> genre_name_List = sqlsession.selectList("watcha.genre_name_List", searchDetail.get("movie_id"));
-		
-		String genre_name = "";
-		for(int i=0; i<genre_name_List.size(); i++) {
-			genre_name += genre_name_List.get(i).getGenre_name();
-			if(i != genre_name_List.size()-1) {
-				genre_name += ", ";
-			}
-		} // end of for
-		
-		searchDetail.put("genre_name", genre_name);
+		if(searchDetail != null) {
+			// 영화에 따른 장르 이름 알아오기
+			List<GenreVO> genre_name_List = sqlsession.selectList("watcha.genre_name_List", searchDetail.get("movie_id"));
+			
+			String genre_name = "";
+			for(int i=0; i<genre_name_List.size(); i++) {
+				genre_name += genre_name_List.get(i).getGenre_name();
+				if(i != genre_name_List.size()-1) {
+					genre_name += ", ";
+				}
+			} // end of for
+			
+			searchDetail.put("genre_name", genre_name);
+		}
 		
 		return searchDetail;
 	}
@@ -238,6 +240,13 @@ public class WatchaDAO implements InterWatchaDAO {
 	public MovieReviewVO searchReview(Map<String, String> paraMap) {
 		MovieReviewVO searchReview = sqlsession.selectOne("watcha.searchReview", paraMap);
 		return searchReview;
+	}
+	
+	// 별점평가 등록하기
+	@Override
+	public int registerRating(Map<String, String> paraMap) {
+		int n = sqlsession.insert("watcha.registerRating", paraMap);
+		return n;
 	}
 	
 	// 별점평가 수정하기
@@ -273,6 +282,20 @@ public class WatchaDAO implements InterWatchaDAO {
 	public List<Map<String, String>> showMovieDiary(String user_id) {
 		List<Map<String, String>> movieDiaryList = sqlsession.selectList("watcha.showMovieDiary", user_id);
 		return movieDiaryList;
+	}
+
+	// 무비다이어리(관람일자) 등록하기
+	@Override
+	public int registerDiary(MovieDiaryVO diaryvo) {
+		int n = sqlsession.insert("watcha.registerDiary", diaryvo);
+		return n;
+	}
+
+	// 무비다이어리(관람일자) 수정하기
+	@Override
+	public int updateDiary(MovieDiaryVO diaryvo) {
+		int n = sqlsession.update("watcha.updateDiary", diaryvo);
+		return n;
 	}
 
 }
