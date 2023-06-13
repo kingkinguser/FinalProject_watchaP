@@ -42,9 +42,10 @@ public class WatchaAOP {
 				
 				String url = MyUtil.getCurrentURL(request);
 				
+				session.setAttribute("needLogin", true);
 				session.setAttribute("goBackURL", url); // 세션에 url 정보를 저장시켜둔다.
 				
-				RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/views/msg.jsp"); 
+				RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/views/member/needLogin.jsp"); 
 				try {
 					dispatcher.forward(request, response);
 				} catch (ServletException | IOException e) {
