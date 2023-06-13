@@ -157,8 +157,8 @@ public class WatchaService implements InterWatchaService {
 
 	// 한줄평 - 로그인한 회원이 해당 영화에 대해 작성한 한줄평 유무 및 한줄평 정보
 	@Override
-	public MovieReviewVO reviewInfo(Map<String, String> paraMap) {
-		MovieReviewVO reviewInfo = dao.reviewInfo(paraMap);
+	public Map<String, String> reviewInfo(Map<String, String> paraMap) {
+		Map<String, String> reviewInfo = dao.reviewInfo(paraMap);
 		return reviewInfo;
 	}
 
@@ -287,6 +287,27 @@ public class WatchaService implements InterWatchaService {
 		return searchReview;
 	}
 
+	// 별점평가 등록하기
+	@Override
+	@Transactional(propagation=Propagation.REQUIRED, isolation=Isolation.READ_COMMITTED, rollbackFor= {Throwable.class})
+	public int registerRating(Map<String, String> paraMap) {
+
+		int n=0, result=0; 
+		n = dao.registerRating(paraMap); // 회원의 별점평가 등록(star_rating 테이블에서 insert)
+		
+		Map<String, String> ratingInfo = null;
+		if(n == 1) {
+			ratingInfo = dao.getAvgRating(paraMap.get("movie_id")); // 해당 영화에 대한 평균별점, 별점개수 값 읽어오기
+		}
+		if(ratingInfo != null) {
+			paraMap.put("rating_avg", ratingInfo.get("rating_avg"));
+			paraMap.put("rating_count", ratingInfo.get("rating_count"));
+			result = dao.updateAvgRating(paraMap); // 변경된 평균별점 값 update(movie 테이블에서 update)
+		}
+		
+		return result;
+	}
+	
 	// 별점평가 수정하기
 	@Override
 	@Transactional(propagation=Propagation.REQUIRED, isolation=Isolation.READ_COMMITTED, rollbackFor= {Throwable.class})
@@ -320,6 +341,20 @@ public class WatchaService implements InterWatchaService {
 	public List<Map<String, String>> showMovieDiary(String user_id) {
 		List<Map<String, String>> movieDiaryList = dao.showMovieDiary(user_id);
 		return movieDiaryList;
+	}
+
+	// 무비다이어리(관람일자) 등록하기
+	@Override
+	public int registerDiary(MovieDiaryVO diaryvo) {
+		int n = dao.registerDiary(diaryvo);
+		return n;
+	}
+
+	// 무비다이어리(관람일자) 수정하기
+	@Override
+	public int updateDiary(MovieDiaryVO diaryvo) {
+		int n = dao.updateDiary(diaryvo);
+		return n;
 	}
 
 }

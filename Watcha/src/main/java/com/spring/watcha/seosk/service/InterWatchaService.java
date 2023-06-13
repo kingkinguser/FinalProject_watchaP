@@ -52,7 +52,7 @@ public interface InterWatchaService {
 	List<Map<String, String>> commentList(String review_id);
 
 	// 한줄평 - 로그인한 회원이 해당 영화에 대해 작성한 한줄평 유무 및 한줄평 정보
-	MovieReviewVO reviewInfo(Map<String, String> paraMap);
+	Map<String, String> reviewInfo(Map<String, String> paraMap);
 
 	// 한줄평 추가
 	int addReview(MovieReviewVO mrvo);
@@ -87,6 +87,9 @@ public interface InterWatchaService {
 	// 검색상세 - 해당 영화의 한줄평 가져오기
 	MovieReviewVO searchReview(Map<String, String> paraMap);
 
+	// 별점평가 등록하기
+	int registerRating(Map<String, String> paraMap);
+
 	// 별점평가 수정하기
 	int updateRating(Map<String, String> paraMap);
 
@@ -95,5 +98,11 @@ public interface InterWatchaService {
 
 	// 무비다이어리List 가져오기
 	List<Map<String, String>> showMovieDiary(String user_id);
+
+	// 무비다이어리(관람일자) 등록하기
+	int registerDiary(MovieDiaryVO diaryvo);
+
+	// 무비다이어리(관람일자) 수정하기
+	int updateDiary(MovieDiaryVO diaryvo);
 
 }
