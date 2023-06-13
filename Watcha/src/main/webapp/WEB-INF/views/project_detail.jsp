@@ -213,28 +213,6 @@
 	});
 	/* 출연, 제작 끝*/
 	
-	/*보고싶어요 시작*/	
-	$(".seechange2").hide(); 
-	
-	$("input:checkbox[name='check_wantsee']").click(function(){
-		 
-		if($('input:checkbox[name="check_wantsee"]').is(":checked")) {
-				$(".seechange1").hide(); 
-				$(".seechange2").show(); 
-				$(".seechange2").css({"color":"#ff0558"}); 
-			 	$(".wantseei").css({"color":"#ff0558"}); 
-			}
-			else if(!$('input:checkbox[name="check_wantsee"]').is(":checked")) {
-				$(".seechange1").show(); 
-				$(".seechange2").hide(); 
-				$(".wantseei").css({"color":""}); 
-			}
-			
-			$("input:checkbox[name='check_wantsee']").toggle();
-		
-	 });
-	 /*보고싶어요 끝*/		
-
 	/*코멘트 시작*/		
 	$("input:checkbox[name='check_comment']").click(function(){
 		
@@ -249,26 +227,9 @@
 		
 		$("input:checkbox[name='check_comment']").toggle();
 		
-	 });
+	 }); 
 	 /*코멘트 끝*/
 	
-	/*보는중 시작*/		
-	$("input:checkbox[name='check_seeing']").click(function(){
-		  
-		if($('input:checkbox[name="check_seeing"]').is(":checked")) {
-			 
-		 	$(".seeingi").css({"color":"#ff0558"}); 
-		}
-		else if(!$('input:checkbox[name="check_seeing"]').is(":checked")) {
-
-			$(".seeingi").css({"background-color":"","color":""}); 
-		}
-		
-		$("input:checkbox[name='check_seeing']").toggle();
-		
-	  });
-	/*보는중 끝*/ 
-
 	/*컬렉션 시작*/		
 	$("input:checkbox[name='check_collection']").click(function(){
 		 
@@ -477,39 +438,29 @@
 					
 					<div style="margin: 7px 0 0 240px; position: relative; bottom: 60px;">  
 						
-						<%-- 보고싶어요 --%>
-						<div>
-							<label for="check_wantsee" style="cursor: pointer;">
-							   <i style="font-size: 15px;" class="seechange1 fas fa-plus wantseei"></i><i style="font-size: 15px; margin-right: 3.3px;" class="seechange2 fas fa-bookmark"></i><span class="wantseei" style="font-size: 15px; font-weight: bolder">&nbsp;&nbsp;보고싶어요</span>
-							   <input type="checkbox" id="check_wantsee" name="check_wantsee"/>
-							</label>
-						</div>
-						
-						<%-- 한줄평 등록하기 --%>
+				        <%-- 한줄평 등록하기 --%>
 				        <div style="position: relative; left: 150px; bottom: 33px; width: 150px;">
 				          <label for="check_comment" style="cursor: pointer;">
 				             <span class="commenti">
-				               <c:if test="${empty requestScope.reviewInfo}">
-				                 <button type="button" data-toggle="modal" data-target="#registerReview" style="font-weight: bold; border: none; background-color: transparent;">
-				                   <i style="font-size: 23px;" class="fas fa-pen-nib commenti"></i>&nbsp;&nbsp;한줄평 등록
-				                 </button>
+				               <c:if test="${not empty sessionScope.loginuser}">
+				                 <c:if test="${empty requestScope.reviewInfo}">
+				                   <button type="button" data-toggle="modal" data-target="#registerReview" style="font-weight: bold; border: none; background-color: transparent;">
+				                     <i style="font-size: 23px;" class="fas fa-pen-nib commenti"></i>&nbsp;&nbsp;한줄평 등록
+				                   </button>
+				                 </c:if>
+				                 <c:if test="${not empty requestScope.reviewInfo}">
+				                   <button type="button" data-toggle="modal" data-target="#editReview" style="font-weight: bold; border: none; background-color: transparent;">
+				                     <i style="font-size: 23px;" class="fas fa-pen-nib commenti"></i>&nbsp;&nbsp;한줄평 수정
+				                   </button>
+				                 </c:if>
 				               </c:if>
-				               <c:if test="${not empty requestScope.reviewInfo}">
-				                 <button type="button" data-toggle="modal" data-target="#editReview" style="font-weight: bold; border: none; background-color: transparent;">
-				                   <i style="font-size: 23px;" class="fas fa-pen-nib commenti"></i>&nbsp;&nbsp;한줄평 수정
-				                 </button>
+				               <c:if test="${empty sessionScope.loginuser}">
+				               
 				               </c:if>
 				             </span>
 				          </label>
-				        </div> 
-				        
-						<%-- 보는중 --%>
-						<div style="position: relative; left: 240px; bottom: 66px; width: 100px;"> 
-						    <label for="check_seeing" style="cursor: pointer;">
-						    <i style="font-size: 15px;" class="far fa-eye seeingi"></i><span class="seeingi" style="font-size: 15px; font-weight: bolder">&nbsp;보는중</span></label>
-							<input type="checkbox" id="check_seeing" name="check_seeing"/>
-						</div>
-	 
+				        </div> 				        
+
 						<%-- 컬렉션에 추가 --%> 
 						<div style="position: relative; left: 330px; bottom: 100px; width: 150px;"> 
 						    <label for="check_collection" style="cursor: pointer;">
