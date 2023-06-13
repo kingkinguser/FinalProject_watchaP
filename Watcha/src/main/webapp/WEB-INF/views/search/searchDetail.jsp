@@ -89,8 +89,6 @@
 		$("span#totalMovieCount").hide();
 		$("span#countMovie").hide();
 		
-		console.log("dnsfjkdsn");
-		
 		displayMovie(1);
 		
 		
@@ -114,44 +112,55 @@
 	});
 		
 	var lastSearchWord = "${lastSearchWord}";
+	
 	let lenShow = 10;	// 영화 10개씩 보기 위해 
+	var novalue = "1"
 	
 	// display 할  HIT상품 정보를 추가 요청하기(Ajax 로 처리함)
 	function displayMovie(start) {     
-						
+		
 		$.ajax({
 			url:"<%= ctxPath%>/goSearchDetail.action",
 			type:"get",
 			data:{"start":start		
 				 ,"lenShow":lenShow
-				 ,"lastSearchWord": lastSearchWord},
+				 ,"lastSearchWord": lastSearchWord
+				 ,"novalue" : novalue},
 			dataType:"json",
 			async:true,			
 			success:function(json) {
 				
-				console.log("dsgjn");
+				console.log(JSON.stringify(json));
+				console.log(start);
+				console.log(json.jsonResponse);
+				
+				var responseData = JSON.parse(json.jsonResponse);
+				var count = responseData.length;
+			    console.log(count);  // Number of movies in the array
+				
 				
 				let html = "";
 				
-				if(start == "1" && json.length == 0) {  // 배열이기 때문에 json == null 로 하면 절대로 안된다. 
+				if(start == "1" && count == 0) {  // 배열이기 때문에 json == null 로 하면 절대로 안된다. 
 					// 처음부터 데이터가 존재하지 않는 경우 				
-					html += "영화 정보가 없습니다.";
+					html += "<div style='text-align: center;' class='h2'>영화 정보가 없습니다.<div>";
 				
 					// HIT 상품 결과물 출력하기 
 					$("ul#displayMovie").html(html);
+					$("button#btnMoreMovie").hide();
 				} 
 				
-				else if (json.length > 0) {
+				else if (count > 0) {
 					// 데이터가 존재하는 경우 
-					json.forEach(function(item, index, array) {
-						html +=  '<li class = "SMDLi">'+
-				                    '<a href = "<%= ctxPath%>/view/project_detail.action?movie_id=${item.movie_id}" title="${item.movie_title}" style="text-decoration: none;">'+
+					responseData.forEach(function(item, index, array) {
+						html +=  '<li class = "SMDLi">'+ 
+				                    '<a href = "<%= ctxPath%>/view/project_detail.action?movie_id=' + item.movie_id + '" title="' + item.movie_title + '" style="text-decoration: none;">'+
 				                        '<div class="SMD">'+
-				                        '<img src="https://image.tmdb.org/t/p/w500/${item.poster_path}" class="card-img-top" alt="...">'+
+				                        '<img src="https://image.tmdb.org/t/p/w500/' + item.poster_path + '" class="card-img-top" alt="...">'+
 				                          '<div class = "MvTitle">'+
-				                             '<p class="TitleM">${item.movie_title}</p>'+
-				                             '<p class="colorChange">${item.release_date} ● ${item.original_language}</p>'+
-				                             '<p class="colorChange">★ ${item.rating_avg}</p>'+
+				                             '<p class="TitleM">' + item.movie_title + '</p>'+
+				                             '<p class="colorChange">개봉연도 : ' + item.release_date + '</p>'+
+				                             '<p class="colorChange">★ ' + item.rating_avg + '</p>'+
 				                          '</div>' +
 										'</div>'  +
 									'</a>' +

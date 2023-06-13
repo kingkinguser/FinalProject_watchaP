@@ -437,7 +437,7 @@
 	
 	<!-- 검색한 영화 정보 모두 가져오기  -->
 	<select id="showMovieAll" resultType="com.spring.watcha.model.MovieVO" parameterType="HashMap">
-			SELECT movie_id, movie_title, original_language, EXTRACT(YEAR FROM release_date) AS release_year , poster_path, rating_avg
+			SELECT movie_id, movie_title, original_language, EXTRACT(YEAR FROM release_date) AS release_date , poster_path, rating_avg
 			FROM (
 			  SELECT movie_id, movie_title, original_language, release_date, poster_path, rating_avg
 			  FROM movie

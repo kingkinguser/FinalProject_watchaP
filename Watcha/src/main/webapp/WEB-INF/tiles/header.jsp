@@ -1091,7 +1091,6 @@
 	<div class="d-none d-md-block fixed-top"  style="background-color: white;">
 		<div class="container ">
 		
-		<input type="text" id="needLogin" value="${requestScope.needLogin}">
 		
 			<div class="row">
 				<ul style="display: flex; padding: 0; margin: 0; width: 100%;">

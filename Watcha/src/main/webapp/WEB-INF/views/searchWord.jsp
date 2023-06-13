@@ -178,6 +178,7 @@
 	
 	function moreMovie() {
 		const searchText = $('input#lastSearchWord').val();
+		const novalueInput = $('input#novalue').val();
 		
 		const FrmMovieSearchDetail = document.FrmMovieSearchDetail;
 		FrmMovieSearchDetail.action="<%=ctxPath%>/goSearchDetail.action";     /* // action 인것 바꾸기 */ 
@@ -206,7 +207,7 @@
 		
 			  <ul class="navbar-nav">
 			    <li class="nav-item">
-			      <button type="button" class="nav-link" data-status="0" id="contants">콘텐츠</button>
+			      <button type="button" class="nav-link" data-status="0" id="contants">영화</button>
 			    </li>
 			    <li class="nav-item">
 			      <button type="button" class="nav-link" data-status="1" id="people">인물</button>			      
@@ -222,10 +223,15 @@
 		</div>
 		
 		<div>
-			<span class="h5 mb-4">찾으신 영화가 없으면 영화 더보기를 눌러주세요</span>
-			<button type="button"  class="btn btn-outline-danger" style="float: right; bottom: 5px; position: relative;" onclick="moreMovie()">더보기</button>
+			<c:if test="${empty requestScope.showMovie}">
+				<p class="h5 mb-4" style="text-align: center;">검색한 영화 정보가 없습니다.</p>
+			</c:if>
+			<c:if test="${not empty requestScope.showMovie}">
+				<span class="h5 mb-4">찾으신 영화가 없으면 영화 더보기를 눌러주세요</span>
+				<button type="button"  class="btn btn-outline-danger" style="float: right; bottom: 5px; position: relative;" onclick="moreMovie()">더보기</button>
+			</c:if>
 			<form id="FrmMovieSearchDetail" name="FrmMovieSearchDetail">
-				
+				<input type="hidden" id="novalue" name="novalue" value="0"/>
 				<input type="hidden" id="lastSearchWord" name="lastSearchWord" value="${lastSearchWord.replace('<', ' ').replace('>', ' ')}" />
 			</form>
 		</div>
