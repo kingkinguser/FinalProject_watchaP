@@ -1115,15 +1115,20 @@ a, a:hover, .fc-daygrid {color: #000; text-decoration: none; background-color: t
         <div style="position: relative; left: 150px; bottom: 33px; width: 150px;">
           <label for="check_comment" style="cursor: pointer;">
              <span class="commenti">
-               <c:if test="${empty requestScope.reviewInfo}">
-                 <button type="button" data-toggle="modal" data-target="#registerReview" style="font-weight: bold; border: none; background-color: transparent;">
-                   <i style="font-size: 23px;" class="fas fa-pen-nib commenti"></i>&nbsp;&nbsp;한줄평 등록
-                 </button>
+               <c:if test="${not empty sessionScope.loginuser}">
+                 <c:if test="${empty requestScope.reviewInfo}">
+                   <button type="button" data-toggle="modal" data-target="#registerReview" style="font-weight: bold; border: none; background-color: transparent;">
+                     <i style="font-size: 23px;" class="fas fa-pen-nib commenti"></i>&nbsp;&nbsp;한줄평 등록
+                   </button>
+                 </c:if>
+                 <c:if test="${not empty requestScope.reviewInfo}">
+                   <button type="button" data-toggle="modal" data-target="#editReview" style="font-weight: bold; border: none; background-color: transparent;">
+                     <i style="font-size: 23px;" class="fas fa-pen-nib commenti"></i>&nbsp;&nbsp;한줄평 수정
+                   </button>
+                 </c:if>
                </c:if>
-               <c:if test="${not empty requestScope.reviewInfo}">
-                 <button type="button" data-toggle="modal" data-target="#editReview" style="font-weight: bold; border: none; background-color: transparent;">
-                   <i style="font-size: 23px;" class="fas fa-pen-nib commenti"></i>&nbsp;&nbsp;한줄평 수정
-                 </button>
+               <c:if test="${empty sessionScope.loginuser}">
+               
                </c:if>
              </span>
           </label>
