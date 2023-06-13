@@ -95,6 +95,7 @@ public class WatchaController {
 		Map<String, String> paraMap = new HashMap<>();
 		
 		paraMap.put("searchWord",searchWord);
+		paraMap.put("lastSearchWord",searchWord);
 		
 		String[] searchWords = service.goSearch(request, paraMap);
 		 
@@ -120,9 +121,11 @@ public class WatchaController {
 	    // 처음에 콘텐츠를 검색하는 것이므로 영화를 보여준다.
 	    List<MovieVO> showMovie = service.showMovie(paraMap);
 	    
+	    // 총 개수를 나타내주자 
+	    int total_count = service.total_count(paraMap);
 	    
 	    
-		
+		mav.addObject("total_count", total_count);
 		mav.addObject("recentSearchWords", recentSearchWordsString);
 		mav.addObject("lastSearchWord", lastSearchWord);
 		mav.addObject("showMovie", showMovie);
@@ -462,13 +465,12 @@ public class WatchaController {
 	        paraMap.put("lastSearchWord", lastSearchWord);
 
 	        String end = String.valueOf(Integer.parseInt(start) + Integer.parseInt(lenShow) - 1);
-	        paraMap.put("end", end);
-
-	        List<MovieVO> showMovieAll = service.showMovieAll(paraMap);
-
-	        System.out.println(showMovieAll);
+	        System.out.println(end+"end 부분");	        
+	        paraMap.put("end", end);	     
 	        
-	        
+	        int total_count = service.total_count(paraMap);   // 총 개수를 나타내자 
+	        List<MovieVO> showMovieAll = service.showMovieAll(paraMap);  // 영화 가져오자 
+
 	        JSONArray jsonArr = new JSONArray();
 
 	        if (showMovieAll.size() > 0) {
@@ -477,7 +479,6 @@ public class WatchaController {
 	                JSONObject jsonObj = new JSONObject();
 	                jsonObj.put("movie_id", Showvo.getMovie_id());
 	                jsonObj.put("movie_title", Showvo.getMovie_title());
-	                jsonObj.put("original_language", Showvo.getOriginal_language());
 	                jsonObj.put("release_date", Showvo.getRelease_date());
 	                jsonObj.put("poster_path", Showvo.getPoster_path());
 	                jsonObj.put("rating_avg", Showvo.getRating_avg());
@@ -486,8 +487,13 @@ public class WatchaController {
 	            }
 	        }
 
-	        String json = jsonArr.toString();
-	        return new ModelAndView(new MappingJackson2JsonView(), Collections.singletonMap("jsonResponse", json));  
+	        JSONObject jsonRes = new JSONObject();
+	        jsonRes.put("total_count", total_count);
+	        jsonRes.put("movie_list", jsonArr);
+
+	        String json = jsonRes.toString();
+	        return new ModelAndView(new MappingJackson2JsonView(), Collections.singletonMap("jsonResponse", json));
+	    
 	        /*
 	        	이 특정 사례에서 MappingJackson2JsonView는 JSON 응답을 렌더링할 수 있는 Spring MVC에서 제공하는 보기 구현입니다.
 	        	 이 보기로 ModelAndView를 생성하면 응답을 JSON으로 렌더링해야 함을 나타냅니다.

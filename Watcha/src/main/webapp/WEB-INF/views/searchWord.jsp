@@ -195,7 +195,8 @@
 
 	<div class="searchWord_header">
 		<div class="container">
-			<h5 class="h5" style="margin: 0;">"  <c:out value="${lastSearchWord.replace('<', ' ').replace('>', ' ')}" />  "의 검색결과</h5>  <!-- 스크립트 공격 방어 -->
+			<span class="h5" style="margin: 0;">"  <c:out value="${lastSearchWord.replace('<', ' ').replace('>', ' ')}" />  "의 검색결과</span>  <!-- 스크립트 공격 방어 -->
+			<span>[ 영화 검색결과 숫자 : ${requestScope.total_count}개 ]</span>
 		</div>
 	</div>
 		

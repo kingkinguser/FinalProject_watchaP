@@ -61,6 +61,9 @@ public interface InterWatchaService {
 	// 검색한 영화 정보 모두 가져오기 
 	List<MovieVO> showMovieAll(Map<String, String> paraMap);
 
+	// 검색한 영화 총 몇개인지 가져오기 
+	int total_count(Map<String, String> paraMap);
+
 	
 
 

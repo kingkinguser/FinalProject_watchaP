@@ -96,7 +96,7 @@
 			
 			if($(this).text() == "처음으로") { // $(this) 는 여기서 button 을 말함 
 				
-				$("div#displayMovie").empty();  // 비운다.
+				$("ul#displayMovie").empty();  // 비운다.
 				$("span#end").empty();    // 비운다 				
 				displayMovie(1);            // 처음부터 다시 가기 위해 비운 후 함수 다시 실행 
 				$(this).text("더보기");
@@ -111,10 +111,10 @@
 	
 	});
 		
-	var lastSearchWord = "${lastSearchWord}";
+	let lastSearchWord = "${lastSearchWord}";
 	
 	let lenShow = 10;	// 영화 10개씩 보기 위해 
-	var novalue = "1"
+	let novalue = "1"
 	
 	// display 할  HIT상품 정보를 추가 요청하기(Ajax 로 처리함)
 	function displayMovie(start) {     
@@ -129,14 +129,13 @@
 			dataType:"json",
 			async:true,			
 			success:function(json) {
-				
-				console.log(JSON.stringify(json));
-				console.log(start);
-				console.log(json.jsonResponse);
-				
+
 				var responseData = JSON.parse(json.jsonResponse);
-				var count = responseData.length;
-			    console.log(count);  // Number of movies in the array
+				var count = responseData.movie_list.length;				
+				
+				var total_count = responseData.total_count; 
+				$("span#totalMovieCount").text(total_count);
+				$("span#total_mv_count").text(total_count);
 				
 				
 				let html = "";
@@ -145,14 +144,14 @@
 					// 처음부터 데이터가 존재하지 않는 경우 				
 					html += "<div style='text-align: center;' class='h2'>영화 정보가 없습니다.<div>";
 				
-					// HIT 상품 결과물 출력하기 
+
 					$("ul#displayMovie").html(html);
 					$("button#btnMoreMovie").hide();
 				} 
 				
 				else if (count > 0) {
 					// 데이터가 존재하는 경우 
-					responseData.forEach(function(item, index, array) {
+					responseData.movie_list.forEach(function(item, index, array) {
 						html +=  '<li class = "SMDLi">'+ 
 				                    '<a href = "<%= ctxPath%>/view/project_detail.action?movie_id=' + item.movie_id + '" title="' + item.movie_title + '" style="text-decoration: none;">'+
 				                        '<div class="SMD">'+
@@ -174,13 +173,13 @@
 	
 					$("button#btnMoreMovie").val( Number(start) + lenShow );					
 					
-					$("span#countMovie").text( Number($("span#countMovie").text()) + json.length );    /// val() 대신 text 를 사용해야 한다.				
+					$("span#countMovie").text( Number($("span#countMovie").text()) + count );    /// val() 대신 text 를 사용해야 한다.				
 					
-					
-					if( Number($("span#totalHITCount").text()) <= Number($("span#countMovie").text()) )  {  // number 는 빼도 그만 안빼도 그만 
+
+					if( Number($("span#totalMovieCount").text()) <= Number($("span#countMovie").text()) )  {  // number 는 빼도 그만 안빼도 그만 
 						
 						$("span#end").html("더이상 조회할 영화가 없습니다.");		// id 가 end 인 span 태그에 추가하겠다.
-						$("button#btnMoreHIT").text("처음으로");
+						$("button#btnMoreMovie").text("처음으로");
 						$("span#countMovie").text(0);
 					}
 	
@@ -209,7 +208,8 @@
 <body>
 	<div class="searchWord_header">
 		<div class="container">
-			<h5 class="h5" style="margin: 0;">"  <c:out value="${lastSearchWord.replace('<', ' ').replace('>', ' ')}" />  "의 검색결과</h5>  <!-- 스크립트 공격 방어 -->
+			<span class="h5" style="margin: 0;">"  <c:out value="${lastSearchWord.replace('<', ' ').replace('>', ' ')}" />  "의 검색결과</span>  <!-- 스크립트 공격 방어 -->
+			<span>[ 영화 검색결과 숫자 : <span id="total_mv_count"></span> 개 ]</span>
 		</div>
 	</div>
 		
@@ -246,12 +246,14 @@
 		
 		
 		<div>
-         <p class="text-center">
-            <span id="end" style="display:block; margin:20px; font-size: 14pt; font-weight: bold; color: red;"></span> 
-            <button type="button" class="btn btn-secondary btn-lg" id="btnMoreMovie" value="">더보기</button>   <%-- value 값이 초기에는 없었는데 값을 집어넣어주면  --%>
-            <span id="totalMovieCount">${requestScope.totalHITCount}</span>
-            <span id="countMovie">0</span>
-         </p>
+	         <p class="text-center">
+	            <span id="end" style="display:block; font-size: 14pt; font-weight: bold; color: red;"></span> 
+	            <button type="button" class="btn btn-secondary btn-lg" id="btnMoreMovie" value="" style="margin-top : 20px;">더보기</button>   <%-- value 값이 초기에는 없었는데 값을 집어넣어주면  --%>
+	            <span style=" position: relative; top: 11px;">
+		            <span id="countMovie"></span>
+		            <span id="totalMovieCount"></span>    
+	            </span>        
+	         </p>
         </div>
 		
 		
