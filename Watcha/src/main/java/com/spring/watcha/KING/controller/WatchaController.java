@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.spring.watcha.KING.service.InterWatchaService;
@@ -42,7 +43,8 @@ public class WatchaController {
 	          
 				HttpSession session = request.getSession();
 	            MemberVO loginuser = (MemberVO) session.getAttribute("loginuser");
-				String movie_id = request.getParameter("movie_id");
+	            String user_id = null;
+	            String movie_id = request.getParameter("movie_id");
 
 				Map<String, String> paraMap = new HashMap<>();
 				paraMap.put("movie_id", movie_id);
@@ -51,12 +53,23 @@ public class WatchaController {
 				model.addAttribute("movieDetail",movieDetail);
 				
 			    if(loginuser != null){
-			         String user_id = loginuser.getUser_id(); 
+			         user_id = loginuser.getUser_id(); 
 			         paraMap.put("user_id", user_id);
 			         int moviecollectionSelect = service.getMoviecollectionSelect(paraMap); 
 			         model.addAttribute("moviecollectionSelect",moviecollectionSelect);
 			    } 
-				
+
+		         // 로그인한 회원이 해당 영화에 대해 작성한 한줄평 유무 및 한줄평 정보
+		         Map<String, String> reviewMap = new HashMap<>();
+		         reviewMap.put("user_id", user_id);
+		         reviewMap.put("movie_id", movie_id);
+		         
+		         Map<String, String> reviewInfo = null;
+		         if(user_id != null) {
+		            reviewInfo = service.reviewInfo(paraMap);
+		         }
+		         request.setAttribute("reviewInfo", reviewInfo);
+		         
 				/*
 				// 1대N 배열 한눈에 보기 
 				Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -82,11 +95,20 @@ public class WatchaController {
 				Map<String, String> paraMap = new HashMap<>();
 				paraMap.put("movie_id", movie_id);
 				
+				
+				
 				if(user_id_collection != null) {
 					// 메인에서 유저의 컬렉션 클릭
 					paraMap.put("user_id", user_id_collection);
 					List<Map<String, String>> collection_viewA = service.getCollection_view(paraMap); 
 					model.addAttribute("collection_viewA", collection_viewA);
+					 
+					if(loginuser != null) { 
+						paraMap.put("user_id_collection", user_id_collection); 
+						paraMap.put("user_id_like", loginuser.getUser_id());
+						int likeMaintain = service.getLikeMaintain(paraMap);  
+					    model.addAttribute("likeMaintain",likeMaintain);
+					}
 				}
 				else if(user_id_collection == null && loginuser != null) {
 					// 로그인한 유저가 내 컬렉션을 클릭한 경우
@@ -94,14 +116,11 @@ public class WatchaController {
 					List<Map<String, String>> collection_viewB = service.getCollection_view(paraMap); 
 					model.addAttribute("collection_viewB", collection_viewB);
 					
-			        int likeMaintain = service.getLikeMaintain(paraMap); 
-			        model.addAttribute("likeMaintain",likeMaintain);
 				}
-				
-				Map<String, String> totalCount = service.totalCount(paraMap); 
-				
-				model.addAttribute("totalCount", totalCount);
 				 
+				Map<String, String> totalCount = service.totalCount(paraMap); 
+				model.addAttribute("totalCount", totalCount);
+				
 				return "user_collection.tiles";
 				// /WEB-INF/views/tiles1/tiles1/tiles_test
 			}	
@@ -173,12 +192,11 @@ public class WatchaController {
 				
 				String user_id_collection = request.getParameter("user_id_collection");
 				String currentShowPageNo = request.getParameter("currentShowPageNo");
-				
 				if(currentShowPageNo == null) {
 					currentShowPageNo = "1";
 				}  
 				
-				int sizePerPage = 3; // 한 페이지당 3개의 댓글을 보여줄 것임.
+				int sizePerPage = 5; // 한 페이지당 5개의 댓글을 보여줄 것임.
 				
 				int startRno = (( Integer.parseInt(currentShowPageNo) - 1) * sizePerPage) + 1;
 				int endRno = startRno + sizePerPage - 1;
@@ -217,17 +235,20 @@ public class WatchaController {
 			@RequestMapping(value="/getUserCommentTotalPage.action", method= {RequestMethod.GET})   
 			public String getUserCommentTotalPage(HttpServletRequest request) {
 				
-				String collection_id = request.getParameter("collection_id");
+				String user_id_collection = request.getParameter("user_id_collection");
 				String sizePerPage = request.getParameter("sizePerPage");
 				
 				Map<String, String> paraMap = new HashMap<>();
-				paraMap.put("collection_id", collection_id);
+				paraMap.put("user_id_collection", user_id_collection); 
 				paraMap.put("sizePerPage", sizePerPage);
 				
 				// 원글 글번호에 해당하는 댓글의 totalPage 알아오기
-				String totalPage = service.getUserCommentTotalPage(paraMap);
+				int totalPage = service.getUserCommentTotalPage(paraMap);
 				
-				return totalPage;
+				JSONObject jsonObj = new JSONObject();
+				jsonObj.put("totalPage", totalPage);
+				
+				return jsonObj.toString();
 			}
 
 			// === 좋아요 === //
@@ -310,6 +331,29 @@ public class WatchaController {
 				return jsonObj.toString();
 				
 			}			
+			
+			// === 차트 2 시작  === //
+			@ResponseBody
+			@RequestMapping(value="/pieBasic.action", method= {RequestMethod.POST})   
+			public String pieBasic(HttpServletRequest request, HttpServletResponse response) {
+				
+				String user_id = request.getParameter("user_id");
+				
+				Map<String, Object> paraMap = new HashMap<>();
+				paraMap.put("user_id", user_id);
+				 
+				List<Map<String, String>> pieBasic = service.getPieBasic(paraMap);
+			 		 
+				JSONObject jsonObj = new JSONObject();
+				jsonObj.put("pieBasic", pieBasic);
+				
+				Gson gson = new GsonBuilder().setPrettyPrinting().create();
+				String movieStr = gson.toJson(pieBasic);
+				System.out.println(movieStr); 
+				
+				return jsonObj.toString();
+				
+			}
 			
 			
 		   // =============================================== 기능 끝 ======================================================== //	

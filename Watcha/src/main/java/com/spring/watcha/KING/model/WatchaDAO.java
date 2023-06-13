@@ -129,4 +129,28 @@ public class WatchaDAO implements InterWatchaDAO {
 			return n;
 		}
 
+		// 좋아요 유지 
+		@Override
+		public int getLikeMaintain(Map<String, String> paraMap) {
+			int n = sqlsession.selectOne("watcha.getLikeMaintain", paraMap);
+			return n;
+		}
+
+		// 차트 2
+		@Override
+		public List<Map<String, String>> getPieBasic(Map<String, Object> paraMap) {
+			List<Map<String, String>> pieBasic = sqlsession.selectList("watcha.getPieBasic", paraMap);
+			return pieBasic;
+		}
+
+		////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// 한줄평 - 로그인한 회원이 해당 영화에 대해 작성한 한줄평 유무 및 한줄평 정보
+		@Override
+		public Map<String, String> reviewInfo(Map<String, String> paraMap) {
+			Map<String, String> reviewInfo = sqlsession.selectOne("watcha.reviewInfo", paraMap);
+			return reviewInfo;
+		}		
+		////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		
+		
 }

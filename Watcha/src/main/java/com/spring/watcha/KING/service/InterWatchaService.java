@@ -27,7 +27,7 @@ public interface InterWatchaService {
 	List<Map<String, String>> getuccListPaging(Map<String, String> paraMap);
 
 	// 페이지바 토탈 페이지 알아보기
-	String getUserCommentTotalPage(Map<String, String> paraMap);
+	int getUserCommentTotalPage(Map<String, String> paraMap);
 
 	// 좋아요
 	int getLikeSelect(Map<String, Object> paraMap);
@@ -45,7 +45,17 @@ public interface InterWatchaService {
 	// 좋아요 총수
 	int getLikeTotal(Map<String, Object> paraMap);
 
-	
+	// 좋아요 유지
+	int getLikeMaintain(Map<String, String> paraMap);
+
+	// 차트 2
+	List<Map<String, String>> getPieBasic(Map<String, Object> paraMap);
+
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// 한줄평 - 로그인한 회원이 해당 영화에 대해 작성한 한줄평 유무 및 한줄평 정보
+	Map<String, String> reviewInfo(Map<String, String> paraMap);
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	   
 	
 
 }

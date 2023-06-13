@@ -75,14 +75,11 @@ public class WatchaService implements InterWatchaService {
 
 	// 페이징 토탈구하기
 	@Override
-	public String getUserCommentTotalPage(Map<String, String> paraMap) {
+	public int getUserCommentTotalPage(Map<String, String> paraMap) {
 		
-			int totalPage = dao.getUserCommentTotalPage(paraMap);
-			
-			JSONObject jsonObj = new JSONObject();
-			jsonObj.put("totalPage", totalPage);
-			
-			return jsonObj.toString();
+		int totalPage = dao.getUserCommentTotalPage(paraMap);
+		
+		return totalPage; 
 	}
 
 	// 좋아요
@@ -141,5 +138,26 @@ public class WatchaService implements InterWatchaService {
 		return n;
 	}
 
-		
+	// 좋아요 유지
+	@Override
+	public int getLikeMaintain(Map<String, String> paraMap) {
+		int n = dao.getLikeMaintain(paraMap);
+		return n;
+	}
+
+	// 차트 2
+	@Override
+	public List<Map<String, String>> getPieBasic(Map<String, Object> paraMap) {
+		List<Map<String, String>> pieBasic = dao.getPieBasic(paraMap);
+		return pieBasic;
+	}
+
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// 한줄평 - 로그인한 회원이 해당 영화에 대해 작성한 한줄평 유무 및 한줄평 정보
+	@Override
+	public Map<String, String> reviewInfo(Map<String, String> paraMap) {
+		Map<String, String> reviewInfo = dao.reviewInfo(paraMap);
+		return reviewInfo;
+	}		
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }

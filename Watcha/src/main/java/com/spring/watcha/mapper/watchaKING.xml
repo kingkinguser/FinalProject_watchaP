@@ -143,15 +143,17 @@
 	         to_char(CC.user_collection_time, 'YYYY-MM-DD HH24:MI:SS') AS user_collection_time
 	  from user_collection_comment CC join member M
       on CC.user_id_collection = M.user_id 
+      where user_id_collection = #{user_id_collection} 
     ) V 
-	where rno between #{startRno} and #{endRno} 
+	where rno between #{startRno} and #{endRno} and user_id_collection = #{user_id_collection}
+	order by user_collection_time 
 	</select>
 	
 	<!-- 원글 글번호에 해당하는 댓글의 totalPage 알아오기 -->
 	<select id="getUserCommentTotalPage" parameterType="HashMap" resultType="int">
-	select ceil(count(*)/#{sizePerPage})
+	select ceil(count(*)/#{sizePerPage}) 
 	from user_collection_comment
-	where user_collection_status = 1
+	where user_collection_status = 1 and user_id_collection = #{user_id_collection} 
 	</select>
 	
 	<!-- 좋아요 -->
@@ -201,5 +203,28 @@
     from collection_like                   
     where user_id_collection = #{user_id_collection}   
 	</select>
+	
+	<!-- 좋아요 값 유지 --> 
+	<select id="getLikeMaintain" parameterType="HashMap" resultType="int">
+    select count(*) 
+    from collection_like                   
+    where user_id_collection = #{user_id_collection} and user_id_like = #{user_id_like}  
+	</select>
+	
+	<!-- 차트 2 --> 
+	
+	<resultMap type="HashMap" id="getPieBasicMap"> 
+       <result property="genre_name"      column="genre_name"      javaType="String" />
+    </resultMap>  
+	<select id="getPieBasic" parameterType="HashMap" resultMap="getPieBasicMap">
+    select G.genre_name
+    from collection_movie CM join movie M
+    on CM.movie_id = M.movie_id
+    join movie_genre MG
+    on M.movie_id = MG.movie_id
+    join genre G
+    on MG.genre_id = G.genre_id
+    where CM.user_id = #{user_id}
+	</select>	
 </mapper>
 

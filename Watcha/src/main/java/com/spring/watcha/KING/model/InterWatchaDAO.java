@@ -46,6 +46,16 @@ public interface InterWatchaDAO {
 	// 좋아요 총수
 	int getLikeTotal(Map<String, Object> paraMap);
 
+	// 좋아요 유지
+	int getLikeMaintain(Map<String, String> paraMap);
+
+	// 차트 2
+	List<Map<String, String>> getPieBasic(Map<String, Object> paraMap);
+
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// 한줄평 - 로그인한 회원이 해당 영화에 대해 작성한 한줄평 유무 및 한줄평 정보
+	Map<String, String> reviewInfo(Map<String, String> paraMap);
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 		
 		
