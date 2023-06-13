@@ -335,7 +335,7 @@
 	
      // 특정 영화에 대하여 회원이 매긴 별점 (원래 값)
      $("input:radio[name='rating']").each(function(index, item){
-        if(Number($(item).val())/2 == "${requestScope.searchDetail.rating}"){
+        if(Number($(item).val())/2 == "${requestScope.reviewInfo.rating}"){
            $(item).prop("checked", true);
            return false;
         }
@@ -343,7 +343,7 @@
 
      // 영화에 대한 별점 등록 또는 수정 하는 경우
      $("input:radio[name='rating']").change(function(){
-        if("${empty requestScope.searchDetail.rating}"){ // 별점 등록하는 경우
+        if("${empty requestScope.reviewInfo.rating}"){ // 별점 등록하는 경우
             $.ajax({
               url:"<%= ctxPath%>/myWatcha/registerRating.action",
               data:{"movie_id":"${requestScope.movieDetail.movie_id}",
