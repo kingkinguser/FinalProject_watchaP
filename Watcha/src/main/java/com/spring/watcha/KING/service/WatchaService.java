@@ -159,19 +159,18 @@ public class WatchaService implements InterWatchaService {
 		return pieBasic;
 	}
 
-	////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// 한줄평 - 로그인한 회원이 해당 영화에 대해 작성한 한줄평 유무 및 한줄평 정보
-	@Override
-	public Map<String, String> reviewInfo(Map<String, String> paraMap) {
-		Map<String, String> reviewInfo = dao.reviewInfo(paraMap);
-		return reviewInfo;
-	}		
-	////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	// 댓글 삭제
 	@Override
 	public int getDelUserComment(Map<String, Object> paraMap) {
 		int n = dao.getDelUserComment(paraMap);
+		return n;
+	}
+
+	// 댓글 수정
+	@Override
+	public int getUpdateComment(Map<String, Object> paraMap) {
+		int n = dao.getUpdateComment(paraMap);
 		return n;
 	}
 }

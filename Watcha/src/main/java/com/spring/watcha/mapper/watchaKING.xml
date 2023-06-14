@@ -257,13 +257,11 @@
 	</delete>	 
 	
 	
-	
-	
-	
-	
-	
-	
-	
+	<!-- 댓글 수정 -->  
+	<update id="getUpdateComment" parameterType="HashMap"> 
+	UPDATE user_collection_comment set user_collection_content = #{user_collection_content}
+	WHERE user_collection_seq = #{user_collection_seq}
+	</update>	 	
 	
 </mapper>
 

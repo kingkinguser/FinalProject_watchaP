@@ -167,6 +167,13 @@ public class WatchaDAO implements InterWatchaDAO {
 			 
 		}
 
+		// 댓글 수정
+		@Override
+		public int getUpdateComment(Map<String, Object> paraMap) {
+			int n = sqlsession.update("watcha.getUpdateComment", paraMap);
+			return n;
+		}
+
 
 		
 		

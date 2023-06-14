@@ -61,6 +61,9 @@ public interface InterWatchaDAO {
 	// 댓글 삭제
 	int getDelUserComment(Map<String, Object> paraMap);
 
+	// 댓글 수정
+	int getUpdateComment(Map<String, Object> paraMap);
+
 	
 	
 		

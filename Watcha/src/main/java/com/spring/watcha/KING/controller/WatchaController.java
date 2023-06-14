@@ -58,17 +58,6 @@ public class WatchaController {
 			         model.addAttribute("moviecollectionSelect",moviecollectionSelect);
 			    } 
 
-		         // 로그인한 회원이 해당 영화에 대해 작성한 한줄평 유무 및 한줄평 정보
-		         Map<String, String> reviewMap = new HashMap<>();
-		         reviewMap.put("user_id", user_id);
-		         reviewMap.put("movie_id", movie_id);
-		         
-		         Map<String, String> reviewInfo = null; 
-		         if(user_id != null) {
-		            reviewInfo = service.reviewInfo(paraMap);
-		         }
-		         request.setAttribute("reviewInfo", reviewInfo);
-		         
 				/*
 				// 1대N 배열 한눈에 보기 
 				Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -414,7 +403,26 @@ public class WatchaController {
 			}				
 			
 			
-			
+			// === 댓글 수정 === //
+			@ResponseBody
+			@RequestMapping(value="/updateComment.action", method= {RequestMethod.POST})   
+			public String updateComment(HttpServletRequest request, HttpServletResponse response) {
+				
+				String user_collection_seq = request.getParameter("user_collection_seq");
+				String user_collection_content = request.getParameter("user_collection_content");
+				
+				 Map<String, Object> paraMap = new HashMap<>();
+				 paraMap.put("user_collection_seq", user_collection_seq);
+				 paraMap.put("user_collection_content", user_collection_content);
+			 	
+				 int updateComment = service.getUpdateComment(paraMap);
+				 
+				JSONObject jsonObj = new JSONObject();
+				jsonObj.put("updateComment", updateComment); 
+				 
+				return jsonObj.toString();
+				
+			}				
 			
 			
 			

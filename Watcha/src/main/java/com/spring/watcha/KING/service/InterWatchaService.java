@@ -53,13 +53,11 @@ public interface InterWatchaService {
 	// 차트 2
 	List<Map<String, String>> getPieBasic(Map<String, Object> paraMap);
 
-	////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// 한줄평 - 로그인한 회원이 해당 영화에 대해 작성한 한줄평 유무 및 한줄평 정보
-	Map<String, String> reviewInfo(Map<String, String> paraMap);
-	////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 	// 댓글 삭제
 	int getDelUserComment(Map<String, Object> paraMap);
+
+	// 댓글 수정
+	int getUpdateComment(Map<String, Object> paraMap);
 
 	
 	   

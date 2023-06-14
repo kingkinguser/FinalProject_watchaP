@@ -374,7 +374,7 @@
 				   </c:if> 
 				   
 				   <c:if test="${empty sessionScope.loginuser}">
-						<div style="margin: 60px 0 0 150px">로그인을 하여 왓챠피디아의 숨은 기능을 사용을 해보세요!!</div>				   	
+						<div style="margin: 60px 0 0 150px">로그인을 하여 왓챠피디아의 숨은 기능을 사용 해보세요!!</div>				   	
 				   </c:if>
 				   
 			</div>

@@ -698,9 +698,9 @@
 					 html += '<td id="commentuic">'+item.name+"</td>"; 
 					 html += '<td id="commentucc">'+item.user_collection_content+"</td>";
 		             html += '<td id="commentuct">'+item.user_collection_time+"</td>"; 
-		                
-				  	if(item.user_id_comment == "${sessionScope.loginuser.user_id}"){ // 로그인한 회원 댓글 수정/삭제 
-				       	html +=   '<td><button type="button" id="update_user_Comment" name="update_user_Comment" onclick="update_user_Comment('+item.user_collection_seq+')" style="font-weight: bolder; color: #ff0558; border: none; background-color: transparent; font-size: 9pt;">수정</button></td>'
+		                 
+				  	if(item.user_id_comment == "${sessionScope.loginuser.user_id}"){ // 로그인한 회원 댓글 수정/삭제  
+				       	html +=   '<td><button type="button" onclick="openUpdateModal('+item.user_collection_seq+')" style="font-weight: bolder; color: #ff0558; border: none; background-color: transparent; font-size: 9pt;">수정</button></td>'
 				       		  +   '<td><button type="button" onclick="del_user_Comment('+item.user_collection_seq+')" style="font-weight: bolder; color: #ff0558; border: none; background-color: transparent; font-size: 9pt;">삭제</button></td>'
  
 			        }      
@@ -754,7 +754,7 @@
 		             html += '<td id="commentuct">'+item.user_collection_time+"</td>";  
 		             
 				  	if(item.user_id_comment == "${sessionScope.loginuser.user_id}"){ // 로그인한 회원 댓글 수정/삭제 
-				       	html +=   '<td><button type="button" onclick="update_user_Comment('+item.user_collection_seq+')" style="font-weight: bolder; color: #ff0558; border: none; background-color: transparent; font-size: 9pt;">수정</button></td>'
+				       	html +=   '<td><button type="button" onclick="openUpdateModal('+item.user_collection_seq+')" style="font-weight: bolder; color: #ff0558; border: none; background-color: transparent; font-size: 9pt;">수정</button></td>'
 				       		  +   '<td><button type="button" onclick="del_user_Comment('+item.user_collection_seq+')" style="font-weight: bolder; color: #ff0558; border: none; background-color: transparent; font-size: 9pt;">삭제</button></td>'
  
 			        }  
@@ -1252,8 +1252,6 @@
   //== 댓글 삭제 시작 ==// 
   function del_user_Comment(obj) { 
 	  
-	  if(confirm("댓글을 삭제하시겠습니까?")){
-	  
 		  $.ajax({ 
 			  url:"<%= request.getContextPath()%>/del_user_Comment.action",
 			  data: {user_collection_seq : obj} ,   
@@ -1267,11 +1265,56 @@
 					alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
 			  }
 		  });
-		 
-		  location.reload(true);  
-	  }  
+		  
+		  Swal.fire('삭제완료', '댓글이 삭제되었습니다.', 'success',setTimeout("location.reload()", 1000));   
   }  
   //== 댓글 삭제  끝 ==// 
+  
+  // == 댓글 수정 시작 == //
+  function openUpdateModal(seq) {
+	  Swal.fire({
+	    title: '댓글 수정',  
+	    input: 'text',
+	    inputPlaceholder: '댓글 내용을 입력해주세요.', 
+	    showCancelButton: true,
+	    confirmButtonText: '수정',
+	    cancelButtonText: '취소',  
+	    allowOutsideClick: false,
+	    inputValidator: (value) => {
+	      if (!value) {
+	        return '댓글 내용을 입력해주세요.';
+	      }
+	    },
+	  }).then((result) => {
+	    if (result.isConfirmed) {
+	      const commentContent = result.value;
+	      updateComment(seq, commentContent);
+	    }
+	  });
+	} 
+  
+  function updateComment(seq, commentContent) {
+  
+	  $.ajax({ 
+		  url:"<%= request.getContextPath()%>/updateComment.action",
+		  data: {"user_collection_seq" : seq,
+			     "user_collection_content" : commentContent} ,   
+		  type:"post", 	      
+		  dataType:"json",
+		  success:function(json){
+			   // console.log("~~ 확인용 : " + JSON.stringify(json));
+			   
+		  },
+		  error: function(request, status, error){
+				alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+		  }
+	  });  	
+  		
+	  Swal.fire('수정완료', '댓글 내용이 변경되었습니다.', 'success',setTimeout("location.reload()", 1000));  
+	  
+	   
+  } 
+  // == 댓글 수정 끝 == //
   
 </script>
 
@@ -1281,6 +1324,7 @@
 <script src="<%= ctxPath %>/resources/Highcharts-10.3.1/code/modules/export-data.js"></script>
 <script src="<%= ctxPath %>/resources/Highcharts-10.3.1/code/modules/accessibility.js"></script>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>  
 
 <meta charset="UTF-8">
 <title></title>
