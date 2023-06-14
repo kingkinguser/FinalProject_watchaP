@@ -29,6 +29,13 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
 
+  <%-- 하이차트(선호장르) --%>
+  <script src="<%= ctxPath %>/resources/Highcharts-10.3.1/code/highcharts.js"></script>
+  <script src="<%= ctxPath %>/resources/Highcharts-10.3.1/code/modules/wordcloud.js"></script>
+  <script src="<%= ctxPath %>/resources/Highcharts-10.3.1/code/modules/exporting.js"></script>
+  <script src="<%= ctxPath %>/resources/Highcharts-10.3.1/code/modules/export-data.js"></script>
+  <script src="<%= ctxPath %>/resources/Highcharts-10.3.1/code/modules/accessibility.js"></script>
+
 <style>
   @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap');
   @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
@@ -99,6 +106,7 @@ div#editReview{font-family: 'Noto Sans KR', sans-serif; cursor: default;}
 
 <%-- 무비다이어리 모달 --%>
 div#makeMovieDiary{font-family: 'Noto Sans KR', sans-serif;}
+select#watching_date :focus{outline: none;}
 
 /* ========== full calendar css 시작 ========== */
 .fc-header-toolbar {height: 30px;}
@@ -111,6 +119,8 @@ a, a:hover, .fc-daygrid {color: #000; text-decoration: none; background-color: t
 .fc-view-harness-active {height: 635px !important;}
 /* ========== full calendar css 끝 ========== */
 
+.highcharts-container {font-family: 'Noto Sans KR', sans-serif; cursor: default;}
+
 </style>
 
 <script>
@@ -121,7 +131,8 @@ a, a:hover, .fc-daygrid {color: #000; text-decoration: none; background-color: t
 		$("div#mycontent").css('background-color','#f8f8f8');
 		
  		myReviewPaging(1); // 회원의 전체 한줄평 보여주기
-
+ 		showPreference(); // 회원의 선호장르(하이차트) 보여주기
+ 		
 		$('.carousel').carousel({
 			interval: 10000
 		});
@@ -352,76 +363,6 @@ a, a:hover, .fc-daygrid {color: #000; text-decoration: none; background-color: t
  	    	$("div#searchResult").empty();
  	    }); // end of $("button#btnSearchReset").click(function(){})
  		
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
- 	    
-		// 한줄평 등록/수정 모달에서 checkbox 를 체크했을 때
- 		$("input#spoiler_status").change(function(){
- 			if($(this).prop("checked")){ // 체크박스 체크 ==> 스포일러 포함
- 				$(this).prev().css("color","#ff0558");
- 				$(this).next().text("한줄평에 스포일러가 포함되었어요.");
- 				$(this).val("1");
- 			}
- 			else { // 체크박스 체크해제 ==> 스포일러 미포함
- 				$(this).prev().css("color","#cccccc");
- 				$(this).next().text("스포일러가 포함된 한줄평을 가려보세요.");
- 				$(this).val("0");
- 			}
- 		}); // end of $("input#spoiler_status").change(function(){})
- 		
-
-  		// 한줄평 "등록" 버튼 클릭 시
- 		$("button#btnAdd").click(function(){
-
- 			let review_content = document.querySelector("div#registerReview textarea#review_content").value;
-
- 			if(review_content.trim() == ""){
- 				alert("한줄평 내용을 적어주세요.");
- 			}
- 			else {
-				const queryString = $("form[name='registerReviewFrm']").serialize();
-					
- 				$.ajax({
- 					url:"<%= ctxPath%>/addReview.action",
-					data:queryString, 
- 					type:"post",
- 					dataType:"json",
- 					success:function(json){
- 					//	console.log("확인용 : "+JSON.stringify(json));
-						location.href="<%= request.getContextPath()%>/allReview.action?movie_id="+"290859";
-						// 추후 수정예정
- 					},
- 					error: function(request, status, error){
- 			            alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
- 			        }			
- 				});
- 			}
- 		}); // end of $("button#btnAdd").click(function(){})
-	
- 		// 한줄평 "수정" 버튼 클릭 시
- 		$("button#btnEdit").click(function(){
- 			let review_content = document.querySelector("div#editReview textarea#review_content").value;
- 			
- 			if(review_content.trim() == ""){
- 				alert("한줄평 내용을 적어주세요.");
- 			}
- 			else {
- 				const queryString = $("form[name='editReviewFrm']").serialize();
- 				$.ajax({
- 					url:"<%= ctxPath%>/updateReview.action",
- 					data:queryString, 
- 					type:"post",
- 					dataType:"json",
- 					success:function(json){
- 					//	console.log("확인용 : "+JSON.stringify(json));
- 					    history.go(0); // 새로고침
- 					},
- 					error: function(request, status, error){
- 			            alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
- 			        }			
- 				});
- 			}
- 		}); // end of $("button#btnEdit").click(function(){})
- 		
  		// 모달 창에서 입력된 값 초기화 시키기
     	$(".modal").each(function(index, item){
     	    $("button.close").on("click", function(){
@@ -434,8 +375,6 @@ a, a:hover, .fc-daygrid {color: #000; text-decoration: none; background-color: t
    	    	});
     	}); // end of $(".modal").each(function(index, item){})
    	
-   	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 	}); // end of $(document).ready(function(){})
 	
 	
@@ -507,10 +446,28 @@ a, a:hover, .fc-daygrid {color: #000; text-decoration: none; background-color: t
 		});		
 	} // end of function showReviewPageBar(currentShowPageNo)
 	
-	// 포토티켓 다운로드
-	function downloadPhoto(diary_id){
+	// 포토티켓 다운로드(앞면)
+	function downloadPhoto1(movie_id){
+		$("input#photo_movie_id").val(movie_id);
+
+		const frm = document.downloadPhotoFrm;
+		frm.action = "<%= ctxPath %>/myWatcha/downloadPhoto.action";
+		frm.photo_side.value = "front";
+		frm.method = "post";
+		frm.submit();
 		
-	} // end of function downloadPhoto(diary_id)
+		setTimeout(downloadPhoto2, 5000);
+	} // end of function downloadPhoto1(movie_id)
+	
+	// 포토티켓 다운로드(뒷면)
+	function downloadPhoto2(){
+		const frm = document.downloadPhotoFrm;
+		frm.action = "<%= ctxPath %>/myWatcha/downloadPhoto.action";
+		frm.photo_movie_id.value = $("input#photo_movie_id").val();
+		frm.photo_side.value = "back";
+		frm.method = "post";
+		frm.submit();
+	} // end of function downloadPhoto2()
 	
 	// 무비다이어리 모달창 보여주기
 	function movieDiaryModal(watching_date){
@@ -638,7 +595,61 @@ a, a:hover, .fc-daygrid {color: #000; text-decoration: none; background-color: t
 	            alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
 	        }
 		});		
-	}
+	} // end of function searchResult()
+	
+	// 하이차트 - 선호하는 장르(wordcloud)
+	function showPreference(){
+		// 로그인한 회원이 평가한 영화 중 선호하는 장르에 대한 DB 데이터 가져오기
+		// 전체 평가한 영화 중 별점 3점 이상인 영화들의 장르(드라마,액션,SF,...)를 알아오고 별점별로 장르에 점수를 매겨서 가장 점수가 높은 장르를 가져온다.
+		// [예제] 별점3인 영화(드라마,액션)이면 드라마3, 액션3 && 별점5인 영화(드라마,로맨스)이면 드라마5, 로맨스5 ==> 합산 드라마8 액션3 로맨스5
+		// 차트에서 장르 데이터(word)를 클릭하면 장르별 추천영화를 보여주는 페이지로 이동
+		
+		$.ajax({ 
+			url:"<%= ctxPath%>/myWatcha/showPreferenceChart.action",
+			dataType:"json",
+			success:function(json){
+			//	console.log(JSON.stringify(json));
+			
+				let genreArr = [];
+				for(let i=0; i<json.length; i++){
+					let obj = {name : json[i].genre_name
+							 , weight : Number(json[i].rating_genre)}; 
+					genreArr.push(obj);
+				} // end of for
+				
+				///////////////////////////////////////////////////////////////////////////////////
+				Highcharts.chart('preference',{
+				    accessibility: {
+				        screenReaderSection: {
+				            beforeChartFormat: '<h5>{chartTitle}</h5>' +
+				                '<div>{chartSubtitle}</div>' +
+				                '<div>{chartLongdesc}</div>' +
+				                '<div>{viewTableButton}</div>'
+				        }
+				    },
+				    series: [{
+				        type: 'wordcloud',
+				        data: genreArr,
+				        name: '장르별 선호도'
+				    }],
+				    title: {
+				        text: 'Wordcloud of Alice\'s Adventures in Wonderland'
+				    },
+				    subtitle: {
+				        text: 'An excerpt from chapter 1: Down the Rabbit-Hole  '
+				    },
+				    tooltip: {
+				    	pointFormat: '{series.name}: <b>{point.percentage:.2f}%</b>'
+				    }
+				});
+				///////////////////////////////////////////////////////////////////////////////////
+				$("div.highcharts-data-table").hide();
+			},
+			error: function(request, status, error){
+            	alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+            }				
+		});
+	} // end of function showPreference()
 	
 </script>
 
@@ -708,15 +719,15 @@ a, a:hover, .fc-daygrid {color: #000; text-decoration: none; background-color: t
 	        <c:if test="${not empty requestScope.ratingMoviesList}">
 	  	    <div style="display: flex; padding: 0 50px;">
 	 	      <h5 style="padding-left: 5px; font-weight: 600;"><span>${sessionScope.loginuser.name}</span>&nbsp;님이 선호하는 장르</h5>
+	 	      <p style="padding-left: 5px;">선호 장르의 다양한 영화를 추천받으시려면 장르를 클릭해보세요.</p>
 	        </div>
 	        <div class="row mx-auto my-1 mb-5" style="padding: 0 50px;">
-	          <div id="preference" style="width: 100%; height: 400px; border: solid 1px #e6e6e6; border-radius: 2%;">
-	          </div>
+	          <div id="preference" style="width: 100%; height: 400px; border: solid 1px #e6e6e6; border-radius: 2%;"></div>
 		    </div>
 
 	        <div style="display: flex; padding: 0 50px;" class="row mx-auto">
 	 	      <h5 class="col-md-9" style="padding-left: 5px; font-weight: 600;">평가한 영화<span id="rating_count">${requestScope.userInfo.rating_count}</span></h5>
-	 	      <a class="col-md-3 text-right" href="<%= ctxPath%>/rateMovies.action" style="color: black; text-decoration: none;">전체보기</a>
+	 	      <a class="col-md-3 text-right" href="<%= ctxPath%>/myWatcha/rateMovies.action" style="color: black; text-decoration: none;">전체보기</a>
 	        </div>
 	        <div id="div_rateMovies" class="row mx-auto my-1 mb-3" style="padding: 0 50px;">
 			<c:if test="${requestScope.userInfo.rating_count > 4}">
@@ -862,6 +873,12 @@ a, a:hover, .fc-daygrid {color: #000; text-decoration: none; background-color: t
 	 	      <h5 style="padding-left: 5px; font-weight: 600; margin: 4px 0 0 0;">포토티켓</h5>
 	        </div>
 	        
+	        <form name="downloadPhotoFrm">
+	          <input type="hidden" id="photo_movie_id" name="movie_id" value="" />
+	          <input type="hidden" name="user_id" value="${sessionScope.loginuser.user_id}" />
+	          <input type="hidden" name="photo_side" value="" />
+	        </form>
+	        
 	        <c:if test="${not empty requestScope.userPhotoTicketList}">
 			<c:if test="${requestScope.photoTicketCount > 4}">
 	        <div id="photoTicket" class="row mx-auto my-1 carousel slide w-100" data-ride="carousel" style="padding: 0 50px;">
@@ -881,8 +898,8 @@ a, a:hover, .fc-daygrid {color: #000; text-decoration: none; background-color: t
 		              </div>
 				    </div>
                     <div style="height: 80px;" class="p-0 my-2 text-center">
-			          <h6 class="photoTitle card-title p-0 m-0" style="cursor: pointer; overflow: hidden; max-height: 50px;">${photoTicket.movie_title}</h6>
-			          <i class="download fa-regular fa-circle-down" style="color: gray; background-color:#fff; width: 100%;" onclick="downloadPhoto(${photoTicket.diary_id})">&nbsp;<span style="font-size: 10pt;">다운로드</span></i>
+			          <h6 class="photoTitle card-title p-0 m-0" style="cursor: pointer; overflow: hidden; max-height: 50px;" onclick="downloadPhoto1(${photoTicket.movie_id})">${photoTicket.movie_title}</h6>
+			          <i class="download fa-regular fa-circle-down" style="color: gray; background-color:#fff; width: 100%;">&nbsp;<span style="font-size: 10pt;">다운로드</span></i>
                     </div>
 		          </div>
 			    </div>
@@ -901,8 +918,8 @@ a, a:hover, .fc-daygrid {color: #000; text-decoration: none; background-color: t
 		              </div>
 				    </div>
                     <div style="height: 80px;" class="p-0 my-2 text-center">
-			          <h6 class="photoTitle card-title p-0 m-0" style="cursor: pointer; overflow: hidden; max-height: 50px;">${photoTicket.movie_title}</h6>
-			          <i class="download fa-regular fa-circle-down" style="color: gray; background-color:#fff; width: 100%;" onclick="downloadPhoto(${photoTicket.diary_id})">&nbsp;<span style="font-size: 10pt;">다운로드</span></i>
+			          <h6 class="photoTitle card-title p-0 m-0" style="cursor: pointer; overflow: hidden; max-height: 50px;" onclick="downloadPhoto1(${photoTicket.movie_id})">${photoTicket.movie_title}</h6>
+			          <i class="download fa-regular fa-circle-down" style="color: gray; background-color:#fff; width: 100%;">&nbsp;<span style="font-size: 10pt;">다운로드</span></i>
                     </div>
 		          </div>
 			    </div>
@@ -936,8 +953,8 @@ a, a:hover, .fc-daygrid {color: #000; text-decoration: none; background-color: t
 		              </div>
 				    </div>
                     <div style="height: 80px;" class="p-0 my-2 text-center">
-			          <h6 class="photoTitle card-title p-0 m-0" style="cursor: pointer; overflow: hidden; max-height: 50px;">${photoTicket.movie_title}</h6>
-			          <i class="download fa-regular fa-circle-down" style="color: gray; background-color:#fff; width: 100%;" onclick="downloadPhoto(${photoTicket.diary_id})">&nbsp;<span style="font-size: 10pt;">다운로드</span></i>
+			          <h6 class="photoTitle card-title p-0 m-0" style="cursor: pointer; overflow: hidden; max-height: 50px;" onclick="downloadPhoto1(${photoTicket.movie_id})">${photoTicket.movie_title}</h6>
+			          <i class="download fa-regular fa-circle-down" style="color: gray; background-color:#fff; width: 100%;">&nbsp;<span style="font-size: 10pt;">다운로드</span></i>
                     </div>
 		          </div>
 			  </c:forEach>
@@ -1110,102 +1127,5 @@ a, a:hover, .fc-daygrid {color: #000; text-decoration: none; background-color: t
 		  </div>
 		</form>
 		</div>
-	
-		<%-- 한줄평 등록하기 --%>
-        <div style="position: relative; left: 150px; bottom: 33px; width: 150px;">
-          <label for="check_comment" style="cursor: pointer;">
-             <span class="commenti">
-               <c:if test="${not empty sessionScope.loginuser}">
-                 <c:if test="${empty requestScope.reviewInfo}">
-                   <button type="button" data-toggle="modal" data-target="#registerReview" style="font-weight: bold; border: none; background-color: transparent;">
-                     <i style="font-size: 23px;" class="fas fa-pen-nib commenti"></i>&nbsp;&nbsp;한줄평 등록
-                   </button>
-                 </c:if>
-                 <c:if test="${not empty requestScope.reviewInfo}">
-                   <button type="button" data-toggle="modal" data-target="#editReview" style="font-weight: bold; border: none; background-color: transparent;">
-                     <i style="font-size: 23px;" class="fas fa-pen-nib commenti"></i>&nbsp;&nbsp;한줄평 수정
-                   </button>
-                 </c:if>
-               </c:if>
-               <c:if test="${empty sessionScope.loginuser}">
-               
-               </c:if>
-             </span>
-          </label>
-        </div> 
-  </div>
 
-	  <%-- 한줄평 등록 모달창 --%>
-      <c:if test="${empty requestScope.reviewInfo}">
-		<div class="modal fade registerReview" id="registerReview" data-keyboard="false">
-		<form name="registerReviewFrm">
-		  <input type="hidden" name="user_id" value="${sessionScope.loginuser.user_id}" />
-		  <input type="hidden" name="movie_id" value="${requestScope.movieDetail.movie_id}" />
-		  <div class="modal-dialog modal-dialog-centered">
-		    <div class="modal-content">
-		      <div class="modal-body">
-		        <h5 class="modal-title" style="font-weight: bold;">${requestScope.movieDetail.movie_title}<button type="button" class="close" data-dismiss="modal">&times;</button></h5>
-	      		<div class="my-2">
-	      		  <textarea id="review_content" name="review_content" style="width: 100%; height: 450px; resize: none; border: none;" placeholder="이 작품에 대한 생각을 자유롭게 표현해주세요."></textarea>
-	      		</div>
-	      		<div style="display: inline-block; width: 100%;">
-	      		  <div style="display: inline-block; width: 83%;">
-	      		    <label for="spoiler_status">
-		  		      <i class="fa-solid fa-face-meh fa-2xl" style="color: #cccccc;"></i>
-		              <input type="checkbox" id="spoiler_status" name="spoiler_status" style="display: none;" value="0" />
-		              <span style="color: #666666; cursor: pointer;">스포일러가 포함된 한줄평을 가려보세요.</span>
-	      		    </label>
-	      		  </div>
-	      		  <div style="display: inline-block; width: 16%; text-align: right;">
-		            <button type="button" class="btn" id="btnAdd" style="color: #ffffff; background-color: #ff0558;">등록</button>
-	      		  </div>
-	      		</div>
-		      </div>
-		    </div>
-		  </div>
-		</form>
-		</div>
-	  </c:if>
-      <%-- 한줄평 등록 모달창 끝 --%>
-		
- 	  <%-- 한줄평 수정 모달창 --%>
-      <c:if test="${not empty requestScope.reviewInfo}">
-       	<div class="modal fade editReview" id="editReview" data-keyboard="false">
-		<form name="editReviewFrm">
-		  <input type="hidden" name="review_id" value="${requestScope.reviewInfo.review_id}" />
-		  <div class="modal-dialog modal-dialog-centered">
-			<div class="modal-content">
-			  <div class="modal-body">
-			  	<h5 class="modal-title" style="font-weight: bold;">${requestScope.movieDetail.movie_title}<button type="button" class="close" data-dismiss="modal">&times;</button></h5>
-			  	<div class="my-2">
-			  	  <textarea id="review_content" name="review_content" style="width: 100%; height: 450px; resize: none; border: none;">${requestScope.reviewInfo.review_content}</textarea>
-			  	</div>
-			  	<div style="display: inline-block; width: 100%;">
-			  	  <div style="display: inline-block; width: 83%;">
-			  	
-			  	    <label for="spoiler_status">
-					<c:if test="${requestScope.reviewInfo.spoiler_status eq 0}">
-					  <i class="fa-solid fa-face-meh fa-2xl mr-1" style="color: #cccccc;"></i>
-				  	  <input type="checkbox" id="spoiler_status" name="spoiler_status" style="display: none;" value="0" />
-				  	  <span id="spoiler_status" style="color: #666666; cursor: pointer;">스포일러가 포함된 한줄평을 가려보세요.</span>
-					</c:if>
-					<c:if test="${requestScope.reviewInfo.spoiler_status eq 1}">
-					  <i class="fa-solid fa-face-meh fa-2xl mr-1" style="color: #ff0558;"></i>
-				  	  <input type="checkbox" id="spoiler_status" name="spoiler_status" style="display: none;" value="1" checked />
-				  	  <span id="spoiler_status" style="color: #666666; cursor: pointer;">한줄평에 스포일러가 포함되었어요.</span>
-					</c:if>
-				  	</label>
-			  	  
-				  </div>
-				  <div style="display: inline-block; width: 16%; text-align: right;">
-		            <button type="button" class="btn" id="btnEdit" style="color: #ffffff; background-color: #ff0558;">수정</button>
-			  	  </div>
-			  	</div>
-			  </div>
-			</div>
-		  </div>
-		</form>
-		</div>
-	  </c:if>
-      <%-- 한줄평 수정 모달창 끝 --%>
-		
+  </div>

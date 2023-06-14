@@ -144,7 +144,7 @@ div#commentRegister textarea:focus, div#commentEdit textarea:focus, div#review_m
 					       	html +=   '<h6 style="padding: 0px; margin: 12px 0px; color: gray; font-size: 10pt;">내가 쓴 한줄평</h6>';
 				        }
 
-				        html +=	  '</div>'
+				        html +=	    '</div>'
 				       		  +     '<div class="mx-auto my-auto p-2">';
 			       		  
 				       	if(item.spoiler_status == 0 || item.user_id == "${sessionScope.loginuser.user_id}"){ // 한줄평에 스포일러가 없거나, 로그인한 회원이 작성한 한줄평일 경우
@@ -161,12 +161,12 @@ div#commentRegister textarea:focus, div#commentEdit textarea:focus, div#review_m
 					       		  +     '<p style="padding: 10px; margin: 0px;">'+item.review_content+'</p>'
 					       		  +	  '</div>';
 				       	}
-				       	html +=	  '<div class="m-0 p-0 my-2" style="height: 20px;">';
+				       	html +=	  	  '<div class="m-0 p-0 my-2" style="height: 20px;">';
 
 				       	if(item.spoiler_status == 1 && item.user_id == "${sessionScope.loginuser.user_id}"){ // 한줄평에 스포일러가 있고, 로그인한 회원이 작성한 한줄평일 경우
-					       	html +=	'<p style="padding: 0px 10px; margin: 0px; color: #ff0558; font-size: 11pt; font-weight: bold;">스포일러가 포함되어 있어요.</p>';
+					       	html +=	    '<p style="padding: 0px 10px; margin: 0px; color: #ff0558; font-size: 11pt; font-weight: bold;">스포일러가 포함되어 있어요.</p>';
 				        }
-				       	html +=	  '</div>';
+				       	html +=	  	  '</div>';
 				       	
 				       	html +=       '<div style="display: flex;">'
 				       		  +         '<p style="width: 70%; padding-left: 10px; margin: 10px 0px; font-size: 11pt; color: gray;">작성일자&nbsp;<span class="ml-2">'+item.review_date+'</span></p>';
@@ -501,7 +501,7 @@ div#commentRegister textarea:focus, div#commentEdit textarea:focus, div#review_m
 			    	
 					html += 		'<div style="width: 100%;">'
 				    	  + 		  '<div style="display: flex;" class="mb-2">'
-				    	  + 		    '<p style="text-align: left; padding: 0 5px; margin: 0px 10px 5px 0px; font-weight: 600;">작성자이름</p>'
+				    	  + 		    '<p style="text-align: left; padding: 0 5px; margin: 0px 10px 5px 0px; font-weight: 600;">'+${sessionScope.loginuser.name}+'</p>'
 				    	  + 		    '<input type="hidden" name="user_id" value="${sessionScope.loginuser.user_id}" />'
 				    	  + 		  '</div>'
 				    	  + 		  '<textarea id="content" name="content" style="width: 100%; height: 70px; resize: none; border: solid 1px #e6e6e6; border-radius: 1%; font-size: 11pt;" placeholder="이 한줄평에 대한 댓글을 적어주세요."></textarea>'
@@ -517,7 +517,7 @@ div#commentRegister textarea:focus, div#commentEdit textarea:focus, div#review_m
 			    }
 			    else { // 로그인하지 않았을 경우
 			    	html = '<div class="mx-auto my-2 p-1">'
-						 +   '<h4 style="text-align: left; padding: 5px; font-weight: 600;">회원만 댓글을 달 수 있어요!</h4>';
+						 +   '<h5 style="text-align: center; padding: 5px; margin: 20px; font-weight: 600;">회원만 댓글을 달 수 있어요!</h5>';
 				    	 + '</div>';
 			    }
 				$("div#commentRegister").html(html);
@@ -576,7 +576,12 @@ div#commentRegister textarea:focus, div#commentEdit textarea:focus, div#review_m
 	} // end of function delReview(review_id)
 	
 	function func_likeAlert(){
-		alert("내 한줄평에 좋아요를 할수는 없어요.");
+		if(${empty sessionScope.loginuser}){
+			alert("회원만 좋아요를 할 수 있어요!");
+		}
+		else { // 로그인한 회원이 본인의 한줄평에 좋아요를 클릭한 경우
+			alert("내 한줄평에 좋아요를 할 수는 없어요.");
+		}
 	} // end of function func_likeAlert()
 	
 	// 한줄평에 좋아요 체크 또는 체크해제

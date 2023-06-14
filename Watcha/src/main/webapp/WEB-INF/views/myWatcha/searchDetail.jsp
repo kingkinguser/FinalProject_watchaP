@@ -81,45 +81,6 @@ div#makePhotoTicket{font-family: 'Noto Sans KR', sans-serif;}
 		$("div#mycontent").css('padding-top','20px');
 		$("div#mycontent").css('background-color','#f8f8f8');
 
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		   /*보고싶어요 시작*/   
-		   $(".seechange2").hide(); 
-		   
-		   $("input:checkbox[name='check_wantsee']").click(function(){
-		       
-		      if($('input:checkbox[name="check_wantsee"]').is(":checked")) {
-		            $(".seechange1").hide(); 
-		            $(".seechange2").show(); 
-		            $(".seechange2").css({"color":"#ff0558"}); 
-		             $(".wantseei").css({"color":"#ff0558"}); 
-		         }
-		         else if(!$('input:checkbox[name="check_wantsee"]').is(":checked")) {
-		            $(".seechange1").show(); 
-		            $(".seechange2").hide(); 
-		            $(".wantseei").css({"color":""}); 
-		         }
-		         
-		      //   $("input:checkbox[name='check_wantsee']").toggle();
-		      
-		     });
-		   /*보고싶어요 끝*/      
-
-		   /*보는중 시작*/      
-		   $("input:checkbox[name='check_seeing']").click(function(){
-		        
-		      if($('input:checkbox[name="check_seeing"]').is(":checked")) {
-		          $(".seeingi").css({"color":"#ff0558"}); 
-		      }
-		      else if(!$('input:checkbox[name="check_seeing"]').is(":checked")) {
-		         $(".seeingi").css({"background-color":"","color":""}); 
-		      }
-		      
-		    //  $("input:checkbox[name='check_seeing']").toggle();
-		      
-		     });
-		   /*보는중 끝*/		
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
 		viewReviewDetail(); // 모달에 한줄평 보여주기
 		   
 		$('.carousel').carousel({
@@ -147,43 +108,7 @@ div#makePhotoTicket{font-family: 'Noto Sans KR', sans-serif;}
  				return false;
  			}
  		}); // end of $("input:radio[name='rating']").each(function(index, item){})
-<%--
- 		// 영화에 대한 별점 등록 또는 수정 하는 경우
- 		$("input:radio[name='rating']").change(function(){
- 			if("${empty requestScope.reviewInfo.rating}"){ // 별점 등록하는 경우
- 	 			$.ajax({
- 					url:"<%= ctxPath%>/myWatcha/registerRating.action",
- 					data:{"movie_id":"${requestScope.movieDetail.movie_id}",
- 						  "user_id":"${sessionScope.loginuser.user_id}",
- 						  "rating":Number($(this).val())/2}, 
- 					type:"post",
- 					dataType:"json",
- 					success:function(json){
- 					//	console.log("확인용 : "+JSON.stringify(json));
- 					},
- 					error: function(request, status, error){
- 			            alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
- 			        }			
- 	 			});
- 			}
- 			else { // 별점 수정하는 경우
- 	 			$.ajax({
- 					url:"<%= ctxPath%>/myWatcha/updateRating.action",
- 					data:{"movie_id":"${requestScope.movieDetail.movie_id}",
- 						  "user_id":"${sessionScope.loginuser.user_id}",
- 						  "rating":Number($(this).val())/2}, 
- 					type:"post",
- 					dataType:"json",
- 					success:function(json){
- 					//	console.log("확인용 : "+JSON.stringify(json));
- 					},
- 					error: function(request, status, error){
- 			            alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
- 			        }			
- 	 			});
- 			}
- 		}); // end of $("input:radio[name='rating']").change(function(){})
---%> 		
+
  		// 영화에 대한 별점을 수정하는 경우
  		$("input:radio[name='rating']").change(function(){
  			$.ajax({
@@ -287,6 +212,8 @@ div#makePhotoTicket{font-family: 'Noto Sans KR', sans-serif;}
    	    	});
     	}); // end of $(".modal").each(function(index, item){})
     	
+		$("div#div_icon").hide(); // 포토티켓 로더
+    	
     	// 포스터(포토티켓 앞면) 사진 변경하기
     	$("input#changePhotoFront").change(function(){
 
@@ -368,47 +295,47 @@ div#makePhotoTicket{font-family: 'Noto Sans KR', sans-serif;}
 			
 				let html = "";
 				
-       			  	<%-- 한줄평에 달린 댓글 --%>
-       				if(json.length > 0){ // 한줄평에 달린 댓글이 있는 경우
-						html +=   '<h5 class="my-2 ml-4">전체댓글&nbsp;<span style="font-size: 11pt; color: gray;">${requestScope.searchReview.number_of_comments}</span></h5>'
-					  		  +   '<div id="viewAllComment">';
-					
-					  	$.each(json, function(index, item){
-					  		html += '<div class="mx-auto my-auto p-2 text-center" style="padding-left: 10px; display: flex;">';
-						  
-					        if(item.profile_image == null){ // 유저의 프로필이미지가 없는 경우
-						       	html += '<img id="img_profile" src="<%= ctxPath%>/resources/images/프로필없음.jpg"/>';
-					        }
-					        else {
-						       	html += '<img id="img_profile" src="<%= ctxPath%>/resources/images/'+item.profile_image+'"/>';
-					        }
-							
-						  	html += '<div style="text-align: left;">';
-						  	if(item.user_id == "${sessionScope.loginuser.user_id}"){ // 로그인한 회원이 작성한 한줄평일 경우
-						       	html += '<p style="padding: 0 5px; margin: 0px 0px 5px 0px; font-weight: 600;">'+item.name+'<span class="pl-2" style="color: #ff0558; font-size: 10pt;">작성자</span></p>';
-					        }
-						  	else {
-						       	html += '<p style="padding: 0 5px; margin: 0px 0px 5px 0px; font-weight: 600;">'+item.name+'</p>';
-						  	}
-						    html += 	'<p style="padding: 0 5px; margin: 0px;">'+item.content+'</p>'
-						    	  + 	'<p style="display: inline-block; margin: 10px 0px 0px 0px; font-size: 10pt; color: gray;">작성일자&nbsp;<span class="pl-2">'+item.comment_date+'</span></p>';
-						  	if(item.user_id == "${sessionScope.loginuser.user_id}"){ // 로그인한 회원이 작성한 한줄평일 경우
-						       	html += '<div style="display: inline-block;">'
-						       		  +	  "<button type='button' class='p-0 m-0 mx-1 ml-2' onclick='updateComment1("+JSON.stringify(item)+")' style='font-weight: bold; color: #ff0558; border: none; background-color: transparent; font-size: 10pt;'>수정</button>"
-						       		  +   '<button type="button" class="p-0 m-0 mx-1" onclick="delComment('+item.comment_id+')" style="font-weight: bold; color: #ff0558; border: none; background-color: transparent; font-size: 10pt;">삭제</button>'
-									  +	'</div>';
-
-					        }
-						    html +=   '</div>'
-						  		  + '</div>';
-					  	}); // end of $.each(json, function(index, item){})
-					    html += '</div>';
-       			  }
-       			  else { // 한줄평에 달린 댓글이 없는 경우
-				      html += '<h5 style="text-align: center; padding: 5px; font-weight: 500; margin-bottom: 50px;">이 한줄평에 대한 댓글이 존재하지 않아요.</h5>';
-       			  }
+    			<%-- 한줄평에 달린 댓글 --%>
+    			if(json.length > 0){ // 한줄평에 달린 댓글이 있는 경우
+					html +=   '<h5 class="my-2 ml-4">전체댓글&nbsp;<span style="font-size: 11pt; color: gray;">'+json.length+'</span></h5>'
+				  		  +   '<div id="viewAllComment">';
+				
+				  	$.each(json, function(index, item){
+				  		html += '<div class="mx-auto my-auto p-2 text-center" style="padding-left: 10px; display: flex;">';
+					  
+				        if(item.profile_image == null){ // 유저의 프로필이미지가 없는 경우
+					       	html += '<img id="img_profile" src="<%= ctxPath%>/resources/images/프로필없음.jpg"/>';
+				        }
+				        else {
+					       	html += '<img id="img_profile" src="<%= ctxPath%>/resources/images/'+item.profile_image+'"/>';
+				        }
+						
+					  	html += '<div style="text-align: left;">';
+					  	if(item.user_id == "${sessionScope.loginuser.user_id}"){ // 로그인한 회원이 작성한 한줄평일 경우
+					       	html += '<p style="padding: 0 5px; margin: 0px 0px 5px 0px; font-weight: 600;">'+item.name+'<span class="pl-2" style="color: #ff0558; font-size: 10pt;">작성자</span></p>';
+				        }
+					  	else {
+					       	html += '<p style="padding: 0 5px; margin: 0px 0px 5px 0px; font-weight: 600;">'+item.name+'</p>';
+					  	}
+					    html += 	'<p style="padding: 0 5px; margin: 0px;">'+item.content+'</p>'
+					    	  + 	'<p style="display: inline-block; margin: 10px 0px 0px 0px; font-size: 10pt; color: gray;">작성일자&nbsp;<span class="pl-2">'+item.comment_date+'</span></p>';
+					  	if(item.user_id == "${sessionScope.loginuser.user_id}"){ // 로그인한 회원이 작성한 한줄평일 경우
+					       	html += '<div style="display: inline-block;">'
+					       		  +	  "<button type='button' class='p-0 m-0 mx-1 ml-2' onclick='updateComment1("+JSON.stringify(item)+")' style='font-weight: bold; color: #ff0558; border: none; background-color: transparent; font-size: 10pt;'>수정</button>"
+					       		  +   '<button type="button" class="p-0 m-0 mx-1" onclick="delComment('+item.comment_id+')" style="font-weight: bold; color: #ff0558; border: none; background-color: transparent; font-size: 10pt;">삭제</button>'
+								  +	'</div>';
+				        }
+					    html +=   '</div>'
+					  		  + '</div>';
+				  	}); // end of $.each(json, function(index, item){})
+				    html += '</div>';
+      			}
+      			else { // 한줄평에 달린 댓글이 없는 경우
+			    	html += '<h5 style="text-align: center; padding: 5px; font-weight: 500; margin-bottom: 50px;">이 한줄평에 대한 댓글이 존재하지 않아요.</h5>';
+      			}
        			  
   				$("div#reviewComment").html(html);
+  				$("span#number_of_comments").text(json.length);
        			  
        			<%-- 댓글 등록 --%>
 				html  = '<form name="commentFrm">'
@@ -416,20 +343,17 @@ div#makePhotoTicket{font-family: 'Noto Sans KR', sans-serif;}
 			    	  +   '<input type="hidden" name="review_id" value="${requestScope.searchReview.review_id}" />'
 			    	  +   '<div class="flex-container mx-auto my-auto p-2 text-center" style="padding-left: 10px; display: flex;">';
 
-						  <%-- 로그인한 회원의 프로필 이미지 없는경우 --%>
-						  <%-- 세션으로 수정예정 
-					        if("${sessionScope.loginuser.profile_image}" == null){ // 유저의 프로필이미지가 없는 경우
-						       	html += '<img id="img_profile" src="<%= ctxPath%>/resources/images/프로필없음.jpg"/>';
-					        }
-					        else {
-						       	html += '<img id="img_profile" src="<%= ctxPath%>/resources/images/'+item.profile_image+'"/>';
-					        }
-						  --%>
-			  	html +=     '<img id="img_profile" src="<%= ctxPath%>/resources/images/프로필없음.jpg"/>';
+			  	<%-- 로그인한 회원의 프로필 이미지 없는경우 --%>
+		        if("${sessionScope.loginuser.profile_image}" == ""){ // 유저의 프로필이미지가 없는 경우
+			       	html += '<img id="img_profile" src="<%= ctxPath%>/resources/images/프로필없음.jpg"/>';
+		        }
+		        else {
+			       	html += '<img id="img_profile" src="<%= ctxPath%>/resources/images/${sessionScope.loginuser.profile_image}"/>';
+		        }
 
 			  	html += 	'<div style="width: 100%;">'
 					  +		  '<div style="display: flex;" class="mb-2">'
-					  +		    '<p style="text-align: left; padding: 0 5px; margin: 0px 10px 5px 0px; font-weight: 600;">작성자이름</p>'
+			    	  + 		  '<p style="text-align: left; padding: 0 5px; margin: 0px 10px 5px 0px; font-weight: 600;">${sessionScope.loginuser.name}</p>'
 					  +		    '<input type="hidden" name="user_id" value="${sessionScope.loginuser.user_id}" />'
 					  +		  '</div>'
 					  +		  '<textarea id="content" name="content" style="width: 100%; height: 70px; resize: none; border: solid 1px #e6e6e6; border-radius: 1%; font-size: 11pt;" placeholder="이 한줄평에 대한 댓글을 적어주세요."></textarea>'
@@ -554,6 +478,9 @@ div#makePhotoTicket{font-family: 'Noto Sans KR', sans-serif;}
 	// 포토티켓 등록 - canvas 객체 변환
 	function registerPhoto1(){
 		
+		$("div#div_button").fadeOut('fast');
+		$("div#div_icon").fadeIn('fast');
+		
 		// 포토티켓 내 text를 입력하는 input 태그 유효성 검사하기
 		if($("input#photoText").val() == ""){
 			$("input#photoText").val(" ");
@@ -598,7 +525,7 @@ div#makePhotoTicket{font-family: 'Noto Sans KR', sans-serif;}
 			dataType:"json",
 			success:function(json){
 			//	console.log("확인용 : "+JSON.stringify(json));
-			    history.go(0); // 새로고침
+				downloadPhoto1("${requestScope.searchDetail.movie_id}");
 			},
 			error: function(request, status, error){
 	            alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
@@ -617,11 +544,38 @@ div#makePhotoTicket{font-family: 'Noto Sans KR', sans-serif;}
 
 	  	return new File([new Uint8Array(imgArr)], fileName, {type: 'image/jpeg'});
 	} // end of function canvasToFile(imgBase64)
+	
+	// 포토티켓 다운로드(앞면)
+	function downloadPhoto1(movie_id){
+		$("input#photo_movie_id").val(movie_id);
 
-	// 포토티켓 다운로드
-	function downloadPhoto(){
+		const frm = document.downloadPhotoFrm;
+		frm.action = "<%= ctxPath %>/myWatcha/downloadPhoto.action";
+		frm.photo_side.value = "front";
+		frm.method = "post";
+		frm.submit();
 		
-	}
+		setTimeout(downloadPhoto2, 5000);
+	} // end of function downloadPhoto1(movie_id)
+	
+	// 포토티켓 다운로드(뒷면)
+	function downloadPhoto2(){
+		const frm = document.downloadPhotoFrm;
+		frm.action = "<%= ctxPath %>/myWatcha/downloadPhoto.action";
+		frm.photo_movie_id.value = $("input#photo_movie_id").val();
+		frm.photo_side.value = "back";
+		frm.method = "post";
+		frm.submit();
+		
+		setTimeout(closeModal, 5000);
+	} // end of function downloadPhoto2()
+
+	// 포토티켓 모달닫기
+	function closeModal(){
+		$("div#makePhotoTicket").modal('hide');
+		history.go(0);
+	} // end of function closeModal()
+
 	
 </script>
 
@@ -724,11 +678,18 @@ div#makePhotoTicket{font-family: 'Noto Sans KR', sans-serif;}
 	  	    <div style="display: flex;">
  	    	  <h5 style="padding-left: 10px; font-weight: 600;">이 영화의 포토티켓</h5>
 			  <c:if test="${not empty requestScope.searchDetail.photo_front}">
-		       <button type="button" class="btn btn-sm btn-light p-1 px-2 ml-4" onclick="downloadPhoto()">
+		       <button type="button" class="btn btn-sm btn-light p-1 px-2 ml-4" onclick="downloadPhoto1(${requestScope.searchDetail.movie_id})">
 		        <span>포토티켓 다운로드</span><i class="fa-regular fa-circle-down fa-lg ml-2" style="color: gray;"></i>
 		       </button>
 			  </c:if>
 	  	    </div>
+
+	        <form name="downloadPhotoFrm">
+	          <input type="hidden" id="photo_movie_id" name="movie_id" value="" />
+	          <input type="hidden" name="user_id" value="${sessionScope.loginuser.user_id}" />
+	          <input type="hidden" name="photo_side" value="" />
+	        </form>
+
 			  <div id="photoTicket" class="mx-auto mt-1 mb-3 p-1">
 			    <div class="p-0 text-center">
 				  <c:if test="${not empty requestScope.searchDetail.photo_front}">
@@ -770,7 +731,7 @@ div#makePhotoTicket{font-family: 'Noto Sans KR', sans-serif;}
 		<form name="photoTicketFrm" enctype="multipart/form-data">
 		  <div class="modal-dialog modal-dialog-centered mx-auto">
 		    <div class="modal-content mx-auto" style="width: 85%;">
-		      <div class="modal-body text-center" style="height: 620px; margin: 10px;">
+		      <div class="modal-body text-center" style="height: 600px; margin: 10px;">
 		        <h5 class="modal-title" style="font-weight: bold;">포토티켓 만들기<button type="button" class="close" data-dismiss="modal">&times;</button></h5>
 			    <div class="row mx-auto mt-3 mb-2" style="display: flex; padding: 10px 0; height: 450px;">
 		          <div id="div_photo_front" class="col p-1 pt-3 mx-1 text-center" style="width: 98%; height: 420px; border: solid 1px #e6e6e6; border-radius: 2%;">
@@ -808,10 +769,15 @@ div#makePhotoTicket{font-family: 'Noto Sans KR', sans-serif;}
 		      	    </div>
     	          </div>
 			    </div>
-			    <label class="btn btn-secondary m-0" style="padding: 10px 30px;">포스터 사진 변경하기
-                  <input type="file" name="changePhotoFront" id="changePhotoFront" accept="image/*" style="display: none;"/>
-			    </label>
-		        <button type="button" class="btn" onclick="registerPhoto1()" style="padding: 10px 30px; color: #ffffff; background-color: #ff0558;">포토티켓 등록하기</button>
+			    <div id="div_button">
+			      <label class="btn btn-secondary m-0" style="padding: 10px 30px;">포스터 사진 변경하기
+                    <input type="file" name="changePhotoFront" id="changePhotoFront" accept="image/*" style="display: none;"/>
+			      </label>
+		          <button type="button" class="btn" onclick="registerPhoto1()" style="padding: 10px 30px; color: #ffffff; background-color: #ff0558;">포토티켓 등록하기</button>
+			    </div>
+			    <div id="div_icon">
+			      <i class="fa-solid fa-spinner fa-spin fa-xl"></i><span class="h5 m-0 p-0">&nbsp;&nbsp;포토티켓 등록중...</span>
+			    </div>
 		      </div>
 		    </div>
 		  </div>
@@ -904,18 +870,14 @@ div#makePhotoTicket{font-family: 'Noto Sans KR', sans-serif;}
 	      		    <div class="flex-container mx-auto my-auto p-2 text-center" style="padding-left: 10px; border-bottom: solid 1px #e6e6e6; display: flex;">
 					
 					<%-- 로그인한 회원의 프로필 이미지 없는경우 --%>
-					<%-- 세션으로 수정예정 
-					<c:if test="${not empty requestScope.userInfo.profile_image}">
+					<c:if test="${not empty sessionScope.loginuser.profile_image}">
 		  			  <img id="img_profile" src="<%= ctxPath%>/resources/images/${requestScope.userInfo.profile_image}"/>
 					</c:if>
-					<c:if test="${empty requestScope.userInfo.profile_image}">
+					<c:if test="${empty sessionScope.loginuser.profile_image}">
 		  			  <img id="img_profile" src="<%= ctxPath%>/resources/images/프로필없음.jpg"/>
 					</c:if>
-					--%>
 
-	  			      <img id="img_profile" src="<%= ctxPath%>/resources/images/프로필없음.jpg"/>
-
-	  			      <h5 style="text-align: left; padding: 0 5px; font-weight: 600; margin: 8px 10px;">로그인한 회원</h5>
+	  			      <h5 style="text-align: left; padding: 0 5px; font-weight: 600; margin: 8px 10px;">${sessionScope.loginuser.name}</h5>
 	       			  <p class="pr-2" style="color: gray; font-size: 10pt; padding: 0px; margin: 10px 0 0 0;">내가 쓴 한줄평</p>
 	       		  	  <button type="button" onclick="reviewEditModal()" style="font-weight: bold; color: #ff0558; border: none; background-color: transparent;">수정</button>
 	       		  	  <button type="button" onclick="delReview(${requestScope.searchReview.review_id})" style="font-weight: bold; color: #ff0558; border: none; background-color: transparent;">삭제</button>

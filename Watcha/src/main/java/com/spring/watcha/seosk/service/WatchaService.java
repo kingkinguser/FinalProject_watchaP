@@ -357,4 +357,11 @@ public class WatchaService implements InterWatchaService {
 		return n;
 	}
 
+	// 선호장르 데이터 가져오기
+	@Override
+	public List<Map<String, String>> preference(String user_id) {
+		List<Map<String, String>> preferenceList = dao.preference(user_id);
+		return preferenceList;
+	}
+
 }
