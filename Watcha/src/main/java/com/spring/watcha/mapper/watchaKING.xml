@@ -143,7 +143,7 @@
 	         CC.user_collection_seq, CC.user_id_comment, CC.user_id_collection, CC.user_collection_content,
 	         to_char(CC.user_collection_time, 'YYYY-MM-DD HH24:MI:SS') AS user_collection_time
 	  from user_collection_comment CC join member M
-      on CC.user_id_collection = M.user_id 
+      on CC.user_id_comment = M.user_id 
       where user_id_collection = #{user_id_collection} 
     ) V 
 	where rno between #{startRno} and #{endRno} and user_id_collection = #{user_id_collection}

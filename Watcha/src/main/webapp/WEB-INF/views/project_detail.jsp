@@ -91,7 +91,6 @@
 		border: solid 1.5px #b3b3b3;
 		width: 100%;
 		display: inline-block;
-		height: 600px;
 		margin-top: 20px;
 		border-radius: 10px 10px;
 	}

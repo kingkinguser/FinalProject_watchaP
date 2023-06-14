@@ -658,8 +658,10 @@
 			  let html = "";
 			  if(json.length > 0) {
 				 $.each(json, function(index, item){
+					
+					 console.log(item);  
 					 
-					 html += "<tr>";    
+					html += "<tr>";    
 					 
 			        if(item.profile_image == null){ // 유저의 프로필이미지가 없는 경우
 				       	html += '<td id="commentpi"><img id="img_profile" src="<%= ctxPath%>/resources/images/프로필없음.jpg"/></td>';
@@ -721,8 +723,10 @@
 			        else {
 				       	html += '<td id="commentpi"><img id="img_profile" src="<%= ctxPath%>/resources/images/'+item.profile_image+'"/></td>';
 			        }	
-					 
-					 html += '<td id="commentuic">'+item.user_id_comment+"</td>"; 
+					  
+			        html += '<td id="commentpi"><img src="' + (item.profile_image ? "<%= ctxPath%>/resources/images/" + item.profile_image : "<%= ctxPath%>/resources/images/프로필없음.jpg") + '" class="card-img-top"></td>' 
+			        
+			         html += '<td id="commentuic">'+item.user_id_comment+"</td>"; 
 					 html += '<td id="commentucc">'+item.user_collection_content+"</td>";
 		             html += '<td id="commentuct">'+item.user_collection_time+"</td>";  
 		             
