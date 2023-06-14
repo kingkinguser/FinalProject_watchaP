@@ -137,22 +137,29 @@
 	
 	img#lastest {
 		 background-position: center center; 
-		 height: 280px; 
-  	     width: 40%;  
-  	     border-radius: 15px;
+		 height: 220px; 
+  	     width: 30%;   
+  	     border-radius: 15px; 
   	     margin: 0 0 0px 20px;  
 	} 
 	
 	#chart{
-	  width: 58%;   
-	  height: 340px;  
+	  width: 32%;    
+	  height: 280px;  
 	  border: solid 1px #eee;
 	  border-radius: 15px;
 	  float: left;
 	  margin: 10px 0 10px 0;   
 	}
 	
-	 
+	#chart2{ 
+	  width: 32%;    
+	  height: 280px;  
+	  border: solid 1px #eee;
+	  border-radius: 15px;
+	  float: left;
+	  margin: 10px 0 10px 20px;   
+	}	 
 	
 	/* 차트 1 시작 */
 	.highcharts-figure,
@@ -287,7 +294,25 @@
 		padding: 7px 0 7px 150px;    
 		font-size: 12px;    
 	}
-		
+	
+	/* 내비게이션 바*/
+	.pagination {
+	  display: inline-block;
+	}
+	
+	.pagination a {
+	  color: black;
+	  float: left;
+	  padding: 8px 16px;
+	  text-decoration: none;
+	  transition: background-color .3s;
+	}
+	
+	.pagination a.active {
+	  background-color: #ff0558; 
+	  color: white;
+	}
+	
 </style>
 
 <script type="text/javascript">
@@ -309,10 +334,10 @@
 		    	if( event.keyCode == 13 ){
 		    		
 					if("${requestScope.collection_viewA}")	{ 
-						goAddUserWriteA()
+						goAddUserWriteA();
 					}
 					else if("${requestScope.collection_viewB}") {
-						goAddUserWriteB()
+						goAddUserWriteB();
 					}
 		    		 
 		    	}
@@ -414,14 +439,16 @@
 	/* 좋아요 총수 */	
 	goLikeTotal() 
 	
-	/* 차트 2 */
-	if("${requestScope.collection_viewA}") {
-		wordcloud(); 
+	/* 차트 */
+	if("${requestScope.collection_viewA}")	{ 
+		wordcloudA(); 
+		pieBasicA();  
 	}
 	else if("${requestScope.collection_viewB}") {
-		pieBasic(); 
+		wordcloudB(); 
+		pieBasicB(); 
 	}
-	
+
 	});//end of $(document).ready(function()) ----------------------------------------------------------------------------
 
 	// Function Declaration
@@ -659,8 +686,6 @@
 			  if(json.length > 0) {
 				 $.each(json, function(index, item){
 					
-					 console.log(item);  
-					 
 					html += "<tr>";    
 					 
 			        if(item.profile_image == null){ // 유저의 프로필이미지가 없는 경우
@@ -670,7 +695,7 @@
 				       	html += '<td id="commentpi"><img id="img_profile" src="<%= ctxPath%>/resources/images/'+item.profile_image+'"/></td>';
 			        }	
 					 
-					 html += '<td id="commentuic">'+item.user_id_comment+"</td>"; 
+					 html += '<td id="commentuic">'+item.name+"</td>"; 
 					 html += '<td id="commentucc">'+item.user_collection_content+"</td>";
 		             html += '<td id="commentuct">'+item.user_collection_time+"</td>"; 
 		                
@@ -723,10 +748,8 @@
 			        else {
 				       	html += '<td id="commentpi"><img id="img_profile" src="<%= ctxPath%>/resources/images/'+item.profile_image+'"/></td>';
 			        }	
-					  
-			        html += '<td id="commentpi"><img src="' + (item.profile_image ? "<%= ctxPath%>/resources/images/" + item.profile_image : "<%= ctxPath%>/resources/images/프로필없음.jpg") + '" class="card-img-top"></td>' 
 			        
-			         html += '<td id="commentuic">'+item.user_id_comment+"</td>"; 
+			         html += '<td id="commentuic">'+item.name+"</td>"; 
 					 html += '<td id="commentucc">'+item.user_collection_content+"</td>";
 		             html += '<td id="commentuct">'+item.user_collection_time+"</td>";  
 		             
@@ -793,21 +816,21 @@
 				// *** !! 다음은 currentShowPageNo 를 얻어와서 pageNo 를 구하는 공식이다. !! *** //
 				let pageNo = Math.floor( (currentShowPageNo - 1)/blockSize ) * blockSize + 1;
 				
-				let pageBarHTML = "<ul style='list-style: none;'>";
+				let pageBarHTML = "";
 				
 				// === [맨처음][이전] 만들기 === //
 				if(pageNo != 1) {
-					pageBarHTML += "<li style='display:inline-block; width:70px; font-size:12pt;'><a href='javascript:goUserViewCommentA(\"1\")'>[맨처음]</a></li>";
-					pageBarHTML += "<li style='display:inline-block; width:50px; font-size:12pt;'><a href='javascript:goUserViewCommentA(\""+(pageNo-1)+"\")'>[이전]</a></li>";
+					pageBarHTML += "<a href='javascript:goUserViewCommentA(\"1\")'></a>";
+					pageBarHTML += "<a href='javascript:goUserViewCommentA(\""+(pageNo-1)+"\")'></a>";
 				}
 				
 				while( !(loop > blockSize || pageNo > totalPage) ) {
 					
-					if(pageNo == currentShowPageNo) {
-						pageBarHTML += "<li style='display:inline-block; width:30px; font-size:12pt; border:solid 1px gray; color:red; padding:2px 4px;'>"+pageNo+"</li>";  
+					if(pageNo == currentShowPageNo) { 
+						pageBarHTML += '<a class="active">'+pageNo+"</a>";  
 					}
 					else {
-						pageBarHTML += "<li style='display:inline-block; width:30px; font-size:12pt;'><a href='javascript:goUserViewCommentA(\""+pageNo+"\")'>"+pageNo+"</a></li>"; 
+						pageBarHTML += "<a href='javascript:goUserViewCommentA(\""+pageNo+"\")'>"+pageNo+"</a>"; 
 					}
 					
 					loop++;
@@ -818,13 +841,11 @@
 				
 				// === [다음][마지막] 만들기 === //
 				if( pageNo <= totalPage ) {
-					pageBarHTML += "<li style='display:inline-block; width:50px; font-size:12pt;'><a href='javascript:goUserViewCommentA(\""+pageNo+"\")'>[다음]</a></li>";
-					pageBarHTML += "<li style='display:inline-block; width:70px; font-size:12pt;'><a href='javascript:goUserViewCommentA(\""+totalPage+"\")'>[마지막]</a></li>"; 
+					pageBarHTML += "<a href='javascript:goUserViewCommentA(\""+pageNo+"\")'></a>";
+					pageBarHTML += "<a href='javascript:goUserViewCommentA(\""+totalPage+"\")'></a>"; 
 				}
-				 
-				pageBarHTML += "</ul>";
-				 
-				$("div#pageBar").html(pageBarHTML);
+				  
+				$("a#pageBar").html(pageBarHTML);
 				  
 			  }// end of if(json.totalPage > 0)------------------
 			  
@@ -867,38 +888,36 @@
   				// *** !! 다음은 currentShowPageNo 를 얻어와서 pageNo 를 구하는 공식이다. !! *** //
   				let pageNo = Math.floor( (currentShowPageNo - 1)/blockSize ) * blockSize + 1;
   				
-  				let pageBarHTML = "<ul style='list-style: none;'>";
-  				
-  				// === [맨처음][이전] 만들기 === //
-  				if(pageNo != 1) {
-  					pageBarHTML += "<li style='display:inline-block; width:70px; font-size:12pt;'><a href='javascript:goUserViewCommentB(\"1\")'>[맨처음]</a></li>";
-  					pageBarHTML += "<li style='display:inline-block; width:50px; font-size:12pt;'><a href='javascript:goUserViewCommentB(\""+(pageNo-1)+"\")'>[이전]</a></li>";
-  				}
-  				
-  				while( !(loop > blockSize || pageNo > totalPage) ) {
-  					
-  					if(pageNo == currentShowPageNo) {
-  						pageBarHTML += "<li style='display:inline-block; width:30px; font-size:12pt; border:solid 1px gray; color:red; padding:2px 4px;'>"+pageNo+"</li>";  
-  					}
-  					else {
-  						pageBarHTML += "<li style='display:inline-block; width:30px; font-size:12pt;'><a href='javascript:goUserViewCommentB(\""+pageNo+"\")'>"+pageNo+"</a></li>"; 
-  					}
-  					
-  					loop++;
-  					pageNo++;
-  					
-  				}// end of while-----------------------
-  				
-  				 
-  				// === [다음][마지막] 만들기 === //
-  				if( pageNo <= totalPage ) {
-  					pageBarHTML += "<li style='display:inline-block; width:50px; font-size:12pt;'><a href='javascript:goUserViewCommentB(\""+pageNo+"\")'>[다음]</a></li>";
-  					pageBarHTML += "<li style='display:inline-block; width:70px; font-size:12pt;'><a href='javascript:goUserViewCommentB(\""+totalPage+"\")'>[마지막]</a></li>"; 
-  				}
-  				 
-  				pageBarHTML += "</ul>";
-  				 
-  				$("div#pageBar").html(pageBarHTML);
+				let pageBarHTML = "";
+				
+				// === [맨처음][이전] 만들기 === //
+				if(pageNo != 1) {
+					pageBarHTML += "<a href='javascript:goUserViewCommentB(\"1\")'></a>";
+					pageBarHTML += "<a href='javascript:goUserViewCommentB(\""+(pageNo-1)+"\")'></a>";
+				}
+				
+				while( !(loop > blockSize || pageNo > totalPage) ) {
+					
+					if(pageNo == currentShowPageNo) { 
+						pageBarHTML += '<a class="active">'+pageNo+"</a>";  
+					}
+					else {
+						pageBarHTML += "<a href='javascript:goUserViewCommentB(\""+pageNo+"\")'>"+pageNo+"</a>"; 
+					}
+					
+					loop++;
+					pageNo++;
+					
+				}// end of while-----------------------
+				
+				
+				// === [다음][마지막] 만들기 === //
+				if( pageNo <= totalPage ) {
+					pageBarHTML += "<a href='javascript:goUserViewCommentB(\""+pageNo+"\")'></a>";
+					pageBarHTML += "<a href='javascript:goUserViewCommentB(\""+totalPage+"\")'></a>"; 
+				}
+				  
+				$("a#pageBar").html(pageBarHTML); 
   				  
   			  }// end of if(json.totalPage > 0)------------------
   			  
@@ -961,7 +980,7 @@
   //== 좋아요 총수 끝 ==//  
 
   //== 차트 1 시작 ==//
-  function wordcloud() { 
+  function wordcloudA() { 
 	  
 	  $.ajax({
 		  url:"<%= request.getContextPath()%>/wordcloud.action",
@@ -1022,10 +1041,143 @@
 		  }
 	  });
   }  
+  
+  function wordcloudB() { 
+	  
+	  $.ajax({
+		  url:"<%= request.getContextPath()%>/wordcloud.action",
+		  data: {user_id_collection : '${requestScope.collection_viewB[0].user_id}'} , 
+		  type:"post", 	       
+		  dataType:"json",
+		  success:function(json){
+			   // console.log("~~ 확인용 : " + JSON.stringify(json));
+			   
+			let htmlchart = ""; 
+			
+			 $.each(json, function(index, item){
+					 
+				 	htmlchart += item.user_collection_content + " ";
+				 	
+ 			 });  
+			
+				const text = htmlchart,
+			    lines = text.replace(/[():'?0-9]+/g, '').split(/[,\. ]+/g),
+			    data = lines.reduce((arr, word) => {
+			        let obj = Highcharts.find(arr, obj => obj.name === word);
+			        if (obj) {
+			            obj.weight += 1;
+			        } else { 
+			            obj = {
+			                name: word,
+			                weight: 1
+			            };
+			            arr.push(obj);
+			        }
+			        return arr;
+			    }, []); 
+	
+				Highcharts.chart('chart_container', {
+				    accessibility: {
+				        screenReaderSection: {
+				            beforeChartFormat:  '<h5>{chartTitle}</h5>' +
+								                '<div>{chartSubtitle}</div>' +
+								                '<div>{chartLongdesc}</div>' +
+								                '<div>{viewTableButton}</div>'
+				        }
+				    },
+				    series: [{
+				        type: 'wordcloud',
+				        data,
+				        name: 'Occurrences'
+				    }],
+				    title: {
+				        text: '댓글 중 가장 많은 단어' 
+				    },
+				    tooltip: {
+				        headerFormat: '<span style="font-size: 16px"><b>{point.key}</b></span><br>'
+				    }
+			});				
+		  },
+		  error: function(request, status, error){
+				alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+		  }
+	  });
+  }  
   //== 차트 1 끝 ==//     
   
   //== 차트 2 시작 ==//
-  function pieBasic() { 
+    function pieBasicA() { 
+	   
+	  $.ajax({
+		  url:"<%= request.getContextPath()%>/pieBasic.action",
+		  data: {user_id : '${requestScope.collection_viewA[0].user_id}'} , 
+		  type:"post", 	       
+		  dataType:"json",
+		  success:function(json){
+			   // console.log("~~ 확인용 : " + JSON.stringify(json));
+			   
+			   		let resultArr = [];
+					
+					for(let i=0; i<json.length; i++){
+						
+						let obj;
+						
+						if(i==0) { 
+							obj = {name: json[i].genre_name,
+								   y: Number(json[i].percentage),
+								   sliced: true,
+						           selected: true};							
+						}
+						else {
+							obj = {name: json[i].genre_name, 
+								   y: Number(json[i].percentage)};
+						}
+						
+						resultArr.push(obj);	
+					}//end of for(let i=0; i<json.length; i++) ----------------------------------
+			   
+				Highcharts.chart('chart_container2', {
+				       chart: {
+					        plotBackgroundColor: null,
+					        plotBorderWidth: null,
+					        plotShadow: false,
+					        type: 'pie'
+					    },
+					    title: {
+					        text: '컬렉션 영화 장르 퍼센티지(%)'
+					    },
+					    tooltip: {
+					        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+					    },
+					    accessibility: {
+					        point: {
+					            valueSuffix: '%'
+					        }
+					    },
+					    plotOptions: {
+					        pie: {
+					            allowPointSelect: true,
+					            cursor: 'pointer',
+					            dataLabels: {
+					                enabled: true,
+					                format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+					            }
+					        }
+					    },
+					    series: [{
+					        name: 'Brands',
+					        colorByPoint: true,
+					        data: resultArr
+					    }]
+					}); 
+		  },
+		  error: function(request, status, error){
+				alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+		  }
+	  });
+  }  
+  
+  function pieBasicB() { 
 	  
 	  $.ajax({
 		  url:"<%= request.getContextPath()%>/pieBasic.action",
@@ -1063,7 +1215,7 @@
 					        type: 'pie'
 					    },
 					    title: {
-					        text: '내가 담은 컬렉션 영화 장르 퍼센티지(%)'
+					        text: '컬렉션 영화 장르 퍼센티지(%)'
 					    },
 					    tooltip: {
 					        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
@@ -1121,8 +1273,6 @@
   }  
   //== 댓글 삭제  끝 ==// 
   
-  //== 댓글 수정 시작 ==// 
-  //== 댓글 수정  끝 ==//   
 </script>
 
 <script src="<%= ctxPath %>/resources/Highcharts-10.3.1/code/highcharts.js"></script>
@@ -1164,14 +1314,21 @@
 			     
 					<div id="chart">   
 						<figure class="highcharts-figure">
-						    <div id="chart_container" style="height: 300px;"></div>
+						    <div id="chart_container" style="height: 210px;"></div>
 						    <p class="highcharts-description"></p> 
-						</figure>
-					</div> 
+						</figure> 
+					</div> 	 
+					
+					<div id="chart2">    
+						<figure class="highcharts-figure">
+						    <div id="chart_container2" style="height: 240px;"></div>
+						    <p class="highcharts-description"></p> 
+						</figure>	
+					</div> 	
 		        	     
-		        	<div style="font-size: 20px; font-weight: bolder; margin: 0 0 10px 665px;"><span style="color:#ff0558">"</span>${requestScope.collection_viewA[0].name}<span style="color:#ff0558">"</span>님이 가장 최근에 담은 <span style="color:#ff0558">영화</span></div>
+		        	<div style="font-size: 20px; font-weight: bolder; margin: 0 0 10px 697px;"><span style="color:#ff0558">${requestScope.collection_viewA[0].name}</span>님이 가장 최근에 담은 <span style="color:#ff0558">영화</span></div>
 	
-		         	<c:if test="${requestScope.collection_viewA[0].movie_title != null}">
+		         	<c:if test="${requestScope.collection_viewA[0].movie_title != null}"> 
 			        	<a href='project_detail.action?movie_id=${requestScope.collection_viewA[0].movie_id}'>
 			        		<img id="lastest" src="https://image.tmdb.org/t/p/w1280${requestScope.collection_viewA[0].backdrop_path}" />
 			        	</a>   		
@@ -1221,8 +1378,10 @@
 						</table>
 			    	</div>
 			    	
-		    	   	<div style="display: flex;">  
-			    	   <div id="pageBar" style="margin: 10px 0 0 400px; text-align: center;"></div>
+		    	   	<div style="margin: 15px 0 5px 400px;">    
+				    	<div class="pagination">
+						  <a id="pageBar"></a>
+						</div> 
 			    	</div>	
 			    	
 			    	<input style="margin-left: 140px;" class="commentP" type="text" name="user_collection_content" id="user_collection_content">
@@ -1251,14 +1410,21 @@
 				
 				<div id="chart">   
 					<figure class="highcharts-figure">
-					    <div id="chart_container2" style="height: 300px;"></div>
+					    <div id="chart_container" style="height: 210px;"></div>
 					    <p class="highcharts-description"></p> 
-					</figure>
-				</div> 
-				         
+					</figure> 
+				</div> 	 
+				
+				<div id="chart2">    
+					<figure class="highcharts-figure">
+					    <div id="chart_container2" style="height: 240px;"></div>
+					    <p class="highcharts-description"></p> 
+					</figure>	
+				</div> 			
+					
 		        <div id="">     
 		        	     
-		        	<div style="font-size: 20px; font-weight: bolder; margin: 0 0 10px 665px;">가장 최근에 컬렉션에 담은 <span style="color:#ff0558">영화</span></div>
+		        	<div style="font-size: 20px; font-weight: bolder; margin: 0 0 10px 702px;">가장 최근에 컬렉션에 담은 <span style="color:#ff0558">영화</span></div>
 	
 		         	<c:if test="${requestScope.collection_viewB[0].movie_title != null}">
 			        	<a href='project_detail.action?movie_id=${requestScope.collection_viewB[0].movie_id}'>
@@ -1311,9 +1477,11 @@
 						</table>
 			    	</div>
 			    	
-		    	   	<div style="display: flex;">  
-			    	   <div id="pageBar" style="margin: 10px 0 0 400px; text-align: center;"></div>
-			    	</div>	
+		    	   	<div style="margin: 15px 0 5px 400px;">    
+				    	<div class="pagination">
+						  <a id="pageBar"></a>
+						</div> 
+			    	</div>	 
 			    	
 			    	<input style="margin-left: 140px;" class="commentP" type="text" name="user_collection_content" id="user_collection_content">
 			    	<button style="margin-left: 20px;" class="btnP" onclick="goAddUserWriteB()"><i class="far fa-comment"></i>제출</button>

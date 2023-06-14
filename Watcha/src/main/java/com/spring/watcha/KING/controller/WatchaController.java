@@ -369,10 +369,8 @@ public class WatchaController {
 		         
 		         String user_id = "";
 				 
-		         if(loginuser != null) {
 		        	 user_id = request.getParameter("user_id"); 
-			      }
-				
+ 				
 				Map<String, Object> paraMap = new HashMap<>();
 				paraMap.put("user_id", user_id);
 				 
