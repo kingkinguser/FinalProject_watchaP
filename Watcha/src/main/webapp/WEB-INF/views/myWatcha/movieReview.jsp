@@ -29,7 +29,14 @@
 <%-- 유저한줄평 --%>
 div#userReview {font-family: 'Noto Sans KR', sans-serif; cursor: default;}
 img#img_profile {width: 40px; height: 40px; box-sizing: inherit; border:solid 1px #e6e6e6; border-radius: 50%; box-shadow: 1px 1px 1px #cccccc; margin: 0 6px;}
-p.movieRate{width: 30%; height: 30px; border: solid 1px #e6e6e6; border-radius: 20%/40%; padding: 0 10px; margin: 5px; background-color: #ffffff;}
+p.movieRate{width: 40%; height: 30px; border: solid 1px #e6e6e6; border-radius: 20%/40%; padding: 0 10px; margin: 5px; background-color: #ffffff;}
+
+<%-- 한줄평등록/수정 모달 --%>
+div#registerReview{font-family: 'Noto Sans KR', sans-serif; cursor: default;}
+div#editReview{font-family: 'Noto Sans KR', sans-serif; cursor: default;}
+.modal-body textarea:focus,
+.modal-body input:focus {outline: none;}
+.fa-face-meh:hover{cursor: pointer;}	
 </style>
 
 <script>
@@ -44,7 +51,124 @@ p.movieRate{width: 30%; height: 30px; border: solid 1px #e6e6e6; border-radius: 
 			$(this).parent().next().fadeIn('slow').css('display', '');
  		}); // end of $(document).on("click", "button.showContent", function(){})
 
+	    // 한줄평 등록/수정 모달에서 checkbox 를 체크했을 때
+		$("input#spoiler_status").change(function(){
+			if($(this).prop("checked")){ // 체크박스 체크 ==> 스포일러 포함
+			   $(this).prev().css("color","#ff0558");
+			   $(this).next().text("한줄평에 스포일러가 포함되었어요.");
+			   $(this).val("1");
+			}
+			else { // 체크박스 체크해제 ==> 스포일러 미포함
+			   $(this).prev().css("color","#cccccc");
+			   $(this).next().text("스포일러가 포함된 한줄평을 가려보세요.");
+			   $(this).val("0");
+			}
+		}); // end of $("input#spoiler_status").change(function(){})
+
+		// 한줄평 "등록" 버튼 클릭 시
+		$("button#btnAdd").click(function(){
+			let review_content = document.querySelector("div#registerReview textarea#review_content").value;
+			if(review_content.trim() == ""){
+			   alert("한줄평 내용을 적어주세요.");
+			}
+			else {
+			  const queryString = $("form[name='registerReviewFrm']").serialize();
+			     
+			   $.ajax({
+			      url:"<%= ctxPath%>/addReview.action",
+			     data:queryString, 
+			      type:"post",
+			      dataType:"json",
+			      success:function(json){
+			      //   console.log("확인용 : "+JSON.stringify(json));
+			        location.href="<%= request.getContextPath()%>/allReview.action?movie_id="+"${requestScope.movieDetail.movie_id}";
+			        // 추후 수정예정
+			      },
+			      error: function(request, status, error){
+			            alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+			        }         
+			   });
+			}
+	     }); // end of $("button#btnAdd").click(function(){})
+	 
+	     // 한줄평 "수정" 버튼 클릭 시
+	     $("button#btnEdit").click(function(){
+			let review_content = document.querySelector("div#editReview textarea#review_content").value;
+			if(review_content.trim() == ""){
+			   alert("한줄평 내용을 적어주세요.");
+			}
+			else {
+			   const queryString = $("form[name='editReviewFrm']").serialize();
+			   $.ajax({
+			      url:"<%= ctxPath%>/updateReview.action",
+			      data:queryString, 
+			      type:"post",
+			      dataType:"json",
+			      success:function(json){
+			      //   console.log("확인용 : "+JSON.stringify(json));
+			          history.go(0); // 새로고침
+			      },
+			      error: function(request, status, error){
+			            alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+			        }         
+			   });
+			}
+	     }); // end of $("button#btnEdit").click(function(){})
 		
+		 // 모달 창에서 입력된 값 초기화 시키기
+	 	 $(".modal").each(function(index, item){
+	 	 	$("button.close").on("click", function(){
+		    	let frm = $(item).find('form').get(0);
+		    	if(frm != null){
+			    	frm.reset();
+		    	}
+			});
+		 }); // end of $(".modal").each(function(index, item){})
+
+	     // 특정 영화에 대하여 회원이 매긴 별점 (원래 값)
+	     $("input:radio[name='rating']").each(function(index, item){
+	        if(Number($(item).val())/2 == "${requestScope.reviewInfo.rating}"){
+	           $(item).prop("checked", true);
+	           return false;
+	        }
+	     }); // end of $("input:radio[name='rating']").each(function(index, item){})
+
+	     // 영화에 대한 별점 등록 또는 수정 하는 경우
+	     $("input:radio[name='rating']").change(function(){
+	        if("${requestScope.reviewInfo.rating}" == ""){ // 별점 등록하는 경우
+	            $.ajax({
+	              url:"<%= ctxPath%>/myWatcha/registerRating.action",
+	              data:{"movie_id":"${requestScope.movieDetail.movie_id}",
+	                   "user_id":"${sessionScope.loginuser.user_id}",
+	                   "rating":Number($(this).val())/2}, 
+	              type:"post",
+	              dataType:"json",
+	              success:function(json){
+	              //   console.log("확인용 : "+JSON.stringify(json));
+	              },
+	              error: function(request, status, error){
+	                    alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+	                }         
+	            });
+	        }
+	        else { // 별점 수정하는 경우
+	            $.ajax({
+	              url:"<%= ctxPath%>/myWatcha/updateRating.action",
+	              data:{"movie_id":"${requestScope.movieDetail.movie_id}",
+	                   "user_id":"${sessionScope.loginuser.user_id}",
+	                   "rating":Number($(this).val())/2}, 
+	              type:"post",
+	              dataType:"json",
+	              success:function(json){
+	              //   console.log("확인용 : "+JSON.stringify(json));
+	              },
+	              error: function(request, status, error){
+	                    alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+	                }         
+	            });
+	        }
+		}); // end of $("input:radio[name='rating']").change(function(){})     
+
 	}); // end of $(document).ready(function(){})
 
 	// 영화별 유저들 한줄평 (카드 캐러셀) 보여주기(Ajax)
@@ -61,7 +185,7 @@ p.movieRate{width: 30%; height: 30px; border: solid 1px #e6e6e6; border-radius: 
 					
 					html += '<div id="userReview" class="container" style="padding: 0px;">'
 					      +   '<div style="position: relative; float: right; z-index: 2;">'
-					      +     '<a href="<%= request.getContextPath()%>/allReview.action?movie_id='+${requestScope.movieDetail.movie_id}+'" style="color: black; text-decoration: none;">전체보기</a>'
+					      +     '<a style="padding: 0px 15px; color: black; text-decoration: none;" href="<%= request.getContextPath()%>/allReview.action?movie_id='+${requestScope.movieDetail.movie_id}+'">전체보기</a>'
 						  +   '</div>'
 						  +   '<div id="review" style="z-index: 1;" class="mx-auto mt-2 mb-3 p-1 carousel slide w-100" data-ride="carousel">'
 						  +     '<div class="p-0 carousel-inner w-90 mx-auto">';
@@ -91,23 +215,29 @@ p.movieRate{width: 30%; height: 30px; border: solid 1px #e6e6e6; border-radius: 
 				       		  +     '</div>'
 				       		  +     '<div class="mx-auto my-auto p-2">';
 				       		  
-				       	if(item.spoiler_status == 1){ // 해당 한줄평에 스포일러가 포함된 경우
-					       	html +=	  '<div class="text-center m-0 p-0 my-2" style="height: 120px; overflow: auto;">'
+				       	if(item.spoiler_status == 0 || item.user_id == "${sessionScope.loginuser.user_id}"){ // 한줄평에 스포일러가 없거나, 로그인한 회원이 작성한 한줄평일 경우
+					       	html +=   '<div class="m-0 p-0 my-2" style="height: 100px; overflow: auto;">'
+					       		  +     '<p style="padding: 10px; margin: 0px;">'+item.review_content+'</p>'
+					       		  +	  '</div>';
+				       	}
+			       		else if(item.spoiler_status == 1){ // 해당 한줄평에 스포일러가 포함된 경우
+					       	html +=	  '<div class="text-center m-0 p-0 my-2" style="height: 100px; overflow: auto;">'
 					       		  +	    '<p style="padding: 10px; margin: 0px;">스포일러가 포함되어 있어요.</p>'
 					       		  +     '<button type="button" class="showContent" style="border: none; color: #ff0558; background-color: transparent; font-weight: bold;">한줄평 보기</button>'
 					       		  +	  '</div>'
-					       		  +   '<div class="text-center m-0 p-0 my-2" style="display: none; height: 120px; overflow: auto;">'
+					       		  +   '<div class="text-center m-0 p-0 my-2" style="display: none; height: 100px; overflow: auto;">'
 					       		  +     '<p style="padding: 10px; margin: 0px;">'+item.review_content+'</p>'
 					       		  +	  '</div>';
 				       	}
-				       	else {
-					       	html +=   '<div class="m-0 p-0 my-2" style="height: 120px; overflow: auto;">'
-					       		  +     '<p style="padding: 10px; margin: 0px;">'+item.review_content+'</p>'
-					       		  +	  '</div>';
-				       	}
+				       	html +=	  	  '<div class="m-0 p-0 my-2" style="height: 20px;">';
+
+				       	if(item.spoiler_status == 1 && item.user_id == "${sessionScope.loginuser.user_id}"){ // 한줄평에 스포일러가 있고, 로그인한 회원이 작성한 한줄평일 경우
+					       	html +=	    '<p style="padding: 0px 10px; margin: 0px; color: #ff0558; font-size: 11pt; font-weight: bold;">스포일러가 포함되어 있어요.</p>';
+				        }
+				       	html +=	  	  '</div>';
 				       	
 				       	html +=       '<div style="display: flex;">'
-				       		  +         '<p style="width: 70%; padding-left: 10px; margin: 10px 0px; font-size: 11pt; color: gray;">작성일자&nbsp;<span class="ml-1">'+item.review_date+'</span></p>';
+				       		  +         '<p style="width: 60%; padding-left: 10px; margin: 10px 0px; font-size: 11pt; color: gray;">'+item.review_date+'</p>';
 				       		  
 				        if(item.rating == 0){ // 별점평가를 하지 않은 경우
 					       	html +=   	'<p class="movieRate text-center">평가안함</p>';
@@ -140,21 +270,21 @@ p.movieRate{width: 30%; height: 30px; border: solid 1px #e6e6e6; border-radius: 
 					<%-- 유저들의 한줄평 보여주기 끝 --%>
 				       	  
 					html +=     '</div>'
+					      +	    '<a class="carousel-control-prev" href="#review" role="button" data-slide="prev">'
+					      +	      '<span class="carousel-control-prev-icon" aria-hidden="true"><i class="fa-solid fa-angle-left fa-2xl" style="color: #cccccc;"></i></span>'
+					      +	      '<span class="sr-only">Previous</span>'
+					      +	    '</a>'
+					      +	    '<a class="carousel-control-next" href="#review" role="button" data-slide="next">'
+					      +	      '<span class="carousel-control-next-icon" aria-hidden="true"><i class="fa-solid fa-angle-right fa-2xl" style="color: #cccccc;"></i></span>'
+					      +	      '<span class="sr-only">Next</span>'
+					      +	    '</a>'
 					      +	  '</div>'
-					      +	  '<a class="carousel-control-prev" href="#review" role="button" data-slide="prev">'
-					      +	    '<span class="carousel-control-prev-icon" aria-hidden="true"><i class="fa-solid fa-angle-left fa-2xl" style="color: #cccccc;"></i></span>'
-					      +	    '<span class="sr-only">Previous</span>'
-					      +	  '</a>'
-					      +	  '<a class="carousel-control-next" href="#review" role="button" data-slide="next">'
-					      +	    '<span class="carousel-control-next-icon" aria-hidden="true"><i class="fa-solid fa-angle-right fa-2xl" style="color: #cccccc;"></i></span>'
-					      +	    '<span class="sr-only">Next</span>'
-					      +	  '</a>'
 					      +	'</div>';
 				}
 				else {
-					html += '<h5 style="text-align: center; padding: 5px; margin: 20px; font-weight: 600;">이 영화에 대한 한줄평이 존재하지 않아요.</h5>';
+					html += '<h5 style="text-align: center; padding: 5px; margin: 50px; font-weight: 600;">이 영화에 대한 한줄평이 존재하지 않아요.</h5>';
 				}
-				$("div#container").html(html);
+				$("div#div_comment").html(html);
 			},
 			error: function(request, status, error){
 	            alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
@@ -164,4 +294,78 @@ p.movieRate{width: 30%; height: 30px; border: solid 1px #e6e6e6; border-radius: 
 	
 </script>
 
-<div id="container" class="container" style="padding: 0px;"></div>
+<div class="container" style="padding: 0px;">
+	<div id="div_comment"></div>
+</div>
+
+<%-- 한줄평 등록 모달창 --%>
+<c:if test="${empty requestScope.reviewInfo}">
+  <div class="modal fade registerReview" id="registerReview" data-keyboard="false">
+    <form name="registerReviewFrm">
+      <input type="hidden" name="user_id" value="${sessionScope.loginuser.user_id}" />
+      <input type="hidden" name="movie_id" value="${requestScope.movieDetail.movie_id}" />
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-body">
+            <h5 class="modal-title" style="font-weight: bold;">${requestScope.movieDetail.movie_title}<button type="button" class="close" data-dismiss="modal">&times;</button></h5>
+            <div class="my-2">
+              <textarea id="review_content" name="review_content" style="width: 100%; height: 450px; resize: none; border: none;" placeholder="이 작품에 대한 생각을 자유롭게 표현해주세요."></textarea>
+            </div>
+            <div style="display: inline-block; width: 100%;">
+              <div style="display: inline-block; width: 83%;">
+                <label for="spoiler_status">
+                  <i class="fa-solid fa-face-meh fa-2xl" style="color: #cccccc;"></i>
+                  <input type="checkbox" id="spoiler_status" name="spoiler_status" style="display: none;" value="0" />
+                  <span style="color: #666666; cursor: pointer;">스포일러가 포함된 한줄평을 가려보세요.</span>
+                </label>
+              </div>
+              <div style="display: inline-block; width: 16%; text-align: right;">
+                <button type="button" class="btn" id="btnAdd" style="color: #ffffff; background-color: #ff0558;">등록</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</c:if>
+<%-- 한줄평 등록 모달창 끝 --%>
+    
+<%-- 한줄평 수정 모달창 --%>
+<c:if test="${not empty requestScope.reviewInfo}">
+  <div class="modal fade editReview" id="editReview" data-keyboard="false">
+    <form name="editReviewFrm">
+      <input type="hidden" name="review_id" value="${requestScope.reviewInfo.review_id}" />
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-body">
+            <h5 class="modal-title" style="font-weight: bold;">${requestScope.movieDetail.movie_title}<button type="button" class="close" data-dismiss="modal">&times;</button></h5>
+            <div class="my-2">
+              <textarea id="review_content" name="review_content" style="width: 100%; height: 450px; resize: none; border: none;">${requestScope.reviewInfo.review_content}</textarea>
+            </div>
+            <div style="display: inline-block; width: 100%;">
+              <div style="display: inline-block; width: 83%;">
+                <label for="spoiler_status">
+             	<c:if test="${requestScope.reviewInfo.spoiler_status eq 0}">
+               	  <i class="fa-solid fa-face-meh fa-2xl mr-1" style="color: #cccccc;"></i>
+                  <input type="checkbox" id="spoiler_status" name="spoiler_status" style="display: none;" value="0" />
+                  <span id="spoiler_status" style="color: #666666; cursor: pointer;">스포일러가 포함된 한줄평을 가려보세요.</span>
+             	</c:if>
+             	<c:if test="${requestScope.reviewInfo.spoiler_status eq 1}">
+              	  <i class="fa-solid fa-face-meh fa-2xl mr-1" style="color: #ff0558;"></i>
+                  <input type="checkbox" id="spoiler_status" name="spoiler_status" style="display: none;" value="1" checked />
+                  <span id="spoiler_status" style="color: #666666; cursor: pointer;">한줄평에 스포일러가 포함되었어요.</span>
+             	</c:if>
+                </label>
+              </div>
+              <div style="display: inline-block; width: 16%; text-align: right;">
+                <button type="button" class="btn" id="btnEdit" style="color: #ffffff; background-color: #ff0558;">수정</button>
+              </div>
+            </div>
+         </div>
+       </div>
+      </div>
+    </form>
+  </div>
+</c:if>
+<%-- 한줄평 수정 모달창 끝 --%>	

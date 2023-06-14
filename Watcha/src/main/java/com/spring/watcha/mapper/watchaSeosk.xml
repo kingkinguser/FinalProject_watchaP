@@ -421,5 +421,25 @@
 		where diary_id = #{diary_id}	
 	</insert>
 	
+	<!-- 선호장르 데이터 가져오기 -->
+	<resultMap type="HashMap" id="preference_Map">
+		<result property="rating_genre"  column="rating_genre" 	javaType="String"/>
+		<result property="genre_id" 	 column="genre_id" 		javaType="String"/>
+		<result property="genre_name"    column="genre_name" 	javaType="String"/>
+	</resultMap>
+	<select id="preference" parameterType="String" resultMap="preference_Map">
+	    select A.rating_genre, B.genre_id, B.genre_name
+	    from
+	    (
+	        select sum(R.rating) AS rating_genre, M.genre_id
+	        from star_rating R join movie_genre M
+	        on R.movie_id = M.movie_id
+	        where R.user_id = #{user_id}
+	        group by M.genre_id
+	    )A join genre B
+	    on A.genre_id = B.genre_id
+	    order by A.rating_genre desc
+	</select>
+	
 	
 </mapper>
