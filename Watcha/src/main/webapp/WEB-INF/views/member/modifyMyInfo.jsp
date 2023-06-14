@@ -83,10 +83,6 @@
     margin: 0px 1.875vw 0px 0px;
 }
 
-.display-none {
-    display: none;
-}
-
 .modify-img-edge {
     position: relative;
     width: 11.0938vw;
@@ -192,25 +188,97 @@ ul.pb1 {
     padding: 0.625vw 1.875vw 0.703125vw;
     margin: 0px 0.390625vw;
 }
+
+.hover:hover {
+	background-color: #c8c8c8;
+}
 	
 
 </style>
 
 <script type="text/javascript">
 
-	let namebool = true;
-	let pwdbool = true;
-	let emailbool = true;
-	let num1bool = true;
-	let num2bool = true;
-	
-	$(document).ready(function() {
+//이전에 선택한 파일의 정보를 저장할 변수
+let previousFile = null;
 
+let namebool = true;
+let pwdbool = true;
+let emailbool = true;
+let num1bool = true;
+let num2bool = true;
 
+$(document).ready(function() {
 	
+	// 프로필 이미지가 있을 때, 이미지 삭제버튼 나타내기
+	if(${not empty sessionScope.loginuser.profile_image}) {
+		
+		$("#btnDelImg").css("display","");
+		
+	}
+
+    $('#modifyimg').on('click');
+
+    $('#modifyimg').on('change', handleFileSelection);
+
 });// end of $(document).ready(function()
 		
+	
 // Function Declaration
+    
+// 파일변경시 이벤트
+function handleFileSelection(e) {
+
+    let fileName = $('input#modifyimg').val();
+        
+	// 이미지 파일인지 확인
+	let pathpoint = fileName.lastIndexOf('.');
+	let filepoint = fileName.substring(pathpoint+1,fileName.length);
+	let filetype = filepoint.toLowerCase();
+	if(filetype=='jpg' || filetype=='png' || filetype=='jpeg') { // 이미지 파일일 경우
+	
+	    // 프로필 미리보기에 보여주기
+	    const fileReader = new FileReader();
+	    
+	    fileReader.readAsDataURL($(e.target).get(0).files[0]);
+	    
+	    fileReader.onload = function() {
+	    
+	        $("#img_profile").attr("src", fileReader.result);
+	        
+	        $("#btnDelImg").css("display",""); // 이미지 삭제버튼 나타내기
+	        
+	    }
+	
+	
+	} else { // 이미지 파일이 아닐 경우
+	    alert('jpg, png, jpeg 파일만 선택할 수 있습니다.');
+	
+		// 파일 초기화
+	    $(e.target).val("");
+	
+	    return false;
+	
+	}
+
+}
+
+
+// 이미지 변경 버튼
+function upload_prfimg() {
+	
+	$("#modifyimg").click();
+	
+}
+
+
+// 이미지 삭제 버튼
+function del_prfimg() {
+	$("#modifyimg").val(null);
+	$("#img_profile").attr("src","<%= ctxPath%>/resources/images/프로필없음.jpg");
+	$("input[name='profile_image']").val(null);
+	$("#btnDelImg").css("display","none");
+}
+
 		
 // ----- 이름 입력태그 ------ //
 function nameChange(e) {
@@ -364,6 +432,7 @@ function numChange(e) {
 		$(e).removeClass("errorbox");
 		$("#li-mobile").removeClass("error");
 		num2bool = true;
+		$("input[name='mobile']").val($("#hp1").val()+$("#hp2").val()+$("#hp3").val())
 	}
 	
 }
@@ -399,29 +468,32 @@ function goEdit() {
     <header class="modify-header">
       <h1 class="modify-headtitle">프로필 수정</h1>
     </header>
-    <form name="editFrm" onsubmit="return goEdit()">
+    <form name="editFrm" enctype="multipart/form-data" onsubmit="return goEdit()">
       <div class="modify-flex">
         <div class="mr18">
-          <input type="file" class="display-none">
           <div class="modify-img-edge">
             <div class="modify-img-radius">
               <c:if test="${not empty sessionScope.loginuser.profile_image}">
-  			    <img id="img_profile" src="<%= ctxPath%>/resources/images/${sessionScope.loginuser.profile_image}"/>
+  			    <img id="img_profile" src="<%= ctxPath%>/resources/images/profile_img/${sessionScope.loginuser.profile_image}" class="modify-img e18xnnz0"/>
+			  	<input type="hidden" name="profile_image" value="${sessionScope.loginuser.profile_image}">
 			  </c:if>
 			  <c:if test="${empty sessionScope.loginuser.profile_image}">
   			    <img id="img_profile" src="<%= ctxPath%>/resources/images/프로필없음.jpg" class="modify-img e18xnnz0"/>
-  			    <!-- <img src="https://an2-img.amz.wtchn.net/image/v2/fI_WvAQSvffohcgztgGKkg.jpg?jwt=ZXlKaGJHY2lPaUpJVXpJMU5pSjkuZXlKdmNIUnpJanBiSW1SZk16QXdlRE13TUNKZExDSndJam9pTDNZeUwzTjBiM0psTDNWelpYSXZNbTEzZG1jeVRGQXhaM0ZOWVM5d2NtOW1hV3hsTHpFMk9EWXhNalF6TmpFeU56Z3lNakEyTkRnaWZRLmNnWVljemNrV0pERFRXcXpXb0VRUmFITmJvWjdGNWVWUW5zQVBsT2UtZlU"
-              	class="modify-img e18xnnz0"> -->
+  			    <input type="hidden" name="profile_image">
 			  </c:if>
               
             </div>
           </div>
           <div class="colpt15_pl03">
-            <button type="button" class="modify-img-btn">이미지 변경</button>
-            <button type="button" class="modify-img-btn">이미지 삭제</button>
+            <button type="button" class="modify-img-btn hover" onclick="upload_prfimg()">이미지 변경</button>
+            <button type="button" class="modify-img-btn hover" id="btnDelImg" style="display:none;" onclick="del_prfimg()">이미지 삭제</button>
           </div>
         </div>
         <section class="modify-section">
+          <input type="file" id="modifyimg" name="attach" style="" accept="image/*">
+          <!-- display:none; -->
+          
+          <input type="hidden" name="user_id" value="${sessionScope.loginuser.user_id}">
              
           <label autofocus for="name" class="modify-label">이름
             <input type="text" name="name" id="modifyname" class="requiredInfo"
@@ -456,6 +528,7 @@ function goEdit() {
                oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1'); numChange(this)" value="${ fn:substring(sessionScope.loginuser.mobile, 3, 7) }" />&nbsp;-&nbsp;
               <input type="text" class="requiredInfo mobilenum" id="hp3" name="hp3" size="6" maxlength="4"
                oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1'); numChange(this)" value="${ fn:substring(sessionScope.loginuser.mobile, 7, 11) }" />
+              <input type="hidden" name="mobile" value="${sessionScope.loginuser.mobile}">
             </div>
           </label>
           <ul class="pb1">
@@ -475,8 +548,8 @@ function goEdit() {
       </div>
       <hr>
       <div class="modify-btnspace">
-        <button type="submit" class="modify-btn">완료</button>
-        <button type="button" class="modify-btn" onclick="location.href='<%= ctxPath%>/myWatcha.action'">취소</button>
+        <button type="submit" class="modify-btn hover">완료</button>
+        <button type="button" class="modify-btn hover" onclick="location.href='<%= ctxPath%>/myWatcha.action'">취소</button>
       </div>
     </form>
   </section>
