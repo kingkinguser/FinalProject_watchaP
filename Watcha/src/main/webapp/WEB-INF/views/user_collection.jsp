@@ -264,7 +264,14 @@
 	}  
 	
 	#commentpi{
-		padding: 7px 0 7px 80px; 
+		padding: 7px 0 7px 20px;  
+	}
+	
+	#img_profile{
+		width: 50px;
+		height: 50px; 
+		border-radius: 70%;
+    	overflow: hidden; 
 	}
 	
 	#commentuic{
@@ -286,8 +293,6 @@
 <script type="text/javascript">
 
 	$(document).ready(function(){
-		
-		console.log("${requestScope.collection_viewA}");
 		
 		/* 좋아요 값 유지 */
 		if($('#likeMaintain').val() == 1) {  
@@ -653,12 +658,26 @@
 			  let html = "";
 			  if(json.length > 0) {
 				 $.each(json, function(index, item){
-					    
+					 
 					 html += "<tr>";    
-					 html += '<td id="commentpi">'+item.profile_image+"</td>";
+					 
+			        if(item.profile_image == null){ // 유저의 프로필이미지가 없는 경우
+				       	html += '<td id="commentpi"><img id="img_profile" src="<%= ctxPath%>/resources/images/프로필없음.jpg"/></td>';
+			        }
+			        else {
+				       	html += '<td id="commentpi"><img id="img_profile" src="<%= ctxPath%>/resources/images/'+item.profile_image+'"/></td>';
+			        }	
+					 
 					 html += '<td id="commentuic">'+item.user_id_comment+"</td>"; 
 					 html += '<td id="commentucc">'+item.user_collection_content+"</td>";
-		             html += '<td id="commentuct">'+item.user_collection_time+"</td>";  
+		             html += '<td id="commentuct">'+item.user_collection_time+"</td>"; 
+		                
+				  	if(item.user_id_comment == "${sessionScope.loginuser.user_id}"){ // 로그인한 회원 댓글 수정/삭제 
+				       	html +=   '<td><button type="button" id="update_user_Comment" name="update_user_Comment" onclick="update_user_Comment('+item.user_collection_seq+')" style="font-weight: bolder; color: #ff0558; border: none; background-color: transparent; font-size: 9pt;">수정</button></td>'
+				       		  +   '<td><button type="button" onclick="del_user_Comment('+item.user_collection_seq+')" style="font-weight: bolder; color: #ff0558; border: none; background-color: transparent; font-size: 9pt;">삭제</button></td>'
+ 
+			        }      
+		             
 		             html += "</tr>"; 
  				 });  
 			  }   
@@ -693,13 +712,27 @@
   			  let html = "";
   			  if(json.length > 0) {
   				 $.each(json, function(index, item){
-  					    
-  					 html += "<tr>";    
-  					 html += '<td id="commentpi">'+item.profile_image+"</td>";
-  					 html += '<td id="commentuic">'+item.user_id_comment+"</td>"; 
-  					 html += '<td id="commentucc">'+item.user_collection_content+"</td>";
-  		             html += '<td id="commentuct">'+item.user_collection_time+"</td>";  
-  		             html += "</tr>"; 
+  					
+					html += "<tr>";    
+					 
+			        if(item.profile_image == null){ // 유저의 프로필이미지가 없는 경우
+				       	html += '<td id="commentpi"><img id="img_profile" src="<%= ctxPath%>/resources/images/프로필없음.jpg"/></td>';
+			        }
+			        else {
+				       	html += '<td id="commentpi"><img id="img_profile" src="<%= ctxPath%>/resources/images/'+item.profile_image+'"/></td>';
+			        }	
+					 
+					 html += '<td id="commentuic">'+item.user_id_comment+"</td>"; 
+					 html += '<td id="commentucc">'+item.user_collection_content+"</td>";
+		             html += '<td id="commentuct">'+item.user_collection_time+"</td>";  
+		             
+				  	if(item.user_id_comment == "${sessionScope.loginuser.user_id}"){ // 로그인한 회원 댓글 수정/삭제 
+				       	html +=   '<td><button type="button" onclick="update_user_Comment('+item.user_collection_seq+')" style="font-weight: bolder; color: #ff0558; border: none; background-color: transparent; font-size: 9pt;">수정</button></td>'
+				       		  +   '<td><button type="button" onclick="del_user_Comment('+item.user_collection_seq+')" style="font-weight: bolder; color: #ff0558; border: none; background-color: transparent; font-size: 9pt;">삭제</button></td>'
+ 
+			        }  
+		             
+		             html += "</tr>"; 
    				 });  
   			  }   
   			  else {
@@ -1059,6 +1092,33 @@
 	  });
   }  
   //== 차트 2 끝 ==//   
+  
+  //== 댓글 삭제 시작 ==// 
+  function del_user_Comment(obj) { 
+	  
+	  if(confirm("댓글을 삭제하시겠습니까?")){
+	  
+		  $.ajax({ 
+			  url:"<%= request.getContextPath()%>/del_user_Comment.action",
+			  data: {user_collection_seq : obj} ,   
+			  type:"post", 	      
+			  dataType:"json",
+			  success:function(json){
+				   // console.log("~~ 확인용 : " + JSON.stringify(json));
+				   
+			  },
+			  error: function(request, status, error){
+					alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+			  }
+		  });
+		 
+		  location.reload(true);  
+	  }  
+  }  
+  //== 댓글 삭제  끝 ==// 
+  
+  //== 댓글 수정 시작 ==// 
+  //== 댓글 수정  끝 ==//   
 </script>
 
 <script src="<%= ctxPath %>/resources/Highcharts-10.3.1/code/highcharts.js"></script>

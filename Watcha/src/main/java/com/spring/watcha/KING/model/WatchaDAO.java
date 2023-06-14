@@ -159,6 +159,14 @@ public class WatchaDAO implements InterWatchaDAO {
 		}		
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+		// 댓글 삭제
+		@Override
+		public int getDelUserComment(Map<String, Object> paraMap) {
+			int n = sqlsession.delete("watcha.getDelUserComment", paraMap);
+			return n;
+			 
+		}
+
 
 		
 		

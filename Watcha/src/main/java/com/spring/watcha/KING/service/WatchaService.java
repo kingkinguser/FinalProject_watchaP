@@ -167,5 +167,12 @@ public class WatchaService implements InterWatchaService {
 		return reviewInfo;
 	}		
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	// 댓글 삭제
+	@Override
+	public int getDelUserComment(Map<String, Object> paraMap) {
+		int n = dao.getDelUserComment(paraMap);
+		return n;
+	}
 }
 

@@ -58,6 +58,9 @@ public interface InterWatchaDAO {
 	Map<String, String> reviewInfo(Map<String, String> paraMap);
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	// 댓글 삭제
+	int getDelUserComment(Map<String, Object> paraMap);
+
 	
 	
 		

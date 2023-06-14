@@ -249,5 +249,21 @@
     ) V
     group by genre_name
 	</select>	
+	  
+	<!-- 댓글 삭제 -->  
+	<delete id="getDelUserComment" parameterType="HashMap"> 
+      delete from user_collection_comment 
+      where user_collection_seq = #{user_collection_seq}
+	</delete>	 
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 </mapper>
 

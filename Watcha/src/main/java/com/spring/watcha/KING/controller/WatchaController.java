@@ -396,6 +396,32 @@ public class WatchaController {
 		    	return new Gson().toJson(jsonArr);
 			}
 			
+			// === 댓글 삭제 === //
+			@ResponseBody
+			@RequestMapping(value="/del_user_Comment.action", method= {RequestMethod.POST})   
+			public String del_user_Comment(HttpServletRequest request, HttpServletResponse response) {
+				
+				String user_collection_seq = request.getParameter("user_collection_seq");
+				
+				 Map<String, Object> paraMap = new HashMap<>();
+				 paraMap.put("user_collection_seq", user_collection_seq);
+			 	
+				 int delUserComment = service.getDelUserComment(paraMap);
+				 
+				JSONObject jsonObj = new JSONObject();
+				jsonObj.put("delUserComment", delUserComment);
+				 
+				return jsonObj.toString();
+				
+			}				
+			
+			
+			
+			
+			
+			
+			
+			
 			
 		   // =============================================== 기능 끝 ======================================================== //	
 }
