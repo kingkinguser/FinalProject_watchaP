@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import com.spring.watcha.model.ActorVO;
 import com.spring.watcha.model.MemberVO;
 import com.spring.watcha.model.MovieVO;
+import com.spring.watcha.model.collection_likeVO;
 import com.spring.watcha.model.collection_movieVO;
 
 @Component
@@ -187,6 +188,22 @@ public class WatchaDAO implements InterWatchaDAO {
 		List<MemberVO> showUserAll = sqlsession_1.selectList("watchamin.showUserAll", paraMap);	
 		
 		return showUserAll;
+	}
+
+	// 검색한 컬렉션 총 개수인지 가져오기 
+	@Override
+	public int total_count_Collection(Map<String, String> paraMap) {
+		int total_count_Collection = sqlsession_1.selectOne("watchamin.total_count_Collection", paraMap);	
+		
+		return total_count_Collection;
+	}
+
+	// 검색한 컬렉션 나타내기
+	@Override
+	public List<collection_likeVO> showCollectionAll(Map<String, String> paraMap) {
+		List<collection_likeVO> showCollectionAll = sqlsession_1.selectList("watchamin.showCollectionAll", paraMap);	
+		
+		return showCollectionAll;
 	}
 
 
