@@ -1,9 +1,12 @@
 package com.spring.watcha.seosk.controller;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.json.JSONArray;
@@ -223,12 +226,19 @@ public class WatchaController {
 		String str_currentShowPageNo = request.getParameter("currentShowPageNo");
 		String order = request.getParameter("order");
 		
+		// 평가한 영화개수 알아오기
+		Map<String, String> userInfo = service.userInfo(user_id);
+		int totalCount = Integer.parseInt(userInfo.get("rating_count"));
+		
 		int currentShowPageNo = 0;
 		try {
 			currentShowPageNo = Integer.parseInt(str_currentShowPageNo);
 
 			if(str_currentShowPageNo == null || currentShowPageNo <= 0) {
 				currentShowPageNo = 1;
+			}
+			else if(currentShowPageNo > totalCount) {
+				currentShowPageNo = totalCount;
 			}
 		} catch (NumberFormatException e) {
 			currentShowPageNo = 1;
@@ -263,19 +273,6 @@ public class WatchaController {
 		return jsonArr.toString();
 	}
 	
-	// === 영화별 유저들 한줄평 (카드 캐러셀) 페이지 요청(view단 페이지) === //
-	@RequestMapping(value="/view/movieReview.action")
-	public String movieReviewPage(HttpServletRequest request) {
-		
-		/*
-			삭제예정 - 페이지 합치기 전 movie_id 만 넘겨준 것
-		 */
-		request.setAttribute("movie_id", "290859");
-		
-		return "myWatcha/movieReview.tiles";
-		// /WEB-INF/views/myWatcha/movieComment.jsp
-	}
-
 	// === 영화별 유저들 한줄평 보여주기(Ajax) === //
 	@ResponseBody
 	@RequestMapping(value="/movieReview.action", produces="text/plain;charset=UTF-8")
@@ -732,6 +729,64 @@ public class WatchaController {
 		return jsonObj.toString();
 	}
 
+	// === 포토티켓 다운로드하기 === //
+	@RequestMapping(value="/myWatcha/downloadPhoto.action", produces="text/plain;charset=UTF-8")
+	public void downloadPhoto(HttpServletRequest request, HttpServletResponse response) {
+		
+		String movie_id = request.getParameter("movie_id"); 
+		String user_id = request.getParameter("user_id"); 
+		String photo_side = request.getParameter("photo_side"); 
+		
+		response.setContentType("text/html; charset=UTF-8");
+        PrintWriter out = null; // PrintWriter 객체 out 은 웹브라우저에 기술하는 대상체를 말한다.
+		
+		Map<String, String> paraMap = new HashMap<>();
+		paraMap.put("movie_id", movie_id);
+		paraMap.put("user_id", user_id);
+		
+        try {
+			// 무비다이어리에 등록된 포토티켓(앞면, 뒷면) 가져오기
+			Map<String, String> searchDetail = service.searchDetail(paraMap);
+			
+			if(searchDetail != null && searchDetail.get("photo_front") != null) {
+				
+				String fileName = "";
+				String orgFilename = "";
+				
+				if(photo_side != null && "front".equals(photo_side)) {
+					fileName = searchDetail.get("photo_front"); 	  		// WAS(톰캣)에 저장된 파일명
+					orgFilename = searchDetail.get("movie_title") + "_앞면.jpg"; // 첨부파일의 파일명
+				}
+				else if(photo_side != null && "back".equals(photo_side)) {
+					fileName = searchDetail.get("photo_back"); 	  			// WAS(톰캣)에 저장된 파일명
+					orgFilename = searchDetail.get("movie_title") + "_뒷면.jpg"; // 첨부파일의 파일명
+				}
+				
+				// WAS 의 webapp 의 절대경로를 알아오기
+				HttpSession session = request.getSession();
+				String root = session.getServletContext().getRealPath("/");
+				String path = root+"resources"+File.separator+"photoTicket"; // 첨부파일이 있는 특정 경로(폴더) 지정하기
+				//	/Watcha/src/main/webapp/resources/photoTicket
+				
+				// *** file 다운로드 하기 *** //
+				boolean flag = false; // file 다운로드 성공(true), 실패(false)를 알려주는 용도
+				flag = fileManager.doFileDownload(fileName, orgFilename, path, response);
+				
+				if(!flag) {
+					out = response.getWriter();
+					out.println("<script type='text/javascript'>alert('포토티켓 다운로드에 실패하였습니다.'); history.back();</script>");
+				}
+			}
+			else {
+				out = response.getWriter();
+				out.println("<script type='text/javascript'>alert('포토티켓 다운로드가 불가합니다.'); history.back();</script>");
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	// === 무비다이어리 보여주기(Ajax) === //
 	@ResponseBody
 	@RequestMapping(value="/myWatcha/showMovieDiary.action", produces="text/plain;charset=UTF-8")
@@ -791,6 +846,32 @@ public class WatchaController {
 		jsonObj.put("n", n);
 	    
 		return jsonObj.toString();
+	}
+	
+	// === 선호장르 데이터 가져오기(Ajax) === //
+	@ResponseBody
+	@RequestMapping(value="/myWatcha/showPreferenceChart.action", produces="text/plain;charset=UTF-8")
+	public String showPreferenceChart(HttpServletRequest request) {
+		
+		HttpSession session = request.getSession();
+		MemberVO loginuser = (MemberVO) session.getAttribute("loginuser");
+		String user_id = loginuser.getUser_id();
+		
+		List<Map<String, String>> preferenceList = service.preference(user_id);
+		
+	    JSONArray jsonArr = new JSONArray();
+	    if(preferenceList != null && preferenceList.size() > 0) {
+	    	for(Map<String, String> preference : preferenceList) {
+	    		JSONObject jsonObj = new JSONObject();
+	    		jsonObj.put("rating_genre", preference.get("rating_genre"));
+	    		jsonObj.put("genre_id", preference.get("genre_id"));
+	    		jsonObj.put("genre_name", preference.get("genre_name"));
+	    		
+	    		jsonArr.put(jsonObj);
+	    	} // end of for
+	    }
+	    
+		return jsonArr.toString();
 	}
 
 }

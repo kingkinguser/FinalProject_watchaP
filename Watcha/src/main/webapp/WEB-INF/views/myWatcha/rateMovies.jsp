@@ -48,10 +48,9 @@ label {cursor: pointer; margin: 0px 8px;}
 		$(window).scroll(function(){
 			// 스크롤된 스크롤탑의 위치값이 웹브라우저창의 높이만큼 내려갔을때 (스크롤다운하여 웹브라우저의 맨밑까지 내렸을 경우) 
 			// 즉 스크롤탑의 위치값이 (보여주는 문서의 높이값 - 웹브라우저의 높이값) 과 같을때
-			if( ($(window).scrollTop() + 1) == ($(document).height() - $(window).height()) ){
+			if( (Math.floor($(window).scrollTop() + 1)) == ($(document).height() - $(window).height()) ){
 				viewRateMovies(currentShowPageNo++);
 			}
-			
 			if($(window).scrollTop() == 0){ // 맨위로 스크롤업 했을 경우 ==> 다시 처음부터 시작하도록 한다.
 				$("div#div_rateMovies").empty();
 				currentShowPageNo = 1;
@@ -138,8 +137,14 @@ label {cursor: pointer; margin: 0px 8px;}
 					}
 				} // end of if(평가한 영화가 존재하는 경우)
 				else {
-			          html = '<p class="h5 text-center my-3">평가한 영화가 없어요.</p>';
-			          $("div#div_nav_content").html(html);
+					if(currentShowPageNo == 1){
+			        	html = '<p class="h5 text-center my-3">평가한 영화가 없어요.</p>';
+			        	$("div#div_nav_content").html(html);
+					}
+					else {
+			        	html = '<button type="button" onclick="noMoreMovies()" class="h5 text-center my-3" style="text-decoration: none; color: #ff0558; border: none; background-color: transparent;">평가한 영화 전체를 다 조회하였어요. 맨 위로 이동할까요?</button>';
+			        	$("div#div_noMoreMovies").html(html);
+					}
 				}
 			},
 			error: function(request, status, error){
@@ -147,6 +152,12 @@ label {cursor: pointer; margin: 0px 8px;}
 	        }
 		});		
 	} // end of function viewRateMovies(currentShowPageNo)
+	
+	// 더 이상 조회할 영화가 없을때
+	function noMoreMovies(){
+		$("div#div_noMoreMovies").empty();
+		window.scrollTo(0,0);
+	} // end of function noMoreMovies()
 	
 </script>
 
@@ -182,6 +193,8 @@ label {cursor: pointer; margin: 0px 8px;}
 
  		  <%-- 평가한 영화(Ajax로 페이징 처리) --%>
 	      <div id="div_rateMovies" class="p-1"></div>
+	      <%-- 영화가 더이상 없을 경우 --%>
+	      <div id="div_noMoreMovies" class="p-1 text-center"></div>
 	      
         </div>
       </div>

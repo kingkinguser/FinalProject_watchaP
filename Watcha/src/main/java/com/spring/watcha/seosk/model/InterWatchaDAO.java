@@ -116,4 +116,7 @@ public interface InterWatchaDAO {
 	// 무비다이어리(관람일자) 수정하기
 	int updateDiary(MovieDiaryVO diaryvo);
 
+	// 선호장르 데이터 가져오기
+	List<Map<String, String>> preference(String user_id);
+	
 }
