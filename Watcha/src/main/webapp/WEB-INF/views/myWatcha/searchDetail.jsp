@@ -406,15 +406,13 @@ div#makePhotoTicket{font-family: 'Noto Sans KR', sans-serif;}
 	    <%-- 댓글 수정 --%>
 	    html +=     '<div id="commentEdit" class="mx-auto my-2 p-1">'
 	    	  + 	  '<div class="flex-container mx-auto my-auto p-2 text-center" style="padding-left: 10px; display: flex;">';
-	    <%--	  
-		if(${empty sessionScope.profile_image}){ // 유저의 프로필이미지가 없는 경우
+		
+	    if("${sessionScope.loginuser.profile_image}" == ""){ // 유저의 프로필이미지가 없는 경우
 	    	html +=     '<img id="img_profile" src="<%= ctxPath%>/resources/images/프로필없음.jpg"/>';
       	}
       	else {
-	       	html += 	'<img id="img_profile" src="<%= ctxPath%>/resources/images/'+${sessionScope.profile_image}+'"/>';
+	       	html += 	'<img id="img_profile" src="<%= ctxPath%>/resources/images/${sessionScope.loginuser.profile_image}"/>';
       	}
-      	--%>
-    	html +=     '<img id="img_profile" src="<%= ctxPath%>/resources/images/프로필없음.jpg"/>';
     	
 		html += 		'<div style="width: 100%;">'
 	    	  + 		  '<div style="display: flex;" class="mb-2">'
@@ -583,7 +581,7 @@ div#makePhotoTicket{font-family: 'Noto Sans KR', sans-serif;}
 	<div id="div_container" class="container">
 	  <div id="div_myContent">
 	  	<div style="overflow: hidden; height: 300px;">
-	      <a href="<%= ctxPath %>/view/project_detail.action?movie_id=${requestScope.movieInfo.movie_id}" style="text-decoration: none; color: black;">
+	      <a href="<%= ctxPath %>/view/project_detail.action?movie_id=${requestScope.searchDetail.movie_id}" style="text-decoration: none; color: black;">
 	  	    <img id="img_wallPaper" src="https://image.tmdb.org/t/p/w1280/${requestScope.searchDetail.backdrop_path}" />
 	  	  </a>
 	  	</div>
@@ -871,7 +869,7 @@ div#makePhotoTicket{font-family: 'Noto Sans KR', sans-serif;}
 					
 					<%-- 로그인한 회원의 프로필 이미지 없는경우 --%>
 					<c:if test="${not empty sessionScope.loginuser.profile_image}">
-		  			  <img id="img_profile" src="<%= ctxPath%>/resources/images/${requestScope.userInfo.profile_image}"/>
+		  			  <img id="img_profile" src="<%= ctxPath%>/resources/images/${sessionScope.loginuser.profile_image}"/>
 					</c:if>
 					<c:if test="${empty sessionScope.loginuser.profile_image}">
 		  			  <img id="img_profile" src="<%= ctxPath%>/resources/images/프로필없음.jpg"/>

@@ -486,22 +486,22 @@ div#commentRegister textarea:focus, div#commentEdit textarea:focus, div#review_m
 				$("div#reviewComment").html(html);
 
 			    <%-- 댓글쓰기 --%>
-			    if(${not empty sessionScope.loginuser}){ // 로그인한 경우
+			    if("${sessionScope.loginuser.user_id}" != ""){ // 로그인한 경우
 				    html  =     '<form name="commentFrm">'
 				    	  + 	'<div class="mx-auto my-2 p-1">'
 				    	  + 	  '<input type="hidden" name="review_id" value="'+reviewObj.review_id+'" />'
 				    	  + 	  '<div class="flex-container mx-auto my-auto p-2 text-center" style="padding-left: 10px; display: flex;">';
 
-				    if(${empty sessionScope.loginuser.profile_image}){ // 유저의 프로필이미지가 없는 경우
+				    if("${sessionScope.loginuser.profile_image}" == ""){ // 유저의 프로필이미지가 없는 경우
 				    	html +=     '<img id="img_profile" src="<%= ctxPath%>/resources/images/프로필없음.jpg"/>';
 			      	}
 			      	else {
-				       	html += 	'<img id="img_profile" src="<%= ctxPath%>/resources/images/'+item.profile_image+'"/>';
+				       	html += 	'<img id="img_profile" src="<%= ctxPath%>/resources/images/${sessionScope.loginuser.profile_image}"/>';
 			      	}
 			    	
 					html += 		'<div style="width: 100%;">'
 				    	  + 		  '<div style="display: flex;" class="mb-2">'
-				    	  + 		    '<p style="text-align: left; padding: 0 5px; margin: 0px 10px 5px 0px; font-weight: 600;">'+${sessionScope.loginuser.name}+'</p>'
+				    	  + 		    '<p style="text-align: left; padding: 0 5px; margin: 0px 10px 5px 0px; font-weight: 600;">${sessionScope.loginuser.name}</p>'
 				    	  + 		    '<input type="hidden" name="user_id" value="${sessionScope.loginuser.user_id}" />'
 				    	  + 		  '</div>'
 				    	  + 		  '<textarea id="content" name="content" style="width: 100%; height: 70px; resize: none; border: solid 1px #e6e6e6; border-radius: 1%; font-size: 11pt;" placeholder="이 한줄평에 대한 댓글을 적어주세요."></textarea>'
@@ -633,15 +633,12 @@ div#commentRegister textarea:focus, div#commentEdit textarea:focus, div#review_m
 	    <%-- 댓글 수정 --%>
 	    html +=     '<div id="commentEdit" class="mx-auto my-2 p-1">'
 	    	  + 	  '<div class="flex-container mx-auto my-auto p-2 text-center" style="padding-left: 10px; display: flex;">';
-	    <%--	  
-		if(${empty sessionScope.profile_image}){ // 유저의 프로필이미지가 없는 경우
+		if("${sessionScope.loginuser.profile_image}" == ""){ // 유저의 프로필이미지가 없는 경우
 	    	html +=     '<img id="img_profile" src="<%= ctxPath%>/resources/images/프로필없음.jpg"/>';
       	}
       	else {
-	       	html += 	'<img id="img_profile" src="<%= ctxPath%>/resources/images/'+item.profile_image+'"/>';
+	       	html += 	'<img id="img_profile" src="<%= ctxPath%>/resources/images/${sessionScope.loginuser.profile_image}"/>';
       	}
-      	--%>
-    	html +=     '<img id="img_profile" src="<%= ctxPath%>/resources/images/프로필없음.jpg"/>';
     	
 		html += 		'<div style="width: 100%;">'
 	    	  + 		  '<div style="display: flex;" class="mb-2">'

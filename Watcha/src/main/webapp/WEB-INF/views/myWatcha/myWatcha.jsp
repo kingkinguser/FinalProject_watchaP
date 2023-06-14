@@ -119,8 +119,7 @@ a, a:hover, .fc-daygrid {color: #000; text-decoration: none; background-color: t
 .fc-view-harness-active {height: 635px !important;}
 /* ========== full calendar css 끝 ========== */
 
-.highcharts-container {font-family: 'Noto Sans KR', sans-serif; cursor: default;}
-
+.highcharts-point {font-family: 'Noto Sans KR', sans-serif; cursor: default;}
 </style>
 
 <script>
@@ -613,18 +612,19 @@ a, a:hover, .fc-daygrid {color: #000; text-decoration: none; background-color: t
 				let genreArr = [];
 				for(let i=0; i<json.length; i++){
 					let obj = {name : json[i].genre_name
-							 , weight : Number(json[i].rating_genre)}; 
+							 , weight : Number(json[i].rating_genre)
+							 , rank : Number(i+1)}; 
 					genreArr.push(obj);
 				} // end of for
 				
 				///////////////////////////////////////////////////////////////////////////////////
-				Highcharts.chart('preference',{
+				Highcharts.chart('chart_preference',{
 				    accessibility: {
 				        screenReaderSection: {
 				            beforeChartFormat: '<h5>{chartTitle}</h5>' +
-				                '<div>{chartSubtitle}</div>' +
-				                '<div>{chartLongdesc}</div>' +
-				                '<div>{viewTableButton}</div>'
+			                '<div>{chartSubtitle}</div>' +
+			                '<div>{chartLongdesc}</div>' +
+			                '<div>{viewTableButton}</div>'
 				        }
 				    },
 				    series: [{
@@ -633,22 +633,36 @@ a, a:hover, .fc-daygrid {color: #000; text-decoration: none; background-color: t
 				        name: '장르별 선호도'
 				    }],
 				    title: {
-				        text: 'Wordcloud of Alice\'s Adventures in Wonderland'
-				    },
-				    subtitle: {
-				        text: 'An excerpt from chapter 1: Down the Rabbit-Hole  '
+				        text: ''
 				    },
 				    tooltip: {
-				    	pointFormat: '{series.name}: <b>{point.percentage:.2f}%</b>'
-				    }
+				    	pointFormat: '<b>{series.name}: {point.rank}위</b>'
+				    }	            
 				});
 				///////////////////////////////////////////////////////////////////////////////////
 				$("div.highcharts-data-table").hide();
+				
+				let html =  "<table id='table_preference' class='mx-auto text-center my-2'>"
+						 +    "<tr><th colspan='5' class='h5 text-center py-3'>장르별 선호도 순위</th></tr>"
+						 +	  "<tr>";
+				$.each(json, function(index, item){
+					if(index < 5){
+						html +=   "<td class='h6' style='width: 7.5rem;'>"+Number(index+1)+"위 : "
+							 +	    "<a href='<%= ctxPath%>/myWatcha/preference.action?genre_id="+item.genre_id+"' style='text-decoration: none; color: #ff0558; font-weight: bold;'>"
+							 +		  "<span class='h5'>"+item.genre_name+"</span>"
+							 +		"</a>"
+							 +	  "</td>";
+					}
+				});
+				html +=  	"</tr>"  
+					  +	 "<table>";
+				$("div#table_preference").html(html);
+				
 			},
 			error: function(request, status, error){
             	alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
             }				
-		});
+		});		
 	} // end of function showPreference()
 	
 </script>
@@ -719,10 +733,11 @@ a, a:hover, .fc-daygrid {color: #000; text-decoration: none; background-color: t
 	        <c:if test="${not empty requestScope.ratingMoviesList}">
 	  	    <div style="display: flex; padding: 0 50px;">
 	 	      <h5 style="padding-left: 5px; font-weight: 600;"><span>${sessionScope.loginuser.name}</span>&nbsp;님이 선호하는 장르</h5>
-	 	      <p style="padding-left: 5px;">선호 장르의 다양한 영화를 추천받으시려면 장르를 클릭해보세요.</p>
+	 	      <p style="padding-left: 15px;">선호 장르의 다양한 영화를 추천받으시려면 장르를 클릭해보세요.</p>
 	        </div>
+	        <div id="table_preference" class="my-1" style="padding: 0 50px;"></div>
 	        <div class="row mx-auto my-1 mb-5" style="padding: 0 50px;">
-	          <div id="preference" style="width: 100%; height: 400px; border: solid 1px #e6e6e6; border-radius: 2%;"></div>
+	          <div id="chart_preference" style="width: 100%; border: solid 1px #e6e6e6; border-radius: 2%;" class="mx-1"></div>
 		    </div>
 
 	        <div style="display: flex; padding: 0 50px;" class="row mx-auto">
@@ -815,8 +830,8 @@ a, a:hover, .fc-daygrid {color: #000; text-decoration: none; background-color: t
 			<c:if test="${requestScope.userInfo.rating_count <= 4}">
 	          <div class="w-100">
 	            <div class="w-100" role="listbox">
-	             <c:forEach var="movie" items="${requestScope.ratingMoviesList}" varStatus="status">
-					<div class="row mx-auto">
+				  <div class="row mx-auto">
+	                <c:forEach var="movie" items="${requestScope.ratingMoviesList}" varStatus="status">
 					  <div class="col-md-3 p-1">
 						<div class="card">
 				          <div class="p-0 m-0 mx-auto" style="overflow: hidden; height: 240px;">
@@ -846,8 +861,8 @@ a, a:hover, .fc-daygrid {color: #000; text-decoration: none; background-color: t
 					  	  </div>
 				    	</div>
 					  </div>
-					</div>
-	              </c:forEach>
+	                </c:forEach>
+				  </div>
 				</div>
 			  </div>
 			  </c:if>
