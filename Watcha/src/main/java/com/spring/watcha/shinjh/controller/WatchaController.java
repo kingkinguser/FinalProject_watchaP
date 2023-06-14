@@ -1,5 +1,6 @@
 package com.spring.watcha.shinjh.controller;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,10 +14,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.spring.watcha.common.FileManager;
 import com.spring.watcha.common.Sha256;
 import com.spring.watcha.model.MemberVO;
 import com.spring.watcha.shinjh.service.InterWatchaService;
@@ -26,7 +30,10 @@ import com.spring.watcha.shinjh.service.InterWatchaService;
 public class WatchaController {
 			
 		@Autowired 
-		private InterWatchaService service; 
+		private InterWatchaService service;
+		
+		@Autowired     // Type에 따라 알아서 Bean 을 주입해준다.
+		private FileManager fileManager;
 			
 		
 		// 로그인 테스트페이지, 페이지 합치면서 삭제할 예정
@@ -42,20 +49,6 @@ public class WatchaController {
 		public String requiredLogin_login_test(HttpServletRequest request, HttpServletResponse response) {
 			
 			return "member/login_test";
-		}
-		
-		
-		// aop 로그인 기능 구현
-		@RequestMapping(value="/login.action")
-		public ModelAndView needLogin(ModelAndView mav, HttpServletRequest request) {
-			
-			String needLogin = "true";
-			
-			mav.addObject("needLogin", needLogin);
-			mav.setViewName("redirect:/view/main.action");
-			
-			return mav;
-			
 		}
 		
 		
@@ -171,7 +164,7 @@ public class WatchaController {
 				mav.addObject("message", "잘못된 접근입니다. (로그인 후 이용 가능합니다.)");
 				mav.addObject("loc", "javascript:history.back()");
 
-				mav.setViewName("msg");
+				mav.setViewName("/member/needLogin");
 			}
 			
 			return mav;
@@ -202,46 +195,91 @@ public class WatchaController {
 		
 		
 		// 내정보 수정하고 적용하기
-		@RequestMapping(value="/modifyInfo.action")
-		public ModelAndView modifyInfo(ModelAndView mav, HttpServletRequest request) {
+		@RequestMapping(value="/modifyInfo.action", method= RequestMethod.POST)
+		public ModelAndView modifyInfo(ModelAndView mav, MemberVO member, MultipartHttpServletRequest mrequest) {
 			
-			HttpSession session = request.getSession();
-			MemberVO loginuser = (MemberVO) session.getAttribute("loginuser");
+			HttpSession session = mrequest.getSession();
 			
-			String user_id = loginuser.getUser_id();
+			// 비밀번호 변경 여부 확인
+			String password = member.getPassword();
 			
-			String password = request.getParameter("password");
-			
-			if(password == null) {
-				password = Sha256.encrypt(request.getParameter("password"));
-			}
-			else {
-				password = "";
+			if(!password.isEmpty()) { // 비밀번호 변경을 했으면
+				password = Sha256.encrypt(password);
 			}
 			
-			String name = request.getParameter("name");
-			String hp1 = request.getParameter("hp1");
-			String hp2 = request.getParameter("hp2");
-			String hp3 = request.getParameter("hp3");
-			String email = request.getParameter("email");
-			String profile_message = request.getParameter("profile_message");
-			String profile_image = request.getParameter("profile_image");
+			// !!!! 크로스 사이트 스크립트 공격에 대응하는 안전한 코드 (시큐어코드) 작성하기 !!!! //
+			member.setName(member.getName().replaceAll("<", "&lt;"));
+			member.setName(member.getName().replaceAll(">", "&gt;"));
 			
-			String mobile = hp1+hp2+hp3;
+			member.setProfile_message(member.getProfile_message().replaceAll("<", "&lt;"));
+			member.setProfile_message(member.getProfile_message().replaceAll(">", "&gt;"));
+						
 			
-			MemberVO member = new MemberVO(user_id, password, name, mobile, email
-					, profile_message, profile_image);
+			MultipartFile attach = member.getAttach();
+			
+			// WAS 의 webapp 의 절대경로를 알아와야 한다.
+			String root = session.getServletContext().getRealPath("/"); 
+			
+			String path = root+"resources"+File.separator+"images"+File.separator+"profile_img";
+			// WAS의 webapp/resources/images/profile_img 라는 폴더로 지정해준다.  
+			// path 가 첨부파일이 저장될 WAS(톰캣)의 폴더가 된다.
+			
+
+			
+			
+			if( !attach.isEmpty() ) { // attach(첨부파일)가 비어 있지 않으면(즉, 첨부파일이 있는 경우라면) 
+
+				// 기존 프로필이미지 소스 지우기
+				if(member.getProfile_image() != null) {
+					try {
+						fileManager.doFileDelete(member.getProfile_image(), path);
+					} catch (Exception e1) {
+						e1.printStackTrace();
+					}
+				}
+				
+				
+				String profile_image = "";
+				// WAS(톰캣)의 디스크에 저장될 파일명
+				   
+				byte[] bytes = null;
+				// 첨부파일의 내용물을 담는 것
+				   
+//				long fileSize = 0;
+				// 첨부파일의 크기
+				   
+				try {
+					bytes = attach.getBytes();
+					// 첨부파일의 내용물을 읽어오는 것
+						
+					String originalFilename = attach.getOriginalFilename();
+					// attach.getOriginalFilename() 이 첨부파일명의 파일명(예: 강아지.png) 이다. 
+						
+					profile_image = fileManager.doFileUpload(bytes, originalFilename, path);
+					// 첨부되어진 파일을 업로드 하는 것이다.
+						
+					member.setProfile_image(profile_image);
+					// WAS(톰캣)에 저장된 파일명(20230522103642842968758293800.pdf)
+						
+//					fileSize = attach.getSize(); // 첨부파일의 크기(단위는 byte임)
+					// String.valueOf(fileSize)로 if문 만들어서 프로필사진 크기 제한 할 수 있음
+					
+				} catch (Exception e2) {
+					e2.printStackTrace();
+				}
+			}
 			
 			int n = service.modifyInfo(member);
 				
 			if(n==1) {
+				
+				MemberVO loginuser = (MemberVO) session.getAttribute("loginuser");
 
-				loginuser.setPassword(password);
-				loginuser.setName(name);
-				loginuser.setMobile(mobile);
-				loginuser.setEmail(email);
-				loginuser.setProfile_message(profile_message);
-				loginuser.setProfile_image(profile_image);
+				loginuser.setName(member.getName());
+				loginuser.setMobile(member.getMobile());
+				loginuser.setEmail(member.getEmail());
+				loginuser.setProfile_message(member.getProfile_message());
+				loginuser.setProfile_image(member.getProfile_image());
 				
 				session.setAttribute("loginuser", loginuser);
 				
@@ -293,9 +331,9 @@ public class WatchaController {
 			else {
 				
 				mav.addObject("message", "잘못된 접근입니다. (로그인 후 이용 가능합니다.)");
-				mav.addObject("loc", "javascript:history.back()");
+				mav.addObject("loc", request.getContextPath()+"/main.action");
 
-				mav.setViewName("msg");
+				mav.setViewName("/member/needLogin");
 			}
 			
 			return mav;

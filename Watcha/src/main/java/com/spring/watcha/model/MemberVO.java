@@ -1,5 +1,7 @@
 package com.spring.watcha.model;
 
+import org.springframework.web.multipart.MultipartFile;
+
 public class MemberVO {
 
 	private String user_id;					// 회원아이디
@@ -26,6 +28,9 @@ public class MemberVO {
 	// 마지막으로 암호를 변경한 날짜가 현재시각으로 부터 3개월이 지나지 않았으면 false
 	
 	////////////////////////////////////////////////////////////////////////
+
+	private MultipartFile attach; // form 태그에서 type="file" 인 파일을 받아서 저장되는 필드이다.
+
 	
 	private int total_count;   // 유저의 평가 개수를 저장하기 위해 설정함 
 	////////////////////////////////////////////////////////////////////////
@@ -202,6 +207,12 @@ public class MemberVO {
 		this.total_count = total_count;
 	}
 	
-	
+	public MultipartFile getAttach() {
+		return attach;
+	}
+
+	public void setAttach(MultipartFile attach) {
+		this.attach = attach;
+	}	
 	
 }

@@ -4,6 +4,7 @@ import java.util.List;
 
 public class MovieVO {
 	
+	
 	private String movie_id;          // 영화 아이디
 	private String movie_title;       // 영화 제목
 	private String overview;          // 영화 개요
