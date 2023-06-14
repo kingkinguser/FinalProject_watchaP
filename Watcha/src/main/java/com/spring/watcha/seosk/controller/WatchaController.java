@@ -1,7 +1,6 @@
 package com.spring.watcha.seosk.controller;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.*;
 
@@ -266,6 +265,7 @@ public class WatchaController {
 	    		jsonObj.put("movie_title", rateMovie.get("movie_title"));
 	    		jsonObj.put("poster_path", rateMovie.get("poster_path"));
 	    		jsonObj.put("rating", rateMovie.get("rating"));
+	    		jsonObj.put("rating_date", rateMovie.get("rating_date"));
 	    		
 	    		jsonArr.put(jsonObj);
 	    	} // end of for
@@ -874,4 +874,100 @@ public class WatchaController {
 		return jsonArr.toString();
 	}
 
+	// === 장르별 추천영화 전체보기 페이지 요청(view단 페이지) === //
+	@RequestMapping(value="/myWatcha/preference.action")
+	public ModelAndView preference(ModelAndView mav, HttpServletRequest request) {
+
+		String genre_id = request.getParameter("genre_id");
+		String genre_name = "";
+		
+		List<GenreVO> genreList = service.genreInfo();
+    	for(GenreVO genre : genreList) {
+    		if(genre_id.equals(genre.getGenre_id())) {
+    			genre_name = genre.getGenre_name();
+    			break;
+    		}
+    	} // end of for
+
+    	if(genre_name != "") { // 존재하는 genre_id 를 입력한 경우
+			mav.addObject("genre_id", genre_id);
+			mav.addObject("genre_name", genre_name);
+			mav.setViewName("myWatcha/preference.tiles"); // /WEB-INF/views/myWatcha/preference.jsp
+    	}
+		else { // 링크 클릭이 아니라 잘못된 URL 을 입력한 경우
+			mav.addObject("message", "잘못된 접근입니다.");
+			mav.addObject("loc", "javascript:history.back()");
+			mav.setViewName("msg"); // /WEB-INF/views/msg.jsp
+		}
+		
+		return mav;
+	}
+	
+	// === 장르별 영화 전체 - 10개씩 페이징 처리(Ajax) === //
+	@ResponseBody
+	@RequestMapping(value="/myWatcha/viewMoviesByGenre.action", produces="text/plain;charset=UTF-8")
+	public String viewMoviesByGenre(HttpServletRequest request) {
+
+		HttpSession session = request.getSession();
+		MemberVO loginuser = (MemberVO) session.getAttribute("loginuser");
+		String user_id = "";
+		if(loginuser != null) {
+			user_id = loginuser.getUser_id();
+		}
+
+		// *** 페이징 처리 - 현재 페이지
+		String str_currentShowPageNo = request.getParameter("currentShowPageNo");
+		String genre_id = request.getParameter("genre_id");
+		String orderByRating = request.getParameter("orderByRating"); 	// 별점순 정렬(높은순, 낮은순)
+		String orderByRelease = request.getParameter("orderByRelease"); // 개봉일자순 정렬(최신순, 오래된순)
+		
+		// 장르별 영화개수 알아오기
+		int totalCount = service.movieCountByGenre(genre_id);
+		
+		int currentShowPageNo = 0;
+		try {
+			currentShowPageNo = Integer.parseInt(str_currentShowPageNo);
+
+			if(str_currentShowPageNo == null || currentShowPageNo <= 0) {
+				currentShowPageNo = 1;
+			}
+			else if(currentShowPageNo > totalCount) {
+				currentShowPageNo = totalCount;
+			}
+		} catch (NumberFormatException e) {
+			currentShowPageNo = 1;
+		}
+		
+		int sizePerPage = 10; // 한번에 보여주는 장르별 영화 개수(10개 - 5개씩 2행)
+		
+		int startRno = ((currentShowPageNo - 1) * sizePerPage) + 1; // currentShowPageNo 의 시작 행번호
+	    int endRno = startRno + sizePerPage - 1;					// currentShowPageNo 의 끝 행번호
+		
+	    Map<String, String> paraMap = new HashMap<>();
+	    paraMap.put("user_id", user_id);
+	    paraMap.put("genre_id", genre_id);
+	    paraMap.put("startRno", String.valueOf(startRno));
+	    paraMap.put("endRno", String.valueOf(endRno));
+	    paraMap.put("orderByRating", orderByRating);
+	    paraMap.put("orderByRelease", orderByRelease);
+	    		
+		// *** 현재 페이지에 해당하는 장르별 영화List 가져오기
+	    List<Map<String, String>> moviesByGenreList = service.moviesByGenrePaging(paraMap);
+
+	    JSONArray jsonArr = new JSONArray();
+	    if(moviesByGenreList != null) {
+	    	for(Map<String, String> moviesByGenre : moviesByGenreList) {
+	    		JSONObject jsonObj = new JSONObject();
+	    		jsonObj.put("movie_id", moviesByGenre.get("movie_id"));
+	    		jsonObj.put("movie_title", moviesByGenre.get("movie_title"));
+	    		jsonObj.put("poster_path", moviesByGenre.get("poster_path"));
+	    		jsonObj.put("rating_avg", moviesByGenre.get("rating_avg"));
+	    		jsonObj.put("release_date", moviesByGenre.get("release_date"));
+	    		
+	    		jsonArr.put(jsonObj);
+	    	} // end of for
+	    }
+		return jsonArr.toString();
+	}
+	
 }

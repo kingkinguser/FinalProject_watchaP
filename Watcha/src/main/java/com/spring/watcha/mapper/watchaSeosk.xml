@@ -65,6 +65,7 @@
 		<result property="movie_title"   column="movie_title" 	javaType="String"/>
 		<result property="poster_path"   column="poster_path" 	javaType="String"/>
 		<result property="rating" 		 column="rating" 		javaType="String"/>
+		<result property="rating_date" 	 column="rating_date" 	javaType="String"/>
 	</resultMap>
 	<select id="ratingMovies" parameterType="String" resultMap="ratingMovies_Map">
 	    select M.movie_id, M.movie_title, M.poster_path, R.rating
@@ -104,12 +105,12 @@
 	
 	<!-- 회원이 평가한 영화 - 10개씩 페이징 처리 -->
 	<select id="rateMoviesPaging" parameterType="HashMap" resultMap="ratingMovies_Map">
-	    select movie_id, movie_title, poster_path, rating
+	    select movie_id, movie_title, poster_path, rating, rating_date
 	    from
 	    (
 	        select row_number() over(order by R.${order}) AS rno
 	             , M.movie_id, M.movie_title, M.poster_path
-	             , R.rating
+             	 , R.rating, to_char(R.rating_date, 'yyyy-mm-dd') AS rating_date
 	        from movie M right join star_rating R
 	        on M.movie_id = R.movie_id
 	        where user_id = #{user_id}
@@ -441,5 +442,43 @@
 	    order by A.rating_genre desc
 	</select>
 	
+	<!-- 장르별 영화개수 알아오기 -->
+	<select id="movieCountByGenre" parameterType="String" resultType="int">
+	    select count(*)
+	    from movie M join movie_genre G
+	    on M.movie_id = G.movie_id
+	    where genre_id = #{genre_id}
+	</select>
+
+	<!-- 장르별 영화 - 10개씩 페이징 처리 -->
+	<resultMap type="HashMap" id="moviesByGenrePaging_Map">
+		<result property="movie_id"  	column="movie_id" 		javaType="String"/>
+		<result property="movie_title" 	column="movie_title" 	javaType="String"/>
+		<result property="poster_path"  column="poster_path" 	javaType="String"/>
+		<result property="rating_avg"   column="rating_avg" 	javaType="String"/>
+		<result property="release_date" column="release_date" 	javaType="String"/>
+	</resultMap>
+	<select id="moviesByGenrePaging" parameterType="HashMap" resultMap="moviesByGenrePaging_Map">
+	    select movie_id, movie_title, poster_path, rating_avg, release_date
+	    from
+	    (
+	        select row_number() over(order by B.${orderByRating}, B.${orderByRelease}) AS rno
+	             , B.movie_id, B.movie_title, B.poster_path, B.rating_avg, to_char(B.release_date, 'yyyy-mm-dd') AS release_date
+	        from
+	        (
+	            select M.movie_id
+	            from movie M join movie_genre G
+	            on G.movie_id = M.movie_id
+	            where genre_id = #{genre_id}
+	            MINUS
+	            select movie_id
+	            from star_rating
+	            where user_id = #{user_id}
+	        )A join movie B
+	        on A.movie_id = B.movie_id
+	        order by B.${orderByRating}, B.${orderByRelease}
+	    ) C
+	    where C.rno between #{startRno} and #{endRno}
+	</select>
 	
 </mapper>

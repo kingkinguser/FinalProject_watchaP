@@ -305,4 +305,18 @@ public class WatchaDAO implements InterWatchaDAO {
 		return preferenceList;
 	}
 
+	// 장르별 영화개수 알아오기
+	@Override
+	public int movieCountByGenre(String genre_id) {
+		int totalCount = sqlsession.selectOne("watcha.movieCountByGenre", genre_id);
+		return totalCount;
+	}
+
+	// 장르별 영화 - 10개씩 페이징 처리
+	@Override
+	public List<Map<String, String>> moviesByGenrePaging(Map<String, String> paraMap) {
+	    List<Map<String, String>> moviesByGenreList = sqlsession.selectList("watcha.moviesByGenrePaging", paraMap);
+		return moviesByGenreList;
+	}
+
 }

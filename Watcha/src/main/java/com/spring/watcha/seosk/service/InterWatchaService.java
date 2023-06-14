@@ -108,4 +108,10 @@ public interface InterWatchaService {
 	// 선호장르 데이터 가져오기
 	List<Map<String, String>> preference(String user_id);
 
+	// 장르별 영화개수 알아오기
+	int movieCountByGenre(String genre_id);
+
+	// 장르별 영화 - 10개씩 페이징 처리
+	List<Map<String, String>> moviesByGenrePaging(Map<String, String> paraMap);
+
 }
