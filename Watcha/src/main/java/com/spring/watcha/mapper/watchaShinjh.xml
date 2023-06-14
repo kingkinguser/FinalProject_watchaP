@@ -64,9 +64,7 @@
 						, profile_message = #{profile_message}
 						</if>
 						
-						<if test='profile_image != null'>
 						, profile_image = #{profile_image}
-						</if>
 						
 		where user_id = #{user_id}
 	</update>
