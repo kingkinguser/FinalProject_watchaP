@@ -6,6 +6,7 @@ import java.util.Map;
 import com.spring.watcha.model.ActorVO;
 import com.spring.watcha.model.MemberVO;
 import com.spring.watcha.model.MovieVO;
+import com.spring.watcha.model.collection_likeVO;
 import com.spring.watcha.model.collection_movieVO;
 
 public interface InterWatchaDAO {
@@ -74,6 +75,12 @@ public interface InterWatchaDAO {
 
 	// 검색한 유저 나타내기
 	List<MemberVO> showUserAll(Map<String, String> paraMap);
+
+	// 검색한 컬렉션 총 개수인지 가져오기 
+	int total_count_Collection(Map<String, String> paraMap);
+
+	// 검색한 컬렉션 나타내기
+	List<collection_likeVO> showCollectionAll(Map<String, String> paraMap);
 
 
 

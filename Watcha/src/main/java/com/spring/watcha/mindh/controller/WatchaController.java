@@ -26,6 +26,7 @@ import com.spring.watcha.model.GenreVO;
 import com.spring.watcha.model.MemberVO;
 import com.spring.watcha.model.MovieVO;
 import com.spring.watcha.model.Star_ratingVO;
+import com.spring.watcha.model.collection_likeVO;
 import com.spring.watcha.model.collection_movieVO;
 
 @Controller
@@ -556,8 +557,64 @@ public class WatchaController {
 	}
 		
 	
+	// 영화 검색 페이지에서 컬렉션 눌렀을때 
+	@RequestMapping(value = "/goSearchCollection.action", method = {RequestMethod.GET} )
+	public ModelAndView goSearchCollection(ModelAndView mav, HttpServletRequest request) {
+
+		String lastSearchWord = request.getParameter("lastSearchWord");
+		
+		mav.addObject("lastSearchWord",lastSearchWord);
+		
+		mav.setViewName("/search/searchCollection.tiles");
+		return mav;
+	}
+
 	
-	
+	// 영화 검색 페이지에서 유저 눌렀을때 
+	@ResponseBody
+	@RequestMapping(value = "/goSearchCollection.action", method = {RequestMethod.POST} )
+	public ModelAndView goSearchCollection1(HttpServletRequest request) {
+
+		String lastSearchWord = request.getParameter("lastSearchWord");
+
+        // Process for Ajax request
+        String start = request.getParameter("start");
+        String lenShow = request.getParameter("lenShow");
+
+        Map<String, String> paraMap = new HashMap<>();
+        paraMap.put("start", start);
+        paraMap.put("lastSearchWord", lastSearchWord);
+
+        String end = String.valueOf(Integer.parseInt(start) + Integer.parseInt(lenShow) - 1);
+                
+        paraMap.put("end", end);	     
+        
+        int total_count_Collection = service.total_count_Collection(paraMap);   // 총 개수를 나타내자 
+        List<collection_likeVO> showCollectionAll = service.showCollectionAll(paraMap);  // 컬렉션 가져오자 
+
+        JSONArray jsonArr = new JSONArray();
+
+        if (showCollectionAll.size() > 0) {
+            // DB에서 조회한 결과물이 있을 경우
+            for (MemberVO Showvo : showCollectionAll) {
+                JSONObject jsonObj = new JSONObject();
+                jsonObj.put("name", Showvo.getName());
+                jsonObj.put("profile_image", Showvo.getProfile_image());
+                jsonObj.put("total_count", Showvo.getTotal_count());
+                
+
+                jsonArr.put(jsonObj);
+            }
+        }
+
+        JSONObject jsonRes = new JSONObject();
+        jsonRes.put("totalCollectionCount", total_count_Collection);
+        jsonRes.put("Collection_list", jsonArr);
+
+        String json = jsonRes.toString();
+        return new ModelAndView(new MappingJackson2JsonView(), Collections.singletonMap("jsonResponse", json));
+        
+	}
 	
 	
 }

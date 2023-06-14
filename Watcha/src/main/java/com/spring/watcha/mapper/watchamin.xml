@@ -510,5 +510,26 @@
 		where rn between #{start} AND #{end}	
 	</select>
 	
+	<!-- 컬렉션 총 숫자 (검색기준) -->
+	<select id="total_count_Collection" resultType="int" parameterType="HashMap">
+	    select count(user_id) as count
+		from(
+		    select a.user_id
+		    from (
+		        select user_id
+		        from COLLECTION_MOVIE
+		    ) a
+		    JOIN 
+		    (
+		        select user_id, name
+		        from member
+		    ) b
+		    ON a.user_id = b.user_id    
+		    WHERE LOWER(name) LIKE '%' || LOWER(#{lastSearchWord}) || '%'
+		    group by a.user_id
+		)
+	</select>
+	
+	
 	
 </mapper>

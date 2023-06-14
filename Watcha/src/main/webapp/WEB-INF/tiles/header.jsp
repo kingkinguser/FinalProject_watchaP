@@ -1096,7 +1096,7 @@
 						<span class="header-list"><a href="<%= ctxPath%>/view/main.action" style="color: #999999" class="header-a">영화</a></span>
 					</li>
 					<li class="header-main-li header-li">	
-						<span class="header-list"><a href="#" style="color: #999999" class="header-a">커뮤니티</a></span> 
+						<span class="header-list"><a href="<%= ctxPath%>/community" style="color: #999999" class="header-a">커뮤니티</a></span> 
 					</li>	
 					
 					<li class="header-second-li">
@@ -1160,7 +1160,7 @@
 						<span class="header-tag-a-span">|</span>
 					</li>
 					<li class="header-main-li">
-						<a href="#" class="header-tag-a header-a">커뮤니티</a>
+						<a href="<%= ctxPath%>/community" class="header-tag-a header-a">커뮤니티</a>
 						<span class="header-tag-a-span">|</span>
 					</li>
 					

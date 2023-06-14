@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.spring.watcha.model.ActorVO;
 import com.spring.watcha.model.MemberVO;
 import com.spring.watcha.model.MovieVO;
+import com.spring.watcha.model.collection_likeVO;
 import com.spring.watcha.model.collection_movieVO;
 import com.spring.watcha.mindh.model.InterWatchaDAO;
 
@@ -203,6 +204,20 @@ public class WatchaService implements InterWatchaService {
 	public List<MemberVO> showUserAll(Map<String, String> paraMap) {
 		List<MemberVO> showUserAll = dao.showUserAll(paraMap);
 	    return showUserAll;
+	}
+
+	// 검색한 컬렉션 총 개수인지 가져오기 
+	@Override
+	public int total_count_Collection(Map<String, String> paraMap) {
+		int total_count_Collection = dao.total_count_Collection(paraMap);
+		return total_count_Collection;
+	}
+
+	// 검색한 컬렉션 나타내기
+	@Override
+	public List<collection_likeVO> showCollectionAll(Map<String, String> paraMap) {
+		List<collection_likeVO> showCollectionAll = dao.showCollectionAll(paraMap);
+	    return showCollectionAll;
 	}
 
 	
