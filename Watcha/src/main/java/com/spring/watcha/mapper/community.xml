@@ -1,0 +1,381 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="community">
+
+	
+	<update id="insertMovies" parameterType="java.util.List">
+	<foreach collection="list" item="movieDb" open="INSERT ALL" close="SELECT * FROM DUAL" separator=" ">
+		<if test="movieDb.backdropPath != null and movieDb.posterPath != null">
+		INTO movie(movie_id, movie_title, overview, original_language, original_title, release_date, tagline, runtime, poster_path, backdrop_path)
+		VALUES(#{movieDb.id}, #{movieDb.title}, #{movieDb.overview}, #{movieDb.originalLanguage}, #{movieDb.originalTitle}, #{movieDb.releaseDate}, #{movieDb.tagline}, #{movieDb.runtime}, #{movieDb.posterPath}, #{movieDb.backdropPath})
+		</if>
+	</foreach>
+	</update>
+	
+	
+	
+	
+	<update id="insertMovieGenres" parameterType="java.util.List">
+	<foreach collection="list" item="movieDb" open="INSERT ALL" close="SELECT * FROM DUAL" separator=" ">
+		<if test="movieDb.backdropPath != null and movieDb.posterPath != null">
+		<foreach collection="movieDb.genres" item="genre" separator=" ">
+		INTO movie_genre(movie_id, genre_id)
+		VALUES(#{movieDb.id}, #{genre.id})
+		</foreach>
+		</if>
+	</foreach>
+	</update>
+	
+
+	
+	<select id="isExistPerson" parameterType="info.movito.themoviedbapi.model.people.PersonCast" resultType="_int">
+	SELECT count(*) FROM actor
+	WHERE actor_id = #{id}
+	</select>
+	
+	<insert id="insertPerson" parameterType="info.movito.themoviedbapi.model.people.PersonPeople">
+	INSERT INTO actor(actor_id, actor_name, gender, date_of_birth, place_of_birth, profile_image_path)
+	VALUES(#{id}, #{name}, #{gender}, #{birthday}, #{birthplace}, #{profilePath} )
+	</insert>
+	
+	<update id="insertCasts" parameterType="info.movito.themoviedbapi.model.MovieDb">
+	<foreach collection="credits.cast" item="cast" open="INSERT ALL" close="SELECT * FROM DUAL" separator=" ">
+		INTO movie_role(movie_id, actor_id, role, casting_order)
+		VALUES(#{id}, #{cast.id}, #{cast.character}, #{cast.order})
+	</foreach>
+	</update>
+	
+	<!-- <resultMap id="movieResultMapDefault" type="com.spring.watcha.model.MovieVO">
+	    <id property="movieId" column="movie_id" />
+	    <result property="movieTitle" column="movie_title"/>
+	    <result property="overview" column="overview"/>
+	    <result property="originalLanguage" column="original_language"/>
+	    <result property="originalTitle" column="original_title"/>
+	    <result property="releaseDate" column="release_date"/>
+	    <result property="tagline" column="tagline"/>
+	    <result property="runtime" column="runtime"/>
+	    <result property="posterPath" column="poster_path"/>
+	    <result property="backdropPath" column="backdrop_path"/>
+	    <result property="ratingCount" column="rating_count"/>
+	    <result property="ratingAvg" column="rating_avg"/>
+	</resultMap> -->
+	
+	
+	<!-- <resultMap id="movieResultMap" type="com.spring.watcha.model.MovieVO">
+	    <id property="movieId" column="movie_id" />
+	    <result property="movieTitle" column="movie_title"/>
+	    <result property="overview" column="overview"/>
+	    <result property="originalLanguage" column="original_language"/>
+	    <result property="originalTitle" column="original_title"/>
+	    <result property="releaseDate" column="release_date"/>
+	    <result property="tagline" column="tagline"/>
+	    <result property="runtime" column="runtime"/>
+	    <result property="posterPath" column="poster_path"/>
+	    <result property="backdropPath" column="backdrop_path"/>
+	    <result property="ratingCount" column="rating_count"/>
+	    <result property="ratingAvg" column="rating_avg"/>
+	    <collection property="genres" javaType="java.util.List" column="movie_id" ofType="com.spring.watcha.model.GenreVO" select="selectGenresByMovieId" />
+    	<collection property="movieRoles" javaType="java.util.List" column="movie_id" ofType="com.spring.watcha.model.MovieRoleVO" select="selectMovieRolesByMovieId"/>
+	</resultMap>
+	
+	<resultMap id="genreResultMap" type="com.spring.watcha.model.GenreVO">
+	    <id property="genreId" column="genre_id" />
+	    <result property="genreName" column="genre_name" />
+	</resultMap>
+	
+	<resultMap id="movieRoleResultMap" type="com.spring.watcha.model.MovieRoleVO">
+	    <id property="movieId" column="movie_id" />
+	    <id property="actorId" column="actor_id" />
+	    <result property="role" column="role"/>
+	    <result property="castingOrder" column="casting_order"/>
+	    <association property="actor" javaType="com.spring.watcha.model.ActorVO" resultMap="actorResultMap" />
+	</resultMap>
+	
+	<resultMap id="actorResultMap" type="com.spring.watcha.model.ActorVO">
+	    <id property="actorId" column="actor_id" />
+	    <result property="actorName" column="actor_name"/>
+	    <result property="gender" column="gender"/>
+	    <result property="dateOfBirth" column="date_of_birth"/>
+	    <result property="placeOfBirth" column="place_of_birth"/>
+	    <result property="profileImagePath" column="profile_image_path"/>
+	</resultMap>
+	
+
+	<select id="getMovieDetails" resultMap="movieResultMap" parameterType="String">
+	    SELECT movie_id, movie_title, overview, original_language, original_title, to_char(release_date, 'yyyy-mm-dd') as release_date, tagline, to_number(runtime) as runtime, poster_path, backdrop_path, to_number(rating_count) as rating_count
+	    , to_number(rating_avg) as rating_avg
+	    FROM movie
+	    WHERE movie_id = #{movieId}
+	</select>
+	
+	<select id="selectGenresByMovieId" resultMap="genreResultMap">
+	    SELECT MG.movie_id, G.genre_id, G.genre_name
+	    FROM genre G
+	    JOIN movie_genre MG ON G.genre_id = MG.genre_id
+	    WHERE MG.movie_id = #{movieId}
+	</select>
+	
+	<select id="selectMovieRolesByMovieId" resultMap="movieRoleResultMap">
+	    SELECT MR.movie_id, MR.actor_id, MR.role, MR.CASTING_ORDER, A.actor_name, A.gender, A.date_of_birth, A.place_of_birth, A.profile_image_path
+	    FROM movie_role MR
+	    JOIN actor A ON MR.actor_id = A.actor_id
+	    WHERE MR.movie_id = #{movieId}
+	</select> -->
+		
+	
+	
+	<select id="getMoviesByKeyword" parameterType="String" resultType="com.spring.watcha.model.MovieVO">
+		SELECT movie_id, movie_title, overview, original_language, original_title, to_char(release_date, 'yyyy-mm-dd') as release_date, tagline, runtime, poster_path, backdrop_path, rating_count, rating_avg
+		FROM movie
+		WHERE REGEXP_LIKE(
+		    REGEXP_REPLACE(movie_title, '[^[:alnum:]]', ''),
+		    REGEXP_REPLACE(LOWER(#{search}), '[^[:alnum:]]', ''),
+		    'i'
+		  ) or 
+		  REGEXP_LIKE(
+		    REGEXP_REPLACE(original_title, '[^[:alnum:]]', ''),
+		    REGEXP_REPLACE(LOWER(#{search}), '[^[:alnum:]]', ''),
+		    'i'
+		  )
+		
+	</select>
+	
+	<select id="getMovieByMovieId" parameterType="String" resultType="com.spring.watcha.model.MovieVO">
+		SELECT movie_id, movie_title, overview, original_language, original_title, to_char(release_date, 'yyyy-mm-dd') as release_date, tagline, runtime, poster_path, backdrop_path, rating_count, rating_avg
+		FROM movie
+		WHERE movie_id = #{search}
+	</select>
+	
+	<update id="insertPost" parameterType="com.spring.watcha.model.PostVO">
+	INSERT ALL
+	INTO post(post_id, user_id, title, content, views, likes, post_date, post_category_id)
+	VALUES(postSeq.nextval , #{userId}, #{title} , #{content}, default, default, default, #{postCategoryId})
+	<foreach collection="movieIds" item="movieId" separator=" ">
+	INTO post_tags(post_id, movie_id)
+	VALUES(postSeq.currval, ${movieId})
+	</foreach>
+	SELECT * FROM DUAL
+	
+	<selectKey resultType="String" keyProperty="postId" keyColumn="post_id" order="AFTER" statementType="PREPARED">
+	    SELECT postSeq.currval as post_id FROM dual
+	  </selectKey>
+	
+	</update>
+	
+	<select id="getTotalPosts" parameterType="HashMap" resultType="_int">
+		SELECT count(*)
+		FROM post
+		WHERE 1 = 1
+		<if test="search_category != null">
+			AND post_category_id = #{search_category}
+		</if>
+		<if test='exception_mode != null and exception_mode == "recommend" '>
+			AND views >= 0 and likes >= 0
+		</if>
+		<if test="searchType != null">
+			<choose>
+                <when test='searchType == "title"'>
+                        AND title LIKE '%' || #{searchKeyword} || '%'
+                </when>
+                <when test='searchType == "content"'>
+                        AND content LIKE '%' || #{searchKeyword} || '%'
+                </when>
+                <when test='searchType == "titleContent"'>
+                        AND (title LIKE '%' || #{searchKeyword} || '%' OR content LIKE '%' || #{searchKeyword} || '%')
+                </when>
+                <when test='searchType == "author"'>
+                        AND user_id IN (SELECT user_id FROM member WHERE nickname LIKE '%' || #{searchKeyword} || '%')
+                </when>
+                <otherwise>
+                </otherwise>
+	        </choose>
+        </if>
+	</select>
+	
+	
+	<resultMap id="postResultMap" type="com.spring.watcha.model.PostVO">
+	    <id property="postId" column="post_id" />
+	    <result property="userId" column="user_id" />
+	    <result property="title" column="title" />
+	    <result property="views" column="views" />
+	    <result property="likes" column="likes" />
+	    <result property="postDate" column="post_date" />
+	    <result property="content" column="content" />
+	    <result property="postCategoryId" column="post_category_id" />
+	    <result property="postCategoryName" column="post_category_name" />
+	    <result property="commentCount" column="comment_count" />
+	    <association property="member" javaType="com.spring.watcha.model.MemberVO" autoMapping="true"/>
+	    <collection property="movies" javaType="java.util.List" ofType="com.spring.watcha.model.MovieVO" autoMapping="true" />
+	</resultMap>
+	
+	
+	<resultMap id="postCommentResultMap" type="com.spring.watcha.model.PostCommentVO">
+	    <id property="commentId" column="comment_id" />
+	    <result property="postId" column="post_id" />
+	    <!-- <result property="userId" column="user_id" /> -->
+	    <result property="commentContent" column="comment_content" />
+	    <result property="commentDate" column="comment_date" />
+	    <result property="depth" column="depth"></result>
+	    <result property="parentCommentId" column="parent_comment_id"></result>
+	    <result property="parentUserId" column="parent_user_id"></result>
+	    <result property="parentNickname" column="parent_nickname"></result>
+	    <result property="commentStatus" column="comment_status"></result>
+	    <association property="member" javaType="com.spring.watcha.model.MemberVO" autoMapping="true"/>
+	</resultMap>
+	
+	<select id="getPostsByParam" parameterType="HashMap" resultMap="postResultMap">
+		select p.*, pc.post_category_name, NVL(pm.comment_count, 0) AS comment_count, M.nickname
+		FROM post P JOIN post_category PC
+		ON P.post_category_id = PC.post_category_id 
+		JOIN member M ON P.user_id = M.user_id
+		LEFT JOIN (
+		    SELECT post_id, COUNT(comment_id) AS comment_count
+		    FROM post_comment
+		    GROUP BY post_id
+		) pm ON p.post_id = pm.post_id
+		WHERE 1 = 1
+		<if test="search_category != null">
+			AND P.post_category_id = #{search_category}
+		</if>
+		<if test='exception_mode != null and exception_mode == "recommend" '>
+			AND (views >= 100 AND likes >= 10)
+		</if>
+		<if test="searchType != null">
+			<choose>
+                <when test='searchType == "title"'>
+                        AND title LIKE '%' || #{searchKeyword} || '%'
+                </when>
+                <when test='searchType == "content"'>
+                        AND content LIKE '%' || #{searchKeyword} || '%'
+                </when>
+                <when test='searchType == "titleContent"'>
+                        AND (title LIKE '%' || #{searchKeyword} || '%' OR content LIKE '%' || #{searchKeyword} || '%')
+                </when>
+                <when test='searchType == "author"'>
+                        AND P.user_id IN (SELECT user_id FROM member WHERE nickname LIKE '%' || #{searchKeyword} || '%')
+                </when>
+                <otherwise>
+                </otherwise>
+	        </choose>
+       </if>
+       ORDER BY post_date desc
+       OFFSET #{offset} ROWS FETCH NEXT #{rows} ROWS ONLY
+	</select>
+	
+	<select id="getPostById" parameterType="String" resultMap="postResultMap">
+	SELECT P.*, PC.post_category_name, M.name, M.nickname, NVL(CC.comment_count, 0) AS comment_count, MO.*
+	FROM post P JOIN post_category PC ON P.post_category_id = PC.post_category_id
+	JOIN member M ON P.user_id = M.user_id
+	LEFT JOIN (
+		    SELECT post_id, COUNT(comment_id) AS comment_count
+		    FROM post_comment
+		    WHERE post_id = #{postId}
+            GROUP BY post_id
+		) CC ON P.post_id = CC.post_id
+	LEFT JOIN post_tags PT ON P.post_id = PT.post_id
+    LEFT JOIN movie MO ON PT.movie_id = MO.movie_id
+	WHERE P.post_id = #{postId}
+	</select>
+	
+	<update id="incrementViewCount" parameterType="String">
+	UPDATE post SET views = views + 1 WHERE post_id = #{postId}
+	</update>
+	
+	<select id="getToalPostComments" parameterType="HashMap" resultType="_int">
+	SELECT count(*) FROM post_comment
+	WHERE post_id = #{postId}
+	</select>
+	
+	<select id="getPostComments" parameterType="HashMap" resultMap="postCommentResultMap">
+	SELECT * FROM
+	(
+	SELECT PC1.*,level - 1 as depth ,M1.nickname, M1.profile_image,  PC2.user_id as parent_user_id, M2.nickname as parent_nickname
+	FROM post_comment PC1 JOIN member M1 ON PC1.user_id = M1.user_id
+    LEFT JOIN post_comment PC2
+    ON PC1.parent_comment_id = PC2.comment_id
+    LEFT JOIN member M2
+    ON PC2.user_id = M2.user_id
+	WHERE PC1.post_id = #{postId}
+    CONNECT BY PRIOR PC1.comment_id = PC1.parent_comment_id
+    START WITH PC1.parent_comment_id IS NULL
+    ORDER SIBLINGS BY PC1.comment_date asc
+	) V
+    OFFSET #{offset} ROWS FETCH NEXT #{rows} ROWS ONLY
+	
+	</select>
+	
+	<select id="getPostCategories" resultType="HashMap">
+	SELECT * FROM POST_category ORDER BY post_category_id
+	</select>
+	
+	<insert id="createPostComment" parameterType="com.spring.watcha.model.PostCommentVO">
+		INSERT INTO post_comment(comment_id, post_id, user_id, comment_content, comment_date, parent_comment_id)
+		VALUES( pc_seq.nextval , #{postId}, #{userId}, #{commentContent}, default ,  #{parentCommentId} )
+		
+		<selectKey resultType="int" keyProperty="commentId" keyColumn="comment_id" order="AFTER" statementType="PREPARED">
+	    SELECT pc_seq.currval FROM dual
+	  </selectKey>
+	</insert>
+	
+	
+	<select id="getChildCommentCount" parameterType="String" resultType="_int">
+	SELECT count(*) FROM post_comment WHERE parent_comment_id = #{commentId}
+	</select>
+	
+	<delete id="deletePostComment" parameterType="String">
+	DELETE FROM post_comment WHERE comment_id = #{commentId}
+	</delete> 
+	
+	<update id="updatePostCommentStatus" parameterType="String">
+	UPDATE post_comment SET comment_status = 0 WHERE comment_id = #{commentId}
+	</update>
+	
+	
+	<select id="getUseridByCommentId" parameterType="String" resultType="String">
+	SELECT user_id FROM post_comment
+	WHERE comment_id = #{commentId}
+	</select>
+	
+	<select id="getRownumOfComment" parameterType="com.spring.watcha.model.PostCommentVO" resultType="_int">
+	select result_num from
+	(
+	SELECT rownum as result_num, PC.* ,M.nickname, M.profile_image
+	FROM post_comment PC JOIN member M ON PC.user_id = M.user_id
+	WHERE PC.post_id = (SELECT post_id FROM post_comment WHERE comment_id = #{commentId})
+    CONNECT BY PRIOR PC.comment_id = PC.parent_comment_id
+    START WITH PC.parent_comment_id IS NULL
+    ORDER SIBLINGS BY PC.comment_date asc
+	) V
+    where comment_id = #{commentId}
+	</select>
+	
+	
+	<select id="hasLikedPost" resultType="_int" parameterType="HashMap">
+	SELECT count(*)
+	FROM post_like
+	WHERE post_id = #{postId} and user_id = #{userId}
+	</select>
+	
+	<insert id="insertPostLikes" parameterType="HashMap">
+	INSERT INTO post_like(post_like_id, post_id, user_id)
+	VALUES(pl_seq.nextval, #{postId}, #{userId}) 
+	</insert>
+	
+	<delete id="deletePostLikes" parameterType="HashMap">
+	DELETE FROM post_like WHERE post_id = #{postId} AND user_id = #{userId}
+	</delete>
+	
+	<select id="getLikesCount" resultType="_int" parameterType="HashMap">
+	SELECT count(*)
+	FROM post_like
+	WHERE post_id = #{postId}	
+	</select>
+	
+	<update id="updatePostLikes" parameterType="HashMap">
+	UPDATE post SET likes = #{count} WHERE post_id = #{postId}
+	</update>
+	
+			    
+</mapper>
