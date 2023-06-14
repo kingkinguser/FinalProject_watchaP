@@ -178,10 +178,15 @@
 
 					if( Number($("span#totalMovieCount").text()) <= Number($("span#countMovie").text()) )  {  // number 는 빼도 그만 안빼도 그만 
 						
-						$("span#end").html("더이상 조회할 영화가 없습니다.");		// id 가 end 인 span 태그에 추가하겠다.
-						$("button#btnMoreMovie").text("처음으로");
-						$("span#countMovie").text(0);
-					
+						if(!(start == "1" && count < 11)) {
+							$("span#end").html("더이상 조회할 영화가 없습니다.");		// id 가 end 인 span 태그에 추가하겠다.
+							$("button#btnMoreMovie").text("처음으로");
+							$("span#countUser").text(0);
+						}
+						else{
+							$("button#btnMoreMovie").hide();
+						}
+						
 					}
 	
 				} // end of else if 				

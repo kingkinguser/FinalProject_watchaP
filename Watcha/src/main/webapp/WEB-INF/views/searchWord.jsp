@@ -116,52 +116,7 @@
 		$("button#user").click(function(){
 			SearchUser();
 		});
-		
-		/* 
-		if(status == 0){
-			$("#contants").css({'border-bottom': 'solid 1px black'});
-			Carousel();
-		}
-		else if(status == 1){
-			
-		}
-		else if(status == 2){
-			
-		}
-		else {
-			
-		}
-		
-		$('button.nav-link').on('click', function() {   // 버튼 클릭시 
-			
-			$('button.nav-link').css('border-bottom', 'none');  // 다른 버튼들 밑줄 삭제 
-		    
-		    $(this).css('border-bottom', 'solid 1px black');	// 클릭한 것만 버튼에 밑줄 생성
-			
-		    status = $(this).data('status'); 
-		    console.log('Status:', status);
-		    
-		    // Perform actions based on the status value
-		    switch (status) {
-		      case 0:
 
-		        break;
-		      case 1:
-
-		        break;
-		      case 2:
-
-		        break;
-		      case 3:
-
-		        break;
-		      default:
-
-		        break;
-		    }
-		    
-		});
-		 */
 	});
 	
 	

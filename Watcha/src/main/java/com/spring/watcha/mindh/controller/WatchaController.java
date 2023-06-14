@@ -496,4 +496,68 @@ public class WatchaController {
         
 	}
 	
+
+	// 영화 검색 페이지에서 유저 눌렀을때 
+	@RequestMapping(value = "/goSearchUser.action", method = {RequestMethod.GET} )
+	public ModelAndView goSearchUser(ModelAndView mav, HttpServletRequest request) {
+
+		String lastSearchWord = request.getParameter("lastSearchWord");
+		
+		mav.addObject("lastSearchWord",lastSearchWord);
+		
+		mav.setViewName("/search/searchUser.tiles");
+		return mav;
+	}
+	
+	// 영화 검색 페이지에서 유저 눌렀을때 
+	@ResponseBody
+	@RequestMapping(value = "/goSearchUser.action", method = {RequestMethod.POST} )
+	public ModelAndView goSearchUser1(HttpServletRequest request) {
+
+		String lastSearchWord = request.getParameter("lastSearchWord");
+
+        // Process for Ajax request
+        String start = request.getParameter("start");
+        String lenShow = request.getParameter("lenShow");
+
+        Map<String, String> paraMap = new HashMap<>();
+        paraMap.put("start", start);
+        paraMap.put("lastSearchWord", lastSearchWord);
+
+        String end = String.valueOf(Integer.parseInt(start) + Integer.parseInt(lenShow) - 1);
+                
+        paraMap.put("end", end);	     
+        
+        int total_count_User = service.total_count_User(paraMap);   // 총 개수를 나타내자 
+        List<MemberVO> showUserAll = service.showUserAll(paraMap);  // 유저 가져오자 
+
+        JSONArray jsonArr = new JSONArray();
+
+        if (showUserAll.size() > 0) {
+            // DB에서 조회한 결과물이 있을 경우
+            for (MemberVO Showvo : showUserAll) {
+                JSONObject jsonObj = new JSONObject();
+                jsonObj.put("name", Showvo.getName());
+                jsonObj.put("profile_image", Showvo.getProfile_image());
+                jsonObj.put("total_count", Showvo.getTotal_count());
+                
+
+                jsonArr.put(jsonObj);
+            }
+        }
+
+        JSONObject jsonRes = new JSONObject();
+        jsonRes.put("totalUserCount", total_count_User);
+        jsonRes.put("User_list", jsonArr);
+
+        String json = jsonRes.toString();
+        return new ModelAndView(new MappingJackson2JsonView(), Collections.singletonMap("jsonResponse", json));
+        
+	}
+		
+	
+	
+	
+	
+	
 }

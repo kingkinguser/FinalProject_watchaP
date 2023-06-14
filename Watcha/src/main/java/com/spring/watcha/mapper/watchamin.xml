@@ -485,4 +485,30 @@
 	</select>
 	
 	
+	
+	<!-- 유저 총 숫자 (검색기준) -->
+	<select id="total_count_User" resultType="int" parameterType="HashMap">
+	    SELECT COUNT(*) 
+	    FROM Member
+	    WHERE LOWER(name) LIKE '%' || LOWER(#{lastSearchWord}) || '%'
+	</select>
+	
+	
+	<!-- 검색한 유저 정보 모두 가져오기  -->
+	<select id="showUserAll" resultType="com.spring.watcha.model.MemberVO" parameterType="HashMap">				
+		select name, profile_image, total_count
+		from (
+		  select rownum as rn, name, profile_image, (
+		    select count(*) 
+		    from Movie_Review 
+		    where movie_review.user_id = member.User_Id
+		  ) as total_count
+		  from member
+		  where lower(name) like '%' || lower(#{lastSearchWord}) || '%'
+		  order by case when lower(name) like lower(#{lastSearchWord}) || '%' then 0 else 1 end, total_count desc,  name asc
+		)
+		where rn between #{start} AND #{end}	
+	</select>
+	
+	
 </mapper>

@@ -27,6 +27,10 @@ public class MemberVO {
 	
 	////////////////////////////////////////////////////////////////////////
 	
+	private int total_count;   // 유저의 평가 개수를 저장하기 위해 설정함 
+	////////////////////////////////////////////////////////////////////////
+	
+	
 	public MemberVO() {}
 	
 	// loginuser값 받아오기
@@ -58,6 +62,15 @@ public class MemberVO {
 		this.profile_image = profile_image;
 	}
 	
+	// 내정보수정
+	public MemberVO(String user_id, String name, String profile_image, int total_count ) {
+
+		this.user_id = user_id;
+		this.name = name;
+		this.profile_image = profile_image;
+		this.total_count = total_count;
+	}
+
 
 	public String getUser_id() {
 		return user_id;
@@ -180,5 +193,15 @@ public class MemberVO {
 	public void setRequirePwdChange(boolean requirePwdChange) {
 		this.requirePwdChange = requirePwdChange;
 	}
+
+	public int getTotal_count() {
+		return total_count;
+	}
+
+	public void setTotal_count(int total_count) {
+		this.total_count = total_count;
+	}
+	
+	
 	
 }
