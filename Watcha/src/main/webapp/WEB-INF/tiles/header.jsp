@@ -773,12 +773,12 @@
 	  gosearchone = ! gosearchone; // 누를때마다 css 추가
 	}
 	
-	// 사이즈 변경 마다 평가하기 부분 & 검색 버튼 아이콘 부분  
+	// 사이즈 변경 마다 로그아웃 부분 & 검색 버튼 아이콘 부분  
 	function gosize() {
 		let windowWidth = window.innerWidth;
 		    
 		if(windowWidth > 859){
-	  	   $('.header-star').text('평가하기');
+	  	   $('.header-star').text('로그아웃');
 	  	   $('.header-star').css({
 	  		   color: '#999999'
 	  	   });
@@ -797,7 +797,7 @@
 		   );
 		   gosearchone = true;
 	    } else {
-	       $('.header-star').html('<i class="fa-solid fa-star fa-lg"></i>');
+	       $('.header-star').html('<i class="fa-solid fa-arrow-right-from-bracket fa-lg"></i>');
 	       $('.header-star').css({
 		   	 color: '#999999'
 		   });
@@ -1122,8 +1122,8 @@
 						</c:if>
 						
 						
-						<c:if test="${not empty sessionScope.loginuser}"> <!--  로그인 되어 있으면 평가하기 나타내기  -->
-							<a href="<%= ctxPath%>/rateMovies.action" class="header-a"><span class="header-star"></span></a>
+						<c:if test="${not empty sessionScope.loginuser}"> <!--  로그인 되어 있으면 로그아웃 나타내기  -->
+							<a href="<%= ctxPath%>/logout.action" class="header-a"><span class="header-star"></span></a>
 						</c:if> 
 						
 					</li>
@@ -1179,7 +1179,7 @@
 					<!-- 로그인 했을때 나오게 -->
 					<c:if test="${not empty sessionScope.loginuser}"> 
 						<li class="header-main-li">
-							<a href="<%= ctxPath%>/rateMovies.action" class="header-tag-a header-a">평가하기</a>
+							<a href="<%= ctxPath%>/logout.action" class="header-tag-a header-a">로그아웃</a>
 							<span class="header-tag-a-span">|</span>
 						</li>
 						<li class="header-main-li">
