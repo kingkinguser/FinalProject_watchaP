@@ -200,8 +200,8 @@ public class WatchaDAO implements InterWatchaDAO {
 
 	// 검색한 컬렉션 나타내기
 	@Override
-	public List<collection_likeVO> showCollectionAll(Map<String, String> paraMap) {
-		List<collection_likeVO> showCollectionAll = sqlsession_1.selectList("watchamin.showCollectionAll", paraMap);	
+	public List<MemberVO> showCollectionAll(Map<String, String> paraMap) {
+		List<MemberVO> showCollectionAll = sqlsession_1.selectList("watchamin.showCollectionAll", paraMap);	
 		
 		return showCollectionAll;
 	}

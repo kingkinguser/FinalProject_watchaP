@@ -1,5 +1,7 @@
 package com.spring.watcha.model;
 
+import java.util.List;
+
 import org.springframework.web.multipart.MultipartFile;
 
 public class MemberVO {
@@ -33,6 +35,10 @@ public class MemberVO {
 
 	
 	private int total_count;   // 유저의 평가 개수를 저장하기 위해 설정함 
+	private int count_user_id_like;    // 유저에 대한 컬렉션 좋아요 수
+	private int count_user_id_collection;  // 유저에 대한 컬렉션 댓글 수 
+	
+	private List<MovieVO> poster;
 	////////////////////////////////////////////////////////////////////////
 	
 	
@@ -67,13 +73,17 @@ public class MemberVO {
 		this.profile_image = profile_image;
 	}
 	
-	// 내정보수정
-	public MemberVO(String user_id, String name, String profile_image, int total_count ) {
+	// 유저 나타내기 위해, 그리고 컬렉션 나타내기 위해 
+	public MemberVO(String user_id, String name, String profile_image, int total_count, 
+			        int count_user_id_like, int count_user_id_collection, List<MovieVO> poster ) {
 
 		this.user_id = user_id;
 		this.name = name;
 		this.profile_image = profile_image;
 		this.total_count = total_count;
+		this.count_user_id_like = count_user_id_like;
+		this.count_user_id_collection = count_user_id_collection;
+		this.poster = poster;
 	}
 
 
@@ -213,6 +223,30 @@ public class MemberVO {
 
 	public void setAttach(MultipartFile attach) {
 		this.attach = attach;
-	}	
-	
+	}
+
+	public int getCount_user_id_like() {
+		return count_user_id_like;
+	}
+
+	public void setCount_user_id_like(int count_user_id_like) {
+		this.count_user_id_like = count_user_id_like;
+	}
+
+	public int getCount_user_id_collection() {
+		return count_user_id_collection;
+	}
+
+	public void setCount_user_id_collection(int count_user_id_collection) {
+		this.count_user_id_collection = count_user_id_collection;
+	}
+
+	public List<MovieVO> getPoster() {
+		return poster;
+	}
+
+	public void setMovie(List<MovieVO> poster) {
+		this.poster = poster;
+	}
+
 }

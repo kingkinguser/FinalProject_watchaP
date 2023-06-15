@@ -231,7 +231,6 @@ public class WatchaController {
 		List<MovieVO> genreCheckFinal;  // 로그인 안했을때 또는 로그인 했지만 평가하지 않은 경우 나오는 가장 많이 평가한 장르의 작품 (체크하기) 위해 설정함
 		
 		List<MovieVO> starRankvo = service.starRank();   // 평점 순위 
-		List<MovieVO> seeRankvo = service.seeRank();   // 보고싶어요  순위 
 		List<MovieVO> commentRankvo = service.commentRank();   // 한줄평 많은  순위 
 		List<MovieVO> actorvo = service.actorRank(paraMap);   // 많이 평가한 배우 영화  (로그인한 사람의 아이디 들어가야 함)
 		List<MovieVO> actorCheck = service.actorCheck(paraMap);   // 로그인 안했을때 또는 로그인 했지만 평가하지 않은 경우 나오는 Tom Holland 의 최신 순의 영화 작품 (체크하기)
@@ -275,7 +274,7 @@ public class WatchaController {
 		
 		
 		
-		List<MovieVO> usercol = service.usercol(paraMap);     // 유저의 컬렉션             (로그인한 사람의 아이디 들어가야 함)
+		List<MovieVO> usercol = service.usercol(paraMap);     // 유저의 컬렉션    
 		
 	
 		List<ActorVO> actor = new ArrayList<>();    // 좋아하는 배우의 이름 
@@ -316,19 +315,17 @@ public class WatchaController {
 		
 		
 		List<collection_movieVO> finduser = service.finduser();		
-		
 
+		
 		for (collection_movieVO movie : finduser) {
+			String user_id= movie.getUser_id(); 
+			
 			List<MemberVO> members = movie.getMember();    // 이름값 나타내기 위해 
 			
-			String user_id= movie.getUser_id(); 
-		    
-			List<MovieVO> findCollectionFinal = service.findCollectionFinal(user_id);
+		    List<MovieVO> findCollectionFinal = service.findCollectionFinal(user_id);			
 			
-			//System.out.println(mergedCollection);
 			List<MovieVO> currentMergedCollection = new ArrayList<>(findCollectionFinal);
 			mergedCollectionFinal.add(currentMergedCollection);
-	
 		}
 		
 
@@ -337,7 +334,6 @@ public class WatchaController {
 		mav.addObject("recentSearchWords", recentSearchWordsString);
 		
 		mav.addObject("starRankvo", starRankvo);
-		mav.addObject("seeRankvo", seeRankvo);
 		mav.addObject("commentRankvo", commentRankvo);
 		mav.addObject("starRatings", starRatings);
 		mav.addObject("actor", actor);
@@ -590,24 +586,29 @@ public class WatchaController {
         paraMap.put("end", end);	     
         
         int total_count_Collection = service.total_count_Collection(paraMap);   // 총 개수를 나타내자 
-        List<collection_likeVO> showCollectionAll = service.showCollectionAll(paraMap);  // 컬렉션 가져오자 
-
+        List<MemberVO> showCollectionAll = service.showCollectionAll(paraMap);  // 컬렉션 가져오자 
+        
         JSONArray jsonArr = new JSONArray();
-
+        JSONObject jsonRes = new JSONObject();
+        JSONArray posterArr = new JSONArray(); 
+        
         if (showCollectionAll.size() > 0) {
             // DB에서 조회한 결과물이 있을 경우
             for (MemberVO Showvo : showCollectionAll) {
                 JSONObject jsonObj = new JSONObject();
                 jsonObj.put("name", Showvo.getName());
                 jsonObj.put("profile_image", Showvo.getProfile_image());
-                jsonObj.put("total_count", Showvo.getTotal_count());
+                jsonObj.put("count_user_id_like", Showvo.getCount_user_id_like());
+                jsonObj.put("count_user_id_collection", Showvo.getCount_user_id_collection());
+                jsonObj.put("user_id", Showvo.getUser_id());
+      
+                posterArr.put(Showvo.getPoster());
                 
-
                 jsonArr.put(jsonObj);
             }
         }
 
-        JSONObject jsonRes = new JSONObject();
+        jsonRes.put("poster", posterArr);
         jsonRes.put("totalCollectionCount", total_count_Collection);
         jsonRes.put("Collection_list", jsonArr);
 

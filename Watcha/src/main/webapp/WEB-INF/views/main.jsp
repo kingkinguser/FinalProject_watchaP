@@ -86,33 +86,6 @@
     font-size: 13pt;
   }
   
-  .Main-card2 {
-  	border: none;
-  	height: 350px;
-  }
-  
-  .Main-card-header2 {
-  	height: 200px;
-  	padding: 0 10px;
-  }
-  
-  .Main-card-header2 > img {  	
-  	height: 200px;
-  }
-  
-  .Main-card-body2 {
-  	padding: 10px 10px 0 10px;
-  	height: 100px;
-  	font-size: 11pt;
-  	color: black;
-  }
-  
-  .Main-card-body2 > h5{
-  	overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    font-size: 13pt;
-  }
   
   .Main-card-body3 > h5 {
   	font-size: 13pt;
@@ -224,16 +197,6 @@
 	/* ////////////////////////////////////////////////////// */
 
 
-	
-/* 	img.card-size {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 100%;
-    height: 100%;
-    }  */
-	
 
 </style>
 
@@ -288,58 +251,10 @@ function Carousel(){
     	  ]
     	});	
     
-    
-    $('.main-carousel-card2').slick({
-  	  dots: false,     /* 밑에 점으로 표시되는것  */
-  	  infinite: false,  /* 반복할것인지 파악하기 */
-  	  speed: 300,		/* 슬라이드 스피드 */
-  	  slidesToShow: 6,	/* 몇개씩 보여줄것인지 파악 */
-  	  slidesToScroll: 6,	/* 몇개씩 넘길것인지 파악 */
-  	  responsive: [
-  	    {
-  	      breakpoint: 1024,		/* 사이즈가 1024 보다 작으면 시작 */
-  	      settings: {  
-    	        dots: false,
-    	        infinite: false,  
-  	    	slidesToShow: 5,
-  	        slidesToScroll: 5
-  	      }
-  	    },
-  	    {
-  	      breakpoint: 768,
-  	      settings: {
-  	    	dots: false,
-      	    infinite: false,   
-  	        slidesToShow: 3,
-  	        slidesToScroll: 3
-  	      }
-  	    }
-
-  	  ]
-  	});	
-    
-    
+ 
+   
 
 }
-
-<%-- // 평점 순위 일때 
-function StarRank() {
-	$.ajax({
-		url:"<%= ctxPath%>/view/main.action",
-		method:"GET",
-		success:function(){
-			console.log("안녕");
-		},
-		error: function(request, status, error){
-            alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
-        }
-		
-		
-		
-	});
-}
- --%>
-
 
 </script>
 
@@ -373,34 +288,6 @@ function StarRank() {
 		</div>
 	</div>	
 	    
-	
-	
-	<h5 class="h5 main-h5 main-h5-2">보고싶어요 순위</h5>
-   	 <div class="container my-3">
-
-		<div class="card-deck main-carousel-card mb-1">
-		  
-		 <c:forEach var="seeRankvo" items="${requestScope.seeRankvo}" varStatus="status">
-		  
-			  <a href = "<%= ctxPath%>/view/project_detail.action?movie_id=${seeRankvo.movie_id}" title="${seeRankvo.movie_title}" class="Main-a">
-				  <div class="Main-card">
-				  	<div class="Main-card-header">
-				    	<img src="https://image.tmdb.org/t/p/w500/${seeRankvo.poster_path}" class="card-img-top" alt="...">
-				    </div>
-				    <div class="main-number">${status.index + 1}</div>
-				    <div class="Main-card-body Main-card-in-no">
-				      <h5 class="card-title card-font" >${seeRankvo.movie_title}</h5>
-				      <p style="margin: 0;"><span class="text-muted">개봉일자 : ${seeRankvo.release_date}</span></p>
-				      <p style="margin: 0;"><span class="text-muted">언어 : ${seeRankvo.original_language}</span></p>
-				      <p><span class="text-muted">평균★<span id="">${seeRankvo.rating_avg}</span></span></p>
-				    </div>
-				  </div>
-			  </a> 
-		  </c:forEach>
-		  
-		</div>
-	</div>	  
-	
 	<h5 class="h5 main-h5 main-h5-3">한줄평 많은 순위</h5>
    	<div class="container my-3">
 
@@ -427,28 +314,6 @@ function StarRank() {
 		</div>
 	</div>	
 	
-	<%-- 광고 부분 --%>	   
-	<div style="margin: 30px 0 ;">
-		<div style="max-width: 60%; margin: 0px auto; text-align: left; border: solid 1px black;">
-			<section>
-				<div class="main-ad-div">
-					<a href="https://www.frombio.co.kr/product/detail.html?product_no=797&cate_no=101&display_group=1&utm_source=watcha&utm_medium=da&utm_campaign=100deal&browser_open_type=external">
-						<img src="<%= ctxPath%>/resources/images/광고.png" style="width: 100%; height: 100%;">	
-					</a>
-					<div class="centered-container">
-					  <a href="https://www.frombio.co.kr/product/detail.html?product_no=797&cate_no=101&display_group=1&utm_source=watcha&utm_medium=da&utm_campaign=100deal&browser_open_type=external" style="padding: 5%">
-					    <span class="main-ad-span">프롬바이오 100원 딜!</span>
-					    <span class="main-ad-span">오직 여디서만,</span>
-					    <span class="main-ad-span">건강즙이 100원</span>
-					    <img src="<%= ctxPath%>/resources/images/광고1.png">
-					    <button type="button" class="btn btn-danger main-ad-btn">구매하기</button>
-					  </a>
-					</div>
-
-				</div>
-			</section>
-		</div>
-	</div>
 	
 	<%-- 다시 캐러셀 --%>
 	<!-- 로그인을 하고 평가를 1개라도 했을때   -->
@@ -461,16 +326,16 @@ function StarRank() {
 	   	
 	   	 <div class="container my-3">
 	
-			<div class="card-deck main-carousel-card2 mb-1">
+			<div class="card-deck main-carousel-card mb-1">
 			  
 			  <c:forEach var="movie" items="${requestScope.starRatings}" varStatus="status">
 		        <a href="<%= ctxPath%>/view/project_detail.action?movie_id=${movie.movie_id}" title="${movie.movie_title}" class="Main-a">
-		            <div class="Main-card2">
-		                <div class="Main-card-header2">
+		            <div class="Main-card">
+		                <div class="Main-card-header">
 		                    <img src="https://image.tmdb.org/t/p/w500/${movie.poster_path}" class="card-img-top" alt="...">
 		                </div>
-		                <div class="main-number">${status.index + 1}</div>
-		                <div class="Main-card-body2 Main-card-in-no">
+		                
+		                <div class="Main-card-body Main-card-in-no" style="bottom: 0px;">
 		                    <h5 class="card-title card-font">${movie.movie_title}</h5>
 		                    <p style="margin: 0;"><span class="text-muted">개봉일자: ${movie.release_date}</span></p>
 		                    <p style="margin: 0;"><span class="text-muted">언어 : ${movie.original_language}</span></p>
@@ -498,16 +363,16 @@ function StarRank() {
 	   	
 	   	 <div class="container my-3">
 	
-			<div class="card-deck main-carousel-card2 mb-1">
+			<div class="card-deck main-carousel-card mb-1">
 			  
 			  <c:forEach var="actorCheckFinal" items="${requestScope.actorCheckFinal}" varStatus="status">
 		        <a href="<%= ctxPath%>/view/project_detail.action?movie_id=${actorCheckFinal.movie_id}" title="${actorCheckFinal.movie_title}" class="Main-a">
-		            <div class="Main-card2">
-		                <div class="Main-card-header2">
+		            <div class="Main-card">
+		                <div class="Main-card-header">
 		                    <img src="https://image.tmdb.org/t/p/w500/${actorCheckFinal.poster_path}" class="card-img-top" alt="...">
 		                </div>
-		                <div class="main-number">${status.index + 1}</div>
-		                <div class="Main-card-body2 Main-card-in-no">
+		               
+		                <div class="Main-card-body Main-card-in-no" style="bottom: 0px;">
 		                    <h5 class="card-title card-font">${actorCheckFinal.movie_title}</h5>
 		                    <p style="margin: 0;"><span class="text-muted">개봉일자: ${actorCheckFinal.release_date}</span></p>
 		                    <p style="margin: 0;"><span class="text-muted">언어 : ${actorCheckFinal.original_language}</span></p>
@@ -524,6 +389,33 @@ function StarRank() {
 	</c:if>
 	
 	
+	
+	<%-- 광고 부분 --%>	   
+	<div style="margin: 30px 0 ;">
+		<div style="max-width: 60%; margin: 0px auto; text-align: left; border: solid 1px black;">
+			<section>
+				<div class="main-ad-div">
+					<a href="https://www.frombio.co.kr/product/detail.html?product_no=797&cate_no=101&display_group=1&utm_source=watcha&utm_medium=da&utm_campaign=100deal&browser_open_type=external">
+						<img src="<%= ctxPath%>/resources/images/광고.png" style="width: 100%; height: 100%;">	
+					</a>
+					<div class="centered-container">
+					  <a href="https://www.frombio.co.kr/product/detail.html?product_no=797&cate_no=101&display_group=1&utm_source=watcha&utm_medium=da&utm_campaign=100deal&browser_open_type=external" style="padding: 5%">
+					    <span class="main-ad-span">프롬바이오 100원 딜!</span>
+					    <span class="main-ad-span">오직 여디서만,</span>
+					    <span class="main-ad-span">건강즙이 100원</span>
+					    <img src="<%= ctxPath%>/resources/images/광고1.png">
+					    <button type="button" class="btn btn-danger main-ad-btn">구매하기</button>
+					  </a>
+					</div>
+
+				</div>
+			</section>
+		</div>
+	</div>
+	
+	
+	
+	
 	<!-- 로그인을 했을때 그리고 평가를 하나라도 했을때   -->
 	<c:if test="${not empty login_userid and not empty requestScope.actorCheck}">
 		<h5 class="h5 main-h5 main-h5-3 mt-5">${login_username} 회원님이 많이 보신 
@@ -533,16 +425,16 @@ function StarRank() {
 		</h5>
 	   	 <div class="container my-3">
 	
-			<div class="card-deck main-carousel-card2 mb-1">
+			<div class="card-deck main-carousel-card mb-1">
 			  
 			  <c:forEach var="starRating22" items="${requestScope.starRating22}" varStatus="status">
 		        <a href="<%= ctxPath%>/view/project_detail.action?movie_id=${starRating22.movie_id}" title="${starRating22.movie_title}" class="Main-a">
-		            <div class="Main-card2">
-		                <div class="Main-card-header2">
+		            <div class="Main-card">
+		                <div class="Main-card-header">
 		                    <img src="https://image.tmdb.org/t/p/w500/${starRating22.poster_path}" class="card-img-top" alt="...">
 		                </div>
 		                <div class="main-number">${status.index + 1}</div>
-		                <div class="Main-card-body2 Main-card-in-no">
+		                <div class="Main-card-body Main-card-in-no">
 		                    <h5 class="card-title card-font">${starRating22.movie_title}</h5>
 		                    <p style="margin: 0;"><span class="text-muted">개봉일자: ${starRating22.release_date}</span></p>
 		                    <p style="margin: 0;"><span class="text-muted">언어 : ${starRating22.original_language}</span></p>
@@ -566,16 +458,16 @@ function StarRank() {
 		</h5>
 	   	 <div class="container my-3">
 	
-			<div class="card-deck main-carousel-card2 mb-1">
+			<div class="card-deck main-carousel-card mb-1">
 			  
 			  <c:forEach var="starRating22" items="${requestScope.starRating22}" varStatus="status">
 		        <a href="<%= ctxPath%>/view/project_detail.action?movie_id=${starRating22.movie_id}" title="${starRating22.movie_title}" class="Main-a">
-		            <div class="Main-card2">
-		                <div class="Main-card-header2">
+		            <div class="Main-card">
+		                <div class="Main-card-header">
 		                    <img src="https://image.tmdb.org/t/p/w500/${starRating22.poster_path}" class="card-img-top" alt="...">
 		                </div>
 		                <div class="main-number">${status.index + 1}</div>
-		                <div class="Main-card-body2 Main-card-in-no">
+		                <div class="Main-card-body Main-card-in-no">
 		                    <h5 class="card-title card-font">${starRating22.movie_title}</h5>
 		                    <p style="margin: 0;"><span class="text-muted">개봉일자: ${starRating22.release_date}</span></p>
 		                    <p style="margin: 0;"><span class="text-muted">언어 : ${starRating22.original_language}</span></p>
@@ -596,16 +488,15 @@ function StarRank() {
 		<h5 class="h5 main-h5 main-h5-3 mt-5">${login_username} 회원님의 컬렉션</h5>
 	   	 <div class="container my-3">
 	
-			<div class="card-deck main-carousel-card2 mb-1">
+			<div class="card-deck main-carousel-card mb-1">
 			  
 			  <c:forEach var="usercol" items="${requestScope.usercol}" varStatus="status">
 		        <a href="<%= ctxPath%>/view/project_detail.action?movie_id=${usercol.movie_id}" title="${usercol.movie_title}" class="Main-a">
-		            <div class="Main-card2">
-		                <div class="Main-card-header2">
+		            <div class="Main-card">
+		                <div class="Main-card-header">
 		                    <img src="https://image.tmdb.org/t/p/w500/${usercol.poster_path}" class="card-img-top" alt="...">
 		                </div>
-		                <div class="main-number">${status.index + 1}</div>
-		                <div class="Main-card-body2 Main-card-in-no">
+		                <div class="Main-card-body Main-card-in-no" style="bottom: 0px;">
 		                    <h5 class="card-title card-font">${usercol.movie_title}</h5>
 		                    <p style="margin: 0;"><span class="text-muted">개봉일자: ${usercol.release_date}</span></p>
 		                    <p style="margin: 0;"><span class="text-muted">언어 : ${usercol.original_language}</span></p>
@@ -625,16 +516,15 @@ function StarRank() {
 		<h5 class="h5 main-h5 main-h5-3 mt-5">포함된 영화가 가장 많은 컬렉션 </h5>
 	   	 <div class="container my-3">
 	
-			<div class="card-deck main-carousel-card2 mb-1">
+			<div class="card-deck main-carousel-card mb-1">
 			  
 			  <c:forEach var="collection" items="${requestScope.collection}" varStatus="status">
 		        <a href="<%= ctxPath%>/view/project_detail.action?movie_id=${collection.movie_id}" title="${collection.movie_title}" class="Main-a">
-		            <div class="Main-card2">
-		                <div class="Main-card-header2">
+		            <div class="Main-card">
+		                <div class="Main-card-header">
 		                    <img src="https://image.tmdb.org/t/p/w500/${collection.poster_path}" class="card-img-top" alt="...">
-		                </div>
-		                <div class="main-number">${status.index + 1}</div>
-		                <div class="Main-card-body2 Main-card-in-no">
+		                </div>		               
+		                <div class="Main-card-body Main-card-in-no" style="bottom: 0px;">
 		                    <h5 class="card-title card-font">${collection.movie_title}</h5>
 		                    <p style="margin: 0;"><span class="text-muted">개봉일자: ${collection.release_date}</span></p>
 		                    <p style="margin: 0;"><span class="text-muted">언어 : ${collection.original_language}</span></p>
@@ -649,13 +539,15 @@ function StarRank() {
 		</div>	
 	</c:if>
 	
-		    
+    <c:set var="sessionId" value="${sessionScope.loginuser.user_id}" />
+	<c:out value="${sessionId}+sdjkbnfgkjasdng" />
 	
 	<h5 class="h5 main-h5 main-h5-3">왓챠피디아 회원들의 컬렉션</h5>
    	 <div class="container my-3">
 
-		<div class="card-deck main-carousel-card mb-5">
+		<div class="card-deck main-carousel-card mb-5">		
 		  <c:forEach var="finduser" items="${requestScope.finduser}" varStatus="status">
+		  	  <c:if test="${sessionId != finduser.user_id}">
 			   <c:set var="mergedCollectionIndex" value="${status.index}" />
 			      <form id="form${mergedCollectionIndex}" action="<%= ctxPath%>/view/user_collection.action" method="post">
 			        <input type="hidden" name="user_id" value="${finduser.user_id}">
@@ -669,14 +561,14 @@ function StarRank() {
 				 				    		<img src="https://image.tmdb.org/t/p/w500/${requestScope.mergedCollectionFinal[mergedCollectionIndex][0].poster_path}" class="card-img-top card-img-top-fin" alt="...">
 										</c:if>
 										<c:if  test="${empty requestScope.mergedCollectionFinal[mergedCollectionIndex][0].poster_path}">		
-				 				    		<img src="<%= ctxPath%>/resources/images/왓챠피디아NULL.png" class="card-img-top card-img-top-fin" alt="...">
+				 				    		<img src="<%= ctxPath%>/resources/images/왓챠컬렉션로고.png" class="card-img-top card-img-top-fin" alt="...">
 										</c:if>
 										
 										<c:if  test="${not empty requestScope.mergedCollectionFinal[mergedCollectionIndex][1].poster_path}">		
 				 				    		<img src="https://image.tmdb.org/t/p/w500/${requestScope.mergedCollectionFinal[mergedCollectionIndex][1].poster_path}" class="card-img-top card-img-top-fin" alt="...">
 										</c:if>
 										<c:if  test="${empty requestScope.mergedCollectionFinal[mergedCollectionIndex][1].poster_path}">		
-				 				    		<img src="<%= ctxPath%>/resources/images/왓챠피디아NULL.png" class="card-img-top card-img-top-fin" alt="...">
+				 				    		<img src="<%= ctxPath%>/resources/images/왓챠컬렉션로고.png" class="card-img-top card-img-top-fin" alt="...">
 										</c:if>
 					                	
 			 						 
@@ -687,26 +579,27 @@ function StarRank() {
 				 				    		<img src="https://image.tmdb.org/t/p/w500/${requestScope.mergedCollectionFinal[mergedCollectionIndex][2].poster_path}" class="card-img-top card-img-top-fin" alt="...">
 										</c:if>
 										<c:if  test="${empty requestScope.mergedCollectionFinal[mergedCollectionIndex][2].poster_path}">		
-				 				    		<img src="<%= ctxPath%>/resources/images/왓챠피디아NULL.png" class="card-img-top card-img-top-fin" alt="...">
+				 				    		<img src="<%= ctxPath%>/resources/images/왓챠컬렉션로고.png" class="card-img-top card-img-top-fin" alt="...">
 										</c:if>
 										
 										<c:if  test="${not empty requestScope.mergedCollectionFinal[mergedCollectionIndex][3].poster_path}">		
 				 				    		<img src="https://image.tmdb.org/t/p/w500/${requestScope.mergedCollectionFinal[mergedCollectionIndex][3].poster_path}" class="card-img-top card-img-top-fin" alt="...">
 										</c:if>
 										<c:if  test="${empty requestScope.mergedCollectionFinal[mergedCollectionIndex][3].poster_path}">		
-				 				    		<img src="<%= ctxPath%>/resources/images/왓챠피디아NULL.png" class="card-img-top card-img-top-fin" alt="...">
+				 				    		<img src="<%= ctxPath%>/resources/images/왓챠컬렉션로고.png" class="card-img-top card-img-top-fin" alt="...">
 										</c:if>
 	  						
 							    </div>
 						    </div>			 
 						    <div class="Main-card-body3">
 						     <c:forEach var="member" items="${finduser.member}">
-						        <h5 class="card-title card-font">&quot;${member.name}&quot;<br>님의 컬렉션</h5>
+						        	<h5 class="card-title card-font" style="text-align: center; font-weight: bold;"><span style="color: #FF0558;">"</span>${member.name}<span style="color: #FF0558;">"</span>님의 컬렉션</h5>
 						    </c:forEach>
 						    </div>
 						  </div>
 					  </a>
-				 </form>	  
+				 </form>  
+				 </c:if>
 		  </c:forEach>
 		  
 		</div>

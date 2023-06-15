@@ -51,6 +51,7 @@
 	}
 	
 	.SMD {
+		margin-top: 10px;
 		height: 90px;
   		padding: 0;
   		display: flex; 		
@@ -71,7 +72,7 @@
 	}
 	
 	.MvTitle {
-		padding-top: 3%;
+		margin-top: 32px;
 		color: black;
 	}
 	
@@ -84,7 +85,7 @@
 	}
 	
 	
-	@media (min-width: 860px) {
+	@media (min-width: 760px) {
 		.SMDLi {
 			width: 50%;
 			float: left;
@@ -93,12 +94,24 @@
 		}
 	}
 
-	@media (max-width: 860px) {
+	@media (max-width: 760px) {
 		.SMDLi {
 			width: 100%;
 			padding: 8px 5px;
 		}
 	}
+	
+	
+	/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+	
+	#poster_part{
+	    position: relative;
+	    background-color : black;   
+	    border-radius: 8px;
+	    overflow: hidden;
+	}
+	
+	
 
 </style>
 
@@ -148,7 +161,7 @@
 		
 		/* 유저 눌렀을때 */
 		$("button#User").click(function(){
-			SearchCollection();
+			SearchUser();
 		});
 	
 	});
@@ -170,20 +183,22 @@
 			async:true,			
 			success:function(json) {
 
+				
 				var responseData = JSON.parse(json.jsonResponse);
 				var count = responseData.Collection_list.length;				
 				
 				var total_count = responseData.totalCollectionCount; 
 				$("span#totalCollectionCount").text(total_count);
 				$("span#total_mv_count").text(total_count);
-
-				let html = "";
 				
+				
+				let html = '';
+								
 				if(start == "1" && count == 0) {  // 배열이기 때문에 json == null 로 하면 절대로 안된다. 
 					// 처음부터 데이터가 존재하지 않는 경우 				
 					html += "<div style='text-align: center; padding: 100px 0;' class='h4'>" + 
 					           "<p style='margin-bottom: 40px;'><i class='fa-solid fa-question fa-2xl' style='color: #9a9da2;'></i></p>" + 
-					           "<p>유저 정보가 없습니다.</p>" + 					            
+					           "<p>컬렉션 정보가 없습니다.</p>" + 					            
 					        "<div>";
 				
 
@@ -195,17 +210,49 @@
 				else if (count > 0) {
 					// 데이터가 존재하는 경우 
 					responseData.Collection_list.forEach(function(item, index, array) {
-						html +=  '<li class = "SMDLi">'+ 
-			                        '<div class="SMD">'+
-			                        '<img src="' + (item.profile_image ? "<%= ctxPath%>/resources/images/" + item.profile_image : "<%= ctxPath%>/resources/images/프로필없음.jpg") + '" class="card-img-top" alt="...">'+
-			                          '<div class = "MvTitle">'+
-			                             '<p class="TitleM">' + item.name + '</p>'+
-			                             '<p class="colorChange">평가 개수 : ' + item.total_count + '</p>'+
-			                          '</div>' +
-									'</div>'  +
-								'</li>' 
-						});
+					    var user_id = item.user_id;
 
+						
+						html += '<li class="SMDLi">' +
+						'<a href="#" title="" class="Main-a" onclick="event.preventDefault(); document.getElementById(\'form' + index + '\').submit()">' +
+							           			 '<div id="poster_part">' +
+				                         			 '<div style="display: flex;">'; 
+				                          	
+				             /* 포스터 부분 반복  */  
+                  			responseData.poster[index].slice(0, 3).forEach(function(posterUrl) {
+                  			    var resultCount = responseData.poster[index].length;
+                  			    var widthStyle = '';
+
+                  			    if (resultCount === 3) {
+                  			        widthStyle = 'width: 33.33%;';
+                  			    } else if (resultCount === 2) {
+                  			        widthStyle = 'width: 50%;';
+                  			    } else if (resultCount === 1) {
+                  			        widthStyle = 'width: 100%; padding: 0px 116px';
+                  			    }
+
+                  			    html += '<div class="poster-item" style="display: flex; ' + widthStyle + '">' +
+                  			                '<div style="height: 300px; width:100%;">' +
+                  			                    '<img src="https://image.tmdb.org/t/p/w500' + posterUrl + '" alt="포스터 이미지" style="height: 100%; width: 100%;"/>' +
+                  			                '</div>' +
+                  			            '</div>';
+                  			});
+
+						html +=  		'</div>' + 
+	                       	 		  '</div>' + 
+							
+							 '<div class="SMD">' +
+						            '<img src="' + (item.profile_image ? "<%= ctxPath %>/resources/images/" + item.profile_image : "<%= ctxPath %>/resources/images/프로필없음.jpg") + '" class="card-img-top" alt="..." style="border: solid 1px black;"/>' +
+						            '<div class="MvTitle">' +
+						              '<p class="TitleM"><span> " </span>' + item.name + '<span> " 님의 컬렉션</span></p>' +
+						            '</div>' +
+						          '</div>' +
+						        '</a>' +
+						      '</li>' +
+						      '<form id="form' + index + '" action="<%= ctxPath %>/view/user_collection.action" method="post">' +
+						        '<input type="hidden" name="user_id" value="' + user_id + '">' +
+						    '</form>';
+						});
 						
 							
 					$("ul#displayCollection").append(html);		 // append 를 쓰면 기존거 + 새로운거 html 을 쓰면 기존꺼는 없애고 새로운것만 나타남
@@ -284,10 +331,10 @@
 		
 		const searchText = $('input#lastSearchWord').val();
 		
-		const FrmMovieSearchCollection = document.FrmMovieSearchDetail;
-		FrmMovieSearchCollection.action="<%=ctxPath%>/goSearchUser.action";     /* // action 인것 바꾸기 */ 
-		FrmMovieSearchCollection.method="get";
-		FrmMovieSearchCollection.submit();	
+		const FrmMovieSearchUser = document.FrmMovieSearchDetail;
+		FrmMovieSearchUser.action="<%=ctxPath%>/goSearchUser.action";     /* // action 인것 바꾸기 */ 
+		FrmMovieSearchUser.method="get";
+		FrmMovieSearchUser.submit();	
 		
 	}
 	
