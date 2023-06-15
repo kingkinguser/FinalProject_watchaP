@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +15,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -57,6 +57,10 @@ public class CommunityController {
 	@Autowired
 	private InterCommunityService service;
 
+	@Autowired
+    private SimpMessagingTemplate messagingTemplate;
+	
+	
 
 	@GetMapping(value = {"", "/"})
 	public String communityMain(Model model, @RequestParam(required = false) Map<String, String> paraMap ) {
@@ -117,12 +121,21 @@ public class CommunityController {
 	
 	//게시판 댓글 작성
 	@PostMapping("/comment")
-	public ResponseEntity<?> createPostComment(PostCommentVO postComment){
+	public ResponseEntity<?> createPostComment(PostCommentVO postComment, HttpSession session){
 		Map<String, Object> map = service.createPostComment(postComment);
 		
 		
 		if (map != null ) {
+			MemberVO loginuser = (MemberVO)session.getAttribute("loginuser");
+			PostVO post = service.getPostUserId(postComment.getPostId());
+			if(!loginuser.getUser_id().equals(post.getUserId())) {
+				AlarmVO alarm = new AlarmVO("postUserId", "작성하신 게시글 '" + post.getTitle() + "'에 댓글이 달렸습니다.", "info", "/watcha/community/" + post.getPostId());
+				Gson gson = new Gson();
+				messagingTemplate.convertAndSend("/topic/"+ post.getUserId() + "/infomsg", gson.toJson(alarm));
+			}
+			
 			return ResponseEntity.ok(map);
+			
 		} else {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("게시글 작성 실패");
 		}
@@ -331,7 +344,8 @@ public class CommunityController {
 	}
 	
 
-
+	
+	
 		     
 	
 	

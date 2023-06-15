@@ -7,9 +7,6 @@
 
 
 
-<head>
-
-
 <%-- <link rel="icon" href="<%=ctxPath%>/images/파비콘.ico"> --%>
 
 
@@ -153,8 +150,7 @@
 	
 </script>
 
-</head>
-<body>
+
 
 	<!-- Modal -->
 									
@@ -551,6 +547,3 @@
 			</div>
 		</div>	
 	</div>	
-
-</body>
-</html>

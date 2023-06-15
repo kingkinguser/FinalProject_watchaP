@@ -2,16 +2,6 @@
     pageEncoding="UTF-8"%>
 <% String ctxPath = request.getContextPath(); %>   
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"  %>
- 
- 
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>커뮤니티</title>
-
-
 <link rel="stylesheet" href="<%= ctxPath%>/resources/css/nice-select.css" type="text/css">
 
 <link rel="stylesheet" type="text/css" href="<%= ctxPath%>/resources/bootstrap-4.6.0-dist/css/bootstrap.min.css" > 
@@ -24,13 +14,13 @@
 <script src="https://cdn.jsdelivr.net/npm/dayjs@1.10.4/dayjs.min.js"></script>
 
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js"></script>
+
+
 
 
 
 <link rel="stylesheet" href="<%= ctxPath%>/resources/css/community.css" type="text/css">
-
+<link rel="stylesheet" type="text/css" href="<%= ctxPath%>/resources/css/toastr.min.css" />
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <style>
@@ -835,8 +825,8 @@ function loginCheck() {
 
 </script>
 
-</head>
-<body>
+
+
 
 <c:set var="currentPage" value="${param.page }" />
 <c:set var="searchType" value="${param.searchType }" />
@@ -1283,9 +1273,4 @@ function loginCheck() {
 		</div>
 	</div>
 
-</body>
-
-
-
-</html>
 
