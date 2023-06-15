@@ -94,6 +94,14 @@
 		margin-top: 20px;
 		border-radius: 10px 10px;
 	}
+
+	div#rating{
+		border: solid 1.5px #b3b3b3;
+		width: 100%;
+		display: inline-block;
+		margin-top: 20px;
+		border-radius: 10px 10px;
+	}
 	
 	/*평가하기 시작*/
     .rate { display: inline-block;border: 0;margin-right: 15px;}
@@ -488,10 +496,15 @@
 		 
 		</div>
 
-		<div id="Comment">
+		<div id="rating">
 		
 			<h4 style="margin: 20px 0 0 30px; font-weight: bolder; ">별점차트</h4>
       		
+      		   <c:if test="${requestScope.movieDetail.rating_count ne 0}">
+			     <h5 style="font-weight: 600; text-align: center; padding: 0px 30px;">별점 평균 <span style="color: #ff0558;">★${requestScope.movieDetail.rating_avg}</span>&nbsp;(<span style="color: #ff0558;">${requestScope.movieDetail.rating_count}명</span>의 평가)</h5>
+			   </c:if>
+			   
+			   <div id="div_rating" style="width: 80%; padding: 0px 30px; margin: auto;"></div>
       		
 		</div>
 		
