@@ -378,4 +378,11 @@ public class WatchaService implements InterWatchaService {
 		return moviesByGenreList;
 	}
 
+	// 유저들의 별점평가 차트 데이터 가져오기
+	@Override
+	public Map<String, String> userRating(String movie_id) {
+		Map<String, String> userRating = dao.userRating(movie_id);
+		return userRating;
+	}
+
 }

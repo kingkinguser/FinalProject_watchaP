@@ -39,6 +39,7 @@
 <style>
   @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap');
   @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Gasoek+One&display=swap');
 </style>
 
 <style type="text/css">
@@ -130,7 +131,7 @@ a, a:hover, .fc-daygrid {color: #000; text-decoration: none; background-color: t
 		$("div#mycontent").css('background-color','#f8f8f8');
 		
  		myReviewPaging(1); // 회원의 전체 한줄평 보여주기
- 		showPreference(); // 회원의 선호장르(하이차트) 보여주기
+ 		showPreferenceChart(); // 회원의 선호장르(하이차트) 보여주기
  		
 		$('.carousel').carousel({
 			interval: 10000
@@ -308,6 +309,7 @@ a, a:hover, .fc-daygrid {color: #000; text-decoration: none; background-color: t
  	    	}
  	    });
  	    
+
  		// 검색하기 - 검색어를 입력후 엔터할 때
  		$("input#searchWord").keyup(function(e){
  			if(e.keyCode == 13){
@@ -597,7 +599,7 @@ a, a:hover, .fc-daygrid {color: #000; text-decoration: none; background-color: t
 	} // end of function searchResult()
 	
 	// 하이차트 - 선호하는 장르(wordcloud)
-	function showPreference(){
+	function showPreferenceChart(){
 		// 로그인한 회원이 평가한 영화 중 선호하는 장르에 대한 DB 데이터 가져오기
 		// 전체 평가한 영화 중 별점 3점 이상인 영화들의 장르(드라마,액션,SF,...)를 알아오고 별점별로 장르에 점수를 매겨서 가장 점수가 높은 장르를 가져온다.
 		// [예제] 별점3인 영화(드라마,액션)이면 드라마3, 액션3 && 별점5인 영화(드라마,로맨스)이면 드라마5, 로맨스5 ==> 합산 드라마8 액션3 로맨스5
@@ -627,10 +629,20 @@ a, a:hover, .fc-daygrid {color: #000; text-decoration: none; background-color: t
 			                '<div>{viewTableButton}</div>'
 				        }
 				    },
+				    chart: {
+			        	style: {
+						    fontFamily: 'Noto Sans KR',
+							fontWeight:'400'
+						},
+				    },
 				    series: [{
 				        type: 'wordcloud',
 				        data: genreArr,
-				        name: '장르별 선호도'
+				        name: '장르별 선호도',
+			        	style: {
+						    fontFamily: 'Gasoek One',
+							fontWeight:'400'
+						}
 				    }],
 				    title: {
 				        text: ''
@@ -640,7 +652,8 @@ a, a:hover, .fc-daygrid {color: #000; text-decoration: none; background-color: t
 				    }	            
 				});
 				///////////////////////////////////////////////////////////////////////////////////
-				$("div.highcharts-data-table").hide();
+				$("g.highcharts-exporting-group").empty();
+				$(".highcharts-credits").empty();
 				
 				let html =  "<table id='table_preference' class='mx-auto text-center my-2'>"
 						 +    "<tr><th colspan='5' class='h5 text-center py-3'>장르별 선호도 순위</th></tr>"
@@ -663,7 +676,7 @@ a, a:hover, .fc-daygrid {color: #000; text-decoration: none; background-color: t
             	alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
             }				
 		});		
-	} // end of function showPreference()
+	} // end of function showPreferenceChart()
 	
 </script>
 

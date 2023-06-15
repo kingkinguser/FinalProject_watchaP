@@ -20,6 +20,12 @@
   <%-- *** ajax로 파일을 업로드할때 가장 널리 사용하는 방법 ==> ajaxForm *** --%>
   <script type="text/javascript" src="<%= ctxPath%>/resources/js/jquery.form.min.js"></script>
 
+  <%-- 하이차트(선호장르) --%>
+  <script src="<%= ctxPath %>/resources/Highcharts-10.3.1/code/highcharts.js"></script>
+  <script src="<%= ctxPath %>/resources/Highcharts-10.3.1/code/modules/exporting.js"></script>
+  <script src="<%= ctxPath %>/resources/Highcharts-10.3.1/code/modules/export-data.js"></script>
+  <script src="<%= ctxPath %>/resources/Highcharts-10.3.1/code/modules/accessibility.js"></script>
+
 <style>
   @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap');
   @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
@@ -27,7 +33,7 @@
 
 <style type="text/css">
 <%-- 유저한줄평 --%>
-div#userReview {font-family: 'Noto Sans KR', sans-serif; cursor: default;}
+div#userReview, div#rating {font-family: 'Noto Sans KR', sans-serif; cursor: default;}
 img#img_profile {width: 40px; height: 40px; box-sizing: inherit; border:solid 1px #e6e6e6; border-radius: 50%; box-shadow: 1px 1px 1px #cccccc; margin: 0 6px;}
 p.movieRate{width: 40%; height: 30px; border: solid 1px #e6e6e6; border-radius: 20%/40%; padding: 0 10px; margin: 5px; background-color: #ffffff;}
 
@@ -36,7 +42,7 @@ div#registerReview{font-family: 'Noto Sans KR', sans-serif; cursor: default;}
 div#editReview{font-family: 'Noto Sans KR', sans-serif; cursor: default;}
 .modal-body textarea:focus,
 .modal-body input:focus {outline: none;}
-.fa-face-meh:hover{cursor: pointer;}	
+.fa-face-meh:hover{cursor: pointer;}
 </style>
 
 <script>
@@ -44,7 +50,8 @@ div#editReview{font-family: 'Noto Sans KR', sans-serif; cursor: default;}
 	$(document).ready(function(){
 		
 		userReview(); // 영화별 유저들 한줄평 (카드 캐러셀, Ajax) 보여주는 함수 호출
-		
+		showRatingChart(); // 하이차트 - 특정 영화에 대한 유저들의 평가 차트 보여주기
+
 		// 스포일러가 포함된 한줄평에서 "한줄평 보기" 버튼 클릭 시
 		$(document).on("click", "button.showContent", function(){
 			$(this).parent().css('display', 'none');
@@ -139,12 +146,13 @@ div#editReview{font-family: 'Noto Sans KR', sans-serif; cursor: default;}
 	            $.ajax({
 	              url:"<%= ctxPath%>/myWatcha/registerRating.action",
 	              data:{"movie_id":"${requestScope.movieDetail.movie_id}",
-	                   "user_id":"${sessionScope.loginuser.user_id}",
-	                   "rating":Number($(this).val())/2}, 
+	                    "user_id":"${sessionScope.loginuser.user_id}",
+	                    "rating":Number($(this).val())/2}, 
 	              type:"post",
 	              dataType:"json",
 	              success:function(json){
 	              //   console.log("확인용 : "+JSON.stringify(json));
+	  	    	  	showRatingChart(); // 하이차트 - 특정 영화에 대한 유저들의 평가 차트 보여주기
 	              },
 	              error: function(request, status, error){
 	                    alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
@@ -161,6 +169,7 @@ div#editReview{font-family: 'Noto Sans KR', sans-serif; cursor: default;}
 	              dataType:"json",
 	              success:function(json){
 	              //   console.log("확인용 : "+JSON.stringify(json));
+	  	    		showRatingChart(); // 하이차트 - 특정 영화에 대한 유저들의 평가 차트 보여주기
 	              },
 	              error: function(request, status, error){
 	                    alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
@@ -292,10 +301,107 @@ div#editReview{font-family: 'Noto Sans KR', sans-serif; cursor: default;}
 		});		
 	} // end of function userReview()
 	
+	// 하이차트 - 특정 영화에 대한 유저들의 평가 차트
+	function showRatingChart(){
+		$("div.highcharts-data-table").html('');
+
+		$.ajax({ 
+			url:"<%= ctxPath%>/myWatcha/showRatingChart.action",
+			data:{"movie_id":"${requestScope.movieDetail.movie_id}"},
+			dataType:"json",
+			success:function(json){
+			//	console.log(JSON.stringify(json));
+				if(Number(${requestScope.movieDetail.rating_count}) > 0){ // 해당 영화에 대한 유저들의 별점평가 데이터가 있는 경우
+
+					let pointArr = []; // 별점 항목(0.5~5)	
+					for(let i=1; i<=10; i++){
+						pointArr.push(Number(i/2));
+					}
+					
+					let ratingArr = [];
+					ratingArr.push(Number(json.point05));
+					ratingArr.push(Number(json.point10));
+					ratingArr.push(Number(json.point15));
+					ratingArr.push(Number(json.point20));
+					ratingArr.push(Number(json.point25));
+					ratingArr.push(Number(json.point30));
+					ratingArr.push(Number(json.point35));
+					ratingArr.push(Number(json.point40));
+					ratingArr.push(Number(json.point45));
+					ratingArr.push(Number(json.point50));
+					
+					///////////////////////////////////////////////////////////////////////////////////
+					Highcharts.chart('div_rating', {
+					    chart: {
+					        type: 'column',
+				        	style: {
+							    fontFamily: 'Noto Sans KR',
+								fontWeight:'400'
+							},
+					    },
+					    title: {
+					        text: ''
+					    },
+					    legend: {
+							floating: false
+					    },
+					    xAxis: {
+					        categories: ['', '1', '', '2', '', '3', '', '4', '', '5'],
+					        crosshair: true
+					    },
+					    yAxis: {
+					        title: '',
+					        labels: {
+					        	enabled: false,
+					        },
+					        gridLineWidth: 0
+					    },
+					    tooltip: {
+					    	enabled: false
+					    },
+					    plotOptions: {
+					        column: {
+					            pointPadding: 0.2,
+					            borderWidth: 0
+					        },
+					        dataLabels: {
+					        	enabled: false
+					        },
+						    series: {
+					              pointWidth: 60 
+				          	}
+					    },
+					    series: [{
+					        name: '별점평가',
+					        data: ratingArr,
+					        color: '#fdd346'
+					    }]
+					});
+					///////////////////////////////////////////////////////////////////////////////////
+					$("g.highcharts-exporting-group").empty();
+					$("g.highcharts-legend-item").empty();
+					$(".highcharts-credits").empty();
+				}
+				else { // 해당 영화에 대한 유저들의 별점평가 데이터가 없는 경우
+					let html = '<p class="h5 text-center my-3">${requestScope.movieDetail.movie_title} 에 대한 별점평가가 아직 없어요.</p>';
+					$("div#rating").html(html);
+				}
+			},
+			error: function(request, status, error){
+            	alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+            }				
+		});		
+	} // end of function showRatingChart()
+	
+	
 </script>
 
 <div class="container" style="padding: 0px;">
 	<div id="div_comment"></div>
+	<c:if test="${requestScope.movieDetail.rating_count ne 0}">
+	  <h5 style="font-weight: 600; text-align: center; padding: 0px 30px;">별점 평균 <span style="color: #ff0558;">★${requestScope.movieDetail.rating_avg}</span>&nbsp;(<span style="color: #ff0558;">${requestScope.movieDetail.rating_count}명</span>의 평가)</h5>
+	</c:if>
+	<div id="div_rating" style="width: 80%; padding: 0px 30px; margin: auto;"></div>
 </div>
 
 <%-- 한줄평 등록 모달창 --%>

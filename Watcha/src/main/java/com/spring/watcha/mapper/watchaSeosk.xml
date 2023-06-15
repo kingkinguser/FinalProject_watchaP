@@ -400,8 +400,8 @@
 		<result property="movie_title"   column="movie_title" 	javaType="String"/>
 		<result property="poster_path" 	 column="poster_path" 	javaType="String"/>
 		<result property="watching_date" column="watching_date" javaType="String"/>
-		<result property="photo_front" 	 column="photo_front" javaType="String"/>
-		<result property="phtoto_back" 	 column="phtoto_back" javaType="String"/>
+		<result property="photo_front" 	 column="photo_front" 	javaType="String"/>
+		<result property="phtoto_back" 	 column="phtoto_back" 	javaType="String"/>
 	</resultMap>
 	<select id="showMovieDiary" parameterType="String" resultMap="showMovieDiary_Map">
 		select diary_id, M.movie_id, movie_title, poster_path, watching_date, photo_front, photo_back
@@ -480,5 +480,33 @@
 	    ) C
 	    where C.rno between #{startRno} and #{endRno}
 	</select>
+	
+	<!-- 유저들의 별점평가 차트 데이터 가져오기 -->
+	<resultMap type="HashMap" id="userRating_Map">
+		<result property="point05" 	column="point05" javaType="String"/>
+		<result property="point10" 	column="point10" javaType="String"/>
+		<result property="point15"  column="point15" javaType="String"/>
+		<result property="point20" 	column="point20" javaType="String"/>
+		<result property="point25"  column="point25" javaType="String"/>
+		<result property="point30" 	column="point30" javaType="String"/>
+		<result property="point35"  column="point35" javaType="String"/>
+		<result property="point40" 	column="point40" javaType="String"/>
+		<result property="point45"  column="point45" javaType="String"/>
+		<result property="point50" 	column="point50" javaType="String"/>
+	</resultMap>
+	<select id="userRating" parameterType="String" resultMap="userRating_Map">
+	    select sum(decode(rating, 0.5, 1, 0)) AS "point05"
+	         , sum(decode(rating, 1, 1, 0))   AS "point10" 
+	         , sum(decode(rating, 1.5, 1, 0)) AS "point15" 
+	         , sum(decode(rating, 2, 1, 0))   AS "point20" 
+	         , sum(decode(rating, 2.5, 1, 0)) AS "point25" 
+	         , sum(decode(rating, 3, 1, 0))   AS "point30" 
+	         , sum(decode(rating, 3.5, 1, 0)) AS "point35" 
+	         , sum(decode(rating, 4, 1, 0))   AS "point40" 
+	         , sum(decode(rating, 4.5, 1, 0)) AS "point45" 
+	         , sum(decode(rating, 5, 1, 0))   AS "point50"
+	    from star_rating
+	    where movie_id = #{movie_id}
+    </select>
 	
 </mapper>

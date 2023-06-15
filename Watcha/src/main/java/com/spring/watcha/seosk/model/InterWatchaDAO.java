@@ -125,4 +125,7 @@ public interface InterWatchaDAO {
 	// 장르별 영화 - 10개씩 페이징 처리
 	List<Map<String, String>> moviesByGenrePaging(Map<String, String> paraMap);
 
+	// 유저들의 별점평가 차트 데이터 가져오기
+	Map<String, String> userRating(String movie_id);
+
 }

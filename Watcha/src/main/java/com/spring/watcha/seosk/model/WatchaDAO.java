@@ -4,7 +4,6 @@ import java.util.*;
 
 import javax.annotation.Resource;
 
-import org.json.JSONObject;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -317,6 +316,13 @@ public class WatchaDAO implements InterWatchaDAO {
 	public List<Map<String, String>> moviesByGenrePaging(Map<String, String> paraMap) {
 	    List<Map<String, String>> moviesByGenreList = sqlsession.selectList("watcha.moviesByGenrePaging", paraMap);
 		return moviesByGenreList;
+	}
+
+	// 유저들의 별점평가 차트 데이터 가져오기
+	@Override
+	public Map<String, String> userRating(String movie_id) {
+		Map<String, String> userRating = sqlsession.selectOne("watcha.userRating", movie_id);
+		return userRating;
 	}
 
 }
