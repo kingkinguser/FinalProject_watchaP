@@ -150,15 +150,6 @@ public class WatchaDAO implements InterWatchaDAO {
 			return pieBasic;
 		}
 
-		////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		// 한줄평 - 로그인한 회원이 해당 영화에 대해 작성한 한줄평 유무 및 한줄평 정보
-		@Override
-		public Map<String, String> reviewInfo(Map<String, String> paraMap) {
-			Map<String, String> reviewInfo = sqlsession.selectOne("watcha.reviewInfo", paraMap);
-			return reviewInfo;
-		}		
-		////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 		// 댓글 삭제
 		@Override
 		public int getDelUserComment(Map<String, Object> paraMap) {
@@ -174,7 +165,12 @@ public class WatchaDAO implements InterWatchaDAO {
 			return n;
 		}
 
-
+	   // 한줄평 - 로그인한 회원이 해당 영화에 대해 작성한 한줄평 유무 및 한줄평 정보
+	   @Override
+	   public Map<String, String> reviewInfo(Map<String, String> paraMap) {
+	      Map<String, String> reviewInfo = sqlsession.selectOne("watcha.reviewInfo", paraMap);
+	      return reviewInfo;
+	   }
 		
 		
 }

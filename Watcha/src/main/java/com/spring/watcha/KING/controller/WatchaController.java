@@ -57,7 +57,19 @@ public class WatchaController {
 			         int moviecollectionSelect = service.getMoviecollectionSelect(paraMap); 
 			         model.addAttribute("moviecollectionSelect",moviecollectionSelect);
 			    } 
+			    
+		         // 로그인한 회원이 해당 영화에 대해 작성한 한줄평 유무 및 한줄평 정보
+		         Map<String, String> reviewMap = new HashMap<>();
+		         reviewMap.put("user_id", user_id);
+		         reviewMap .put("movie_id", movie_id);
+		         
+		         Map<String, String> reviewInfo = null;
+		         if(loginuser != null) {
+		            reviewInfo = service.reviewInfo(reviewMap);
+		         }
+		         request.setAttribute("reviewInfo", reviewInfo);
 
+			    
 				/*
 				// 1대N 배열 한눈에 보기 
 				Gson gson = new GsonBuilder().setPrettyPrinting().create();

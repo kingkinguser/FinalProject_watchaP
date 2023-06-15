@@ -362,8 +362,8 @@
                           </button>
                         </c:if>				         
 
-						<%-- 컬렉션에 추가 --%> 
-						<div style="position: relative; left: 170px; bottom: 35px; width: 150px;"> 
+						<%-- 컬렉션에 추가 --%>  
+						<div style="position: relative; left: 170px; bottom: 25px; width: 150px;"> 
 						    <label for="check_collection" style="cursor: pointer;">
 						    <i class="fas fa-book collectioni"></i><span class="collectioni" style="font-size: 15px; font-weight: bolder">&nbsp;컬렉션에 추가</span></label>
 							<input type="checkbox" id="check_collection" name="check_collection"/>

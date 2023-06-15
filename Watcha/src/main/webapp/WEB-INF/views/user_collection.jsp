@@ -785,7 +785,7 @@
   		  }
   	  });
   	  
-      }
+     }
     //=== Ajax로 불러온 댓글내용을  페이징 처리 하기 끝  === // 
   
     // ==== 댓글내용 페이지바 Ajax로 만들기 ==== //
@@ -1562,9 +1562,47 @@
 			        <div style="font-size: 30px;  margin: 20px 0 5px 430px; font-weight: bold;">나만의 <span style="color:#ff0558">컬렉션 </span></div>   
 		            
 		            <div style="margin: 0 0 15px 435px; font-weight: bold;">내가 받은 좋아요 총수: <span id="likeTotal" style="color:#ff0558"></span></div>
-		            
-			   </div>    
-				
+			            
+				   </div>    
+					
+					<div id="chart">   
+						<figure class="highcharts-figure">
+						    <div id="chart_container" style="height: 255px;"></div>
+						    <p class="highcharts-description"></p> 
+						</figure> 
+					</div> 	 
+					
+					<div id="chart2">    
+						<figure class="highcharts-figure">
+						    <div id="chart_container2" style="height: 255px;"></div>
+						    <p class="highcharts-description"></p> 
+						</figure>	
+					</div> 			
+						
+			        <div id="">     
+		        	     
+		        	<div style="font-size: 20px; font-weight: bolder; margin: 0 0 10px 702px;">가장 최근에 컬렉션에 담은 <span style="color:#ff0558">영화</span></div>
+	
+		         	<c:if test="${requestScope.collection_viewB[0].movie_title != null}">
+			        	<a href='project_detail.action?movie_id=${requestScope.collection_viewB[0].movie_id}'>
+			        		<img id="lastest" src="https://image.tmdb.org/t/p/w1280${requestScope.collection_viewB[0].backdrop_path}" />
+			        	</a>   		
+		        	</c:if>
+		         	
+		         	<c:if test="${requestScope.collection_viewB[0].movie_title == null}">
+			        	<a>   
+			        		<img id="lastest" src="<%= ctxPath%>/resources/images/왓챠피디아NULL.png" /> 
+			        	</a> 
+		        	</c:if> 
+		        	  
+		        	<c:if test="${requestScope.collection_viewB[0].movie_title == null}"> 
+		        		<div style="font-size: 15px; margin: 15px 0 30px 730px; ">컬렉션을 담아 보세요!!</div> 
+		         	</c:if>   	        	   
+		        	<c:if test="${requestScope.collection_viewB[0].movie_title != null}">      
+		        		<div style="font-size: 22px; font-weight: bold; text-align: center; margin-bottom: 25px;">${requestScope.collection_viewB[0].movie_title}</div>
+		         	</c:if>      
+		        </div> 	     
+			          
 			      	<hr style="margin: 0 30px 0 30px;">  	     
 			      	
 			    	<div style="font-size: 20px; font-weight: bold; margin: 20px 0 0 47px;">나의 컬렉션</div>	
@@ -1608,7 +1646,7 @@
 			    </div>
 			</div>
 		</div> 
-	</body>
+	</body> 
 </c:if>
 
 </html>

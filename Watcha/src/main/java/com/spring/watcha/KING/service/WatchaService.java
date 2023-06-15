@@ -173,5 +173,14 @@ public class WatchaService implements InterWatchaService {
 		int n = dao.getUpdateComment(paraMap);
 		return n;
 	}
+	
+	// 한줄평 - 로그인한 회원이 해당 영화에 대해 작성한 한줄평 유무 및 한줄평 정보
+    @Override
+    public Map<String, String> reviewInfo(Map<String, String> paraMap) {
+      Map<String, String> reviewInfo = dao.reviewInfo(paraMap);
+      return reviewInfo;
+    }
+
+	
 }
 
