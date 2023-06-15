@@ -970,4 +970,30 @@ public class WatchaController {
 		return jsonArr.toString();
 	}
 	
+	// === 유저들의 별점평가 차트 데이터 가져오기(Ajax) === //
+	@ResponseBody
+	@RequestMapping(value="/myWatcha/showRatingChart.action", produces="text/plain;charset=UTF-8")
+	public String showRatingChart(HttpServletRequest request) {
+		
+		String movie_id = request.getParameter("movie_id");
+		
+		Map<String, String> userRating = service.userRating(movie_id);
+		
+		JSONObject jsonObj = new JSONObject();
+		if(userRating != null && userRating.size() > 0) {
+    		jsonObj.put("point05", userRating.get("point05"));
+    		jsonObj.put("point10", userRating.get("point10"));
+    		jsonObj.put("point15", userRating.get("point15"));
+    		jsonObj.put("point20", userRating.get("point20"));
+    		jsonObj.put("point25", userRating.get("point25"));
+    		jsonObj.put("point30", userRating.get("point30"));
+    		jsonObj.put("point35", userRating.get("point35"));
+    		jsonObj.put("point40", userRating.get("point40"));
+    		jsonObj.put("point45", userRating.get("point45"));
+    		jsonObj.put("point50", userRating.get("point50"));
+	    }
+	    
+		return jsonObj.toString();
+	}
+
 }
