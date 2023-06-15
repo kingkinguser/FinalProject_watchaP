@@ -156,6 +156,7 @@
 	
 	<resultMap id="movieMaingenreMap" type="com.spring.watcha.model.MovieVO">
        <id property="actorRank" column="actorRank" />
+       <result property="movie_id" column="movie_id"/>
        <result property="movie_title" column="movie_title"/>
        <result property="overview" column="overview"/>
        <result property="original_language" column="original_language"/>
@@ -388,10 +389,10 @@
 	
 	<resultMap id="memberResultMap" type="com.spring.watcha.model.MemberVO">
 	    <result property="name" column="name"/>
+	    <result property="user_id" column="user_id"/>
 	</resultMap>
 	
 	<select id="finduser" resultMap="find_Userid_Name">		
-		
 		select a.user_id , MAX(b.name) AS name, COUNT(*) AS user_id2
 		from (
 		    SELECT user_id , COUNT(*) OVER (PARTITION BY user_id) AS user_id2
@@ -529,6 +530,51 @@
 		    group by a.user_id
 		)
 	</select>
+	
+	
+	<!-- 검색한 컬렉션 정보 모두 가져오기 -->
+	<resultMap id="searchCollection_Movie" type="com.spring.watcha.model.MemberVO">
+	    <id property="user_id" column="user_id"/>
+	    <result property="name" column="name"/>
+	    <result property="profile_image" column="profile_image"/>	   
+	   <collection property="poster" column="user_id" ofType="java.lang.String" select="collectionMovie_go" />
+	</resultMap>
+	
+
+	<select id="showCollectionAll" resultMap="searchCollection_Movie" parameterType="HashMap">
+	   select DISTINCT b.user_id, b.name, b.profile_image
+		from (
+		    select user_id, movie_id
+		    from collection_movie
+		) a
+		JOIN (
+		    select user_id, name, profile_image
+		    from member
+		) b
+		ON a.user_id = b.user_id
+		WHERE LOWER(b.name) LIKE '%' || LOWER(#{lastSearchWord}) || '%'
+		order by name asc
+	</select>
+	
+	
+	<select id="collectionMovie_go" resultType="java.lang.String">
+		select a.poster_path
+		from (
+		    select *
+		    from movie
+		) a
+		JOIN (
+		    select *
+		    from collection_movie
+		) b 
+		ON a.movie_id = b.movie_id
+		where b.user_id =  #{user_id}
+	</select>
+	
+	
+	
+	
+	
 	
 	
 	

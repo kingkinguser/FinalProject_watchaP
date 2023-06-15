@@ -83,7 +83,7 @@ public interface InterWatchaService {
 	int total_count_Collection(Map<String, String> paraMap);
 
 	// 검색한 컬렉션 나타내기
-	List<collection_likeVO> showCollectionAll(Map<String, String> paraMap);
+	List<MemberVO> showCollectionAll(Map<String, String> paraMap);
 
 	
 
