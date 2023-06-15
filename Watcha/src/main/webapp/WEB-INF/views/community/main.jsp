@@ -31,6 +31,8 @@
 
 <link rel="stylesheet" href="<%= ctxPath%>/resources/css/community.css" type="text/css">
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <style>
 
 .swing {
@@ -67,19 +69,18 @@ $(document).ready(function() {
 				const button = document.querySelector('.bt_vote');
 				button.classList.toggle('submitted', status === 1);
 			})
-		}
-		
+		}		
 	}
 
-	
-	
 	const cmtForm = document.getElementById('cmt_form');
 	
 	if(cmtForm) {
 		cmtForm.addEventListener('submit', submitCommentFrm);	
 	}
 	
-
+	if('${alertMessage}' != '') {
+		showErrorMessage('${alertMessage}');
+	}
 
 	
 });
@@ -589,8 +590,7 @@ function submitCommentFrm(event) {
 	
 	event.preventDefault();
 
-	if(${empty sessionScope.loginuser}) {
-		alert("로그인 필요");
+	if(!loginCheck()) {
 		return;
 	}
 	
@@ -654,6 +654,11 @@ function deleteComment(commentId) {
 
 
 function commentLikes(postId) {
+
+	if(!loginCheck()){
+		return;
+	}
+
 	hasLikedPost(postId)
     .then(status => {
       if (status === 0) {
@@ -678,7 +683,10 @@ function commentLikes(postId) {
 		button.classList.toggle('submitted', response.status === 1);
 	})
     .catch(err => console.error(err));
+
 }
+
+
 
 function hasLikedPost(postId) {
 	return fetch(`likes/\${postId}`, {
@@ -700,6 +708,15 @@ function showSuccessMessage(message) {
     closeButton: true
   };
   toastr.success(message);
+}
+
+function showErrorMessage(message) {
+	  toastr.options = {
+	    positionClass: 'toast-bottom-right',
+	    progressBar: true,
+	    closeButton: true
+	  };
+	  toastr.error(message);
 }
 
 function scrollToCommentForm() {
@@ -731,6 +748,88 @@ function refreshCommentList() {
 	});
 }
 
+function deletePost(postId) {
+	event.preventDefault();
+
+	if(!loginCheck()) {
+		return;
+	} else if(postUserid != '${sessionScope.loginuser.user_id}') {
+		showErrorMessage("자신의 게시글만 삭제할 수 있습니다.");
+		return;
+	}
+
+	Swal.fire({
+		icon: 'question',
+		title: '게시글을 삭제하시겠습니까?',
+		showCancelButton: true,
+		confirmButtonText: '삭제',
+		cancelButtonText: '취소'
+		}).then((result) => {
+		if (result.isConfirmed) {
+			fetch(`/watcha/community/\${postId}`, {
+				method: 'DELETE'
+			})
+			.then(response => response.json())
+			.then(result => {
+				if(result.status === 1) {
+					Swal.fire({
+					icon: 'success',
+					title: '게시글 삭제에 성공하였습니다.',
+					showConfirmButton: true,
+					timer: 3000
+					}).then((result) => {
+						window.location.href = `/watcha/community`;
+					});
+				} else {
+					showErrorMessage(result.alertMessage);
+				}
+			})
+			.catch((error) => {
+				console.error('Error:', error);
+				toastr.error('게시글을 삭제하는 도중 서버에 문제가 발생하여 정상적으로 삭제되지 않았습니다.');
+			});
+		}
+	});
+
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+}
+
+function editPost(postId) {
+	event.preventDefault();
+	if(!loginCheck()) {
+		return;
+	} else if(postUserid != '${sessionScope.loginuser.user_id}') {
+		showErrorMessage("자신의 게시글만 수정할 수 있습니다.");
+		return;
+	}
+	location.href= `/watcha/community/\${postId}/edit`
+}
+
+
+function loginCheck() {
+
+	if(${empty sessionScope.loginuser}) {
+		showErrorMessage('로그인이 필요합니다.');
+		return false;
+	} else {
+		return true;
+	}
+}
 
 
 
@@ -790,7 +889,7 @@ function refreshCommentList() {
 									</div>
 									<div class="movie_item__description">
 										<h5 class="description__title">${movie.movie_title}</h5>
-										<p class="description__subtitle">영화 · ${movie.release_date}</p>
+										<p class="description__subtitle">영화 · ${movie.releaseYear}</p>
 										<div class="description__bottom">
 										<span class="kino_score__percent green">평균 ★${movie.rating_avg} (${movie.rating_count} 명)</span>
 										</div>
@@ -810,13 +909,13 @@ function refreshCommentList() {
 									<span class="bubbling-child">신고</span>
 								</span> -->
 								<span class="bubbling-child-wrap">
-									<button class="bt_eidt ib ib_mono bubbling-parent" type="button" onclick="inkPop('atc_share')">
+									<button class="bt_eidt ib ib_mono bubbling-parent" type="button" onclick="editPost('${selectedPost.postId}')">
 										<i class="fa-solid fa-pen-to-square"></i>
 									</button>
 									<span class="bubbling-child">수정</span>
 								</span>
 								<span class="bubbling-child-wrap">
-									<button class="bt_delete ib ib_mono bubbling-parent" type="button" onclick="insertWarn('로그인 해주세요.')">
+									<button class="bt_delete ib ib_mono bubbling-parent" type="button" onclick="deletePost('${selectedPost.postId}')">
 										<i class="fa-solid fa-eraser"></i>
 									</button>
 									<span class="bubbling-child">삭제</span>
@@ -864,13 +963,6 @@ function refreshCommentList() {
 						</div>
 						<!-- //cmt_wrap -->
 
-						
-						<div class="cmt_write cmt_write_unit no_grant">
-							<div class="cmt_not_permitted">
-								<i class="fas fa-comment-dots pt-col4"></i> 권한이 없습니다.
-								<a class="ink_link2" href="javascript:void(0)" onclick="inkPop('ink_login2')">로그인</a>
-							</div>
-						</div>
 						<!-- //cmt_write -->
 						<div class="cmt_write_unit cmt_bottom_unit">
 							<span class="profile-img round"></span>
@@ -962,6 +1054,7 @@ function refreshCommentList() {
 		<div class="row mt-3">
 			<div class="col-md-8 col-xs-12 offset-md-2">
 				<div class="post-list-box">
+					<c:if test="${not empty requestScope.posts}">
 					<table>
 						<thead>
 							<tr>
@@ -1039,6 +1132,14 @@ function refreshCommentList() {
 							<!-- //LIST -->
 						</tbody>
 					</table>
+					</c:if>
+					<c:if test="${empty requestScope.posts}">
+						<div class="no-data">
+							<i class="fas fa-exclamation-circle fa-lg" style="font-size: 100px; padding: 30px;"></i>
+							<p class="message">작성된 게시글이 없습니다.</p>
+							<!-- <a href="/" class="btn-basic-lg btn-default-ex"><span>게시글 작성하기</span></a> -->
+						</div>
+					</c:if>
 				</div>
 
 				<div class="post-footer">

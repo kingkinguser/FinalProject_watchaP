@@ -207,6 +207,29 @@ public class CommunityDAO implements InterCommunityDAO {
 		sqlsession.update("community.incrementViewCount", postId);
 	}
 
+	@Override
+	public int deletePost(Map<String, String> paraMap) {
+		int n = sqlsession.delete("community.deletePost", paraMap);
+		return n;
+	}
+
+	@Override
+	public void deletePostTags(PostVO post) {
+		sqlsession.delete("community.deletePostTags", post);
+	}
+
+	@Override
+	public int editPost(PostVO post) {
+		int n = sqlsession.update("community.editPost", post);
+		return n;
+	}
+
+	@Override
+	public int insertPostTags(PostVO post) {
+		int n = sqlsession.update("community.insertPostTags", post);
+		return n;
+	}
+
 
 	
 }

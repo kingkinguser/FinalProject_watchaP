@@ -50,4 +50,8 @@ public interface InterCommunityService {
 
 	void incrementViewCount(String postId);
 
+	Map<String, Object> deletePost(Map<String, String> paraMap);
+
+	Map<String, Object> editPost(PostVO post);
+
 }

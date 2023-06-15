@@ -1,5 +1,7 @@
 package com.spring.watcha.model;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class MovieVO {
@@ -185,6 +187,12 @@ public class MovieVO {
 	public void setCollection(List<collection_movieVO> collection) {
 		this.collection = collection;
 	}
+	
+	public String getReleaseYear() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime dateTime = LocalDateTime.parse(release_date, formatter);
+        return String.valueOf(dateTime.getYear());
+    }
 
 	
 	

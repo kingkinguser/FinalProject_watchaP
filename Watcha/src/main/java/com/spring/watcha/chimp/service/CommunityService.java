@@ -12,6 +12,9 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -374,6 +377,55 @@ public class CommunityService implements InterCommunityService{
 	@Override
 	public void incrementViewCount(String postId) {
 		dao.incrementViewCount(postId);
+	}
+
+
+	@Override
+	public Map<String, Object> deletePost(Map<String, String> paraMap) {
+		int n = dao.deletePost(paraMap);
+		
+		Map<String, Object> result = new HashMap<String, Object>();
+		result.put("status", n);
+		if(n == 0) {
+			result.put("alertMessage", "게시글 삭제에 실패했습니다. 로그인 상태를 확인하시고 다시 시도해주세요.");
+		}
+		return result;
+	}
+
+
+	@Override
+	@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED, rollbackFor = {Throwable.class})
+	public Map<String, Object> editPost(PostVO post) {
+		// 영화 리스트 갱신을 위해서 post tags에 해당 게시글의 영화 삭제
+		PostVO tempPost= dao.getPostById(post.getPostId());
+		HttpSession session = getSession();
+		MemberVO loginuser = (MemberVO)session.getAttribute("loginuser");
+		
+		if(!loginuser.getUser_id().equals(tempPost.getUserId())) {
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("status", "error");
+			return map;
+		}
+		
+		dao.deletePostTags(post);
+		
+		// 게시글 갱신
+		int a = dao.editPost(post);
+		int b = 0;
+		if(post.getMovieIds().size() > 0) {
+			b = dao.insertPostTags(post);	
+		}
+		
+		
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		if(a == 1 && b == post.getMovieIds().size()) {
+			map.put("status", 1);
+		} else {
+			map.put("status", 0);
+		}
+		
+		return map;
 	}
 
 	

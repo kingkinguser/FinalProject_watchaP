@@ -164,6 +164,11 @@
 	
 	</update>
 	
+	<insert id="deletePost" parameterType="HashMap">
+	DELETE FROM post WHERE post_id = #{postId} and user_id = #{userId}
+	</insert>
+	
+	
 	<select id="getTotalPosts" parameterType="HashMap" resultType="_int">
 		SELECT count(*)
 		FROM post
@@ -376,6 +381,24 @@
 	<update id="updatePostLikes" parameterType="HashMap">
 	UPDATE post SET likes = #{count} WHERE post_id = #{postId}
 	</update>
+	
+	
+	<delete id="deletePostTags" parameterType="com.spring.watcha.model.PostVO" >
+	DELETE FROM post_tags WHERE post_id = #{postId}
+	</delete>
+	
+	<update id="editPost" parameterType="com.spring.watcha.model.PostVO">
+	UPDATE post SET title = #{title}, content = #{content} , post_category_id = #{postCategoryId}
+	WHERE post_id = #{postId} and user_id = #{userId}
+	</update>
+	
+	<update id="insertPostTags" parameterType="com.spring.watcha.model.PostVO">
+	<foreach collection="movieIds" item="movieId" open="INSERT ALL" close="SELECT * FROM DUAL" separator=" ">
+	INTO post_tags(post_id, movie_id)
+	VALUES(#{postId}, #{movieId})
+	</foreach>
+	</update>
+	
 	
 			    
 </mapper>

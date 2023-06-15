@@ -30,13 +30,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
-
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 
 import com.spring.watcha.chimp.service.InterCommunityService;
+import com.spring.watcha.model.MemberVO;
 import com.spring.watcha.model.MovieVO;
 import com.spring.watcha.model.PostCommentVO;
 import com.spring.watcha.model.PostVO;
@@ -63,11 +64,11 @@ public class CommunityController {
 		return "community/main.tiles";
 	}
 	
+
+	
 	@GetMapping("/{postId}")
 	public String getPost(Model model, HttpSession session, @PathVariable("postId")String postId, @RequestParam(required = false) Map<String, String> paraMap) {
         boolean isFirstAccess = !service.isPostAccessed(postId);
-		
-		
 		if (isFirstAccess) {
             service.incrementViewCount(postId);
             session.setAttribute("viewedPost_" + postId, true);
@@ -76,6 +77,41 @@ public class CommunityController {
 		model = service.getPostById(postId, model);
 		
 		return "community/main.tiles";
+	}
+	
+	@GetMapping("/{postId}/edit")
+	public String viewPostEditPage(Model model, HttpSession session, @PathVariable("postId")String postId) {
+		
+		model = service.getPostById(postId, model);
+		
+		return "community/editpost.tiles";
+	}
+	
+	@PostMapping("/{postId}/edit")
+	public ResponseEntity<?> editPost(@RequestBody PostVO post) {
+		Map<String, Object> map = service.editPost(post);
+//		Map<String, Object> map = new HashMap<String, Object>();
+//		map.put("status", 1);
+		
+		Gson gson = new GsonBuilder().setPrettyPrinting().create();
+		String result = gson.toJson(post);
+		
+		System.out.println(result);
+		
+		return ResponseEntity.ok(map);
+	}
+	
+	@DeleteMapping("/{postId}")
+	public ResponseEntity<?> deletePost(HttpSession session, @PathVariable("postId")String postId) {
+		if(session.getAttribute("loginuser") == null) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("비정상적인 접근입니다.");
+		}
+		Map<String, String> paraMap = new HashMap<String, String>();
+		paraMap.put("postId", postId);
+		paraMap.put("userId", ((MemberVO)session.getAttribute("loginuser")).getUser_id());
+		
+		Map<String, Object> map = service.deletePost(paraMap);
+		return ResponseEntity.ok(map);
 	}
 	
 	
@@ -128,9 +164,19 @@ public class CommunityController {
 	
 	// 글작성페이지
 	@GetMapping("/write")
-	public String viewWritePostPageWithParam() {
+	public String viewWritePostPage(HttpSession session, HttpServletRequest request, RedirectAttributes redirectAttributes) {
+		if(session.getAttribute("loginuser") == null) {
+			String previousPage = request.getHeader("Referer");
+			redirectAttributes.addFlashAttribute("alertMessage", "로그인이 필요합니다.");
+	        if (previousPage != null) {
+	            return "redirect:" + previousPage;
+	        } else {
+	            return "redirect:/community";
+	        }
+		} else {
+			return "community/write.tiles";	
+		}
 		
-		return "community/write.tiles";
 	}
 	
 	
@@ -156,9 +202,7 @@ public class CommunityController {
 	@GetMapping(value="/comments/{postId}/{page}", produces = "application/text; charset=utf8")
 	public String getPostCommentListByPage(@PathVariable Map<String, String> paraMap) {
 		String commnetList = service.getPostCommentList(paraMap);
-		
-		
-		
+
 		return commnetList;
 	}
 	
