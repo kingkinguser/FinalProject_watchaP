@@ -95,7 +95,7 @@
   
   .Main-card4 {
   	border: none;
-  	height: 350px;
+  	height: 430px;
   }
   
   .card-img-top {
@@ -115,6 +115,8 @@
   .slick-prev:before {
 		color: gray;
     	font-size: xx-large;
+    	position: relative;
+    	    bottom: 67px;
   }
 	
   .slick-next:before {
@@ -122,7 +124,11 @@
     	font-size: xx-large;
     	right: 13px;
    		position: relative;
+   		    bottom: 67px;
   }
+  
+
+   
 
   .centered-container > a{
   	color: black;
@@ -206,18 +212,9 @@
 <script type="text/javascript">
 
 $(document).ready(function() {
-	/* 	let resizeTimer;						// 창 크기가 빠르게 변경되면 안되는 현상을 고치기 위해 타임아웃 사용
-		$(window).on('resize', function() {    // 창 크기가 변경될 때마다 다시 실행 
-		    clearTimeout(resizeTimer);			// 타임아웃 사용 (일정시간 지난후에 실행한다.)
-		    resizeTimer = setTimeout(function() {
-		        CarouselGO();
-		    }, 150); // 150ms의 딜레이를 사용하여 타임아웃 설정
-		}); */
-		Carousel();
 
-		//StarRank();
-		
-		
+		Carousel();
+	
 	});
 		
 function Carousel(){
