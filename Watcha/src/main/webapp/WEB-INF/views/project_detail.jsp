@@ -350,25 +350,17 @@
 					<div style="margin: 7px 0 0 310px; position: relative; bottom: 60px;">  
 						
 				        <%-- 한줄평 등록하기 --%> 
-				        <div style="width: 150px;"> 
-				          <label for="check_comment" style="cursor: pointer;">
-				             <span class="commenti">
-				               
-				                 <c:if test="${empty requestScope.reviewInfo}">
-				                   <button type="button" data-toggle="modal" data-target="#registerReview" style="font-weight: bold; border: none; background-color: transparent;">
-				                     <i style="font-size: 18px;" class="fas fa-pen-nib commenti"></i>&nbsp;&nbsp;한줄평 등록
-				                   </button>
-				                 </c:if>
-				                 
-				                 <c:if test="${not empty requestScope.reviewInfo}">
-				                   <button type="button" data-toggle="modal" data-target="#editReview" style="font-weight: bold; border: none; background-color: transparent;">
-				                     <i style="font-size: 18px;" class="fas fa-pen-nib commenti"></i>&nbsp;&nbsp;한줄평 수정
-				                   </button>
-				                 </c:if>
-
-				             </span>
-				          </label>
-				        </div> 				         
+                        <c:if test="${empty requestScope.reviewInfo.review_id}">
+                          <button type="button" data-toggle="modal" data-target="#registerReview" style="font-weight: bold; border: none; background-color: transparent;">
+                            <i style="font-size: 18px;" class="fas fa-pen-nib commenti"></i>&nbsp;&nbsp;한줄평 등록
+                          </button>
+                        </c:if>
+                        
+                        <c:if test="${not empty requestScope.reviewInfo.review_id}">
+                          <button type="button" data-toggle="modal" data-target="#editReview" style="font-weight: bold; border: none; background-color: transparent;">
+                            <i style="font-size: 18px;" class="fas fa-pen-nib commenti"></i>&nbsp;&nbsp;한줄평 수정
+                          </button>
+                        </c:if>				         
 
 						<%-- 컬렉션에 추가 --%> 
 						<div style="position: relative; left: 170px; bottom: 35px; width: 150px;"> 
