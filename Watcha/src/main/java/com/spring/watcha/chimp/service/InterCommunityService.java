@@ -54,4 +54,6 @@ public interface InterCommunityService {
 
 	Map<String, Object> editPost(PostVO post);
 
+	PostVO getPostUserId(String postId);
+
 }

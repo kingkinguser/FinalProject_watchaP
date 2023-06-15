@@ -351,6 +351,11 @@
            <version>${org.springframework-version}</version>
       </dependency>
       
+      <dependency>
+	        <groupId>org.springframework</groupId>
+	        <artifactId>spring-messaging</artifactId>
+	        <version>${org.springframework-version}</version>
+	  </dependency>
       
       <!-- === #192. (웹채팅관련2) Gson 은 Java 객체를 JSON 표현식으로 변환할 수 있게 해주는 Java 라이브러리임. 
                또한 거꾸로 JSON 표현식 형태의 String 을 Java 객체로 변환도 가능하게 해주는 라이브러리임.

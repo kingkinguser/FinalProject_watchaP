@@ -428,6 +428,13 @@ public class CommunityService implements InterCommunityService{
 		return map;
 	}
 
+
+	@Override
+	public PostVO getPostUserId(String postId) {
+		PostVO post = dao.getPostById(postId);
+		return post;
+	}
+
 	
 	
 	

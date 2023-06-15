@@ -42,6 +42,10 @@
   <!-- 글꼴 적용하기 -->
   <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.6/dist/web/static/pretendard.css" />
   
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+  <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"> -->
+  <link rel="stylesheet" type="text/css" href="<%= ctxPath%>/resources/css/toastr.min.css" />
 
 	<%-- <link rel="icon" href="<%=ctxPath%>/images/파비콘.ico"> --%>
 	
@@ -51,11 +55,62 @@
     margin-top: 80px; 
   }
 
+  @import url(http://fonts.googleapis.com/earlyaccess/notosanskr.css);
+
+body, talbe, th, td, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6,
+	pre, form, fieldset, textarea, blockquote, span, * {
+	font-family: 'Noto Sans KR', sans-serif;
+}
+
+
 </style>	
-	
+
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js" integrity="sha512-iKDtgDyTHjAitUDdLljGhenhPwrbBfqTKWO1mkhSFH3A7blITC9MhYon6SjnMhp4o0rADGw9yAC6EW4t5a4K3g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
+<script type="text/javascript">
+
+
+var stompClient = null;
+
+
+
+if (${sessionScope.loginuser != null} && !stompClient) {
+    var socket = new SockJS('/watcha/echo');
+    stompClient = Stomp.over(socket);
+    stompClient.debug = null; 콘솔안뜨게 하기
+
+    stompClient.connect({}, function(frame) {
+        stompClient.subscribe(`/topic/${sessionScope.loginuser.user_id}/infomsg`, function(response) {
+            result = JSON.parse(response.body);
+            showToastrMessage(result.type, result.message);
+        });
+        
+   
+    });
+
+    
+}
+
+
+function showToastrMessage(type, message) {
+  toastr.options = {
+    positionClass: 'toast-bottom-right',
+    progressBar: true,
+    timeOut: 3000
+  };
+
+  toastr[type](message);
+}
+
+
+
+</script>
+
 </head>
 <body>
-
+    
 	<tiles:insertAttribute name="header" />
 
 	<div class="content-margin-tiles">
