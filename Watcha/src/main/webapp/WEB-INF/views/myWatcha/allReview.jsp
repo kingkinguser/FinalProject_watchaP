@@ -119,7 +119,7 @@ div#commentRegister textarea:focus, div#commentEdit textarea:focus, div#review_m
 				  "currentShowPageNo":currentShowPageNo},
 			dataType:"json",
 			success:function(json){
-			//	console.log("확인용 : "+JSON.stringify(json));
+				console.log("확인용 : "+JSON.stringify(json));
 				
 				let html = "";
 				if(json.length > 0){ // 영화에 대한 유저들의 한줄평이 존재하는 경우
@@ -209,6 +209,8 @@ div#commentRegister textarea:focus, div#commentEdit textarea:focus, div#review_m
 
 					}); // end of $.each(json, function(index, item){})
 					<%-- 유저들의 한줄평 보여주기 끝 --%>
+
+					userReviewPageBar(Number(currentShowPageNo));
 				} // end of if (영화에 대한 유저들의 한줄평이 존재하는 경우)
 				else {
 					html += '<h4 style="text-align: left; padding: 5px; font-weight: 600;">이 영화에 대한 한줄평이 존재하지 않아요.</h4>';
@@ -216,7 +218,6 @@ div#commentRegister textarea:focus, div#commentEdit textarea:focus, div#review_m
 		    	$("div#userReview").hide();
 		    	$("div#userReview").html(html);
 		    	$("div#userReview").fadeIn('30');
-		    	userReviewPageBar(Number(currentShowPageNo));
 			},
 			error: function(request, status, error){
 	            alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);

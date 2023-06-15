@@ -194,7 +194,7 @@ div#editReview{font-family: 'Noto Sans KR', sans-serif; cursor: default;}
 					
 					html += '<div id="userReview" class="container" style="padding: 0px;">'
 					      +   '<div style="position: relative; float: right; z-index: 2;">'
-					      +     '<a style="padding: 0px 15px; color: black; text-decoration: none;" href="<%= request.getContextPath()%>/allReview.action?movie_id='+${requestScope.movieDetail.movie_id}+'">전체보기</a>'
+					      +     '<a style="padding: 0px 15px; color: black; text-decoration: none;" href="<%= request.getContextPath()%>/allReview.action?movie_id=${requestScope.movieDetail.movie_id}">전체보기</a>'
 						  +   '</div>'
 						  +   '<div id="review" style="z-index: 1;" class="mx-auto mt-2 mb-3 p-1 carousel slide w-100" data-ride="carousel">'
 						  +     '<div class="p-0 carousel-inner w-90 mx-auto">';
@@ -396,23 +396,19 @@ div#editReview{font-family: 'Noto Sans KR', sans-serif; cursor: default;}
 	
 </script>
 
-<div class="container" style="padding: 0px;">
+<div class="container" style="padding: 0px 20px;">
 	<div id="div_comment"></div>
-	<c:if test="${requestScope.movieDetail.rating_count ne 0}">
-	  <h5 style="font-weight: 600; text-align: center; padding: 0px 30px;">별점 평균 <span style="color: #ff0558;">★${requestScope.movieDetail.rating_avg}</span>&nbsp;(<span style="color: #ff0558;">${requestScope.movieDetail.rating_count}명</span>의 평가)</h5>
-	</c:if>
-	<div id="div_rating" style="width: 80%; padding: 0px 30px; margin: auto;"></div>
 </div>
 
 <%-- 한줄평 등록 모달창 --%>
-<c:if test="${empty requestScope.reviewInfo}">
+<c:if test="${empty requestScope.reviewInfo.review_id}">
   <div class="modal fade registerReview" id="registerReview" data-keyboard="false">
-    <form name="registerReviewFrm">
-      <input type="hidden" name="user_id" value="${sessionScope.loginuser.user_id}" />
-      <input type="hidden" name="movie_id" value="${requestScope.movieDetail.movie_id}" />
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-body">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-body">
+    	  <form name="registerReviewFrm">
+		    <input type="hidden" name="user_id" value="${sessionScope.loginuser.user_id}" />
+		    <input type="hidden" name="movie_id" value="${requestScope.movieDetail.movie_id}" />
             <h5 class="modal-title" style="font-weight: bold;">${requestScope.movieDetail.movie_title}<button type="button" class="close" data-dismiss="modal">&times;</button></h5>
             <div class="my-2">
               <textarea id="review_content" name="review_content" style="width: 100%; height: 450px; resize: none; border: none;" placeholder="이 작품에 대한 생각을 자유롭게 표현해주세요."></textarea>
@@ -429,22 +425,22 @@ div#editReview{font-family: 'Noto Sans KR', sans-serif; cursor: default;}
                 <button type="button" class="btn" id="btnAdd" style="color: #ffffff; background-color: #ff0558;">등록</button>
               </div>
             </div>
-          </div>
+    	  </form>
         </div>
       </div>
-    </form>
+    </div>
   </div>
 </c:if>
 <%-- 한줄평 등록 모달창 끝 --%>
     
 <%-- 한줄평 수정 모달창 --%>
-<c:if test="${not empty requestScope.reviewInfo}">
+<c:if test="${not empty requestScope.reviewInfo.review_id}">
   <div class="modal fade editReview" id="editReview" data-keyboard="false">
-    <form name="editReviewFrm">
-      <input type="hidden" name="review_id" value="${requestScope.reviewInfo.review_id}" />
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-body">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-body">
+    	  <form name="editReviewFrm">
+ 		    <input type="hidden" name="review_id" value="${requestScope.reviewInfo.review_id}" />
             <h5 class="modal-title" style="font-weight: bold;">${requestScope.movieDetail.movie_title}<button type="button" class="close" data-dismiss="modal">&times;</button></h5>
             <div class="my-2">
               <textarea id="review_content" name="review_content" style="width: 100%; height: 450px; resize: none; border: none;">${requestScope.reviewInfo.review_content}</textarea>
@@ -468,10 +464,10 @@ div#editReview{font-family: 'Noto Sans KR', sans-serif; cursor: default;}
                 <button type="button" class="btn" id="btnEdit" style="color: #ffffff; background-color: #ff0558;">수정</button>
               </div>
             </div>
-         </div>
-       </div>
+    	  </form>
+        </div>
       </div>
-    </form>
+    </div>
   </div>
 </c:if>
 <%-- 한줄평 수정 모달창 끝 --%>	

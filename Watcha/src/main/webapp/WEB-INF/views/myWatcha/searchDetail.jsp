@@ -726,10 +726,10 @@ div#makePhotoTicket{font-family: 'Noto Sans KR', sans-serif;}
 
 		<%-- 포토티켓 모달창 --%>
 		<div class="modal fade" id="makePhotoTicket" data-keyboard="false">
-		<form name="photoTicketFrm" enctype="multipart/form-data">
 		  <div class="modal-dialog modal-dialog-centered mx-auto">
 		    <div class="modal-content mx-auto" style="width: 85%;">
 		      <div class="modal-body text-center" style="height: 600px; margin: 10px;">
+			  <form name="photoTicketFrm" enctype="multipart/form-data">
 		        <h5 class="modal-title" style="font-weight: bold;">포토티켓 만들기<button type="button" class="close" data-dismiss="modal">&times;</button></h5>
 			    <div class="row mx-auto mt-3 mb-2" style="display: flex; padding: 10px 0; height: 450px;">
 		          <div id="div_photo_front" class="col p-1 pt-3 mx-1 text-center" style="width: 98%; height: 420px; border: solid 1px #e6e6e6; border-radius: 2%;">
@@ -776,21 +776,21 @@ div#makePhotoTicket{font-family: 'Noto Sans KR', sans-serif;}
 			    <div id="div_icon">
 			      <i class="fa-solid fa-spinner fa-spin fa-xl"></i><span class="h5 m-0 p-0">&nbsp;&nbsp;포토티켓 등록중...</span>
 			    </div>
+			  </form>
 		      </div>
 		    </div>
 		  </div>
-		</form>
 		</div>
 		
 	  <%-- 한줄평 등록 모달창 --%>
       <c:if test="${empty requestScope.searchReview}">
 		<div class="modal fade registerReview" id="registerReview" data-keyboard="false">
-		<form name="registerReviewFrm">
 		  <input type="hidden" name="user_id" value="${sessionScope.loginuser.user_id}" />
 		  <input type="hidden" name="movie_id" value="${requestScope.searchDetail.movie_id}" />
 		  <div class="modal-dialog modal-dialog-centered">
 		    <div class="modal-content">
 		      <div class="modal-body">
+		  	  <form name="registerReviewFrm">
 		        <h5 class="modal-title" style="font-weight: bold;">${requestScope.searchDetail.movie_title}<button type="button" class="close" data-dismiss="modal">&times;</button></h5>
 	      		<div class="my-2">
 	      		  <textarea id="review_content" name="review_content" style="width: 100%; height: 450px; resize: none; border: none;" placeholder="이 작품에 대한 생각을 자유롭게 표현해주세요."></textarea>
@@ -807,10 +807,10 @@ div#makePhotoTicket{font-family: 'Noto Sans KR', sans-serif;}
 		            <button type="button" class="btn" id="btnAdd" style="color: #ffffff; background-color: #ff0558;">등록</button>
 	      		  </div>
 	      		</div>
+		      </form>
 		      </div>
 		    </div>
 		  </div>
-		</form>
 		</div>
 	  </c:if>
       <%-- 한줄평 등록 모달창 끝 --%>
@@ -818,11 +818,11 @@ div#makePhotoTicket{font-family: 'Noto Sans KR', sans-serif;}
  	  <%-- 한줄평 수정 모달창 --%>
       <c:if test="${not empty requestScope.searchReview}">
        	<div class="modal fade editReview" id="editReview" data-keyboard="false">
-		<form name="editReviewFrm">
 		  <input type="hidden" name="review_id" value="${requestScope.searchReview.review_id}" />
 		  <div class="modal-dialog modal-dialog-centered">
 			<div class="modal-content">
 			  <div class="modal-body">
+			  <form name="editReviewFrm">
 			  	<h5 class="modal-title" style="font-weight: bold;">${requestScope.searchDetail.movie_title}<button type="button" class="close" data-dismiss="modal">&times;</button></h5>
 			  	<div class="my-2">
 			  	  <textarea id="review_content" name="review_content" style="width: 100%; height: 450px; resize: none; border: none;">${requestScope.searchReview.review_content}</textarea>
@@ -848,10 +848,10 @@ div#makePhotoTicket{font-family: 'Noto Sans KR', sans-serif;}
 		            <button type="button" class="btn" onclick="updateReview(${requestScope.searchReview.review_id})" style="color: #ffffff; background-color: #ff0558;">수정</button>
 			  	  </div>
 			  	</div>
+			  </form>
 			  </div>
 			</div>
 		  </div>
-		</form>
 		</div>
 	  </c:if>
       <%-- 한줄평 수정 모달창 끝 --%>
