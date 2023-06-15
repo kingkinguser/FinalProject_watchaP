@@ -540,7 +540,6 @@ function Carousel(){
 	</c:if>
 	
     <c:set var="sessionId" value="${sessionScope.loginuser.user_id}" />
-	<c:out value="${sessionId}+sdjkbnfgkjasdng" />
 	
 	<h5 class="h5 main-h5 main-h5-3">왓챠피디아 회원들의 컬렉션</h5>
    	 <div class="container my-3">
