@@ -700,7 +700,7 @@
 		             html += '<td id="commentuct">'+item.user_collection_time+"</td>"; 
 		                 
 				  	if(item.user_id_comment == "${sessionScope.loginuser.user_id}"){ // 로그인한 회원 댓글 수정/삭제  
-				       	html +=   '<td><button type="button" onclick="openUpdateModal('+item.user_collection_seq+')" style="font-weight: bolder; color: #ff0558; border: none; background-color: transparent; font-size: 9pt;">수정</button></td>'
+				       	html +=   '<td><button type="button" onclick="openUpdateModal('+item.user_collection_seq+','+item.user_collection_content+')" style="font-weight: bolder; color: #ff0558; border: none; background-color: transparent; font-size: 9pt;">수정</button></td>'
 				       		  +   '<td><button type="button" onclick="del_user_Comment('+item.user_collection_seq+')" style="font-weight: bolder; color: #ff0558; border: none; background-color: transparent; font-size: 9pt;">삭제</button></td>'
  
 			        }      
@@ -1271,12 +1271,13 @@
   //== 댓글 삭제  끝 ==// 
   
   // == 댓글 수정 시작 == //
-  function openUpdateModal(seq) {
+  function openUpdateModal(seq,comment) {
+
 	  Swal.fire({
-	    title: '댓글 수정',  
-	    input: 'text',
-	    inputPlaceholder: '댓글 내용을 입력해주세요.', 
-	    showCancelButton: true,
+	    title: '댓글 수정',   
+	    input: 'text',   
+	    inputValue: comment,     
+	    showCancelButton: true,  
 	    confirmButtonText: '수정',
 	    cancelButtonText: '취소',  
 	    allowOutsideClick: false,
@@ -1335,8 +1336,11 @@
 	<body>
 		<div id="container">
 		 
-			<div class="card">
-			    <div class="card-body"> 
+			<div class="card">   
+				
+			   <img src="<%= ctxPath%>/resources/images/왓챠컬렉션배경이미지.jpg" class="card-img-top" style="width: 100%; height: 250px;" />	 
+			
+			   <div class="card-body"> 
 				    
 			   <div id="infoinfo">               
 			      	  
@@ -1442,11 +1446,13 @@
 		<div id="container">
 		 
 			<div class="card">
-			    <div class="card-body">    
+			   <div class="card-body">    
+							 
+			   <img src="<%= ctxPath%>/resources/images/왓챠컬렉션배경이미지.jpg" class="card-img-top" style="width: 100%; height: 250px;" />	 
 				     
 			   <div id="infoinfo">                  
 			      	       
-			        <div style="font-size: 30px;  margin: 0 0 5px 430px; font-weight: bold;">나만의 <span style="color:#ff0558">컬렉션 </span></div>   
+			        <div style="font-size: 30px;  margin: 20px 0 5px 430px; font-weight: bold;">나만의 <span style="color:#ff0558">컬렉션 </span></div>   
 		            
 		            <div style="margin: 0 0 15px 435px; font-weight: bold;">내가 받은 좋아요 총수: <span id="likeTotal" style="color:#ff0558"></span></div>
 		            

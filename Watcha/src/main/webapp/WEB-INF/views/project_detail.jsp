@@ -172,7 +172,7 @@
 	
 	#posterInfo > div > span > a {
 	
-		color: black;
+		color: #808080; 
 	}
 	
 	#posterInfo > div > span > a:hover {
@@ -421,7 +421,7 @@
 		
 		<div id="cast">
 		
-			<h4 style="margin: 30px 0 10px 30px; font-weight: bolder; ">출연/제작</h4>
+			<h4 style="margin: 20px 0 10px 30px; font-weight: bolder; ">출연/제작</h4>
 
 				<div class="row mx-auto my-auto">
 			        <div id="recipeCarousel" class="carousel slide w-100" data-ride="carousel">
@@ -487,10 +487,17 @@
 			</div>  
 		 
 		</div>
+
+		<div id="Comment">
+		
+			<h4 style="margin: 20px 0 0 30px; font-weight: bolder; ">별점차트</h4>
+      		
+      		
+		</div>
 		
 		<div id="Comment">
 		
-			<h4 style="margin: 30px 0 0 30px; font-weight: bolder; ">한줄평</h4>
+			<h4 style="margin: 20px 0 0 30px; font-weight: bolder; ">한줄평</h4>
       		
       		<jsp:include page="myWatcha/movieReview.jsp" />
       		
