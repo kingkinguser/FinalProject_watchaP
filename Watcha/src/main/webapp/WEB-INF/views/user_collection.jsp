@@ -1368,14 +1368,14 @@
 			     
 					<div id="chart">   
 						<figure class="highcharts-figure">
-						    <div id="chart_container" style="height: 210px;"></div>
+						    <div id="chart_container" style="height: 255px;"></div>
 						    <p class="highcharts-description"></p> 
 						</figure> 
 					</div> 	 
 					
 					<div id="chart2">    
 						<figure class="highcharts-figure">
-						    <div id="chart_container2" style="height: 240px;"></div>
+						    <div id="chart_container2" style="height: 255px;"></div>
 						    <p class="highcharts-description"></p> 
 						</figure>	
 					</div> 	
@@ -1466,14 +1466,14 @@
 				
 				<div id="chart">   
 					<figure class="highcharts-figure">
-					    <div id="chart_container" style="height: 210px;"></div>
+					    <div id="chart_container" style="height: 255px;"></div>
 					    <p class="highcharts-description"></p> 
 					</figure> 
 				</div> 	 
 				
 				<div id="chart2">    
 					<figure class="highcharts-figure">
-					    <div id="chart_container2" style="height: 240px;"></div>
+					    <div id="chart_container2" style="height: 255px;"></div>
 					    <p class="highcharts-description"></p> 
 					</figure>	
 				</div> 			
