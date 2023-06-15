@@ -887,7 +887,7 @@ function loginCheck() {
 									<div class="movie_item__poster">
 										<img class="poster__img" src="https://image.tmdb.org/t/p/w92/${movie.poster_path}" lazy="loaded">
 									</div>
-									<div class="movie_item__description">
+									<div class="movie_item__description" style="cursor: pointer;" onclick="window.location.href='/watcha/view/project_detail.action?movie_id=${movie.movie_id}'">
 										<h5 class="description__title">${movie.movie_title}</h5>
 										<p class="description__subtitle">영화 · ${movie.releaseYear}</p>
 										<div class="description__bottom">

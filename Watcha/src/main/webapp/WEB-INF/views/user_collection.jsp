@@ -696,11 +696,11 @@
 			        }	
 					 
 					 html += '<td id="commentuic">'+item.name+"</td>"; 
-					 html += '<td id="commentucc">'+item.user_collection_content+"</td>";
+					 html += '<td id="commentucc" data-comment-seq="' + item.user_collection_seq + '">'+item.user_collection_content+"</td>";
 		             html += '<td id="commentuct">'+item.user_collection_time+"</td>"; 
 		                 
 				  	if(item.user_id_comment == "${sessionScope.loginuser.user_id}"){ // 로그인한 회원 댓글 수정/삭제  
-				       	html +=   '<td><button type="button" onclick="openUpdateModal('+item.user_collection_seq+','+item.user_collection_content+')" style="font-weight: bolder; color: #ff0558; border: none; background-color: transparent; font-size: 9pt;">수정</button></td>'
+				       	html +=   '<td><button type="button" onclick="openUpdateModal('+item.user_collection_seq+')" style="font-weight: bolder; color: #ff0558; border: none; background-color: transparent; font-size: 9pt;">수정</button></td>'
 				       		  +   '<td><button type="button" onclick="del_user_Comment('+item.user_collection_seq+')" style="font-weight: bolder; color: #ff0558; border: none; background-color: transparent; font-size: 9pt;">삭제</button></td>'
  
 			        }      
@@ -1271,12 +1271,13 @@
   //== 댓글 삭제  끝 ==// 
   
   // == 댓글 수정 시작 == //
-  function openUpdateModal(seq,comment) {
+  function openUpdateModal(seq) {
+	  const content = document.querySelector(`#commentucc[data-comment-seq="\${seq}"]`).textContent;
 
 	  Swal.fire({
 	    title: '댓글 수정',   
 	    input: 'text',   
-	    inputValue: comment,     
+	    inputValue: content,    
 	    showCancelButton: true,  
 	    confirmButtonText: '수정',
 	    cancelButtonText: '취소',  
