@@ -1315,3 +1315,16 @@ td.list_author {
 	max-width: 100%;
 	
 }
+
+.no-data {
+    border-bottom: 1px solid #ccc;
+    padding: 180px 0 200px 0;
+    text-align: center;
+    width: 100%;
+}
+
+.no-data .message {
+    color: #000;
+    font-size: 20px;
+}
+

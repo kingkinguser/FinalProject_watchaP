@@ -62,4 +62,12 @@ public interface InterCommunityDAO {
 
 	void incrementViewCount(String postId);
 
+	int deletePost(Map<String, String> paraMap);
+
+	void deletePostTags(PostVO post);
+
+	int editPost(PostVO post);
+
+	int insertPostTags(PostVO post);
+
 }

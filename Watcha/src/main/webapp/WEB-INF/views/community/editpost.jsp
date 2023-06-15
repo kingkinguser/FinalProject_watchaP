@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <% String ctxPath = request.getContextPath(); %>   
+ <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"  %>
  
 <!DOCTYPE html>
 <html>
@@ -21,13 +22,6 @@
 <script type="text/javascript" src="<%= ctxPath%>/resources/js/jquery.nice-select.js"></script>
 
 
-
-<%-- *** ajax로 파일을 업로드할때 가장 널리 사용하는 방법 ==> ajaxForm *** --%>
-<script type="text/javascript" src="<%= ctxPath%>/resources/js/jquery.form.min.js"></script>
-
-
-
-
 <link rel="stylesheet" type="text/css" href="<%= ctxPath%>/resources/quilljs/quill/quill.snow.css" />
 <link href="https://unpkg.com/quill-image-uploader@1.2.4/dist/quill.imageUploader.min.css" rel="stylesheet"/>
 <link rel="stylesheet" href="<%= ctxPath%>/resources/css/community.css" type="text/css">
@@ -40,6 +34,7 @@
 <script src="https://unpkg.com/quill-image-uploader@1.2.4/dist/quill.imageUploader.min.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 
 <style type="text/css">
 
@@ -54,7 +49,9 @@
 var quill;
 
 $(document).ready(function() {
+	$('#postCategoryId').val(`${selectedPost.postCategoryId}`);
 	$('#postCategoryId').niceSelect();
+	
 	$('#tags').on('keyup', searchMovieList);
 	setQuillEditor();
 	$(document).on('click', '.movie-list-item', appendMovieTag);
@@ -130,8 +127,8 @@ $(document).ready(function() {
 		
 		quill = new Quill('#quillEditor', option);
 
-
-		
+		quill.root.innerHTML = `${selectedPost.content}`;
+		document.getElementById('title').value = `${selectedPost.title}`;
 	}
 
 
@@ -177,29 +174,35 @@ $(document).ready(function() {
 
 	function submitFormData(formData) {
 		
-		fetch('write', {
+		fetch(`/watcha/community/${selectedPost.postId}/edit`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify(formData)
 		})
-		.then(response => {
-			if (response.ok) {
-				return response.json();
-			} else {
-				throw new Error('Post creation failed');
+		.then(response => response.json())
+		.then(data => data.status)
+		.then(result => {
+			if (result === 1) {
+				Swal.fire({
+				icon: 'success',
+				title: '게시글 수정에 성공하였습니다.',
+				showConfirmButton: true,
+				timer: 3000
+				}).then((result) => {
+					window.location.href = `/watcha/community/${selectedPost.postId}`;
+				});
+			} else if (result === 0) {
+				Swal.fire({
+				icon: 'error',
+				title: '게시글 수정에 실패했습니다.',
+				showConfirmButton: true,
+				timer: 3000
+				}).then((result) => {
+					window.location.href = `/watcha/community/${selectedPost.postId}`;
+				});
 			}
-		})
-		.then(data => {
-			Swal.fire({
-			  icon: 'success',
-			  title: '게시글을 작성했습니다.',
-			  showConfirmButton: true,
-			  timer: 3000,
-			}).then((result) => {
-				window.location.href = `\${data.postId}`;
-			});
 		})
 		.catch(error => {
 			console.error('Error:', error);
@@ -236,7 +239,7 @@ $(document).ready(function() {
 	
 	 
 	function fetchMovies(searchText) {
-		const apiUrl = `write/movielist?search=\${encodeURIComponent(searchText)}`;
+		const apiUrl = `/watcha/community/write/movielist?search=\${encodeURIComponent(searchText)}`;
 		return fetch(apiUrl)
 		.then((response) => response.json())
 		.then((data) => {
@@ -245,7 +248,7 @@ $(document).ready(function() {
 	}
 
 	function fetchMovie(movieId) {
-		const apiUrl = `write/movie?search=\${encodeURIComponent(movieId)}`;
+		const apiUrl = `/watcha/community/write/movie?search=\${encodeURIComponent(movieId)}`;
 		return fetch(apiUrl)
 		.then((response) => response.json())
 		.then((data) => {
@@ -415,10 +418,10 @@ $(document).ready(function() {
 				<div class="postwrite-box" >
 					<section class="ink_board member_mode">
 						<div class="bd_write round20">
-							<form id="post-form" action="/watcha/community/write" method="POST">
+							<form id="post-form" action="/watcha/community/${selectedPost.postId}/edit" method="POST">
 								
 								<div class="write_header">
-									<h3>쓰기</h3>
+									<h3>글 수정하기</h3>
 									<div class="bt_area2 bt_right">
 										<button class="ib ib2 ib_mono"
 											onclick="window.history.back();return false;" type="button">취소</button>
@@ -426,6 +429,7 @@ $(document).ready(function() {
 									</div>
 								</div>
 								<input type="hidden" id="content" name="content" value="">
+								<input type="hidden" id="postId" name="postId" value="${selectedPost.postId}">
 								<input type="hidden" id="userId" name="userId" value="${sessionScope.loginuser.user_id}">
 								<div class="write_body">
 									<div class="write_ctg">
@@ -455,6 +459,24 @@ $(document).ready(function() {
 									</div>
 									<div class="movie_list">
 										<!-- 선택한 영화 들어가는 공간 -->
+										<c:forEach items="${selectedPost.movies }" var="movie">
+										<div class="movie_item" data-movie-id="${movie.movie_id}">
+											<div class="movie_item__poster">
+												<img class="poster__img" src="https://image.tmdb.org/t/p/w92/${movie.poster_path}" lazy="loaded">
+											</div>
+											<div class="movie_item__description">
+												<h5 class="description__title">${movie.movie_title}</h5>
+												<p class="description__subtitle">영화 · ${movie.releaseYear}</p>
+												<div class="description__bottom">
+												<span class="kino_score__percent green">평균 ★${movie.rating_avg} (${movie.rating_count} 명)</span>
+												</div>
+											</div>
+											<div class="movie_item__more">
+												<button type="button" class="more__btn" data-movie-id="${movie.movie_id}">삭제</button>
+											</div>
+										</div>
+										</c:forEach>
+										<!--  -->
 									</div>
 									
 								</div>
