@@ -288,7 +288,7 @@
 		
 		const FrmMovieSearchUser = document.FrmMovieSearchDetail;
 		FrmMovieSearchUser.action="<%=ctxPath%>/goSearchUser.action";     /* // action 인것 바꾸기 */ 
-		FrmMovieSearchUser.method="ㅔㅐㄴㅅ";
+		FrmMovieSearchUser.method="get";
 		FrmMovieSearchUser.submit();	
 		
 	}
