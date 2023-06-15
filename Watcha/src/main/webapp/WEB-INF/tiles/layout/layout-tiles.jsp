@@ -79,7 +79,7 @@ var stompClient = null;
 if (${sessionScope.loginuser != null} && !stompClient) {
     var socket = new SockJS('/watcha/echo');
     stompClient = Stomp.over(socket);
-    stompClient.debug = null; 콘솔안뜨게 하기
+    stompClient.debug = null;
 
     stompClient.connect({}, function(frame) {
         stompClient.subscribe(`/topic/${sessionScope.loginuser.user_id}/infomsg`, function(response) {
