@@ -95,16 +95,16 @@ public class WatchaService implements InterWatchaService {
 		  
 		// === [맨처음][이전] 만들기 === //
 		if(pageNo != 1) {
-			pageBar += "<li><button type='button' onclick='myReviewPaging(1)'>[처음]</button></li>";
-			pageBar += "<li><button type='button' onclick='myReviewPaging("+(pageNo-1)+")'>"+(pageNo-1)+"</button></li>";
+			pageBar += "<li class='page-item'><button class='page-link' type='button' onclick='myReviewPaging(1)'>[처음]</button></li>";
+			pageBar += "<li class='page-item'><button class='page-link' type='button' onclick='myReviewPaging("+(pageNo-1)+")'>"+(pageNo-1)+"</button></li>";
 		}
 		  
 		while(!(loop > blockSize || pageNo > totalPage)) {
 		   if(pageNo == currentShowPageNo) {
-		      pageBar += "<li style='color: #ff0558;'><button type='button' onclick='myReviewPaging("+pageNo+")'>"+pageNo+"</button></li>";
+		      pageBar += "<li class='page-item' style='color: #ff0558;'><button class='page-link' type='button' onclick='myReviewPaging("+pageNo+")'>"+pageNo+"</button></li>";
 		   }
 		   else {
-			  pageBar += "<li><button type='button' onclick='myReviewPaging("+pageNo+")'>"+pageNo+"</button></li>";
+			  pageBar += "<li class='page-item'><button class='page-link' type='button' onclick='myReviewPaging("+pageNo+")'>"+pageNo+"</button></li>";
 		   }
 		   loop++;
 		   pageNo++;
@@ -112,8 +112,8 @@ public class WatchaService implements InterWatchaService {
 		  
 		// === [다음][마지막] 만들기 === //
 		if( pageNo <= totalPage ) {
-		  pageBar += "<li><button type='button' onclick='myReviewPaging("+(pageNo+1)+")'>next</button></li>";
-		  pageBar += "<li><button type='button' onclick='myReviewPaging("+totalPage+")'>[마지막]</button></li>"; 
+		  pageBar += "<li class='page-item'><button class='page-link' type='button' onclick='myReviewPaging("+(pageNo+1)+")'>next</button></li>";
+		  pageBar += "<li class='page-item'><button class='page-link' type='button' onclick='myReviewPaging("+totalPage+")'>[마지막]</button></li>"; 
 		}
 		pageBar += "</ul>";
 

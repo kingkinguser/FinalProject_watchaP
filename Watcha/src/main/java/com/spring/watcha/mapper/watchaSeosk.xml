@@ -137,11 +137,11 @@
 	<select id="movieReviewPaging" parameterType="HashMap" resultMap="movieReviewPaging_Map">
 	    select A.review_id, A.movie_id, A.review_content, A.review_date, A.spoiler_status, A.number_of_likes, A.number_of_comments
 	         , A.user_id, A.profile_image, A.name
-	         , nvl(B.rating, 0) AS rating 
-	         ,( select case Y.user_id when #{user_id} then 1 else 0 end as like_review
-	            from movie_review X join review_like Y
-	            on X.review_id = Y.review_id
-	            where Y.review_id = A.review_id ) AS like_review
+	         , nvl(B.rating, 0) AS rating
+	         , nvl((select case Y.user_id when #{user_id} then 1 else 0 end as like_review
+	           from movie_review X join review_like Y
+	           on X.review_id = Y.review_id
+	           where Y.review_id = A.review_id), 0) AS like_review
 	            <!-- 로그인한 회원이 해당 한줄평에 좋아요를 했으면 1, 좋아요를 하지 않았으면 0 -->
 	    from 
 	    (
@@ -149,12 +149,13 @@
 	             , R.review_id, R.movie_id, R.review_content
 	             , to_char(R.review_date, 'yyyy-mm-dd') AS review_date
 	             , R.spoiler_status, R.number_of_likes, R.number_of_comments
-	             , M.user_id, M.profile_image, M.name  
+	             , M.user_id, M.profile_image, M.name
 	        from movie_review R join member M
 	        on R.user_id = M.user_id
+	        where R.movie_id = #{movie_id}
 	    ) A join star_rating B
 	    on A.movie_id = B.movie_id
-	    where A.movie_id = #{movie_id} and B.user_id = A.user_id
+	    where B.user_id = A.user_id
 	  <if test='startRno != "" and endRno != ""'>
 	    and rno between #{startRno} and #{endRno}
 	  </if>	    
