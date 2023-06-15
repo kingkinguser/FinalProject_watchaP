@@ -1447,69 +1447,6 @@
 	</body>
 </c:if>  
 
-<c:if test="${empty requestScope.collection_viewA}"> 
-	<body> 
-		<div id="container">
-		 
-			<div class="card">
-			   <div class="card-body">    
-							 
-			   <img src="<%= ctxPath%>/resources/images/왓챠컬렉션배경이미지.jpg" class="card-img-top" style="width: 100%; height: 250px;" />	 
-				     
-			   <div id="infoinfo">                  
-			      	       
-			        <div style="font-size: 30px;  margin: 20px 0 5px 430px; font-weight: bold;">나만의 <span style="color:#ff0558">컬렉션 </span></div>   
-		            
-		            <div style="margin: 0 0 15px 435px; font-weight: bold;">내가 받은 좋아요 총수: <span id="likeTotal" style="color:#ff0558"></span></div>
-		            
-			   </div>    
-				
-			      	<hr style="margin: 0 30px 0 30px;">  	     
-			      	
-			    	<div style="font-size: 20px; font-weight: bold; margin: 20px 0 0 47px;">나의 컬렉션</div>	
-	 
-					  <div class="row" id="displayHITB" style="margin-left: 20px;"></div>  
-					   
-	   					  <c:if test="${requestScope.totalCount.COUNT > 5}">   
-						      <div>  
-						         <p class="text-center">
-						            <span id="end" style="display:block; margin:20px 0px 0 0; font-weight:bold; font-size: 12pt;"></span> 
-						            <button type="button" class="btn" id="btnMoreHIT" style="font-weight:bold; color:#ff0558;">더보기</button>
-						            <span id="totalHITCount">${requestScope.totalCount.COUNT}</span>
-						            <span id="countHIT">0</span>
-						         </p> 
-						      </div>
-				      	  </c:if>
-				      	  
-				    <hr style="margin: 0 30px 0 30px;">  
-				    		
-				    <div style="font-size: 20px; font-weight: bold; margin: 20px 0 0 47px; display: inline-block;">댓글</div>			
-				    		
-				         <input type="hidden" name="user_id" id="user_id" value="${requestScope.collection_viewB[0].user_id}" />
-				         <input type="hidden" name="collection_id" id="collection_id" value="${requestScope.collection_viewB[0].collection_id}" /> 
-			    	 
-			    	<%-- === 댓글 내용 보여주기 === --%>
-			    	<div id="commentBack">
-				    	<table>
-							<tbody id="commentDisplay"></tbody>
-						</table>
-			    	</div>
-			    	
-		    	   	<div style="margin: 15px 0 5px 400px;">    
-				    	<div class="pagination">
-						  <a id="pageBar"></a>
-						</div> 
-			    	</div>	 
-			    	
-			    	<input style="margin-left: 140px;" class="commentP" type="text" name="user_collection_content" id="user_collection_content">
-			    	<button style="margin-left: 20px;" class="btnP" onclick="goAddUserWriteB()"><i class="far fa-comment"></i>제출</button>
-			    		
-			    </div>
-			</div>
-		</div> 
-	</body>
-</c:if>
-
 <c:if test="${not empty requestScope.collection_viewB}"> 
 	<body> 
 		<div id="container">
@@ -1609,9 +1546,9 @@
 			</div>
 		</div> 
 	</body> 
-</c:if>
+</c:if> 
 
-<c:if test="${empty requestScope.collection_viewB}"> 
+<c:if test="${empty requestScope.collection_viewB && empty requestScope.collection_viewA}"> 
 	<body> 
 		<div id="container">
 		 
