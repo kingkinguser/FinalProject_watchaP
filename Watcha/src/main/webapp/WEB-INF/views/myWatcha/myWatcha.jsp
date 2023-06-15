@@ -59,10 +59,15 @@ span#rating_count, span#reviewCount, span#collectionCount {padding-left: 10px; f
 .nav-pills .active {font-weight: 600; color: #ff0558; cursor: pointer;}
 div#div_nav_content {position: relative; top:-2rem;}
 
+h6.card-title:hover {color: #ff0558;}
+
 div#div_review > div {background-color: #f8f8f8; border: solid 1px #e6e6e6; border-radius: 2%;}
 div#div_reviewPageBar {text-align: center; margin: 10px;}
 div#div_reviewPageBar li {display:inline-block; padding: 0px 5px;}
 div#div_reviewPageBar button {background-color: #ffffff; border: none;}
+
+button.page-link {color: #666666; border: 1px solid #dee2e6 !important; width: 36px;}
+button.page-link:hover {color: #ff0558; font-weight: bold;}
 
 <%-- 캐러셀 --%>
 .carousel-inner .carousel-item.active,
@@ -309,7 +314,6 @@ a, a:hover, .fc-daygrid {color: #000; text-decoration: none; background-color: t
  	    	}
  	    });
  	    
-
  		// 검색하기 - 검색어를 입력후 엔터할 때
  		$("input#searchWord").keyup(function(e){
  			if(e.keyCode == 13){
@@ -399,8 +403,10 @@ a, a:hover, .fc-daygrid {color: #000; text-decoration: none; background-color: t
 							  + 	  '<img class="img-thumnail rounded" style="width: 100%; margin: 5px auto; border: solid 1px #e6e6e6;" src="https://image.tmdb.org/t/p/w780/'+item.poster_path+'">'
 							  + 	'</div>'
 							  +     '<div class="col-md-8 p-1" style="display: inline-block;">'
-							  + 	  '<p class="h6 pl-2 my-2" style="border-bottom: solid 1px #e6e6e6; padding: 5px;"><span style="display: none;">'+item.movie_id+'</span>'+item.movie_title+'</p>'
-							  + 	  '<p style="font-size: 11pt; padding: 3px; margin: 3px; height: 80px; overflow: auto;">'+item.review_content+'</p>';
+							  + 	  '<a href="<%= ctxPath %>/myWatcha/searchDetail.action?movie_id='+item.movie_id+'">'
+							  +		    '<h6 class="card-title pl-2 my-2 text-center" style="border-bottom: solid 1px #e6e6e6; padding: 5px; font-size: 14pt;"><span style="display: none;">'+item.movie_id+'</span>'+item.movie_title+'</h6>'
+							  +		  '</a>'
+							  + 	  '<p style="font-size: 11pt; padding: 3px; margin: 3px; height: 120px; overflow: auto;">'+item.review_content+'</p>';
 						if(item.spoiler_status == 0){ // 스포일러 포함X
 							html +=   '<p class="m-1 text-center" style="font-size: 11pt; color: gray;"><i class="fa-solid fa-face-meh" style="color: #e6e6e6;"></i><span class="pl-1">스포일러 미포함</span></p>';
 						}
@@ -473,7 +479,6 @@ a, a:hover, .fc-daygrid {color: #000; text-decoration: none; background-color: t
 	// 무비다이어리 모달창 보여주기
 	function movieDiaryModal(watching_date){
 		$("input#watching_date").val(watching_date);
- 	    $("input#watching_date").datepicker();
  	    
  	    // 관람일자가 이미 등록된 영화는 무비다이어리 등록에서 제외하도록 한다.
 		let diaryExists_arr = $("input.movie_id").val().split(",");
@@ -755,7 +760,7 @@ a, a:hover, .fc-daygrid {color: #000; text-decoration: none; background-color: t
 
 	        <div style="display: flex; padding: 0 50px;" class="row mx-auto">
 	 	      <h5 class="col-md-9" style="padding-left: 5px; font-weight: 600;">평가한 영화<span id="rating_count">${requestScope.userInfo.rating_count}</span></h5>
-	 	      <a class="col-md-3 text-right" href="<%= ctxPath%>/myWatcha/rateMovies.action" style="color: black; text-decoration: none;">전체보기</a>
+	 	      <a class="col-md-3 text-right" href="<%= ctxPath%>/myWatcha/rateMovies.action" style="color: #ff0558; text-decoration: none; font-weight: bold;">전체보기</a>
 	        </div>
 	        <div id="div_rateMovies" class="row mx-auto my-1 mb-3" style="padding: 0 50px;">
 			<c:if test="${requestScope.userInfo.rating_count > 4}">
@@ -1118,10 +1123,10 @@ a, a:hover, .fc-daygrid {color: #000; text-decoration: none; background-color: t
 
 		<%-- 관람일자 등록 모달창 --%>
 		<div class="modal fade" id="makeMovieDiary" data-keyboard="false">
-		<form name="movieDiaryFrm">
 		  <div class="modal-dialog modal-dialog-centered mx-auto">
 		    <div class="modal-content mx-auto" style="width: 85%;">
 		      <div class="modal-body text-center" style="margin: 10px;">
+			  <form name="movieDiaryFrm">
 		        <h5 class="modal-title" style="font-weight: bold;">무비다이어리 - 관람일자 등록하기<button type="button" class="close" data-dismiss="modal">&times;</button></h5>
 		        <p style="color: gray;">별점평가를 한 영화에 한해서만 관람일자 등록이 가능해요.</p>
 			    <div class="row mx-auto mt-3 mb-2" style="display: flex; padding: 10px 0;">
@@ -1150,10 +1155,10 @@ a, a:hover, .fc-daygrid {color: #000; text-decoration: none; background-color: t
 			    </div>
 		        <button type="button" class="btn" onclick="registerDiary()" style="padding: 10px 30px; color: #ffffff; background-color: #ff0558;">등록하기</button>
 		        <button type="reset" class="btn btn-secondary" style="padding: 10px 30px;">취소하기</button>
+			  </form>
     	      </div>
 		    </div>
 		  </div>
-		</form>
 		</div>
 
   </div>
