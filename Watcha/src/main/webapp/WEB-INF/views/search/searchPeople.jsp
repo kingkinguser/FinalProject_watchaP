@@ -150,6 +150,10 @@
 		$("button#user").click(function(){
 			SearchUser();
 		});
+		
+		$("button#excel").click(function(){
+			excel();
+		});
 	
 	});
 		
@@ -253,7 +257,7 @@
 		const searchText = $('input#lastSearchWord').val();
 		
 		const FrmMovieSearchMovie = document.FrmMovieSearchDetail;
-		FrmMovieSearchMovie.action="<%=ctxPath%>/goSearch.action";     /* // action 인것 바꾸기 */ 
+		FrmMovieSearchMovie.action="<%=ctxPath%>/goSearch.action";    
 		FrmMovieSearchMovie.method="get";
 		FrmMovieSearchMovie.submit();	
 	}
@@ -265,7 +269,7 @@
 		const searchText = $('input#lastSearchWord').val();
 		
 		const FrmMovieSearchPeople = document.FrmMovieSearchDetail;
-		FrmMovieSearchPeople.action="<%=ctxPath%>/goSearchPeople.action";     /* // action 인것 바꾸기 */ 
+		FrmMovieSearchPeople.action="<%=ctxPath%>/goSearchPeople.action";   
 		FrmMovieSearchPeople.method="get";
 		FrmMovieSearchPeople.submit();	
 	}
@@ -276,7 +280,7 @@
 		const searchText = $('input#lastSearchWord').val();
 		
 		const FrmMovieSearchCollection = document.FrmMovieSearchDetail;
-		FrmMovieSearchCollection.action="<%=ctxPath%>/goSearchCollection.action";     /* // action 인것 바꾸기 */ 
+		FrmMovieSearchCollection.action="<%=ctxPath%>/goSearchCollection.action";    
 		FrmMovieSearchCollection.method="get";
 		FrmMovieSearchCollection.submit();	
 		
@@ -288,10 +292,18 @@
 		const searchText = $('input#lastSearchWord').val();
 		
 		const FrmMovieSearchUser = document.FrmMovieSearchDetail;
-		FrmMovieSearchUser.action="<%=ctxPath%>/goSearchUser.action";     /* // action 인것 바꾸기 */ 
+		FrmMovieSearchUser.action="<%=ctxPath%>/goSearchUser.action";    
 		FrmMovieSearchUser.method="get";
 		FrmMovieSearchUser.submit();	
 		
+	}
+	// 인물 엑셀로 저장 
+	function excel() {
+		
+		const FrmActorExcel = document.FrmMovieSearchDetail;
+		FrmActorExcel.action="<%=ctxPath%>/actor/excel/download.action";    
+		FrmActorExcel.method="post";
+		FrmActorExcel.submit();	
 	}
 	
 
@@ -336,8 +348,7 @@
 			<input type="hidden" id="lastSearchWord" name="lastSearchWord" value="${lastSearchWord.replace('<', ' ').replace('>', ' ')}" />
 		</form>
 		
-		<h4 class="h4" style="font-weight: bold;" id="title_people">인물</h4>
-		
+		<span class="h4" style="font-weight: bold;" id="title_people">인물<button type="button" style="float: right" class="btn btn-success" id="excel">excel 저장</button></span>
 		
 		<div>
 			<ul style="padding: 0; margin: 0;" id="displayPeople">

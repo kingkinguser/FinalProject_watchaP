@@ -5,16 +5,34 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.poi.common.usermodel.HyperlinkType;
+import org.apache.poi.hssf.usermodel.HSSFDataFormat;
+import org.apache.poi.ss.usermodel.BorderStyle;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.CreationHelper;
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.Hyperlink;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.streaming.SXSSFSheet;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -616,6 +634,411 @@ public class WatchaController {
         return new ModelAndView(new MappingJackson2JsonView(), Collections.singletonMap("jsonResponse", json));
         
 	}
+	
+	
+	
+	// excel 영화 정보 다운로드 하기
+	@RequestMapping(value = "/excel/download.action", method = {RequestMethod.POST} )
+	public String download(HttpServletRequest request, Model model) {
+		
+		String searchWord = request.getParameter("searchWord");
+		
+		Map<String, String> paraMap = new HashMap<>();
+		
+		paraMap.put("searchWord", searchWord);
+		
+		List<Map<String, String>> movieexcel = service.movieexcel(paraMap);
+		
+		
+		SXSSFWorkbook workbook = new SXSSFWorkbook();  // 엑셀을 사용하기 위해 넣는다 (pom.xml 에 이것을 쓰기위한 준비가 있어야 한다 검색 엑셀 하면 나온다.)
+		
+		SXSSFSheet sheet = workbook.createSheet("검색한 ' " + searchWord + " '의 영화 정보");
+		
+		sheet.setColumnWidth(0, 2000);   
+	    sheet.setColumnWidth(1, 13000);
+	    sheet.setColumnWidth(2, 2000);
+	    sheet.setColumnWidth(3, 13000);
+	    sheet.setColumnWidth(4, 3000);
+	    sheet.setColumnWidth(5, 20000);
+	    sheet.setColumnWidth(6, 2000);
+	    sheet.setColumnWidth(7, 20000);
+		
+	    int rowLocation = 0;
+	    
+	    
+	    // 엑셀 서식 지정하기 //
+	    
+		////////////////////////////////////////////////////////////////////////////////////////
+		// CellStyle 정렬하기(Alignment)
+		// CellStyle 객체를 생성하여 Alignment 세팅하는 메소드를 호출해서 인자값을 넣어준다.
+		// 아래는 HorizontalAlignment(가로)와 VerticalAlignment(세로)를 모두 가운데 정렬 시켰다.
+		CellStyle mergeRowStyle = workbook.createCellStyle();          //workbook 은 excel 이라고 생각해도 된다. // mergeRowStyle 는 병합하겠다라는 것을 임의로 이름을 준것임
+		mergeRowStyle.setAlignment(HorizontalAlignment.CENTER);        // HorizontalAlignment 은 가운데 정렬을 뜻한다.
+		mergeRowStyle.setVerticalAlignment(VerticalAlignment.CENTER);  // VerticalAlignment 세로 줄 간격 중앙을 말한다.
+		
+		CellStyle headerStyle = workbook.createCellStyle();            // header 스타일 결과물에서 부서번호 등등을 나타내는 노란색 부분 
+		headerStyle.setAlignment(HorizontalAlignment.CENTER);          
+		headerStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+		
+		
+		// CellStyle 배경색(ForegroundColor)만들기
+		// setFillForegroundColor 메소드에 IndexedColors Enum인자를 사용한다.
+		// setFillPattern은 해당 색을 어떤 패턴으로 입힐지를 정한다.
+		mergeRowStyle.setFillForegroundColor(IndexedColors.PLUM.getIndex());  // IndexedColors.PLUM.getIndex() 는 색상(남색)의 인덱스값을 리턴시켜준다. 
+		mergeRowStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);            // 테두리 모양을 나타낸다. (굵은 상자 테두리 를 하겠다) 
+		
+		headerStyle.setFillForegroundColor(IndexedColors.LIGHT_YELLOW.getIndex()); // IndexedColors.LIGHT_YELLOW.getIndex() 는 연한노랑의 인덱스값을 리턴시켜준다. 
+		headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);              // 테두리 모양을 나타낸다. (굵은 상자 테두리 를 하겠다) 
+		
+
+		// Cell 폰트(Font) 설정하기
+		// 폰트 적용을 위해 POI 라이브러리의 Font 객체를 생성해준다.
+		// 해당 객체의 세터를 사용해 폰트를 설정해준다. 대표적으로 글씨체, 크기, 색상, 굵기만 설정한다.
+		// 이후 CellStyle의 setFont 메소드를 사용해 인자로 폰트를 넣어준다.
+		Font mergeRowFont = workbook.createFont(); // import org.apache.poi.ss.usermodel.Font; 으로 한다.
+		mergeRowFont.setFontName("나눔고딕");                       // font 는 나눔고딕
+		mergeRowFont.setFontHeight((short)500);                   // 글자크기 500
+		mergeRowFont.setColor(IndexedColors.WHITE.getIndex());    // 글자색상 흰색
+		mergeRowFont.setBold(true);								  // 글자 굵기 한다.
+		
+		mergeRowStyle.setFont(mergeRowFont);                      
+		
+		
+		// CellStyle 테두리 Border
+		// 테두리는 각 셀마다 상하좌우 모두 설정해준다.
+		// setBorderTop, Bottom, Left, Right 메소드와 인자로 POI라이브러리의 BorderStyle 인자를 넣어서 적용한다.
+		headerStyle.setBorderTop(BorderStyle.THICK);			  // 테두리마다 다르게 설정 위, 아래만 굵게, 나머지는 가늘게 
+		headerStyle.setBorderBottom(BorderStyle.THICK);
+		headerStyle.setBorderLeft(BorderStyle.THIN);
+		headerStyle.setBorderRight(BorderStyle.THIN);
+		
+		
+		// Cell Merge 셀 병합시키기
+		/* 셀병합은 시트의 addMergeRegion 메소드에 CellRangeAddress 객체를 인자로 하여 병합시킨다.
+		CellRangeAddress 생성자의 인자로(시작 행, 끝 행, 시작 열, 끝 열) 순서대로 넣어서 병합시킬 범위를 정한다. 배열처럼 시작은 0부터이다.  
+		*/
+		// 병합할 행 만들기
+		Row mergeRow = sheet.createRow(rowLocation);   // 0값이 들어가는데 엑셀에서 행의 시작은 0부터 시작하기 때문에 1번째 행이 병합된다. 
+		
+		
+		// 병합할 행에 "우리회사 사원정보" 로 셀을 만들어 셀에 스타일 주기 
+		for(int i=0; i < 8; i++) {
+			Cell cell = mergeRow.createCell(i);   // 셀을 만들어라 
+			cell.setCellStyle(mergeRowStyle);     // 셀에 스타일을 준다.
+			cell.setCellValue("검색한 ' " + searchWord + " '의 영화 정보");    // 셀에 글자를 넣어준다
+		}// end of for
+	    
+		
+		
+		// 셀 병합하기 
+		sheet.addMergedRegion(new CellRangeAddress(rowLocation, rowLocation, 0, 7));  // 시작 행, 끝 행, 시작 열, 끝 열
+		// 처음 행 부분만 병합한다. 
+		//////////////////////////제목 끝 ////////////////////////////////////////////////////////
+		
+		////////////// header 부분 /////////////////
+		// header행 생성 
+		
+		Row headerRow = sheet.createRow(++rowLocation);    // 0값이 들어가는데 엑셀에서 행의 시작은 0부터 시작함
+										   // ++rowLocation는 전위 행위자로 1행에 만들겠다 
+		
+		// 해당 행의 첫번째 열 셀 생성
+        Cell headerCell = headerRow.createCell(0); // 엑셀에서 열의 시작은 0 부터 시작한다.
+        headerCell.setCellValue("영화 id");
+        headerCell.setCellStyle(headerStyle);
+        
+        // 해당 행의 두번째 열 셀 생성
+        headerCell = headerRow.createCell(1);
+        headerCell.setCellValue("영화 제목");
+        headerCell.setCellStyle(headerStyle);
+        
+        // 해당 행의 세번째 열 셀 생성
+        headerCell = headerRow.createCell(2);
+        headerCell.setCellValue("원본 언어");
+        headerCell.setCellStyle(headerStyle);
+        
+        // 해당 행의 네번째 열 셀 생성
+        headerCell = headerRow.createCell(3);
+        headerCell.setCellValue("원본 제목");
+        headerCell.setCellStyle(headerStyle);
+        
+        // 해당 행의 다섯번째 열 셀 생성
+        headerCell = headerRow.createCell(4);
+        headerCell.setCellValue("개봉 일자");
+        headerCell.setCellStyle(headerStyle);
+        
+        // 해당 행의 여섯번째 열 셀 생성
+        headerCell = headerRow.createCell(5);
+        headerCell.setCellValue("TAGLINE");
+        headerCell.setCellStyle(headerStyle);
+        
+        // 해당 행의 일곱번째 열 셀 생성
+        headerCell = headerRow.createCell(6);
+        headerCell.setCellValue("상영시간");
+        headerCell.setCellStyle(headerStyle);
+        
+        // 해당 행의 여덟번째 열 셀 생성
+        headerCell = headerRow.createCell(7);
+        headerCell.setCellValue("포스터 경로");
+        headerCell.setCellStyle(headerStyle);
+
+        
+        Row bodyRow = null;
+        Cell bodyCell = null;
+        
+          
+        for(int i=0; i<movieexcel.size(); i++) {
+           
+           Map<String, String> empMap = movieexcel.get(i);   //get(i)는 리스트 값에서 한개의 행을 가져오는 것 
+           
+           // 행생성
+           bodyRow = sheet.createRow(i + (rowLocation+1));  // 처음에는 2로 시작한다. rowLocation은 처음에 1
+           
+           
+           bodyCell = bodyRow.createCell(0);
+           bodyCell.setCellValue(empMap.get("movie_id")); //xml의 key 값을 준다.<HashMap> 에 있는 키값  
+           
+           
+           bodyCell = bodyRow.createCell(1);
+           bodyCell.setCellValue(empMap.get("movie_title")); 
+                      
+           
+           bodyCell = bodyRow.createCell(2);
+           bodyCell.setCellValue(empMap.get("original_language")); 
+           
+          
+           bodyCell = bodyRow.createCell(3);
+           bodyCell.setCellValue(empMap.get("original_title")); 
+           
+          
+           bodyCell = bodyRow.createCell(4);
+           bodyCell.setCellValue(empMap.get("release_date")); 
+           
+           
+           bodyCell = bodyRow.createCell(5);
+           bodyCell.setCellValue(empMap.get("tagline"));    
+           
+           
+           bodyCell = bodyRow.createCell(6);
+           bodyCell.setCellValue(empMap.get("runtime")); 
+           
+           
+           bodyCell = bodyRow.createCell(7);
+           bodyCell.setCellValue(empMap.get("poster_path")); 
+           
+           CreationHelper creationHelper = workbook.getCreationHelper();
+
+	        // Create a Hyperlink
+	        Hyperlink hyperlink = creationHelper.createHyperlink(HyperlinkType.URL);
+	        hyperlink.setAddress(empMap.get("poster_path"));
+	
+	        // Set the Hyperlink to the cell
+	        bodyCell.setHyperlink(hyperlink);
+           
+           
+        }// end of for------------------------------
+        
+        model.addAttribute("locale",Locale.KOREA);   //model은 저장소 역할만 한다.  한글 안깨지게 하는것 
+	    model.addAttribute("workbook",workbook);     // workbook 은 엑셀을 뜻한다. 
+	    model.addAttribute("workbookName","검색어 '"+ searchWord + "'의 영화 정보");
+	    
+	    return "excelDownloadView";  
+		
+		
+	}
+	
+	
+	
+	// excel 인물 정보 다운로드 하기
+	@RequestMapping(value = "/actor/excel/download.action", method = {RequestMethod.POST} )
+	public String actorExcel(HttpServletRequest request, Model model) {
+		
+		String lastSearchWord = request.getParameter("lastSearchWord");
+		
+		Map<String, String> paraMap = new HashMap<>();
+		
+		paraMap.put("lastSearchWord", lastSearchWord);
+		
+		List<Map<String, String>> actorExcel = service.actorExcel(paraMap);
+		
+		
+		SXSSFWorkbook workbook = new SXSSFWorkbook();  // 엑셀을 사용하기 위해 넣는다 (pom.xml 에 이것을 쓰기위한 준비가 있어야 한다 검색 엑셀 하면 나온다.)
+		
+		SXSSFSheet sheet = workbook.createSheet("검색한 ' " + lastSearchWord + " '의 인물 정보");
+		
+		sheet.setColumnWidth(0, 2000);   
+	    sheet.setColumnWidth(1, 5000);
+	    sheet.setColumnWidth(2, 5000);
+	    sheet.setColumnWidth(3, 7000);
+	    sheet.setColumnWidth(4, 13000);
+	    sheet.setColumnWidth(5, 20000);
+
+		
+	    int rowLocation = 0;
+	    
+	    
+	    // 엑셀 서식 지정하기 //
+	    
+		////////////////////////////////////////////////////////////////////////////////////////
+		// CellStyle 정렬하기(Alignment)
+		// CellStyle 객체를 생성하여 Alignment 세팅하는 메소드를 호출해서 인자값을 넣어준다.
+		// 아래는 HorizontalAlignment(가로)와 VerticalAlignment(세로)를 모두 가운데 정렬 시켰다.
+		CellStyle mergeRowStyle = workbook.createCellStyle();          //workbook 은 excel 이라고 생각해도 된다. // mergeRowStyle 는 병합하겠다라는 것을 임의로 이름을 준것임
+		mergeRowStyle.setAlignment(HorizontalAlignment.CENTER);        // HorizontalAlignment 은 가운데 정렬을 뜻한다.
+		mergeRowStyle.setVerticalAlignment(VerticalAlignment.CENTER);  // VerticalAlignment 세로 줄 간격 중앙을 말한다.
+		
+		CellStyle headerStyle = workbook.createCellStyle();            // header 스타일 결과물에서 부서번호 등등을 나타내는 노란색 부분 
+		headerStyle.setAlignment(HorizontalAlignment.CENTER);          
+		headerStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+		
+		
+		// CellStyle 배경색(ForegroundColor)만들기
+		// setFillForegroundColor 메소드에 IndexedColors Enum인자를 사용한다.
+		// setFillPattern은 해당 색을 어떤 패턴으로 입힐지를 정한다.
+		mergeRowStyle.setFillForegroundColor(IndexedColors.PLUM.getIndex());  // IndexedColors.PLUM.getIndex() 는 색상(남색)의 인덱스값을 리턴시켜준다. 
+		mergeRowStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);            // 테두리 모양을 나타낸다. (굵은 상자 테두리 를 하겠다) 
+		
+		headerStyle.setFillForegroundColor(IndexedColors.LIGHT_YELLOW.getIndex()); // IndexedColors.LIGHT_YELLOW.getIndex() 는 연한노랑의 인덱스값을 리턴시켜준다. 
+		headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);              // 테두리 모양을 나타낸다. (굵은 상자 테두리 를 하겠다) 
+		
+
+		// Cell 폰트(Font) 설정하기
+		// 폰트 적용을 위해 POI 라이브러리의 Font 객체를 생성해준다.
+		// 해당 객체의 세터를 사용해 폰트를 설정해준다. 대표적으로 글씨체, 크기, 색상, 굵기만 설정한다.
+		// 이후 CellStyle의 setFont 메소드를 사용해 인자로 폰트를 넣어준다.
+		Font mergeRowFont = workbook.createFont(); // import org.apache.poi.ss.usermodel.Font; 으로 한다.
+		mergeRowFont.setFontName("나눔고딕");                       // font 는 나눔고딕
+		mergeRowFont.setFontHeight((short)500);                   // 글자크기 500
+		mergeRowFont.setColor(IndexedColors.WHITE.getIndex());    // 글자색상 흰색
+		mergeRowFont.setBold(true);								  // 글자 굵기 한다.
+		
+		mergeRowStyle.setFont(mergeRowFont);                      
+		
+		
+		// CellStyle 테두리 Border
+		// 테두리는 각 셀마다 상하좌우 모두 설정해준다.
+		// setBorderTop, Bottom, Left, Right 메소드와 인자로 POI라이브러리의 BorderStyle 인자를 넣어서 적용한다.
+		headerStyle.setBorderTop(BorderStyle.THICK);			  // 테두리마다 다르게 설정 위, 아래만 굵게, 나머지는 가늘게 
+		headerStyle.setBorderBottom(BorderStyle.THICK);
+		headerStyle.setBorderLeft(BorderStyle.THIN);
+		headerStyle.setBorderRight(BorderStyle.THIN);
+		
+		
+		// Cell Merge 셀 병합시키기
+		/* 셀병합은 시트의 addMergeRegion 메소드에 CellRangeAddress 객체를 인자로 하여 병합시킨다.
+		CellRangeAddress 생성자의 인자로(시작 행, 끝 행, 시작 열, 끝 열) 순서대로 넣어서 병합시킬 범위를 정한다. 배열처럼 시작은 0부터이다.  
+		*/
+		// 병합할 행 만들기
+		Row mergeRow = sheet.createRow(rowLocation);   // 0값이 들어가는데 엑셀에서 행의 시작은 0부터 시작하기 때문에 1번째 행이 병합된다. 
+		
+		
+		// 병합할 행에 "우리회사 사원정보" 로 셀을 만들어 셀에 스타일 주기 
+		for(int i=0; i < 8; i++) {
+			Cell cell = mergeRow.createCell(i);   // 셀을 만들어라 
+			cell.setCellStyle(mergeRowStyle);     // 셀에 스타일을 준다.
+			cell.setCellValue("검색한 ' " + lastSearchWord + " '의 영화 정보");    // 셀에 글자를 넣어준다
+		}// end of for
+	    
+		
+		
+		// 셀 병합하기 
+		sheet.addMergedRegion(new CellRangeAddress(rowLocation, rowLocation, 0, 5));  // 시작 행, 끝 행, 시작 열, 끝 열
+		// 처음 행 부분만 병합한다. 
+		//////////////////////////제목 끝 ////////////////////////////////////////////////////////
+		
+		////////////// header 부분 /////////////////
+		// header행 생성 
+		
+		Row headerRow = sheet.createRow(++rowLocation);    // 0값이 들어가는데 엑셀에서 행의 시작은 0부터 시작함
+										   // ++rowLocation는 전위 행위자로 1행에 만들겠다 
+		
+		// 해당 행의 첫번째 열 셀 생성
+        Cell headerCell = headerRow.createCell(0); // 엑셀에서 열의 시작은 0 부터 시작한다.
+        headerCell.setCellValue("배우 id");
+        headerCell.setCellStyle(headerStyle);
+        
+        // 해당 행의 두번째 열 셀 생성
+        headerCell = headerRow.createCell(1);
+        headerCell.setCellValue("배우 이름");
+        headerCell.setCellStyle(headerStyle);
+        
+        // 해당 행의 세번째 열 셀 생성
+        headerCell = headerRow.createCell(2);
+        headerCell.setCellValue("성별");
+        headerCell.setCellStyle(headerStyle);
+        
+        // 해당 행의 네번째 열 셀 생성
+        headerCell = headerRow.createCell(3);
+        headerCell.setCellValue("생년월일");
+        headerCell.setCellStyle(headerStyle);
+        
+        // 해당 행의 다섯번째 열 셀 생성
+        headerCell = headerRow.createCell(4);
+        headerCell.setCellValue("고향");
+        headerCell.setCellStyle(headerStyle);
+        
+        // 해당 행의 여섯번째 열 셀 생성
+        headerCell = headerRow.createCell(5);
+        headerCell.setCellValue("프로필 경로");
+        headerCell.setCellStyle(headerStyle);
+        
+ 
+        Row bodyRow = null;
+        Cell bodyCell = null;
+        
+          
+        for(int i=0; i<actorExcel.size(); i++) {
+           
+           Map<String, String> empMap = actorExcel.get(i);   //get(i)는 리스트 값에서 한개의 행을 가져오는 것 
+           
+           // 행생성
+           bodyRow = sheet.createRow(i + (rowLocation+1));  // 처음에는 2로 시작한다. rowLocation은 처음에 1
+           
+           
+           bodyCell = bodyRow.createCell(0);
+           bodyCell.setCellValue(empMap.get("actor_id")); //xml의 key 값을 준다.<HashMap> 에 있는 키값  
+           
+           
+           bodyCell = bodyRow.createCell(1);
+           bodyCell.setCellValue(empMap.get("actor_name")); 
+                      
+           
+           bodyCell = bodyRow.createCell(2);
+           bodyCell.setCellValue(empMap.get("gender")); 
+           
+          
+           bodyCell = bodyRow.createCell(3);
+           bodyCell.setCellValue(empMap.get("date_of_birth")); 
+           
+          
+           bodyCell = bodyRow.createCell(4);
+           bodyCell.setCellValue(empMap.get("place_of_birth")); 
+           
+           
+           bodyCell = bodyRow.createCell(5);
+           bodyCell.setCellValue("https://image.tmdb.org/t/p/w500" + empMap.get("profile_image_path"));    
+           
+         
+           CreationHelper creationHelper = workbook.getCreationHelper();
+
+	        // Create a Hyperlink
+	        Hyperlink hyperlink = creationHelper.createHyperlink(HyperlinkType.URL);
+	        hyperlink.setAddress("https://image.tmdb.org/t/p/w500" + empMap.get("profile_image_path"));
+	
+	        // Set the Hyperlink to the cell
+	        bodyCell.setHyperlink(hyperlink);
+           
+           
+        }// end of for------------------------------
+        
+        model.addAttribute("locale",Locale.KOREA);   //model은 저장소 역할만 한다.  한글 안깨지게 하는것 
+	    model.addAttribute("workbook",workbook);     // workbook 은 엑셀을 뜻한다. 
+	    model.addAttribute("workbookName","검색어 '"+ lastSearchWord + "'의 인물 정보");
+	    
+	    return "excelDownloadView";  
+		
+		
+	}
+	
 	
 	
 }

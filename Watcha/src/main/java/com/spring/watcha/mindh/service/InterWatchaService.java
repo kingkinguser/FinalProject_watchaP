@@ -85,6 +85,12 @@ public interface InterWatchaService {
 	// 검색한 컬렉션 나타내기
 	List<MemberVO> showCollectionAll(Map<String, String> paraMap);
 
+	// 엑셀로 저장하기 위해 검색한 영화 가져오기 
+	List<Map<String, String>> movieexcel(Map<String, String> paraMap);
+
+	// 엑셀로 저장하기 위해 검색한 인물 가져오기 
+	List<Map<String, String>> actorExcel(Map<String, String> paraMap);
+
 	
 
 

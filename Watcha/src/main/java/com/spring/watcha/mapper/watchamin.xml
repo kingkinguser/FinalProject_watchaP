@@ -83,6 +83,7 @@
 
    <resultMap id="movieMainMap" type="com.spring.watcha.model.MovieVO">
        <id property="actorRank" column="actorRank" />
+       <result property="movie_id" column="movie_id"/>
        <result property="movie_title" column="movie_title"/>
        <result property="overview" column="overview"/>
        <result property="original_language" column="original_language"/>
@@ -574,6 +575,60 @@
 	
 	
 	
+	
+	
+	<!-- 검색한 영화 결과 excel 에 저장하기 위해  -->
+	
+	<resultMap type="HashMap" id="excel">
+		<result property="movie_id"              column="movie_id" javaType="String"/>   <!-- property가 HashMap Key이다. -->
+		<result property="movie_title"           column="movie_title" javaType="String"/>
+		<result property="original_language"     column="original_language" javaType="String"/>
+		<result property="release_date"          column="release_date" javaType="String"/>
+		<result property="tagline"               column="tagline" javaType="String"/>
+		<result property="runtime"               column="runtime" javaType="String"/>
+		<result property="poster_path"           column="poster_path" javaType="String"/>
+		<result property="original_title"        column="original_title" javaType="String"/>
+	</resultMap>
+	
+
+	<select id="movieexcel" resultMap="excel" parameterType="HashMap">
+		SELECT movie_id, movie_title, original_language, original_title,  
+		      CONCAT('20', release_date) AS release_date, nvl(tagline, '업데이트 중') AS tagline , runtime, 
+		      CONCAT('https://image.tmdb.org/t/p/w500/',  poster_path) AS poster_path
+		FROM movie
+		WHERE LOWER(movie_title) LIKE '%' || LOWER(#{searchWord}) || '%' 
+		ORDER BY CASE WHEN LOWER(movie_title) LIKE LOWER(#{searchWord}) || '%' THEN 0 ELSE 1 END, movie_title ASC
+
+	</select>
+	
+	
+	
+	
+	<!-- 검색한 인물 결과 excel 에 저장하기 위해  -->
+	
+	<resultMap type="HashMap" id="excel2">
+		<result property="actor_id"             column="actor_id" javaType="String"/>   <!-- property가 HashMap Key이다. -->
+		<result property="actor_name"           column="actor_name" javaType="String"/>
+		<result property="gender"     			column="gender" javaType="String"/>
+		<result property="date_of_birth"        column="date_of_birth" javaType="String"/>
+		<result property="place_of_birth"       column="place_of_birth" javaType="String"/>
+		<result property="profile_image_path"   column="profile_image_path" javaType="String"/>
+	</resultMap>
+	
+
+	<select id="actorExcel" resultMap="excel2" parameterType="HashMap">
+		SELECT actor_id, actor_name, 
+                case when gender = 1 then '여성' 
+	              when gender = 2 then '남성' 
+	              else '업데이트 중' end as gender, 
+                nvl(date_of_birth, '업데이트중') as date_of_birth, 
+                nvl(place_of_birth, '업데이트중') as place_of_birth, 
+                nvl(profile_image_path, '업데이트중') as profile_image_path
+	    FROM actor
+	    WHERE LOWER(actor_name) LIKE '%' || LOWER(#{lastSearchWord}) || '%' 
+	    ORDER BY CASE WHEN LOWER(actor_name) LIKE LOWER(#{lastSearchWord}) || '%' THEN 0 ELSE 1 END, actor_name ASC
+
+	</select>
 	
 	
 	

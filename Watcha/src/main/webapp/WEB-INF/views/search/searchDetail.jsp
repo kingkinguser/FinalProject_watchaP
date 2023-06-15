@@ -108,6 +108,10 @@
 			}
 		
 		});
+		
+		$("button#excel").click(function() {
+			excelDownload();
+		});
 	
 	});
 		
@@ -198,13 +202,20 @@
 	         }
 			
 		});
-		
-		
-		
-			
-		
+
 	}// end of function displayMovie() 
 
+	
+	function excelDownload(){
+
+		 const frm = document.getElementById('goexcel');
+  	  
+		frm.action = "<%=ctxPath%>/excel/download.action";  
+  	    frm.method = "post";   // file로 하기 때문에 post 방식  	 
+  	    frm.submit();
+		
+		
+	}
 
 </script>
 
@@ -221,15 +232,16 @@
 		
 		
 	<div class="container clearfloat">
-		<h4 class="h4" style="font-weight: bold;">영화</h4>
-		
-		
-		<div>
-			<ul style="padding: 0; margin: 0;" id="displayMovie">
-			
-			</ul>
-		</div>		
-
+		<span class="h4" style="font-weight: bold;">영화<button type="button" style="float: right" class="btn btn-success" id="excel">excel 저장</button></span>
+				
+		<form id="goexcel">
+			<input type="hidden" value="${lastSearchWord.replace('<', ' ').replace('>', ' ')}" name="searchWord"/>
+			<div>
+				<ul style="padding: 0; margin: 0;" id="displayMovie">
+				
+				</ul>
+			</div>		
+		</form>
 	</div>
 	
 	<div id="odd_number">
