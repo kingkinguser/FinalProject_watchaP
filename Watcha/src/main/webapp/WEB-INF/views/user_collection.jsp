@@ -588,15 +588,21 @@
 
 	/* ==== 댓글쓰기 시작 ==== */
 	function goAddUserWriteA() {
-	  
-	  const user_collection_content = $("input#user_collection_content").val().trim(); 
-	  
-	  if(user_collection_content == "") {
-		  alert("댓글 내용을 입력하세요!!");
+	 
+	  const user_collection_content = $("input#user_collection_content").val().trim(); 	
+		 
+	  if(${empty sessionScope.loginuser.user_id}) {  
+		  Swal.fire('로그인', '로그인을 해주세요!!', 'warning');  
+		  return;  // 종료   
+	  }	  
+	  else if (user_collection_content == "") {   
+		  Swal.fire('공백', '공백을 제거해주세요!!', 'warning');  
 		  return;  // 종료 
+		  
+	  }	
+	  else {
+		  goAddUserWrite_noAttachA();
 	  }
-	  
-	  goAddUserWrite_noAttachA();
 	  
     }
 	function goAddUserWriteB() {
@@ -604,7 +610,7 @@
 		  const user_collection_content = $("input#user_collection_content").val().trim(); 
 		  
 		  if(user_collection_content == "") {
-			  alert("댓글 내용을 입력하세요!!");
+			  Swal.fire('공백', '공백을 제거해주세요!!', 'warning');   
 			  return;  // 종료 
 		  }
 		  
@@ -740,26 +746,26 @@
   			  if(json.length > 0) {
   				 $.each(json, function(index, item){
   					
-					html += "<tr>";    
-					 
-			        if(item.profile_image == null){ // 유저의 프로필이미지가 없는 경우
-				       	html += '<td id="commentpi"><img id="img_profile" src="<%= ctxPath%>/resources/images/프로필없음.jpg"/></td>';
-			        }
-			        else {
-				       	html += '<td id="commentpi"><img id="img_profile" src="<%= ctxPath%>/resources/images/'+item.profile_image+'"/></td>';
-			        }	
-			        
-			         html += '<td id="commentuic">'+item.name+"</td>"; 
-					 html += '<td id="commentucc">'+item.user_collection_content+"</td>";
-		             html += '<td id="commentuct">'+item.user_collection_time+"</td>";  
-		             
-				  	if(item.user_id_comment == "${sessionScope.loginuser.user_id}"){ // 로그인한 회원 댓글 수정/삭제 
-				       	html +=   '<td><button type="button" onclick="openUpdateModal('+item.user_collection_seq+')" style="font-weight: bolder; color: #ff0558; border: none; background-color: transparent; font-size: 9pt;">수정</button></td>'
-				       		  +   '<td><button type="button" onclick="del_user_Comment('+item.user_collection_seq+')" style="font-weight: bolder; color: #ff0558; border: none; background-color: transparent; font-size: 9pt;">삭제</button></td>'
- 
-			        }  
-		             
-		             html += "</tr>"; 
+  					html += "<tr>";    
+  					 
+  			        if(item.profile_image == null){ // 유저의 프로필이미지가 없는 경우
+  				       	html += '<td id="commentpi"><img id="img_profile" src="<%= ctxPath%>/resources/images/프로필없음.jpg"/></td>';
+  			        }
+  			        else {
+  				       	html += '<td id="commentpi"><img id="img_profile" src="<%= ctxPath%>/resources/images/'+item.profile_image+'"/></td>';
+  			        }	
+  					 
+  					 html += '<td id="commentuic">'+item.name+"</td>"; 
+  					 html += '<td id="commentucc" data-comment-seq="' + item.user_collection_seq + '">'+item.user_collection_content+"</td>";
+  		             html += '<td id="commentuct">'+item.user_collection_time+"</td>"; 
+  		                 
+  				  	if(item.user_id_comment == "${sessionScope.loginuser.user_id}"){ // 로그인한 회원 댓글 수정/삭제  
+  				       	html +=   '<td><button type="button" onclick="openUpdateModal('+item.user_collection_seq+')" style="font-weight: bolder; color: #ff0558; border: none; background-color: transparent; font-size: 9pt;">수정</button></td>'
+  				       		  +   '<td><button type="button" onclick="del_user_Comment('+item.user_collection_seq+')" style="font-weight: bolder; color: #ff0558; border: none; background-color: transparent; font-size: 9pt;">삭제</button></td>'
+   
+  			        }      
+  		             
+  		             html += "</tr>"; 
    				 });  
   			  }   
   			  else {
@@ -773,7 +779,6 @@
   			  // === 페이지바 함수 호출 === //
   			  makeUserCommentPageBarB(currentShowPageNo);
   			  	
-  			  
   		  },
   		  error: function(request, status, error){
   				alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
@@ -888,36 +893,36 @@
   				// *** !! 다음은 currentShowPageNo 를 얻어와서 pageNo 를 구하는 공식이다. !! *** //
   				let pageNo = Math.floor( (currentShowPageNo - 1)/blockSize ) * blockSize + 1;
   				
-				let pageBarHTML = "";
-				
-				// === [맨처음][이전] 만들기 === //
-				if(pageNo != 1) {
-					pageBarHTML += "<a href='javascript:goUserViewCommentB(\"1\")'></a>";
-					pageBarHTML += "<a href='javascript:goUserViewCommentB(\""+(pageNo-1)+"\")'></a>";
-				}
-				
-				while( !(loop > blockSize || pageNo > totalPage) ) {
-					
-					if(pageNo == currentShowPageNo) { 
-						pageBarHTML += '<a class="active">'+pageNo+"</a>";  
-					}
-					else {
-						pageBarHTML += "<a href='javascript:goUserViewCommentB(\""+pageNo+"\")'>"+pageNo+"</a>"; 
-					}
-					
-					loop++;
-					pageNo++;
-					
-				}// end of while-----------------------
-				
-				
-				// === [다음][마지막] 만들기 === //
-				if( pageNo <= totalPage ) {
-					pageBarHTML += "<a href='javascript:goUserViewCommentB(\""+pageNo+"\")'></a>";
-					pageBarHTML += "<a href='javascript:goUserViewCommentB(\""+totalPage+"\")'></a>"; 
-				}
-				  
-				$("a#pageBar").html(pageBarHTML); 
+  				let pageBarHTML = "";
+  				
+  				// === [맨처음][이전] 만들기 === //
+  				if(pageNo != 1) {
+  					pageBarHTML += "<a href='javascript:goUserViewCommentB(\"1\")'></a>";
+  					pageBarHTML += "<a href='javascript:goUserViewCommentB(\""+(pageNo-1)+"\")'></a>";
+  				}
+  				
+  				while( !(loop > blockSize || pageNo > totalPage) ) {
+  					
+  					if(pageNo == currentShowPageNo) { 
+  						pageBarHTML += '<a class="active">'+pageNo+"</a>";  
+  					}
+  					else {
+  						pageBarHTML += "<a href='javascript:goUserViewCommentB(\""+pageNo+"\")'>"+pageNo+"</a>"; 
+  					}
+  					
+  					loop++;
+  					pageNo++;
+  					
+  				}// end of while-----------------------
+  				
+  				
+  				// === [다음][마지막] 만들기 === //
+  				if( pageNo <= totalPage ) {
+  					pageBarHTML += "<a href='javascript:goUserViewCommentB(\""+pageNo+"\")'></a>";
+  					pageBarHTML += "<a href='javascript:goUserViewCommentB(\""+totalPage+"\")'></a>"; 
+  				}
+  				  
+  				$("a#pageBar").html(pageBarHTML);
   				  
   			  }// end of if(json.totalPage > 0)------------------
   			  
@@ -926,7 +931,7 @@
   				alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
   		  }
   	  });
-    }  
+    }
   <%-- === 원글에 대한 totalPage 수를 알아오려고 한다. 끝 === --%>
     
   // === 좋아요 시작  === //
