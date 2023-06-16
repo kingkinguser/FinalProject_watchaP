@@ -251,8 +251,8 @@ div#commentRegister textarea:focus, div#commentEdit textarea:focus, div#review_m
 					let pageBar = "<ul style='list-style: none;'>";
 					  
 					// === [맨처음][이전] 만들기 === //
+					pageBar += "<li><button type='button' onclick='userReviewPaging(1)'><<</button></li>";
 					if(pageNo != 1) {
-						pageBar += "<li><button type='button' onclick='userReviewPaging(1)'>[처음]</button></li>";
 						pageBar += "<li><button type='button' onclick='userReviewPaging("+(pageNo-1)+")'>"+(pageNo-1)+"</button></li>";
 					}
 					  
@@ -269,9 +269,9 @@ div#commentRegister textarea:focus, div#commentEdit textarea:focus, div#review_m
 					  
 					// === [다음][마지막] 만들기 === //
 					if( pageNo <= totalPage ) {
-					  pageBar += "<li><button type='button' onclick='userReviewPaging("+(pageNo+1)+")'>next</button></li>";
-					  pageBar += "<li><button type='button' onclick='userReviewPaging("+totalPage+")'>[마지막]</button></li>"; 
+					  pageBar += "<li><button type='button' onclick='userReviewPaging("+(pageNo+1)+")'>"+(pageNo+1)+"</button></li>";
 					}
+					pageBar += "<li><button type='button' onclick='userReviewPaging("+totalPage+")'>>></button></li>"; 
 					pageBar += "</ul>";
 				
 					$("div#div_reviewPageBar").html(pageBar);
