@@ -68,7 +68,7 @@ public class WatchaService implements InterWatchaService {
 		return ratingMoviesList;
 	}
 	
-	// 회원의 한줄평 - 한줄평 8개씩 페이징 처리
+	// 회원의 한줄평 - 한줄평 4개씩 페이징 처리
 	@Override
 	public List<Map<String, String>> myReviewPaging(Map<String, String> paraMap) {
 	    List<Map<String, String>> myReviewList = dao.myReviewPaging(paraMap);
@@ -94,8 +94,8 @@ public class WatchaService implements InterWatchaService {
 		String pageBar = "<ul style='list-style: none;'>";
 		  
 		// === [맨처음][이전] 만들기 === //
+		pageBar += "<li class='page-item'><button class='page-link' type='button' onclick='myReviewPaging(1)'><<</button></li>";
 		if(pageNo != 1) {
-			pageBar += "<li class='page-item'><button class='page-link' type='button' onclick='myReviewPaging(1)'>[처음]</button></li>";
 			pageBar += "<li class='page-item'><button class='page-link' type='button' onclick='myReviewPaging("+(pageNo-1)+")'>"+(pageNo-1)+"</button></li>";
 		}
 		  
@@ -113,8 +113,8 @@ public class WatchaService implements InterWatchaService {
 		// === [다음][마지막] 만들기 === //
 		if( pageNo <= totalPage ) {
 		  pageBar += "<li class='page-item'><button class='page-link' type='button' onclick='myReviewPaging("+(pageNo+1)+")'>next</button></li>";
-		  pageBar += "<li class='page-item'><button class='page-link' type='button' onclick='myReviewPaging("+totalPage+")'>[마지막]</button></li>"; 
 		}
+		pageBar += "<li class='page-item'><button class='page-link' type='button' onclick='myReviewPaging("+totalPage+")'>>></button></li>"; 
 		pageBar += "</ul>";
 
 		return pageBar;
@@ -242,8 +242,8 @@ public class WatchaService implements InterWatchaService {
 
 	// 한줄평 - 댓글 수정
 	@Override
-	public int updateComment(ReviewCommentVO rcvo) {
-		int n = dao.updateComment(rcvo);
+	public int updateReviewComment(ReviewCommentVO rcvo) {
+		int n = dao.updateReviewComment(rcvo);
 		return n;
 	}
 

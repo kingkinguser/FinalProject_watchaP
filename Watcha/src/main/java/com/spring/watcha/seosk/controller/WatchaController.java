@@ -108,7 +108,7 @@ public class WatchaController {
 		}
 	}
 
-	// === 내 한줄평 - 한줄평 8개씩 페이징 처리(Ajax) === //
+	// === 내 한줄평 - 한줄평 4개씩 페이징 처리(Ajax) === //
 	@ResponseBody
 	@RequestMapping(value="/myWatcha/myReviewPaging.action", produces="text/plain;charset=UTF-8")
 	public String myReviewPaging(HttpServletRequest request) {
@@ -130,7 +130,7 @@ public class WatchaController {
 			currentShowPageNo = 1;
 		}
 		
-		int sizePerPage = 8; // 한번에 보여주는 한줄평 개수(8개)
+		int sizePerPage = 4; // 한번에 보여주는 한줄평 개수(4개)
 		
 		int startRno = ((currentShowPageNo - 1) * sizePerPage) + 1; // currentShowPageNo 의 시작 행번호
 	    int endRno = startRno + sizePerPage - 1;					// currentShowPageNo 의 끝 행번호
@@ -187,7 +187,7 @@ public class WatchaController {
 			currentShowPageNo = 1;
 		}
 		
-		int sizePerPage = 8; // 한번에 보여주는 한줄평 개수(8개)
+		int sizePerPage = 4; // 한번에 보여주는 한줄평 개수(4개)
 
 		// *** 한줄평 페이지바 만들기
 	    Map<String, String> paraMap = new HashMap<>();
@@ -529,10 +529,10 @@ public class WatchaController {
 	
 	// === 한줄평에 달린 댓글 수정(Ajax) === //
 	@ResponseBody
-	@RequestMapping(value="/updateComment.action", produces="text/plain;charset=UTF-8", method= {RequestMethod.POST})
-	public String updateComment(HttpServletRequest request, ReviewCommentVO rcvo) {
+	@RequestMapping(value="/updateReviewComment.action", produces="text/plain;charset=UTF-8", method= {RequestMethod.POST})
+	public String updateReviewComment(HttpServletRequest request, ReviewCommentVO rcvo) {
 		
-		int n = service.updateComment(rcvo);
+		int n = service.updateReviewComment(rcvo);
 
 		JSONObject jsonObj = new JSONObject();
 		jsonObj.put("n", n);

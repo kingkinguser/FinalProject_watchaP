@@ -260,7 +260,7 @@
 	</insert>
 	
 	<!-- 한줄평 - 댓글 수정 -->
-	<update id="updateComment" parameterType="com.spring.watcha.model.ReviewCommentVO">
+	<update id="updateReviewComment" parameterType="com.spring.watcha.model.ReviewCommentVO">
 		update review_comment set content = #{content}
 		where comment_id = #{comment_id}
 	</update>
@@ -289,7 +289,7 @@
 	    from
 	    (
 	        select R.user_id, M.movie_id, M.movie_title, R.rating
-	            , (select to_char(watching_date, 'yyyy-mm-dd') from movie_diary where movie_id = M.movie_id) AS watching_date
+            	, (select to_char(watching_date, 'yyyy-mm-dd') from movie_diary where movie_id = M.movie_id and user_id = #{user_id}) AS watching_date
 	        from movie M join star_rating R
 	        on M.movie_id = R.movie_id
 	        where R.user_id = #{user_id}
