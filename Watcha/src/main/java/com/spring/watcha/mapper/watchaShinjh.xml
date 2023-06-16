@@ -50,6 +50,13 @@
 	</select>
 	
 	
+	<!-- 임시 비밀번호 변경 email ajax -->
+	<update id="findPwd" parameterType="HashMap">
+		update member set password = #{password}
+		where email = #{email}
+	</update>
+	
+	
 	<!-- 내정보 수정하기 -->
 	<update id="modifyInfo" parameterType="com.spring.watcha.model.MemberVO">
 		update member set user_id = #{user_id}

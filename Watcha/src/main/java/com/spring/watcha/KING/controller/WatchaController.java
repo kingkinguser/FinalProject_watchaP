@@ -254,7 +254,7 @@ public class WatchaController {
 			// === 좋아요 === //
 			@ResponseBody
 			@RequestMapping(value="/likeCollection.action", method= {RequestMethod.POST})   
-			public String requiredLogin_likeCollection(HttpServletRequest request, HttpServletResponse response) {
+			public String requiredLogin2_likeCollection(HttpServletRequest request, HttpServletResponse response) {
 				 
 				String likeCollection = "";
 				String user_id_collection = request.getParameter("user_id_collection");
