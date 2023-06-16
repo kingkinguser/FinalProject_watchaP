@@ -59,6 +59,14 @@ public class WatchaDAO implements InterWatchaDAO {
 		}
 
 
+		// 임시 비밀번호 변경 email ajax
+		@Override
+		public int findPwd(Map<String, String> paraMap) {
+			int n = sqlsession.update("watcha.findPwd", paraMap);
+			return n;
+		}
+
+
 		// 내정보 수정하기
 		@Override
 		public int modifyInfo(MemberVO member) {

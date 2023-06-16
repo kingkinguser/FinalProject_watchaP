@@ -2,12 +2,14 @@ package com.spring.watcha.shinjh.controller;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
@@ -21,6 +23,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.spring.watcha.common.FileManager;
+import com.spring.watcha.common.GoogleMail;
 import com.spring.watcha.common.Sha256;
 import com.spring.watcha.model.MemberVO;
 import com.spring.watcha.shinjh.service.InterWatchaService;
@@ -146,6 +149,67 @@ public class WatchaController {
 		}
 		
 		
+		@Autowired // Type에 따라 알아서 Bean을 주입해준다.
+		private GoogleMail mail;
+		// 임시 비밀번호 변경 email ajax
+		@ResponseBody
+		@RequestMapping(value="/findPwd.action", method= RequestMethod.POST)
+		public String findPwd(HttpServletRequest request) {
+				
+			String email = request.getParameter("email");
+			
+			String password = getTempPassword();
+			
+			Map<String, String> paraMap = new HashMap<>();
+			
+			paraMap.put("email", email);
+			paraMap.put("password", password);
+			int n = service.findPwd(paraMap);
+			
+			
+			paraMap.put("ctxPath", request.getContextPath());
+			
+			JsonObject jsonObj = new JsonObject();			
+			
+			if(n==1) {
+				
+				try {
+					mail.sendmail(email, paraMap);
+					jsonObj.addProperty("result", 1);
+				} catch (Exception e) {
+					e.printStackTrace();
+					jsonObj.addProperty("result", 0);
+				}
+			}
+			else {
+				jsonObj.addProperty("result", 2);
+			}
+			
+			return new Gson().toJson(jsonObj);
+		}
+		
+		
+		// 임시 비밀번호 생성
+	    public String getTempPassword(){
+	    	char[] charSet = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F',
+	                'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
+	    	
+	    	char[] charSet2 = new char[] { '~', '!', '@', '#', '$', '%', '^', '&', '*'};
+
+	        String str = "";
+
+	        int idx = 0;
+	        for (int i = 0; i < 7; i++) {
+	            idx = (int) (charSet.length * Math.random());
+	            str += charSet[idx];
+	        }
+	        idx = (int) (charSet2.length * Math.random());
+	        str += charSet2[idx];
+	        return str;
+	    }
+		
+		
+		
 		// 내정보 수정
 		@RequestMapping(value="/modifyMyInfo.action")
 		public ModelAndView modifyMyInfo(ModelAndView mav, HttpServletRequest request) {
@@ -220,8 +284,8 @@ public class WatchaController {
 			// WAS 의 webapp 의 절대경로를 알아와야 한다.
 			String root = session.getServletContext().getRealPath("/"); 
 			
-			String path = root+"resources"+File.separator+"images"+File.separator+"profile_img";
-			// WAS의 webapp/resources/images/profile_img 라는 폴더로 지정해준다.  
+			String path = root+"resources"+File.separator+"images";
+			// WAS의 webapp/resources/images 라는 폴더로 지정해준다.  
 			// path 가 첨부파일이 저장될 WAS(톰캣)의 폴더가 된다.
 			
 
@@ -258,8 +322,8 @@ public class WatchaController {
 					profile_image = fileManager.doFileUpload(bytes, originalFilename, path);
 					// 첨부되어진 파일을 업로드 하는 것이다.
 						
-					member.setProfile_image(profile_image);
-					// WAS(톰캣)에 저장된 파일명(20230522103642842968758293800.pdf)
+					member.setProfile_image("profile_img"+File.separator+profile_image);
+					// WAS(톰캣)에 저장된 파일명(profile_img/20230522103642842968758293800.pdf)
 						
 //					fileSize = attach.getSize(); // 첨부파일의 크기(단위는 byte임)
 					// String.valueOf(fileSize)로 if문 만들어서 프로필사진 크기 제한 할 수 있음
