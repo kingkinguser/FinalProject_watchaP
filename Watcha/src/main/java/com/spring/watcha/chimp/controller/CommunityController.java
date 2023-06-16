@@ -297,13 +297,13 @@ public class CommunityController {
 			// 고유식별자 생성
 			String filename = UUID.randomUUID().toString() + "-" + image.getOriginalFilename();
 			// 저장 디렉토리 설정
-			Path imagePath = Paths.get(System.getProperty("catalina.base"), "wtpwebapps", "Watcha", "resources" ,"postimages", filename);
-
+			Path imagePath = Paths.get(System.getProperty("catalina.base"), "wtpwebapps", "Watcha", "resources" ,"images","postimages" , filename);
+			System.out.println(imagePath);
 			// imagepath에 전달받은 image 파일 저장
 			Files.write(imagePath, image.getBytes());
 			
 			// view단에 나타내기 위한 image URL 생성
-			String imageURL = ctxPath + "/resources/postimages/"+filename;
+			String imageURL = ctxPath + "/resources/images/postimages/"+filename;
 			
 			// URL  JSON에 담아서 RETURN
 			// JsonObject jsonObject = new JsonObject();
