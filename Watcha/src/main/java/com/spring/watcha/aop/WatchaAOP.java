@@ -35,12 +35,45 @@ public class WatchaAOP {
 			HttpSession session = request.getSession();
 			if(session.getAttribute("loginuser") == null) {
 				String message = "먼저 로그인 하세요~~~";
-				String loc = request.getContextPath()+"/login.action";
 				
 				request.setAttribute("message", message);
-				request.setAttribute("loc", loc);
 				
 				String url = MyUtil.getCurrentURL(request);
+				
+				session.setAttribute("needLogin", true);
+				session.setAttribute("goBackURL", url); // 세션에 url 정보를 저장시켜둔다.
+				
+				RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/views/member/needLogin.jsp"); 
+				try {
+					dispatcher.forward(request, response);
+				} catch (ServletException | IOException e) {
+					e.printStackTrace();
+				}
+			}
+			
+		}
+		
+		
+		
+		// === Pointcut(주업무) === //
+		@Pointcut("execution(public * com.spring..*Controller.requiredLogin2_*(..) )") 
+		public void requiredLogin2() {}
+		
+		
+		// === Before Advice(공통관심사, 보조업무) === //
+		@Before("requiredLogin()")
+		public void loginCheck2(JoinPoint joinpoint) { 
+			
+			HttpServletRequest request = (HttpServletRequest) joinpoint.getArgs()[0];    // 주업무 메소드의 첫번째 파라미터를 얻어오는 것이다.
+			HttpServletResponse response = (HttpServletResponse) joinpoint.getArgs()[1]; // 주업무 메소드의 두번째 파라미터를 얻어오는 것이다. 
+			
+			HttpSession session = request.getSession();
+			if(session.getAttribute("loginuser") == null) {
+				String message = "먼저 로그인 하세요~~~";
+				
+				request.setAttribute("message", message);
+				
+				String url = request.getContextPath() + "/view/user_collection.action";
 				
 				session.setAttribute("needLogin", true);
 				session.setAttribute("goBackURL", url); // 세션에 url 정보를 저장시켜둔다.
