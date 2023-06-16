@@ -159,9 +159,9 @@
 	        /* pc버전 추가사항 */
 	        @media (min-width: 719px) {
 	            .login_signup-modal {
+	            	text-align: center;
 	                padding: 20px 0px;
 	                overflow: auto;
-	                vertical-align: middle;
 	            }
 	        }
 	    /* modal 기능 css 끝 */
@@ -184,6 +184,7 @@
 	                display: inline-block;
 				    position: relative;
 				    vertical-align: middle;
+				    text-align: left;
 				    width: 375px;
 				    height: auto;
 				    min-height: 540px;
@@ -196,10 +197,27 @@
 	        .pt32_pb16 {
 	            padding: 32px 0px 16px;
 	        }
+	        
+	        /* margin-bottom: 14px */
+	        .mb14 {
+			    text-align: center;
+			    margin: 0px 0px 14px;
+			    overflow: hidden;
+			}
 	    /* modal 창 css 끝 */
 	
 	
 	    /* modal header 시작 */
+	    	/* modal 제목이미지 */
+	    	.login_signup-modal-img {
+			    display: inline-block;
+			    background: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUxIiBoZWlnaHQ9IjI5IiB2aWV3Qm94PSIwIDAgMTUxIDI5IiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogIDxwYXRoIGQ9Ik03My40MjQyIDE0LjYzOTFINjkuODAxOFY2LjEzNTE5SDY1LjEwMTNWMjcuNzIyMUg2OS44MDE4VjE5LjEzMDlINzMuNDI0MlYyNy43MjIxSDc4LjEyNDhWNi4xMzUxOUg3My40MjQyVjE0LjYzOTFaIiBmaWxsPSIjRkYwNTU4Ii8+CiAgPHBhdGggZD0iTTM3Ljg0NjggMTAuNjI3SDQxLjY0MTdWMjcuNzIyMUg0Ni4zNDIyVjEwLjYyN0g0OS45MjE1VjYuMTM1MTlIMzcuODQ2OFYxMC42MjdaIiBmaWxsPSIjRkYwNTU4Ii8+CiAgPHBhdGggZD0iTTI4LjQwMjcgNi4xMzUxOUwyNC42MDc3IDI3LjcyMjFIMjkuMTc4OUwyOS42OTIxIDI0LjIzMzNIMzQuMDIxN0wzNC41MjYzIDI3LjcyMjFIMzkuMTQwNUwzNS4zMDI1IDYuMTM1MTlIMjguNDAyN1pNMzAuMjY5OSAyMC4zMDg0TDMxLjU5MzggMTEuMzI0OEgzMi4xNTQ0TDMzLjQ1NDYgMjAuMzA4NEgzMC4yNjk5WiIgZmlsbD0iI0ZGMDU1OCIvPgogIDxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNMjAuMzA5IDBMMTguOTAyMiAyMC42NTAyTDE4LjUyNDEgMjAuNjcwMUwxNS4xNzgyIDYuMDYwNUgxMS4wNDM4TDguNTQwNzYgMjEuMTk4NEw4LjAwNDI5IDIxLjIyNjdMNS43NjMyNiA2LjA2MDVIMEw1LjI0MzMxIDI4LjYzNzlMMTEuMTA0NSAyOC4yNDczTDEzLjAxMTQgMTQuMjMzM0wxMy41NzA3IDE0LjIwMjZMMTYuMTI0MiAyNy45MDg3TDIxLjczNCAyNy41MzIzTDI2LjE4ODkgMEgyMC4zMDlaIiBmaWxsPSIjRkYwNTU4Ii8+CiAgPHBhdGggZD0iTTU3LjE2NjQgNS45MTcxMkM1Mi45NDAyIDUuOTE3MTIgNTAuOTEzNCA4LjIyODQ1IDUwLjkxMzQgMTEuODA0NVYyMi4wNTI4QzUwLjkxMzQgMjUuNjI4OCA1Mi45NDAyIDI3Ljk0MDEgNTcuMTY2NCAyNy45NDAxQzYxLjM5MjYgMjcuOTQwMSA2My40MTk0IDI1LjYyODggNjMuNDE5NCAyMi4wNTI4VjE4LjM0Nkg1OC43MTg5VjIyLjQ4ODlDNTguNzE4OSAyMy42MjI4IDU4LjI4NzYgMjQuMDE1MiA1Ny4xNjY0IDI0LjAxNTJDNTYuMDQ1MiAyNC4wMTUyIDU1LjYxMzkgMjMuNjIyOCA1NS42MTM5IDIyLjQ4ODlWMTEuMzY4NEM1NS42MTM5IDEwLjIzNDUgNTYuMDQ1MiA5Ljg0MjAxIDU3LjE2NjQgOS44NDIwMUM1OC4yODc2IDkuODQyMDEgNTguNzE4OSAxMC4yMzQ1IDU4LjcxODkgMTEuMzY4NFYxMy44MTA1SDYzLjQxOTRWMTEuODA0NUM2My40MTk0IDguMjI4NDUgNjEuMzkyNiA1LjkxNzEyIDU3LjE2NjQgNS45MTcxMloiIGZpbGw9IiNGRjA1NTgiLz4KICA8cGF0aCBkPSJNODMuMDQwOCA2LjEzNTE5TDc5LjI0NTkgMjcuNzIyMUg4My44MTcxTDg0LjMzMDIgMjQuMjMzM0g4OC42NTk5TDg5LjE2NDUgMjcuNzIyMUg5My43Nzg3TDg5Ljk0MDcgNi4xMzUxOUg4My4wNDA4Wk04NC45MDgxIDIwLjMwODRMODYuMjMyIDExLjMyNDhIODYuNzkyNkw4OC4wOTI4IDIwLjMwODRIODQuOTA4MVoiIGZpbGw9IiNGRjA1NTgiLz4KICA8cGF0aCBkPSJNMTI1LjY4NiA2LjEzNTI1SDEyMC45NDNWMjcuNzIyMkgxMjUuNjg2QzEyOC4zNiAyNy43MjIyIDEzMC4xMjggMjYuNjc1NSAxMzAuOTkxIDI0Ljc1NjdDMTMxLjUwOCAyMy42MjI4IDEzMS42MzggMjIuNTc2MiAxMzEuNjM4IDE2LjkwNjlDMTMxLjYzOCAxMS4yODEyIDEzMS41MDggMTAuMjM0NiAxMzAuOTkxIDkuMTAwNzNDMTMwLjEyOCA3LjE4MTg5IDEyOC4zNiA2LjEzNTI1IDEyNS42ODYgNi4xMzUyNVpNMTI4LjM2IDIzLjUzNTZDMTI3LjkyOSAyNC41ODIzIDEyNy4wMjMgMjUuMTQ5MiAxMjUuNDI4IDI1LjE0OTJIMTIzLjc0NlY4LjcwODI0SDEyNS40MjhDMTI3LjAyMyA4LjcwODI0IDEyNy45MjkgOS4yNzUxNyAxMjguMzYgMTAuMzIxOEMxMjguNzA1IDExLjA2MzIgMTI4Ljc5MSAxMS43MTczIDEyOC43OTEgMTYuOTUwNUMxMjguNzkxIDIyLjE0MDEgMTI4LjcwNSAyMi43OTQyIDEyOC4zNiAyMy41MzU2WiIgZmlsbD0iIzI5MkEzMiIvPgogIDxwYXRoIGQ9Ik0xNDcuMDc2IDYuMTM1MjVIMTQyLjgwN0wxMzguODM5IDI3LjcyMjJIMTQxLjY0MkwxNDIuMzMyIDIzLjM2MTJIMTQ3LjUwN0wxNDguMjQgMjcuNzIyMkgxNTFMMTQ3LjA3NiA2LjEzNTI1Wk0xNDIuNzY0IDIwLjkxOUwxNDQuODc3IDguNDAyOTdIMTQ0Ljk2M0wxNDcuMDc2IDIwLjkxOUgxNDIuNzY0WiIgZmlsbD0iIzI5MkEzMiIvPgogIDxwYXRoIGQ9Ik0xMzYuODEyIDYuMTM1MjVIMTM0LjAwOVYyNy43MjIySDEzNi44MTJWNi4xMzUyNVoiIGZpbGw9IiMyOTJBMzIiLz4KICA8cGF0aCBkPSJNMTAzLjk1MiA2LjEzNTI1SDk4Ljg2MzNWMjcuNzIyMkgxMDEuNjIzVjE3LjY0ODNIMTAzLjk1MkMxMDYuMTA4IDE3LjY0ODMgMTA3LjQ4OCAxNy4wMzc3IDEwOC4wOTIgMTUuNjg1OEMxMDguMzk0IDE0LjkwMDggMTA4LjQ4IDE0LjI5MDMgMTA4LjQ4IDExLjg5MThDMTA4LjQ4IDkuNDkzMjIgMTA4LjM5NCA4LjgzOTA3IDEwOC4wOTIgOC4xNDEzMUMxMDcuNDg4IDYuNzQ1NzkgMTA2LjEwOCA2LjEzNTI1IDEwMy45NTIgNi4xMzUyNVpNMTA1LjQ2MSAxNC4xMTU5QzEwNS4xNTkgMTQuOTAwOCAxMDQuNDI2IDE1LjA3NTMgMTAzLjI2MiAxNS4wNzUzSDEwMS42MjNWOC41MzM4SDEwMy4yNjJDMTA0LjQyNiA4LjUzMzggMTA1LjE1OSA4Ljc1MTg1IDEwNS40NjEgOS40OTMyMkMxMDUuNjM0IDkuODg1NzEgMTA1LjY3NyAxMC4xMDM4IDEwNS42NzcgMTEuODA0NUMxMDUuNjc3IDEzLjQ2MTcgMTA1LjYzNCAxMy43NjcgMTA1LjQ2MSAxNC4xMTU5WiIgZmlsbD0iIzI5MkEzMiIvPgogIDxwYXRoIGQ9Ik0xMTAuNTA3IDI3LjcyMjJIMTE4LjM1NVYyNS4xNDkySDExMy4zMVYxNy41NjExSDExOC4yMjZWMTQuOTg4MUgxMTMuMzFWOC43MDgyNEgxMTguMzU1VjYuMTM1MjVIMTEwLjUwN1YyNy43MjIyWiIgZmlsbD0iIzI5MkEzMiIvPgo8L3N2Zz4K)
+			     center center / contain no-repeat;
+			    width: 198px;
+			    height: 38.03px;
+			}
+	    
+	    
 	        /* modal 제목 */
 	        .login_signup-modal-title {
 	            font-size: 17px;
@@ -324,6 +342,9 @@
 	            letter-spacing: -0.5px;
 	            line-height: 20px;
 	            color: rgb(140, 140, 140);
+	        }
+	        
+	        .text-align-c {
 	            text-align: center;
 	        }
 	
@@ -455,6 +476,90 @@
 	    }
 	/* modal 끝 */
 	
+    /* 비번찾기 추가 css 시작 */
+        .findPwd-header {
+            left: 0px;
+            z-index: 50;
+            /* background: rgb(255, 255, 255); */
+            box-sizing: border-box;
+            font-size: 17px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            line-height: 22px;
+            width: 100%;
+            padding: 0px 16px;
+            border-bottom: 1px solid rgb(227, 227, 227);
+            position: absolute;
+            top: 0px;
+            text-align: left;
+            height: auto;
+        }
+
+        .display-flex {
+            display: flex;
+            -webkit-box-pack: justify;
+            justify-content: space-between;
+        }
+
+        .findPwd-closebtn {
+            background: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij4KICAgIDxnIGZpbGw9IiNGRjJGNkUiIGZpbGwtcnVsZT0iZXZlbm9kZCIgdHJhbnNmb3JtPSJyb3RhdGUoNDUgMTIgMTIpIj4KICAgICAgICA8cmVjdCB3aWR0aD0iMiIgaGVpZ2h0PSIxOCIgeD0iMTEiIHk9IjMiIHJ4PSIxIi8+CiAgICAgICAgPHJlY3Qgd2lkdGg9IjE4IiBoZWlnaHQ9IjIiIHg9IjMiIHk9IjExIiByeD0iMSIvPgogICAgPC9nPgo8L3N2Zz4K);
+            padding: 0px;
+            border: none;
+            cursor: pointer;
+            width: 24px;
+            height: 24px;
+            margin: 10px 0px;
+        }
+
+        .mr4_mb10 {
+            display: flex;
+            transform: translate3d(0px, 0px, 0px);
+            -webkit-box-pack: center;
+            justify-content: center;
+            -webkit-box-align: center;
+            align-items: center;
+            height: 30px;
+            margin: 0px 4px 10px;
+            transition: all 150ms ease 0s;
+        }
+
+        .findPwd-title {
+            display: inline-block;
+            font-weight: 700;
+            letter-spacing: -1.2px;
+            font-size: 22px;
+            line-height: 29px;
+            white-space: nowrap;
+            width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .pt96 {
+            box-sizing: border-box;
+            height: 100%;
+            padding: 96px 0px 0px;
+            overflow: auto;
+        }
+
+        .pb26 {
+            padding: 0px 0px 26px;
+        }
+
+        .mt32_mb12 {
+            font-size: 17px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            line-height: 22px;
+            margin: 32px 0px 12px;
+            text-align: left;
+        }
+
+        .my10 {
+            margin: 10px 0px;
+            text-align: left;
+        }
+    /* 비번찾기 추가 css 끝 */
 
 
 </style>
@@ -546,20 +651,57 @@
 		let idbool = false; // 아이디 중복체크 결과
 		let emailbool = false; // 이메일 중복체크 결과
 		
+		
+		// 로그인 회원가입 전환 버튼
+		$(".switch-button").click(function() {
+			$(".login_signup-modal").css("display","none");
+		    $(".login_signup-label-input").removeClass("warn-label-input");
+		    resetForm($(".login_signup-modal"));
+		    $($(this).attr("data-modal")).css("display","flex");
+		    idbool = false; // 아이디 중복체크 결과 초기화
+			emailbool = false; // 이메일 중복체크 결과 초기화
+		});
+		
+		// modal 바깥을 클릭했을 때 닫는 기능
+		$(".login_signup-modal").click(function(e) {
+
+			if ($(this).is(e.target)) {
+			    $(this).css("display","none");
+			    $(this).parent().find(".login_signup-label-input").removeClass("warn-label-input");
+			    resetForm(this);
+			    idbool = false; // 아이디 중복체크 결과 초기화
+				emailbool = false; // 이메일 중복체크 결과 초기화
+				
+				if ($(this).attr('id') != 'findPwdModal') {
+				    $("html").removeClass("disableBodyScrolling");
+				}
+			}
+		});		
+		
+		// modal 여는 기능
+		$(".modalbtn").click(function() { 
+		    $($(this).attr("data-modal")).css("display","flex");
+		    $("html").addClass("disableBodyScrolling");
+
+			if ($(this).attr('id') === 'findPwdModal') {
+				emailbool = true;
+			}
+		});
+		
 		// 로그인이 필요할 시, 로그인 모달 띄우기
 		if("${sessionScope.needLogin}" == "true") {
 		    $("#loginModal").css("display","flex");
 		    $("html").addClass("disableBodyScrolling");
 		    <% session.removeAttribute("needLogin"); %>
 		};
-		
-		
-	    // modal 닫기 기능
-	    $(".login_signup-modal").click(function(e) {
-	        if (e.target === this) {
-	            modalClose();
-	        }
+	    
+	    // 비번찾기 modal 닫기 기능
+	    $(".findPwd-closebtn").click(function(e) {
+		    $($(this).attr("data-modal")).css("display","none");
+		    $(this).find(".login_signup-label-input").removeClass("warn-label-input");
+		    resetForm(this);
 	    });
+	        
 
 	});// end of $(document).ready(function(){
 	
@@ -844,29 +986,14 @@
 	
 	///////////////////////////////////////////////////////////////
 	
-	
-	// modal 여는 기능
-	function modalOpen(btn) {
-	    let modalId = $(btn).attr("data-modal");
-	    $(modalId).css("display","flex");
-	    $("html").addClass("disableBodyScrolling");
-	}
-
-	// modal 바깥을 클릭했을 때 닫는 기능
-	function modalClose() {
-	    $(".login_signup-modal").css("display","none");
-	    $("html").removeClass("disableBodyScrolling");
-	    $(".login_signup-label-input").removeClass("warn-label-input");
-	    resetForm();
-	}
 
 	// modal 창에서 입력된 값 초기화 시키기
-	function resetForm(){
-	    const modal_frmArr = $("form.form");
+	function resetForm(e){
+	    const modal_frmArr = $(e.target).find("form");
 	    for(let i=0; i<modal_frmArr.length; i++) {
 	        modal_frmArr[i].reset();
 	    }
-	    $("p.warning-text").css("display","none");    
+	    $(e.target).find("p.warning-text").css("display","none");    
 	}
 
 
@@ -976,20 +1103,21 @@
 		
 		if(!bool) {
 			// 이메일이 정규표현식에 맞지 않는 경우
-			$("p#email-warning").css("display","block"); // 해당 부분만 error 문구 출력해주기
+			$(e).parent().parent().parent().find("p.warnRegular").css("display","block"); // 해당 부분만 error 문구 출력해주기
 			$(e).parent().parent().addClass("warn-label-input");
-			emailbool = false;
+			emailbool=false;
 		}
 		
 		else {
 			// 이메일이 정규표현식에 맞는 경우
 			$("p#email-warning").css("display","none"); // 해당 부분만 error 문구 숨기기
+			emailbool=true;
 			emailDuplicateCheck();
 		}
 	}
 
 
-	// 로그인 정규화 및 기능
+	// 로그인 기능
 	function func_Login() {
 		
 		const frm = document.loginForm;
@@ -1001,6 +1129,7 @@
 	}// end of function func_Login()---------
 
 
+	// 회원가입 기능
 	function func_Signup() {
 		
 		if(!idbool || !emailbool) {	
@@ -1016,8 +1145,46 @@
 			frm.submit();
 		}
 	}
+	
+
+	// 비번찾기
+	function func_Findpwd() {
+		
+		if(emailbool) {
+	   		return false;	 
+		}
+		else {
+			
+			$.ajax({
+		  		url:"<%= ctxPath%>/findPwd.action",
+		  		data:{"email":$("input#email-findpwd").val()},
+		  		type:"post",
+		  		dataType:"json",
+		  		async:false,
+				success:function(json){			
+					
+					if(json.result == 1) { // mail을 보냈을 때
+						alert("등록된 email로 임시비밀번호를 보냈습니다.");
+					}
+					else if( json.result == 0 ) { // mail 전송 실패
+						alert("메일전송 실패");
+					}
+					else if( json.result == 2 ) { // 업데이트 실패
+						alert("임시비번 업데이트 실패");
+					}
+					
+				},
+				
+				error: function(request, status, error){
+		               alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+		        }
+			});
+	 		
+		}
+	}
 
 
+	// id 중복체크
 	function checkId() {
 		
 		$.ajax({
@@ -1049,24 +1216,34 @@
 	}
 
 
+	// 이메일 중복체크
+	// 회원가입에서는 이메일 중복이 불가하고, 비번찾기시에는 이메일이 존재해야한다.
 	function emailDuplicateCheck() {
 		
 	   	$.ajax({
 	   		url:"<%= ctxPath%>/emailDuplicateCheck.action",
-	   		data:{"email":$("input#email").val()},
+	   		data:{"email":$("input[name=email]").val()},
 	   		type:"post",
 			dataType:"json",
 			success:function(json){ 
 	               
-				if(json.isExists > 0) {
-					$("p#email-warning2").css("display","block"); // 해당 부분만 error 문구 출력해주기
+				if(json.isExists > 0) { // 중복된 이메일의 경우 / 존재하는 이메일일 경우
+					$("p#email-warning2").css("display","block"); // 회원가입 해당 부분만 error 문구 출력해주기
 					$("input#email").parent().parent().addClass("warn-label-input");
 					$("p#email-warning2").val($("input#email").val()+"은 중복된 email 이므로 사용이 불가능합니다.");
+
+					$("p#email-findpwd-warning2").css("display","none"); // 비번찾기 해당 부분만 error 문구 숨기기
+					$("input#email-findpwd2").parent().parent().removeClass("warn-label-input");
+					
 					emailbool = false;
 				}
-				else if( json.isExists == 0 ) { // 중복되지 않는 이메일인 경우
-					$("p#email-warning2").css("display","none"); // 해당 부분만 error 문구 숨기기
+				else if( json.isExists == 0 ) { // 중복되지 않는 이메일인 경우 / 존재하지 않는 이메일일 경우
+					$("p#email-warning2").css("display","none"); // 회원가입 해당 부분만 error 문구 숨기기
 					$("input#email").parent().parent().removeClass("warn-label-input");
+					
+					$("p#email-email-findpwd-warning2").css("display","block"); // 비번찾기 해당 부분만 error 문구 출력해주기
+					$("input#email-findpwd").parent().parent().addClass("warn-label-input");
+					
 					emailbool = true;
 				}
 			},
@@ -1077,7 +1254,6 @@
 		});		
 		
 	}
-	
 	
 </script>
 
@@ -1118,7 +1294,7 @@
 						<c:if test="${empty sessionScope.loginuser}">  <!-- 로그인 안되어있으면 login 할 수 있게 나타내기 -->
 							 
 							 <!-- 로그인 버튼 -->
-    						 <button type="button" class="header-a" id="loginBtn" data-modal="#loginModal" onclick="modalOpen(this)" style="border: none; background-color: white; padding: 0;"><span class="header-login"></span></button>
+    						 <button type="button" class="header-a modalbtn" id="loginBtn" data-modal="#loginModal" style="border: none; background-color: white; padding: 0;"><span class="header-login"></span></button>
 						</c:if>
 						
 						
@@ -1130,7 +1306,7 @@
 					<li class="header-main-li" style="margin-left: 24px;">
 						
 						<c:if test="${empty sessionScope.loginuser}">  <!-- 로그인 안 되어 있으면 나타내기 -->	
-							 <button type="button" id="signupBtn" data-modal="#signupModal" style="border-radius: 5px; bottom: 2px; position: relative; background-color: white; border: solid 1px #999999;" onclick="modalOpen(this)" >회원가입</button>
+							 <button type="button" id="signupBtn" data-modal="#signupModal" class="modalbtn" style="border-radius: 5px; bottom: 2px; position: relative; background-color: white; border: solid 1px #999999;">회원가입</button>
 							 
 						</c:if>
 						
@@ -1167,11 +1343,11 @@
 					<!-- 로그인 안했을때 -->
 					<c:if test="${empty sessionScope.loginuser}"> 
 					   	<li class="header-main-li">
-					   		<button type="button" class="header-tag-a header-a" id="loginBtn" data-modal="#loginModal" onclick="modalOpen(this)" style="border: none; background-color: white; padding: 0;"><span class="header-login"></span></button>
+					   		<button type="button" class="header-tag-a header-a modalbtn" id="loginBtn" data-modal="#loginModal" style="border: none; background-color: white; padding: 0;"><span class="header-login"></span></button>
 							<span class="header-tag-a-span">|</span>
 						</li>
 						<li class="header-main-li">
-					    	<button type="button" class="header-tag-a header-a" id="signupBtn" data-modal="#signupModal" style="border-radius: 5px; position: relative; background-color: white; border: none" onclick="modalOpen(this)" >회원가입</button>
+					    	<button type="button" class="header-tag-a header-a modalbtn" id="signupBtn" data-modal="#signupModal" style="border-radius: 5px; position: relative; background-color: white; border: none">회원가입</button>
 							<span class="header-tag-a-span">|</span>
 						</li>
 					</c:if>
@@ -1200,9 +1376,9 @@
     <div id="loginModal" class="login_signup-modal">
         <div class="login_signup-modal-dialog">
             <div class="pt32_pb16">
-                <div>
-                	<img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUxIiBoZWlnaHQ9IjI5IiB2aWV3Qm94PSIwIDAgMTUxIDI5IiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogIDxwYXRoIGQ9Ik03My40MjQyIDE0LjYzOTFINjkuODAxOFY2LjEzNTE5SDY1LjEwMTNWMjcuNzIyMUg2OS44MDE4VjE5LjEzMDlINzMuNDI0MlYyNy43MjIxSDc4LjEyNDhWNi4xMzUxOUg3My40MjQyVjE0LjYzOTFaIiBmaWxsPSIjRkYwNTU4Ii8+CiAgPHBhdGggZD0iTTM3Ljg0NjggMTAuNjI3SDQxLjY0MTdWMjcuNzIyMUg0Ni4zNDIyVjEwLjYyN0g0OS45MjE1VjYuMTM1MTlIMzcuODQ2OFYxMC42MjdaIiBmaWxsPSIjRkYwNTU4Ii8+CiAgPHBhdGggZD0iTTI4LjQwMjcgNi4xMzUxOUwyNC42MDc3IDI3LjcyMjFIMjkuMTc4OUwyOS42OTIxIDI0LjIzMzNIMzQuMDIxN0wzNC41MjYzIDI3LjcyMjFIMzkuMTQwNUwzNS4zMDI1IDYuMTM1MTlIMjguNDAyN1pNMzAuMjY5OSAyMC4zMDg0TDMxLjU5MzggMTEuMzI0OEgzMi4xNTQ0TDMzLjQ1NDYgMjAuMzA4NEgzMC4yNjk5WiIgZmlsbD0iI0ZGMDU1OCIvPgogIDxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNMjAuMzA5IDBMMTguOTAyMiAyMC42NTAyTDE4LjUyNDEgMjAuNjcwMUwxNS4xNzgyIDYuMDYwNUgxMS4wNDM4TDguNTQwNzYgMjEuMTk4NEw4LjAwNDI5IDIxLjIyNjdMNS43NjMyNiA2LjA2MDVIMEw1LjI0MzMxIDI4LjYzNzlMMTEuMTA0NSAyOC4yNDczTDEzLjAxMTQgMTQuMjMzM0wxMy41NzA3IDE0LjIwMjZMMTYuMTI0MiAyNy45MDg3TDIxLjczNCAyNy41MzIzTDI2LjE4ODkgMEgyMC4zMDlaIiBmaWxsPSIjRkYwNTU4Ii8+CiAgPHBhdGggZD0iTTU3LjE2NjQgNS45MTcxMkM1Mi45NDAyIDUuOTE3MTIgNTAuOTEzNCA4LjIyODQ1IDUwLjkxMzQgMTEuODA0NVYyMi4wNTI4QzUwLjkxMzQgMjUuNjI4OCA1Mi45NDAyIDI3Ljk0MDEgNTcuMTY2NCAyNy45NDAxQzYxLjM5MjYgMjcuOTQwMSA2My40MTk0IDI1LjYyODggNjMuNDE5NCAyMi4wNTI4VjE4LjM0Nkg1OC43MTg5VjIyLjQ4ODlDNTguNzE4OSAyMy42MjI4IDU4LjI4NzYgMjQuMDE1MiA1Ny4xNjY0IDI0LjAxNTJDNTYuMDQ1MiAyNC4wMTUyIDU1LjYxMzkgMjMuNjIyOCA1NS42MTM5IDIyLjQ4ODlWMTEuMzY4NEM1NS42MTM5IDEwLjIzNDUgNTYuMDQ1MiA5Ljg0MjAxIDU3LjE2NjQgOS44NDIwMUM1OC4yODc2IDkuODQyMDEgNTguNzE4OSAxMC4yMzQ1IDU4LjcxODkgMTEuMzY4NFYxMy44MTA1SDYzLjQxOTRWMTEuODA0NUM2My40MTk0IDguMjI4NDUgNjEuMzkyNiA1LjkxNzEyIDU3LjE2NjQgNS45MTcxMloiIGZpbGw9IiNGRjA1NTgiLz4KICA8cGF0aCBkPSJNODMuMDQwOCA2LjEzNTE5TDc5LjI0NTkgMjcuNzIyMUg4My44MTcxTDg0LjMzMDIgMjQuMjMzM0g4OC42NTk5TDg5LjE2NDUgMjcuNzIyMUg5My43Nzg3TDg5Ljk0MDcgNi4xMzUxOUg4My4wNDA4Wk04NC45MDgxIDIwLjMwODRMODYuMjMyIDExLjMyNDhIODYuNzkyNkw4OC4wOTI4IDIwLjMwODRIODQuOTA4MVoiIGZpbGw9IiNGRjA1NTgiLz4KICA8cGF0aCBkPSJNMTI1LjY4NiA2LjEzNTI1SDEyMC45NDNWMjcuNzIyMkgxMjUuNjg2QzEyOC4zNiAyNy43MjIyIDEzMC4xMjggMjYuNjc1NSAxMzAuOTkxIDI0Ljc1NjdDMTMxLjUwOCAyMy42MjI4IDEzMS42MzggMjIuNTc2MiAxMzEuNjM4IDE2LjkwNjlDMTMxLjYzOCAxMS4yODEyIDEzMS41MDggMTAuMjM0NiAxMzAuOTkxIDkuMTAwNzNDMTMwLjEyOCA3LjE4MTg5IDEyOC4zNiA2LjEzNTI1IDEyNS42ODYgNi4xMzUyNVpNMTI4LjM2IDIzLjUzNTZDMTI3LjkyOSAyNC41ODIzIDEyNy4wMjMgMjUuMTQ5MiAxMjUuNDI4IDI1LjE0OTJIMTIzLjc0NlY4LjcwODI0SDEyNS40MjhDMTI3LjAyMyA4LjcwODI0IDEyNy45MjkgOS4yNzUxNyAxMjguMzYgMTAuMzIxOEMxMjguNzA1IDExLjA2MzIgMTI4Ljc5MSAxMS43MTczIDEyOC43OTEgMTYuOTUwNUMxMjguNzkxIDIyLjE0MDEgMTI4LjcwNSAyMi43OTQyIDEyOC4zNiAyMy41MzU2WiIgZmlsbD0iIzI5MkEzMiIvPgogIDxwYXRoIGQ9Ik0xNDcuMDc2IDYuMTM1MjVIMTQyLjgwN0wxMzguODM5IDI3LjcyMjJIMTQxLjY0MkwxNDIuMzMyIDIzLjM2MTJIMTQ3LjUwN0wxNDguMjQgMjcuNzIyMkgxNTFMMTQ3LjA3NiA2LjEzNTI1Wk0xNDIuNzY0IDIwLjkxOUwxNDQuODc3IDguNDAyOTdIMTQ0Ljk2M0wxNDcuMDc2IDIwLjkxOUgxNDIuNzY0WiIgZmlsbD0iIzI5MkEzMiIvPgogIDxwYXRoIGQ9Ik0xMzYuODEyIDYuMTM1MjVIMTM0LjAwOVYyNy43MjIySDEzNi44MTJWNi4xMzUyNVoiIGZpbGw9IiMyOTJBMzIiLz4KICA8cGF0aCBkPSJNMTAzLjk1MiA2LjEzNTI1SDk4Ljg2MzNWMjcuNzIyMkgxMDEuNjIzVjE3LjY0ODNIMTAzLjk1MkMxMDYuMTA4IDE3LjY0ODMgMTA3LjQ4OCAxNy4wMzc3IDEwOC4wOTIgMTUuNjg1OEMxMDguMzk0IDE0LjkwMDggMTA4LjQ4IDE0LjI5MDMgMTA4LjQ4IDExLjg5MThDMTA4LjQ4IDkuNDkzMjIgMTA4LjM5NCA4LjgzOTA3IDEwOC4wOTIgOC4xNDEzMUMxMDcuNDg4IDYuNzQ1NzkgMTA2LjEwOCA2LjEzNTI1IDEwMy45NTIgNi4xMzUyNVpNMTA1LjQ2MSAxNC4xMTU5QzEwNS4xNTkgMTQuOTAwOCAxMDQuNDI2IDE1LjA3NTMgMTAzLjI2MiAxNS4wNzUzSDEwMS42MjNWOC41MzM4SDEwMy4yNjJDMTA0LjQyNiA4LjUzMzggMTA1LjE1OSA4Ljc1MTg1IDEwNS40NjEgOS40OTMyMkMxMDUuNjM0IDkuODg1NzEgMTA1LjY3NyAxMC4xMDM4IDEwNS42NzcgMTEuODA0NUMxMDUuNjc3IDEzLjQ2MTcgMTA1LjYzNCAxMy43NjcgMTA1LjQ2MSAxNC4xMTU5WiIgZmlsbD0iIzI5MkEzMiIvPgogIDxwYXRoIGQ9Ik0xMTAuNTA3IDI3LjcyMjJIMTE4LjM1NVYyNS4xNDkySDExMy4zMVYxNy41NjExSDExOC4yMjZWMTQuOTg4MUgxMTMuMzFWOC43MDgyNEgxMTguMzU1VjYuMTM1MjVIMTEwLjUwN1YyNy43MjIyWiIgZmlsbD0iIzI5MkEzMiIvPgo8L3N2Zz4K" width="198px" height="38.03px">
-                </div>
+            	<header class="mb14">
+                	<span width="198px" height="38.03px" class="login_signup-modal-img"></span>
+				</header>
                 <h2 class="login_signup-modal-title">로그인</h2>
                 <section>
                     <div class="mx20">
@@ -1228,13 +1404,14 @@
                             </div>
                             <button type="submit" class="login_signup-btn" id="btnLogin">로그인</button>
                         </form>
-                        <div class="textstyle-modal mt20_mb14">
-                            <button class="text-button">비밀번호를 잊어버리셨나요?</button>
+                        <div class="textstyle-modal text-align-c mt20_mb14">
+                            <button type="button" class="text-button modalbtn" data-modal="#findPwdModal">비밀번호를 잊어버리셨나요?</button>
                         </div>
-                        <div class="textstyle-modal">
+                        <div class="textstyle-modal text-align-c">
 							계정이 없으신가요?
-                            <button type="button" id="switchToSignupBtn" data-modal="#signupModal" class="text-button" onclick="modalClose(), modalOpen(this)">회원가입</button>
+                            <button type="button" id="switchToSignupBtn" data-modal="#signupModal" class="text-button switch-button modalbtn">회원가입</button>
                         </div>
+                        <!-- 
                         <hr>
                         <ul class="ul-otherLogin">
                             <li>
@@ -1260,9 +1437,53 @@
                                 </button>
                             </li>
                         </ul>
+                        
                         <div class="textbox">TIP.왓챠 계정이 있으신가요? 왓챠와 왓챠피디아는 같은 계정을 사용해요.</div>
+                         -->
                     </div>
                 </section>
+            </div>
+        </div>
+    </div>
+    
+    
+    <!-- 비번찾기 modal -->
+    <div id="findPwdModal" class="login_signup-modal">
+        <div class="login_signup-modal-dialog">
+            <header class="findPwd-header">
+                <div class="display-flex">
+                    <div><button type="button" aria-label="close" class="findPwd-closebtn" data-modal="#findPwdModal"></button></div>
+                </div>
+                <div class="mr4_mb10">
+                    <div class="findPwd-title">비밀번호 재설정</div>
+                </div>
+            </header>
+            <div class="pt96">
+                <section class="pb26">
+	                <div class="mx20">
+	                    <h2 class="mt32_mb12">비밀번호를 잊으셨나요?</h2>
+	                    <p class="textstyle-modal my10">가입했던 이메일을 적어주세요.</p>
+	                    <p class="textstyle-modal my10">입력하신 이메일 주소로 비밀번호 변경 메일을 보낼게요</p>
+	                </div>
+                </section>
+                <div>
+                    <div class="mx20">
+                        <form name="findpwdForm" class="form" onsubmit="return func_Findpwd()">
+                            <div class="py4">
+                            	<label value="false" class="login_signup-label-input">
+                                    <div class="login_signup-div-input">
+	                                    <input autocomplete="off" placeholder="이메일" type="email" id="email-findpwd"
+	                                            name="email" class="login_signup-input" oninput="emailChange(this)"
+	                                            pattern="^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$" required>
+                                    </div>
+                                </label>
+                                <p class="warning-text warnRegular" id="email-findpwd-warning">정확하지 않은 이메일입니다.</p>
+                                <p class="warning-text" id="email-findpwd-warning2">존재하지 않는 이메일입니다.</p>
+                        	</div>
+                        	<button type="submit" class="login_signup-btn">이메일 보내기</button>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -1272,9 +1493,9 @@
     <div id="signupModal" class="login_signup-modal">
         <div class="login_signup-modal-dialog">
             <div class="pt32_pb16">
-                <div>
-                    <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUxIiBoZWlnaHQ9IjI5IiB2aWV3Qm94PSIwIDAgMTUxIDI5IiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogIDxwYXRoIGQ9Ik03My40MjQyIDE0LjYzOTFINjkuODAxOFY2LjEzNTE5SDY1LjEwMTNWMjcuNzIyMUg2OS44MDE4VjE5LjEzMDlINzMuNDI0MlYyNy43MjIxSDc4LjEyNDhWNi4xMzUxOUg3My40MjQyVjE0LjYzOTFaIiBmaWxsPSIjRkYwNTU4Ii8+CiAgPHBhdGggZD0iTTM3Ljg0NjggMTAuNjI3SDQxLjY0MTdWMjcuNzIyMUg0Ni4zNDIyVjEwLjYyN0g0OS45MjE1VjYuMTM1MTlIMzcuODQ2OFYxMC42MjdaIiBmaWxsPSIjRkYwNTU4Ii8+CiAgPHBhdGggZD0iTTI4LjQwMjcgNi4xMzUxOUwyNC42MDc3IDI3LjcyMjFIMjkuMTc4OUwyOS42OTIxIDI0LjIzMzNIMzQuMDIxN0wzNC41MjYzIDI3LjcyMjFIMzkuMTQwNUwzNS4zMDI1IDYuMTM1MTlIMjguNDAyN1pNMzAuMjY5OSAyMC4zMDg0TDMxLjU5MzggMTEuMzI0OEgzMi4xNTQ0TDMzLjQ1NDYgMjAuMzA4NEgzMC4yNjk5WiIgZmlsbD0iI0ZGMDU1OCIvPgogIDxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNMjAuMzA5IDBMMTguOTAyMiAyMC42NTAyTDE4LjUyNDEgMjAuNjcwMUwxNS4xNzgyIDYuMDYwNUgxMS4wNDM4TDguNTQwNzYgMjEuMTk4NEw4LjAwNDI5IDIxLjIyNjdMNS43NjMyNiA2LjA2MDVIMEw1LjI0MzMxIDI4LjYzNzlMMTEuMTA0NSAyOC4yNDczTDEzLjAxMTQgMTQuMjMzM0wxMy41NzA3IDE0LjIwMjZMMTYuMTI0MiAyNy45MDg3TDIxLjczNCAyNy41MzIzTDI2LjE4ODkgMEgyMC4zMDlaIiBmaWxsPSIjRkYwNTU4Ii8+CiAgPHBhdGggZD0iTTU3LjE2NjQgNS45MTcxMkM1Mi45NDAyIDUuOTE3MTIgNTAuOTEzNCA4LjIyODQ1IDUwLjkxMzQgMTEuODA0NVYyMi4wNTI4QzUwLjkxMzQgMjUuNjI4OCA1Mi45NDAyIDI3Ljk0MDEgNTcuMTY2NCAyNy45NDAxQzYxLjM5MjYgMjcuOTQwMSA2My40MTk0IDI1LjYyODggNjMuNDE5NCAyMi4wNTI4VjE4LjM0Nkg1OC43MTg5VjIyLjQ4ODlDNTguNzE4OSAyMy42MjI4IDU4LjI4NzYgMjQuMDE1MiA1Ny4xNjY0IDI0LjAxNTJDNTYuMDQ1MiAyNC4wMTUyIDU1LjYxMzkgMjMuNjIyOCA1NS42MTM5IDIyLjQ4ODlWMTEuMzY4NEM1NS42MTM5IDEwLjIzNDUgNTYuMDQ1MiA5Ljg0MjAxIDU3LjE2NjQgOS44NDIwMUM1OC4yODc2IDkuODQyMDEgNTguNzE4OSAxMC4yMzQ1IDU4LjcxODkgMTEuMzY4NFYxMy44MTA1SDYzLjQxOTRWMTEuODA0NUM2My40MTk0IDguMjI4NDUgNjEuMzkyNiA1LjkxNzEyIDU3LjE2NjQgNS45MTcxMloiIGZpbGw9IiNGRjA1NTgiLz4KICA8cGF0aCBkPSJNODMuMDQwOCA2LjEzNTE5TDc5LjI0NTkgMjcuNzIyMUg4My44MTcxTDg0LjMzMDIgMjQuMjMzM0g4OC42NTk5TDg5LjE2NDUgMjcuNzIyMUg5My43Nzg3TDg5Ljk0MDcgNi4xMzUxOUg4My4wNDA4Wk04NC45MDgxIDIwLjMwODRMODYuMjMyIDExLjMyNDhIODYuNzkyNkw4OC4wOTI4IDIwLjMwODRIODQuOTA4MVoiIGZpbGw9IiNGRjA1NTgiLz4KICA8cGF0aCBkPSJNMTI1LjY4NiA2LjEzNTI1SDEyMC45NDNWMjcuNzIyMkgxMjUuNjg2QzEyOC4zNiAyNy43MjIyIDEzMC4xMjggMjYuNjc1NSAxMzAuOTkxIDI0Ljc1NjdDMTMxLjUwOCAyMy42MjI4IDEzMS42MzggMjIuNTc2MiAxMzEuNjM4IDE2LjkwNjlDMTMxLjYzOCAxMS4yODEyIDEzMS41MDggMTAuMjM0NiAxMzAuOTkxIDkuMTAwNzNDMTMwLjEyOCA3LjE4MTg5IDEyOC4zNiA2LjEzNTI1IDEyNS42ODYgNi4xMzUyNVpNMTI4LjM2IDIzLjUzNTZDMTI3LjkyOSAyNC41ODIzIDEyNy4wMjMgMjUuMTQ5MiAxMjUuNDI4IDI1LjE0OTJIMTIzLjc0NlY4LjcwODI0SDEyNS40MjhDMTI3LjAyMyA4LjcwODI0IDEyNy45MjkgOS4yNzUxNyAxMjguMzYgMTAuMzIxOEMxMjguNzA1IDExLjA2MzIgMTI4Ljc5MSAxMS43MTczIDEyOC43OTEgMTYuOTUwNUMxMjguNzkxIDIyLjE0MDEgMTI4LjcwNSAyMi43OTQyIDEyOC4zNiAyMy41MzU2WiIgZmlsbD0iIzI5MkEzMiIvPgogIDxwYXRoIGQ9Ik0xNDcuMDc2IDYuMTM1MjVIMTQyLjgwN0wxMzguODM5IDI3LjcyMjJIMTQxLjY0MkwxNDIuMzMyIDIzLjM2MTJIMTQ3LjUwN0wxNDguMjQgMjcuNzIyMkgxNTFMMTQ3LjA3NiA2LjEzNTI1Wk0xNDIuNzY0IDIwLjkxOUwxNDQuODc3IDguNDAyOTdIMTQ0Ljk2M0wxNDcuMDc2IDIwLjkxOUgxNDIuNzY0WiIgZmlsbD0iIzI5MkEzMiIvPgogIDxwYXRoIGQ9Ik0xMzYuODEyIDYuMTM1MjVIMTM0LjAwOVYyNy43MjIySDEzNi44MTJWNi4xMzUyNVoiIGZpbGw9IiMyOTJBMzIiLz4KICA8cGF0aCBkPSJNMTAzLjk1MiA2LjEzNTI1SDk4Ljg2MzNWMjcuNzIyMkgxMDEuNjIzVjE3LjY0ODNIMTAzLjk1MkMxMDYuMTA4IDE3LjY0ODMgMTA3LjQ4OCAxNy4wMzc3IDEwOC4wOTIgMTUuNjg1OEMxMDguMzk0IDE0LjkwMDggMTA4LjQ4IDE0LjI5MDMgMTA4LjQ4IDExLjg5MThDMTA4LjQ4IDkuNDkzMjIgMTA4LjM5NCA4LjgzOTA3IDEwOC4wOTIgOC4xNDEzMUMxMDcuNDg4IDYuNzQ1NzkgMTA2LjEwOCA2LjEzNTI1IDEwMy45NTIgNi4xMzUyNVpNMTA1LjQ2MSAxNC4xMTU5QzEwNS4xNTkgMTQuOTAwOCAxMDQuNDI2IDE1LjA3NTMgMTAzLjI2MiAxNS4wNzUzSDEwMS42MjNWOC41MzM4SDEwMy4yNjJDMTA0LjQyNiA4LjUzMzggMTA1LjE1OSA4Ljc1MTg1IDEwNS40NjEgOS40OTMyMkMxMDUuNjM0IDkuODg1NzEgMTA1LjY3NyAxMC4xMDM4IDEwNS42NzcgMTEuODA0NUMxMDUuNjc3IDEzLjQ2MTcgMTA1LjYzNCAxMy43NjcgMTA1LjQ2MSAxNC4xMTU5WiIgZmlsbD0iIzI5MkEzMiIvPgogIDxwYXRoIGQ9Ik0xMTAuNTA3IDI3LjcyMjJIMTE4LjM1NVYyNS4xNDkySDExMy4zMVYxNy41NjExSDExOC4yMjZWMTQuOTg4MUgxMTMuMzFWOC43MDgyNEgxMTguMzU1VjYuMTM1MjVIMTEwLjUwN1YyNy43MjIyWiIgZmlsbD0iIzI5MkEzMiIvPgo8L3N2Zz4K" width="198px" height="38.03px">
-                </div>
+            	<header class="mb14">
+                	<span width="198px" height="38.03px" class="login_signup-modal-img"></span>
+				</header>
                 <h2 class="login_signup-modal-title">회원가입</h2>
                 <section>
                     <div class="mx20">
@@ -1326,16 +1547,17 @@
                                          pattern="^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$" required>
                                     </div>
                                 </label>
-                                <p class="warning-text" id="email-warning">정확하지 않은 이메일입니다.</p>
+                                <p class="warning-text warnRegular" id="email-warning">정확하지 않은 이메일입니다.</p>
                                 <p class="warning-text" id="email-warning2"></p>
                             </div>
                             
                             <button type="submit" class="login_signup-btn" id="btnSignup">회원가입</button>
                         </form>
-                        <div class="textstyle-modal mt20_mb14">
+                        <div class="textstyle-modal text-align-c mt20_mb14">
                             이미 가입하셨나요?
-                            <button type="button" id="switchToLoginBtn" data-modal="#loginModal" class="text-button" onclick="modalClose(), modalOpen(this)">로그인</button>
+                            <button type="button" id="switchToLoginBtn" data-modal="#loginModal" class="text-button switch-button modalbtn">로그인</button>
                         </div>
+                        <!-- 
                         <hr>
                         <ul class="ul-otherLogin">
                             <li>
@@ -1361,6 +1583,7 @@
                                 </button>
                             </li>
                         </ul>
+                         -->
                     </div>
                 </section>
             </div>

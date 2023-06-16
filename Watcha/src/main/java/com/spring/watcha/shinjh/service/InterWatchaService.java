@@ -25,6 +25,9 @@ public interface InterWatchaService {
 	// 회원정보수정 새암호인지 확인 ajax
 	int duplicatePwdCheck(Map<String, String> paraMap);
 
+	// 임시 비밀번호 변경 email ajax
+	int findPwd(Map<String, String> paraMap);
+
 	// 내정보 수정하기
 	int modifyInfo(MemberVO member);
 
