@@ -32,7 +32,7 @@ public interface InterWatchaDAO {
 	// 회원이 평가한 영화 전체
 	List<Map<String, String>> ratingMovies(String user_id);
 	
-	// 내 한줄평 - 한줄평 8개씩 페이징 처리
+	// 내 한줄평 - 한줄평 4개씩 페이징 처리
 	List<Map<String, String>> myReviewPaging(Map<String, String> paraMap);
 
 	// 회원이 평가한 영화 - 10개씩 페이징 처리

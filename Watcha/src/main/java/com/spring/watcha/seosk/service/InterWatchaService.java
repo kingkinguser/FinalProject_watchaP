@@ -30,7 +30,7 @@ public interface InterWatchaService {
 	// 회원이 평가한 영화 전체
 	List<Map<String, String>> ratingMovies(String user_id);
 
-	// 내 한줄평 - 한줄평 8개씩 페이징 처리
+	// 내 한줄평 - 한줄평 4개씩 페이징 처리
 	List<Map<String, String>> myReviewPaging(Map<String, String> paraMap);
 
 	// 한줄평 페이지바 만들기(로그인한 회원의 한줄평)

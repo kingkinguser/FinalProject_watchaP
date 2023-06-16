@@ -63,7 +63,7 @@ public class WatchaDAO implements InterWatchaDAO {
 		return ratingMoviesList;
 	}
 	
-	// 회원의 한줄평 - 한줄평 8개씩 페이징 처리
+	// 회원의 한줄평 - 한줄평 4개씩 페이징 처리
 	@Override
 	public List<Map<String, String>> myReviewPaging(Map<String, String> paraMap) {
 	    List<Map<String, String>> myReviewList = sqlsession.selectList("watcha.myReviewPaging", paraMap);

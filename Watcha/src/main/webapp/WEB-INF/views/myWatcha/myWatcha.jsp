@@ -66,7 +66,7 @@ a#preference {color: black; text-decoration: none; font-weight: bold;}
 
 div#div_review > div {background-color: #f8f8f8; border: solid 1px #e6e6e6; border-radius: 2%;}
 div#div_reviewPageBar {text-align: center; margin: 10px;}
-div#div_reviewPageBar li {display:inline-block; padding: 0px 5px;}
+div#div_reviewPageBar li {display:inline-block; padding: 0px;}
 div#div_reviewPageBar button {background-color: #ffffff; border: none;}
 
 button.page-link {color: #666666; border: 1px solid #dee2e6 !important; width: 36px;}
