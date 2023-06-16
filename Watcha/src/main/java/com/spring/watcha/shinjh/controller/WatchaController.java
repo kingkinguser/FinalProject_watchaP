@@ -322,8 +322,8 @@ public class WatchaController {
 					profile_image = fileManager.doFileUpload(bytes, originalFilename, path);
 					// 첨부되어진 파일을 업로드 하는 것이다.
 						
-					member.setProfile_image("profile_img"+File.separator+profile_image);
-					// WAS(톰캣)에 저장된 파일명(profile_img/20230522103642842968758293800.pdf)
+					member.setProfile_image(profile_image);
+					// WAS(톰캣)에 저장된 파일명(20230522103642842968758293800.pdf)
 						
 //					fileSize = attach.getSize(); // 첨부파일의 크기(단위는 byte임)
 					// String.valueOf(fileSize)로 if문 만들어서 프로필사진 크기 제한 할 수 있음

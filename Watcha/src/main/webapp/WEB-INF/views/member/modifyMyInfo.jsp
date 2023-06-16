@@ -490,8 +490,7 @@ function goEdit() {
           </div>
         </div>
         <section class="modify-section">
-          <input type="file" id="modifyimg" name="attach" style="" accept="image/*">
-          <!-- display:none; -->
+          <input type="file" id="modifyimg" name="attach" style="display:none;" accept="image/*">
           
           <input type="hidden" name="user_id" value="${sessionScope.loginuser.user_id}">
              
