@@ -1565,42 +1565,6 @@
 			            
 				   </div>    
 					
-					<div id="chart">   
-						<figure class="highcharts-figure">
-						    <div id="chart_container" style="height: 255px;"></div>
-						    <p class="highcharts-description"></p> 
-						</figure> 
-					</div> 	 
-					
-					<div id="chart2">    
-						<figure class="highcharts-figure">
-						    <div id="chart_container2" style="height: 255px;"></div>
-						    <p class="highcharts-description"></p> 
-						</figure>	
-					</div> 			
-						
-			        <div id="">     
-		        	     
-		        	<div style="font-size: 20px; font-weight: bolder; margin: 0 0 10px 702px;">가장 최근에 컬렉션에 담은 <span style="color:#ff0558">영화</span></div>
-	
-		         	<c:if test="${requestScope.collection_viewB[0].movie_title != null}">
-			        	<a href='project_detail.action?movie_id=${requestScope.collection_viewB[0].movie_id}'>
-			        		<img id="lastest" src="https://image.tmdb.org/t/p/w1280${requestScope.collection_viewB[0].backdrop_path}" />
-			        	</a>   		
-		        	</c:if>
-		         	
-		         	<c:if test="${requestScope.collection_viewB[0].movie_title == null}">
-			        	<a>   
-			        		<img id="lastest" src="<%= ctxPath%>/resources/images/왓챠피디아NULL.png" /> 
-			        	</a> 
-		        	</c:if> 
-		        	  
-		        	<c:if test="${requestScope.collection_viewB[0].movie_title == null}"> 
-		        		<div style="font-size: 15px; margin: 15px 0 30px 730px; ">컬렉션을 담아 보세요!!</div> 
-		         	</c:if>   	        	   
-		        	<c:if test="${requestScope.collection_viewB[0].movie_title != null}">      
-		        		<div style="font-size: 22px; font-weight: bold; text-align: center; margin-bottom: 25px;">${requestScope.collection_viewB[0].movie_title}</div>
-		         	</c:if>      
 		        </div> 	     
 			          
 			      	<hr style="margin: 0 30px 0 30px;">  	     
