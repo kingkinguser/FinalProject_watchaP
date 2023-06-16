@@ -79,6 +79,8 @@
   .slick-prev:before {
 		color: gray;
     	font-size: xx-large;
+    	bottom: 60px;
+    	position: relative;
   }
 	
   .slick-next:before {
@@ -86,6 +88,8 @@
     	font-size: xx-large;
     	right: 13px;
    		position: relative;
+   		bottom: 60px;
+    	position: relative;
   }
 
 </style>
