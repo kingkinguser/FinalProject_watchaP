@@ -311,15 +311,15 @@ div#makePhotoTicket{font-family: 'Noto Sans KR', sans-serif;}
 				        }
 						
 					  	html += '<div style="text-align: left;">';
-					  	if(item.user_id == "${sessionScope.loginuser.user_id}"){ // 로그인한 회원이 작성한 한줄평일 경우
-					       	html += '<p style="padding: 0 5px; margin: 0px 0px 5px 0px; font-weight: 600;">'+item.name+'<span class="pl-2" style="color: #ff0558; font-size: 10pt;">작성자</span></p>';
+					  	if(item.user_id == "${sessionScope.loginuser.user_id}"){ // 로그인한 회원이 작성한 댓글일 경우
+					       	html += '<p style="padding: 0 5px; margin: 0px 0px 5px 0px; font-weight: 600;">'+item.name+'<span class="pl-2" style="color: #6c757d; text-shadow: 1px 1px 1px #e6e6e6; font-size: 10pt;">작성자</span></p>';
 				        }
 					  	else {
 					       	html += '<p style="padding: 0 5px; margin: 0px 0px 5px 0px; font-weight: 600;">'+item.name+'</p>';
 					  	}
 					    html += 	'<p style="padding: 0 5px; margin: 0px;">'+item.content+'</p>'
 					    	  + 	'<p style="display: inline-block; margin: 10px 0px 0px 0px; font-size: 10pt; color: gray;">작성일자&nbsp;<span class="pl-2">'+item.comment_date+'</span></p>';
-					  	if(item.user_id == "${sessionScope.loginuser.user_id}"){ // 로그인한 회원이 작성한 한줄평일 경우
+					  	if(item.user_id == "${sessionScope.loginuser.user_id}"){ // 로그인한 회원이 작성한 댓글일 경우
 					       	html += '<div style="display: inline-block;">'
 					       		  +	  "<button type='button' class='p-0 m-0 mx-1 ml-2' onclick='updateComment1("+JSON.stringify(item)+")' style='font-weight: bold; color: #ff0558; border: none; background-color: transparent; font-size: 10pt;'>수정</button>"
 					       		  +   '<button type="button" class="p-0 m-0 mx-1" onclick="delComment('+item.comment_id+')" style="font-weight: bold; color: #ff0558; border: none; background-color: transparent; font-size: 10pt;">삭제</button>'
@@ -404,7 +404,7 @@ div#makePhotoTicket{font-family: 'Noto Sans KR', sans-serif;}
 	function updateComment1(commentObj){
 		let html = "";
 	    <%-- 댓글 수정 --%>
-	    html +=     '<div id="commentEdit" class="mx-auto my-2 p-1">'
+	    html +=     '<div id="commentEdit" class="mx-auto p-1">'
 	    	  + 	  '<div class="flex-container mx-auto my-auto p-2 text-center" style="padding-left: 10px; display: flex;">';
 		
 	    if("${sessionScope.loginuser.profile_image}" == ""){ // 유저의 프로필이미지가 없는 경우
@@ -416,7 +416,7 @@ div#makePhotoTicket{font-family: 'Noto Sans KR', sans-serif;}
     	
 		html += 		'<div style="width: 100%;">'
 	    	  + 		  '<div style="display: flex;" class="mb-2">'
-	    	  + 		    '<p style="text-align: left; padding: 0 5px; margin: 0px 10px 5px 5px; font-weight: 600; color: #ff0558;">댓글 수정하기</p>'
+	    	  + 		    '<p style="text-align: left; padding: 0 5px; margin: 0px 10px 5px 0px; font-weight: 600; color: #ff0558;">댓글 수정하기</p>'
 	    	  + 		    '<input type="hidden" name="comment_id" value="'+commentObj.comment_id+'" />'
 	    	  + 		  '</div>'
 	    	  + 		  '<textarea id="content" name="content" style="width: 100%; height: 70px; resize: none; border: solid 1px #e6e6e6; border-radius: 1%; font-size: 11pt;">'+commentObj.content+'</textarea>'
@@ -861,7 +861,7 @@ div#makePhotoTicket{font-family: 'Noto Sans KR', sans-serif;}
 		  <div class="modal-dialog modal-lg">
 		    <div class="modal-content">
 		      <div class="modal-body">
-		        <h5 class="modal-title mb-2 ml-4"><span>${requestScope.searchDetail.movie_title}에 대한 한줄평</span><button type="button" class="close" data-dismiss="modal">&times;</button></h5>
+		        <h5 class="modal-title mb-2 ml-4"><span>${requestScope.searchDetail.movie_title}에 대한 내 한줄평</span><button type="button" class="close" data-dismiss="modal">&times;</button></h5>
        			
        			  <%-- 한줄평 --%>
 	       		  <div class="mx-auto my-2 p-2" style="background-color: #fdfdfd; border: solid 1px #e6e6e6; border-radius: 2%; width: 95%;">
@@ -876,9 +876,8 @@ div#makePhotoTicket{font-family: 'Noto Sans KR', sans-serif;}
 					</c:if>
 
 	  			      <h5 style="text-align: left; padding: 0 5px; font-weight: 600; margin: 8px 10px;">${sessionScope.loginuser.name}</h5>
-	       			  <p class="pr-2" style="color: gray; font-size: 10pt; padding: 0px; margin: 10px 0 0 0;">내가 쓴 한줄평</p>
-	       		  	  <button type="button" onclick="reviewEditModal()" style="font-weight: bold; color: #ff0558; border: none; background-color: transparent;">수정</button>
-	       		  	  <button type="button" onclick="delReview(${requestScope.searchReview.review_id})" style="font-weight: bold; color: #ff0558; border: none; background-color: transparent;">삭제</button>
+	       		  	  <button type="button" class="px-1" onclick="reviewEditModal()" style="font-weight: bold; color: gray; border: none; background-color: transparent; font-size: 10pt;">수정</button>
+	       		  	  <button type="button" class="px-1" onclick="delReview(${requestScope.searchReview.review_id})" style="font-weight: bold; color: gray; border: none; background-color: transparent; font-size: 10pt;">삭제</button>
 	      		    </div>
 	      		    
 	      		    <div class="mx-auto my-auto p-2">

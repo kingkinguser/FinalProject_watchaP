@@ -35,7 +35,7 @@
 <%-- 유저한줄평 --%>
 div#userReview, div#rating {font-family: 'Noto Sans KR', sans-serif; cursor: default;}
 img#img_profile {width: 40px; height: 40px; box-sizing: inherit; border:solid 1px #e6e6e6; border-radius: 50%; box-shadow: 1px 1px 1px #cccccc; margin: 0 6px;}
-p.movieRate{width: 40%; height: 30px; border: solid 1px #e6e6e6; border-radius: 20%/40%; padding: 0 10px; margin: 5px; background-color: #ffffff;}
+p.movieRate{width: 35%; height: 30px; border: solid 1px #e6e6e6; border-radius: 20%/40%; padding: 0 10px; margin: 5px; background-color: #ffffff;}
 
 <%-- 한줄평등록/수정 모달 --%>
 div#registerReview{font-family: 'Noto Sans KR', sans-serif; cursor: default;}
@@ -226,16 +226,16 @@ div#editReview{font-family: 'Noto Sans KR', sans-serif; cursor: default;}
 				       		  
 				       	if(item.spoiler_status == 0 || item.user_id == "${sessionScope.loginuser.user_id}"){ // 한줄평에 스포일러가 없거나, 로그인한 회원이 작성한 한줄평일 경우
 					       	html +=   '<div class="m-0 p-0 my-2" style="height: 100px; overflow: auto;">'
-					       		  +     '<p style="padding: 10px; margin: 0px;">'+item.review_content+'</p>'
+					       		  +     '<p style="padding: 8px; margin: 0px;">'+item.review_content+'</p>'
 					       		  +	  '</div>';
 				       	}
 			       		else if(item.spoiler_status == 1){ // 해당 한줄평에 스포일러가 포함된 경우
 					       	html +=	  '<div class="text-center m-0 p-0 my-2" style="height: 100px; overflow: auto;">'
-					       		  +	    '<p style="padding: 10px; margin: 0px;">스포일러가 포함되어 있어요.</p>'
+					       		  +	    '<p style="padding: 8px; margin: 0px;">스포일러가 포함되어 있어요.</p>'
 					       		  +     '<button type="button" class="showContent" style="border: none; color: #ff0558; background-color: transparent; font-weight: bold;">한줄평 보기</button>'
 					       		  +	  '</div>'
-					       		  +   '<div class="text-center m-0 p-0 my-2" style="display: none; height: 100px; overflow: auto;">'
-					       		  +     '<p style="padding: 10px; margin: 0px;">'+item.review_content+'</p>'
+					       		  +   '<div class="m-0 p-0 my-2" style="display: none; height: 100px; overflow: auto;">'
+					       		  +     '<p style="padding: 8px; margin: 0px;">'+item.review_content+'</p>'
 					       		  +	  '</div>';
 				       	}
 				       	html +=	  	  '<div class="m-0 p-0 my-2" style="height: 20px;">';
@@ -249,7 +249,7 @@ div#editReview{font-family: 'Noto Sans KR', sans-serif; cursor: default;}
 				       		  +         '<p style="width: 60%; padding-left: 10px; margin: 10px 0px; font-size: 11pt; color: gray;">'+item.review_date+'</p>';
 				       		  
 				        if(item.rating == 0){ // 별점평가를 하지 않은 경우
-					       	html +=   	'<p class="movieRate text-center">평가안함</p>';
+					       	html +=   	'<p class="movieRate text-center" style="font-size: 11pt; width: 38%;">평가안함</p>';
 				        }
 				        else {
 					       	html +=   	'<p class="movieRate text-center">★&nbsp;<span>'+item.rating+'</span></p>';

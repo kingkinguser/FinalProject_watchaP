@@ -60,6 +60,9 @@ span#rating_count, span#reviewCount, span#collectionCount {padding-left: 10px; f
 div#div_nav_content {position: relative; top:-2rem;}
 
 h6.card-title:hover {color: #ff0558;}
+button#btnExcel {color: gray; border: none; background-color: transparent; font-size: 11pt; font-weight: bold;}
+button#btnExcel:hover, a#preference:hover {color: #ff0558;}
+a#preference {color: black; text-decoration: none; font-weight: bold;}
 
 div#div_review > div {background-color: #f8f8f8; border: solid 1px #e6e6e6; border-radius: 2%;}
 div#div_reviewPageBar {text-align: center; margin: 10px;}
@@ -379,11 +382,11 @@ a, a:hover, .fc-daygrid {color: #000; text-decoration: none; background-color: t
 				$("div#div_rating").html('');
    	    	});
     	}); // end of $(".modal").each(function(index, item){})
-   	
+
 	}); // end of $(document).ready(function(){})
 	
 	
-	// 내 한줄평 보여주기(8개씩 페이징처리)
+	// 내 한줄평 보여주기(4개씩 페이징처리)
 	function myReviewPaging(currentShowPageNo){
 		$.ajax({
 			url:"<%= ctxPath%>/myWatcha/myReviewPaging.action",
@@ -515,13 +518,13 @@ a, a:hover, .fc-daygrid {color: #000; text-decoration: none; background-color: t
 	
 	// 검색하기 - 검색결과
 	function searchResult(){
-		
 		// 장르종류로 검색
 		let arr_genre_id = [];
 		$("input:checkbox[name='genre_id']:checked").each(function(index, item){
 			arr_genre_id.push($(item).val());
 		});
 		let str_genre_id = arr_genre_id.join();
+		$("input#str_genre_id").val(str_genre_id);
 		
 		// 별점으로 검색
 		let arr_rating = [];
@@ -529,7 +532,12 @@ a, a:hover, .fc-daygrid {color: #000; text-decoration: none; background-color: t
 			arr_rating.push($(item).val());
 		});
 		let str_rating = arr_rating.join();
-		
+		$("input#str_rating").val(str_rating);
+
+		// 관람일자로 검색
+		$("input#from_watching_date").val($("input#fromDate").val());
+  		$("input#to_watching_date").val($("input#toDate").val());
+
 		$.ajax({
 			url:"<%= ctxPath%>/myWatcha/searchResult.action",
 			data:{"searchWord":$("input#searchWord").val(),
@@ -543,7 +551,10 @@ a, a:hover, .fc-daygrid {color: #000; text-decoration: none; background-color: t
 				
 				let html = "";
 				if(json.length > 0){
-					html += '<h5 style="padding-left: 5px; font-weight: 600;">검색결과</h5>';
+					html += '<h5 style="padding-left: 5px; font-weight: 600;">검색결과</h5>'
+						  + '<h6 style="padding-left: 5px; padding-botton: 10px;">검색결과를 엑셀로 다운받을 수도 있어요.&nbsp;'
+						  +   '<button type="submit" id="btnExcel">엑셀 다운받기</button>'
+						  + '</h6>';
 					
 					$.each(json, function(index, item){
 				        html += '<div style="width: 32%; display: inline-block;" class="m-1">'
@@ -551,7 +562,9 @@ a, a:hover, .fc-daygrid {color: #000; text-decoration: none; background-color: t
 					          +     '<table style="width: 100%; height: 220px; overflow: auto;">'
 					          +       '<tbody>'
 					          +         '<tr>'
-					          +           '<td><h6>'+item.movie_title+'</h6></td>'
+					          +           '<td>'
+					          +			    '<h6 class="card-title">'+item.movie_title+'<a href="<%= ctxPath %>/view/project_detail.action?movie_id='+item.movie_id+'"></a></h6>'
+					          +			  '</td>'
 					          +         '</tr>'
 					          +         '<tr style="border-top: solid 1px #e6e6e6;">'
 					          +           '<td>'+item.genre_name+'</td>'
@@ -666,7 +679,7 @@ a, a:hover, .fc-daygrid {color: #000; text-decoration: none; background-color: t
 				$.each(json, function(index, item){
 					if(index < 5){
 						html +=   "<td class='h6' style='width: 7.5rem;'>"+Number(index+1)+"위 : "
-							 +	    "<a href='<%= ctxPath%>/myWatcha/preference.action?genre_id="+item.genre_id+"' style='text-decoration: none; color: #ff0558; font-weight: bold;'>"
+							 +	    "<a id='preference' href='<%= ctxPath%>/myWatcha/preference.action?genre_id="+item.genre_id+"'>"
 							 +		  "<span class='h5'>"+item.genre_name+"</span>"
 							 +		"</a>"
 							 +	  "</td>";
@@ -775,7 +788,7 @@ a, a:hover, .fc-daygrid {color: #000; text-decoration: none; background-color: t
                             <img class="img card-img-top" src="https://image.tmdb.org/t/p/w780/${movie.poster_path}">
 				          </div>
 	                      <div class="card-body text-center px-0">
-	                        <div style="overflow: hidden; height: 40px;" class="p-0 m-0 px-3">
+	                        <div style="overflow: hidden; height: 40px;" class="p-0 m-0 px-1">
 						      <a href="<%= ctxPath %>/myWatcha/searchDetail.action?movie_id=${movie.movie_id}" style="text-decoration: none; color: black;">
 						        <h6 class="card-title"><span style="display:none;">${movie.movie_id}</span>${movie.movie_title}</h6>
 		                      </a>
@@ -808,7 +821,7 @@ a, a:hover, .fc-daygrid {color: #000; text-decoration: none; background-color: t
                             <img class="img card-img-top" src="https://image.tmdb.org/t/p/w780/${movie.poster_path}">
 				          </div>
 	                      <div class="card-body text-center px-0">
-	                        <div style="overflow: hidden; height: 40px;" class="p-0 m-0 px-3">
+	                        <div style="overflow: hidden; height: 40px;" class="p-0 m-0 px-1">
 						      <a href="<%= ctxPath %>/myWatcha/searchDetail.action?movie_id=${movie.movie_id}" style="text-decoration: none; color: black;">
 						        <h6 class="card-title"><span style="display:none;">${movie.movie_id}</span>${movie.movie_title}</h6>
 		                      </a>
@@ -856,7 +869,7 @@ a, a:hover, .fc-daygrid {color: #000; text-decoration: none; background-color: t
                             <img class="img card-img-top" src="https://image.tmdb.org/t/p/w780/${movie.poster_path}">
 				          </div>
 	                      <div class="card-body text-center px-0">
-	                        <div style="overflow: hidden; height: 40px;" class="p-0 m-0 px-3">
+	                        <div style="overflow: hidden; height: 40px;" class="p-0 m-0 px-1">
 						      <a href="<%= ctxPath %>/myWatcha/searchDetail.action?movie_id=${movie.movie_id}" style="text-decoration: none; color: black;">
 						        <h6 class="card-title"><span style="display:none;">${movie.movie_id}</span>${movie.movie_title}</h6>
 		                      </a>
@@ -1008,7 +1021,13 @@ a, a:hover, .fc-daygrid {color: #000; text-decoration: none; background-color: t
 		  </div>
   	    
   	      <div id="searchInfo" class="tab-pane container fade">
+            <form name="searchFrm" method="post" action="<%= ctxPath %>/myWatcha/downloadExcel.action">
             <div id="div_searchBar" class="m-0 mb-3 mx-auto" style="padding: 0 40px;">
+              <input type="hidden" id="str_genre_id" name="str_genre_id" />
+              <input type="hidden" id="str_rating" name="str_rating" />
+              <input type="hidden" id="from_watching_date" name="from_watching_date" />
+              <input type="hidden" id="to_watching_date" name="to_watching_date" />
+                
               <%-- 영화제목으로 검색하기 --%>
               <div class="mx-2 mb-3" style="display: flex;">
                 <div id="movie_title" style="width: 55%; display: flex; border: solid 1px #e6e6e6; padding: 10px 20px; border-radius: 10%/60%;">
@@ -1108,12 +1127,12 @@ a, a:hover, .fc-daygrid {color: #000; text-decoration: none; background-color: t
                 <button type="button" class="btn btn-md m-1" onclick="searchResult()" style="position: relative; float: right; background-color: #ff0558; color: #fff;">검색하기</button>
                 <button type="button" id="btnSearchReset" class="btn btn-md m-1" style="position: relative; float: right; background-color: #ff80aa; color: #fff;">초기화</button>
               </div>
-              
       	    </div>
       	    
 	  	    <div style="padding: 0 50px;" class="mt-3 mx-auto">
  	          <div id="searchResult" class="my-3" style="width: 100%;"></div>
  	        </div>
+          </form>
  	        
 	  	  </div>
 	  	  

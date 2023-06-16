@@ -8,10 +8,24 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.poi.hssf.usermodel.HSSFDataFormat;
+import org.apache.poi.ss.usermodel.BorderStyle;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.streaming.SXSSFSheet;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -591,7 +605,177 @@ public class WatchaController {
 	    }
 		return jsonArr.toString();
 	}
+	
+	// === 검색결과 엑셀파일로 다운받기 === //
+	@RequestMapping(value="/myWatcha/downloadExcel.action", method= {RequestMethod.POST})
+	public String downloadExcelFile(HttpServletRequest request, Model model) {
 		
+		HttpSession session = request.getSession();
+		MemberVO loginuser = (MemberVO) session.getAttribute("loginuser");
+		String user_id = loginuser.getUser_id();
+
+		String searchWord = request.getParameter("searchWord");
+		String str_genre_id = request.getParameter("str_genre_id");
+		String str_rating = request.getParameter("str_rating");
+		String from_watching_date = request.getParameter("from_watching_date");
+		String to_watching_date = request.getParameter("to_watching_date");
+		
+		Map<String, Object> paraMap = new HashMap<>();
+		paraMap.put("user_id", user_id);
+		paraMap.put("from_watching_date", from_watching_date);
+		paraMap.put("to_watching_date", to_watching_date);
+		
+		if(searchWord == null) {
+			searchWord = "";
+		}
+		paraMap.put("searchWord", searchWord);
+
+		if(str_genre_id != null && !"".equals(str_genre_id)) {
+			String[] arr_genre_id = str_genre_id.split("\\,");
+			paraMap.put("arr_genre_id", arr_genre_id);
+		}
+		if(str_rating != null && !"".equals(str_rating)) {
+			String[] arr_rating = str_rating.split("\\,");
+			paraMap.put("arr_rating", arr_rating);
+		}
+		
+		// 검색조건에 해당하는 검색결과List 가져오기
+		List<Map<String, String>> searchList = service.searchResult(paraMap);
+		
+		// 먼저 pom.xml 에서 poi-ooxml-schemas, poi-ooxml, poi 를 porting 해줘야 한다.
+		SXSSFWorkbook workbook = new SXSSFWorkbook();
+		
+		// *** 1. 시트 생성하기
+		SXSSFSheet sheet = workbook.createSheet(loginuser.getName()+"님의 검색결과 세부정보");
+
+		sheet.setColumnWidth(0, 6000);
+		sheet.setColumnWidth(1, 6000);
+		sheet.setColumnWidth(2, 2000);
+		sheet.setColumnWidth(3, 4000);
+		
+		// *** 2. 행 생성하기
+		int rowLocation = 0; // 행의 위치를 나타내는 변수
+		
+		// *** 3. 셀 생성하기
+		
+		// *** 3-1) 셀 서식(CellStyle) 설정하기
+		// *** (1) CellStyle 정렬하기(Alignment)
+		// CellStyle 객체를 생성하여 Alignment 세팅하는 메소드를 호출해서 인자값을 넣어준다.
+		CellStyle mergeRowStyle = workbook.createCellStyle();
+		mergeRowStyle.setAlignment(HorizontalAlignment.CENTER); 	  // 가로 가운데정렬
+		mergeRowStyle.setVerticalAlignment(VerticalAlignment.CENTER); // 세로 가운데정렬
+		// import org.apache.poi.ss.usermodel.VerticalAlignment 으로 해야함.
+		
+		CellStyle headerStyle = workbook.createCellStyle();
+		headerStyle.setAlignment(HorizontalAlignment.CENTER);		// 가로 가운데정렬
+		headerStyle.setVerticalAlignment(VerticalAlignment.CENTER); // 세로 가운데정렬
+		
+		// *** (2) CellStyle 배경색(ForegroundColor)만들기
+		// setFillForegroundColor 메소드에 IndexedColors Enum인자를 사용한다. IndexedColors.색깔.getIndex() 은 색상의 인덱스값을 리턴한다.
+		// setFillPattern은 해당 색을 어떤 패턴으로 입힐지를 정한다.
+		headerStyle.setFillForegroundColor(IndexedColors.GREY_40_PERCENT.getIndex()); // 색상(연한회색)
+		headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+		
+		// *** (3) CellStyle 천단위 쉼표, 금액
+		CellStyle moneyStyle = workbook.createCellStyle();
+		moneyStyle.setDataFormat(HSSFDataFormat.getBuiltinFormat("#,##0"));
+		
+		// *** (4) Cell 폰트(Font) 설정하기
+		// 폰트 적용을 위해 POI 라이브러리의 Font 객체를 생성해준다.
+		// 해당 객체의 세터를 사용해 폰트의 글씨체, 크기, 색상, 굵기를 설정해준다. 그리고 CellStyle의 setFont 메소드를 사용해 인자로 폰트를 넣어준다.
+		Font mergeRowFont = workbook.createFont(); // import org.apache.poi.ss.usermodel.Font; 으로 한다.
+		mergeRowFont.setFontName("나눔고딕");
+		mergeRowFont.setFontHeight((short)500);
+		mergeRowFont.setColor(IndexedColors.CORAL.getIndex());
+		mergeRowFont.setBold(true);
+		
+		mergeRowStyle.setFont(mergeRowFont);
+
+		Font headerFont = workbook.createFont(); // import org.apache.poi.ss.usermodel.Font; 으로 한다.
+		headerFont.setFontName("나눔고딕");
+		headerFont.setColor(IndexedColors.WHITE.getIndex());
+		
+		headerStyle.setFont(headerFont);
+		
+		// *** (5) CellStyle 테두리 Border
+		// setBorderTop, Bottom, Left, Right 메소드와 인자로 POI라이브러리의 BorderStyle 인자를 넣어서 테두리(각 셀마다 상하좌우) 적용한다.
+		mergeRowStyle.setBorderTop(BorderStyle.THIN);
+		mergeRowStyle.setBorderBottom(BorderStyle.THIN);
+		mergeRowStyle.setBorderLeft(BorderStyle.THIN);
+		mergeRowStyle.setBorderRight(BorderStyle.THIN);
+		
+		headerStyle.setBorderTop(BorderStyle.THIN);
+		headerStyle.setBorderBottom(BorderStyle.THIN);
+		headerStyle.setBorderLeft(BorderStyle.THIN);
+		headerStyle.setBorderRight(BorderStyle.THIN);
+		
+		// *** 3-2) 제목 cell 생성하기 - Cell Merge 셀 병합시키기
+		// 셀병합은 시트의 addMergeRegion 메소드에 CellRangeAddress 객체를 인자로 하여 병합시킨다.
+		// CellRangeAddress 생성자의 인자로(시작 행, 끝 행, 시작 열, 끝 열) 순서대로 넣어서 병합시킬 범위를 정한다. 배열처럼 시작은 0 부터이다.  
+		
+		// *** (1) 병합할 행 만들기
+		Row mergeRow = sheet.createRow(rowLocation); // 행의 위치를 나타내는 변수 rowLocation (초기값 0, 엑셀에서 행의 시작은 0)을 넣어준다.
+		
+		// *** (2) 병합할 행에 "검색결과 세부정보" 로 셀(4개)을 만들어 셀에 스타일 주기
+		for(int i=0; i<4; i++) {
+			Cell cell = mergeRow.createCell(i); // 한 개의 셀 생성하기
+			cell.setCellStyle(mergeRowStyle);   // mergeRowStyle 로 설정한 셀 스타일 적용하기
+			cell.setCellValue(loginuser.getName()+"님의 검색결과 세부정보");  // 셀에 값 넣어주기
+		} // end of for
+		
+		// *** (3) 셀 병합하기
+		sheet.addMergedRegion(new CellRangeAddress(rowLocation, rowLocation, 0, 3)); 
+		// 병합할 셀의 영역(시작 행, 끝 행, 시작 열, 끝 열)을 설정한다. ==> 여기서는 첫번째 행의 0~3열까지를 합친다.
+		
+		// *** 3-3) 헤더 cell 생성하기
+		Row headerRow = sheet.createRow(++rowLocation); // 엑셀에서 행은 1 부터 시작한다. (전위연산자를 사용해야 한다!!!)
+
+		// *** (1) 해당 행의 열 cell 생성하기 (엑셀에서 열은 0 부터 시작한다.)
+        Cell headerCell = headerRow.createCell(0); // 해당 행의 첫번째 열 셀 생성
+        headerCell.setCellValue("영화제목");
+        headerCell.setCellStyle(headerStyle);
+        
+        headerCell = headerRow.createCell(1); // 해당 행의 두번째 열 셀 생성
+        headerCell.setCellValue("장르");
+        headerCell.setCellStyle(headerStyle);
+        
+        headerCell = headerRow.createCell(2); // 해당 행의 세번째 열 셀 생성
+        headerCell.setCellValue("별점");
+        headerCell.setCellStyle(headerStyle);
+        
+        headerCell = headerRow.createCell(3); // 해당 행의 네번째 열 셀 생성
+        headerCell.setCellValue("관람일자");
+        headerCell.setCellStyle(headerStyle);
+        
+		// *** 4. 검색결과 내용에 해당하는 행 및 셀 생성하기
+        Row bodyRow = null;
+        Cell bodyCell = null;
+        
+        for(int i=0; i<searchList.size(); i++) {
+        	Map<String, String> searchMap = searchList.get(i); // 검색조건에 맞는 영화의 데이터 행을 하나씩 꺼내어 내용 cell 에 넣어준다.
+   
+        	bodyRow = sheet.createRow(i + (rowLocation+1)); // 행생성
+   
+        	bodyCell = bodyRow.createCell(0); // 해당 행의 첫번째 열 셀 생성
+        	bodyCell.setCellValue(searchMap.get("movie_title")); // 데이터 영화제목 표시
+   
+        	bodyCell = bodyRow.createCell(1); // 해당 행의 두번째 열 셀 생성
+        	bodyCell.setCellValue(searchMap.get("genre_name")); // 데이터 장르 표시
+		              
+        	bodyCell = bodyRow.createCell(2); // 해당 행의 세번째 열 셀 생성
+        	bodyCell.setCellValue(searchMap.get("rating")); // 데이터 별점 표시
+		   
+        	bodyCell = bodyRow.createCell(3); // 해당 행의 네번째 열 셀 생성
+        	bodyCell.setCellValue(searchMap.get("watching_date")); // 데이터 관람일자 표시
+        } // end of for
+		
+        model.addAttribute("locale", Locale.KOREA); 	// 엑셀에서 한글이 깨지지않도록 방지하는 것이다.
+        model.addAttribute("workbook", workbook); 		// 엑셀파일
+        model.addAttribute("workbookName", loginuser.getName()+"님의 검색결과 세부정보"); // 엑셀파일명
+        
+		return "excelDownloadView"; // "excelDownloadView" 은 servlet-context.xml 파일에서 기술된 bean 의 id 값이다.    
+	}
+	
 	// === 검색상세 페이지 요청(view단 페이지) === //
 	@RequestMapping(value="/myWatcha/searchDetail.action")
 	public ModelAndView searchDetail(ModelAndView mav, HttpServletRequest request) {

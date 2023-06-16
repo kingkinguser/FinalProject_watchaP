@@ -137,11 +137,12 @@
 	<select id="movieReviewPaging" parameterType="HashMap" resultMap="movieReviewPaging_Map">
 	    select A.review_id, A.movie_id, A.review_content, A.review_date, A.spoiler_status, A.number_of_likes, A.number_of_comments
 	         , A.user_id, A.profile_image, A.name
-	         , nvl(B.rating, 0) AS rating
+	         , nvl((select rating from star_rating where movie_id = A.movie_id and user_id = A.user_id), 0) AS rating
+	         <!-- 한줄평을 남긴 회원이 해당 영화에 대해 평가한 별점 -->
 	         , nvl((select case Y.user_id when #{user_id} then 1 else 0 end as like_review
-	           from movie_review X join review_like Y
-	           on X.review_id = Y.review_id
-	           where Y.review_id = A.review_id), 0) AS like_review
+	                from movie_review X join review_like Y
+	                on X.review_id = Y.review_id
+	                where Y.review_id = A.review_id), 0) AS like_review
 	            <!-- 로그인한 회원이 해당 한줄평에 좋아요를 했으면 1, 좋아요를 하지 않았으면 0 -->
 	    from 
 	    (
@@ -153,11 +154,10 @@
 	        from movie_review R join member M
 	        on R.user_id = M.user_id
 	        where R.movie_id = #{movie_id}
-	    ) A join star_rating B
-	    on A.movie_id = B.movie_id
-	    where B.user_id = A.user_id
+	        order by R.review_date desc
+	    ) A
 	  <if test='startRno != "" and endRno != ""'>
-	    and rno between #{startRno} and #{endRno}
+	    where rno between #{startRno} and #{endRno}
 	  </if>	    
 	</select>
 
@@ -186,7 +186,7 @@
 		<result property="comment_date" 	  column="comment_date" 	  javaType="String"/>
 	</resultMap>
 	<select id="commentList" parameterType="String" resultMap="commentList_Map">
-	    select C.comment_id, C.review_id, M.user_id, M.profile_image, M.name, C.content, to_char(C.comment_date, 'yyyy-mm-dd') AS comment_date
+	    select C.comment_id, C.review_id, M.user_id, M.profile_image, M.name, C.content, to_char(C.comment_date, 'yyyy-mm-dd hh:mi:ss') AS comment_date
 	    from review_comment C join member M
 	    on C.user_id = M.user_id 
 	    where review_id = #{review_id}
