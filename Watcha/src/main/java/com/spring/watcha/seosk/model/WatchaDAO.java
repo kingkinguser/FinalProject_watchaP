@@ -163,8 +163,8 @@ public class WatchaDAO implements InterWatchaDAO {
 
 	// 한줄평 - 댓글 수정
 	@Override
-	public int updateComment(ReviewCommentVO rcvo) {
-		int n = sqlsession.update("watcha.updateComment", rcvo);
+	public int updateReviewComment(ReviewCommentVO rcvo) {
+		int n = sqlsession.update("watcha.updateReviewComment", rcvo);
 		return n;
 	}
 

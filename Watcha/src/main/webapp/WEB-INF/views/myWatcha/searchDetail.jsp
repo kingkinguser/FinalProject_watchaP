@@ -439,7 +439,7 @@ div#makePhotoTicket{font-family: 'Noto Sans KR', sans-serif;}
   		const queryString = $("form[name='commentFrm']").serialize();
 
 		$.ajax({
-			url:"<%= ctxPath%>/updateComment.action",
+			url:"<%= ctxPath%>/updateReviewComment.action",
 			data:queryString, 
 			type:"post",
 			dataType:"json",
@@ -785,12 +785,12 @@ div#makePhotoTicket{font-family: 'Noto Sans KR', sans-serif;}
 	  <%-- 한줄평 등록 모달창 --%>
       <c:if test="${empty requestScope.searchReview}">
 		<div class="modal fade registerReview" id="registerReview" data-keyboard="false">
-		  <input type="hidden" name="user_id" value="${sessionScope.loginuser.user_id}" />
-		  <input type="hidden" name="movie_id" value="${requestScope.searchDetail.movie_id}" />
 		  <div class="modal-dialog modal-dialog-centered">
 		    <div class="modal-content">
 		      <div class="modal-body">
 		  	  <form name="registerReviewFrm">
+			  <input type="hidden" name="user_id" value="${sessionScope.loginuser.user_id}" />
+			  <input type="hidden" name="movie_id" value="${requestScope.searchDetail.movie_id}" />
 		        <h5 class="modal-title" style="font-weight: bold;">${requestScope.searchDetail.movie_title}<button type="button" class="close" data-dismiss="modal">&times;</button></h5>
 	      		<div class="my-2">
 	      		  <textarea id="review_content" name="review_content" style="width: 100%; height: 450px; resize: none; border: none;" placeholder="이 작품에 대한 생각을 자유롭게 표현해주세요."></textarea>
@@ -818,11 +818,11 @@ div#makePhotoTicket{font-family: 'Noto Sans KR', sans-serif;}
  	  <%-- 한줄평 수정 모달창 --%>
       <c:if test="${not empty requestScope.searchReview}">
        	<div class="modal fade editReview" id="editReview" data-keyboard="false">
-		  <input type="hidden" name="review_id" value="${requestScope.searchReview.review_id}" />
 		  <div class="modal-dialog modal-dialog-centered">
 			<div class="modal-content">
 			  <div class="modal-body">
 			  <form name="editReviewFrm">
+		  		<input type="hidden" name="review_id" value="${requestScope.searchReview.review_id}" />
 			  	<h5 class="modal-title" style="font-weight: bold;">${requestScope.searchDetail.movie_title}<button type="button" class="close" data-dismiss="modal">&times;</button></h5>
 			  	<div class="my-2">
 			  	  <textarea id="review_content" name="review_content" style="width: 100%; height: 450px; resize: none; border: none;">${requestScope.searchReview.review_content}</textarea>

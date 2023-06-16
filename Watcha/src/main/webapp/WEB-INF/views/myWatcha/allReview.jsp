@@ -665,7 +665,7 @@ div#commentRegister textarea:focus, div#commentEdit textarea:focus, div#review_m
   		const queryString = $("form[name='commentFrm']").serialize();
 
 		$.ajax({
-			url:"<%= ctxPath%>/updateComment.action",
+			url:"<%= ctxPath%>/updateReviewComment.action",
 			data:queryString, 
 			type:"post",
 			dataType:"json",

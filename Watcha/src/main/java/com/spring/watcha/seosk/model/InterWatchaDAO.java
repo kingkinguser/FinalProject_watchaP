@@ -75,7 +75,7 @@ public interface InterWatchaDAO {
 	int addComment(ReviewCommentVO rcvo);
 	
 	// 한줄평 - 댓글 수정
-	int updateComment(ReviewCommentVO rcvo);
+	int updateReviewComment(ReviewCommentVO rcvo);
 
 	// 한줄평 - 댓글 삭제
 	int deleteComment(ReviewCommentVO rcvo);

@@ -242,8 +242,8 @@ public class WatchaService implements InterWatchaService {
 
 	// 한줄평 - 댓글 수정
 	@Override
-	public int updateComment(ReviewCommentVO rcvo) {
-		int n = dao.updateComment(rcvo);
+	public int updateReviewComment(ReviewCommentVO rcvo) {
+		int n = dao.updateReviewComment(rcvo);
 		return n;
 	}
 

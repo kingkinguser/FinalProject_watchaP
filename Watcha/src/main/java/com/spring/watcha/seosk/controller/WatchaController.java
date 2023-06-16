@@ -529,10 +529,10 @@ public class WatchaController {
 	
 	// === 한줄평에 달린 댓글 수정(Ajax) === //
 	@ResponseBody
-	@RequestMapping(value="/updateComment.action", produces="text/plain;charset=UTF-8", method= {RequestMethod.POST})
-	public String updateComment(HttpServletRequest request, ReviewCommentVO rcvo) {
+	@RequestMapping(value="/updateReviewComment.action", produces="text/plain;charset=UTF-8", method= {RequestMethod.POST})
+	public String updateReviewComment(HttpServletRequest request, ReviewCommentVO rcvo) {
 		
-		int n = service.updateComment(rcvo);
+		int n = service.updateReviewComment(rcvo);
 
 		JSONObject jsonObj = new JSONObject();
 		jsonObj.put("n", n);
