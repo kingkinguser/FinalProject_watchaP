@@ -193,6 +193,7 @@ label {cursor: pointer; margin: 0px 8px;}
 		        <input type="radio" id="orderByRatingAsc" name="orderByRating" value="rating_avg asc" style="display: none;"/>
 			    <i class="fa-solid fa-check fa-lg" style="color: #cccccc;"></i><span class="px-2">별점평균 낮은순</span>
 		      </label>
+		      <span class="px-2">&nbsp;|&nbsp;</span>
 		      <label for="orderByReleaseDesc">
 		        <input type="radio" id="orderByReleaseDesc" name="orderByRelease" value="release_date desc" style="display: none;" checked/>
 			    <i class="fa-solid fa-check fa-lg" style="color: #ff0558;"></i><span class="px-2">개봉일자 최신순</span>

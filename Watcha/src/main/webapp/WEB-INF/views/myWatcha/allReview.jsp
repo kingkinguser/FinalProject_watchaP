@@ -34,7 +34,7 @@ img#img_wallPaper {position: relative; z-index:1; object-fit:cover; width: 100%;
 img#img_movie {z-index:5; border: solid 1px #f8f8f8; border-radius: 2%; box-shadow: 1px 1px 1px #cccccc; width: 100%;}
 span#collectionCount, span#reviewCount {padding-left: 10px; font-weight: 400; color: #666666; font-size: 14px;}
 img#img_profile {width: 40px; height: 40px; box-sizing: inherit; border:solid 1px #e6e6e6; border-radius: 50%; box-shadow: 1px 1px 1px #cccccc; margin: 0 6px;}
-p.movieRate{width: 25%; height: 30px; border: solid 1px #e6e6e6; border-radius: 20%/40%; padding: 0 10px; margin: 5px; background-color: #ffffff;}
+p.movieRate{width: 23%; height: 30px; border: solid 1px #e6e6e6; border-radius: 20%/40%; padding: 0 10px; margin: 5px; background-color: #ffffff;}
 input.like_review{display:none;}
 
 div#div_reviewPageBar {text-align: center; margin: 10px;}
@@ -60,27 +60,24 @@ div#commentRegister textarea:focus, div#commentEdit textarea:focus, div#review_m
  		
 		// "좋아요" 클릭 시
 		$(document).on("click", "input.like_review", function(){
-			$("input.like_review").each(function(index, item){
-				
-				let review_id = $(item).attr('id'); // 예) like_review1
-				review_id = review_id.substring(11, review_id.length);
-				
-				let b_like_review = false;
-				let number_of_likes = $(item).parent().find("#number_of_likes").text();
-				
-				if($(item).prop("checked")){ // 좋아요 체크
-					$(item).next().find('i').css('color','#ff0558');
-					b_like_review = true;
-					updateLikeReview(b_like_review, review_id);
-					$(item).parent().find("#number_of_likes").text(Number(number_of_likes)+1);
-	 			}
-	 			else { // 좋아요 체크해제
-					$(item).next().find('i').css('color','#cccccc');
-					b_like_review = false;
-					updateLikeReview(b_like_review, review_id);
-					$(item).parent().find("#number_of_likes").text(Number(number_of_likes)-1);
-	 			}
-			});
+			let review_id = $(this).attr('id'); // 예) like_review1
+			review_id = review_id.substring(11, review_id.length);
+			
+			let b_like_review = false;
+			let number_of_likes = $(this).parent().find("#number_of_likes").text();
+			
+			if($(this).prop("checked")){ // 좋아요 체크
+				$(this).next().find('i').css('color','#ff0558');
+				b_like_review = true;
+				updateLikeReview(b_like_review, review_id);
+				$(this).parent().find("#number_of_likes").text(Number(number_of_likes)+1);
+ 			}
+ 			else { // 좋아요 체크해제
+				$(this).next().find('i').css('color','#cccccc');
+				b_like_review = false;
+				updateLikeReview(b_like_review, review_id);
+				$(this).parent().find("#number_of_likes").text(Number(number_of_likes)-1);
+ 			}
  		}); // end of $(document).on("click", "input#like_review", function(){})
  		
 		// 스포일러가 포함된 한줄평에서 "한줄평 보기" 버튼 클릭 시
@@ -119,12 +116,12 @@ div#commentRegister textarea:focus, div#commentEdit textarea:focus, div#review_m
 				  "currentShowPageNo":currentShowPageNo},
 			dataType:"json",
 			success:function(json){
-				console.log("확인용 : "+JSON.stringify(json));
+			//	console.log("확인용 : "+JSON.stringify(json));
 				
 				let html = "";
 				if(json.length > 0){ // 영화에 대한 유저들의 한줄평이 존재하는 경우
 
-					html += '<h4 style="text-align: left; padding: 5px; font-weight: 600; margin: 10px;">이 영화에 대한 한줄평<span id="reviewCount" class="ml-2">'+json.length+'</span></h4>';
+					html += '<h4 style="text-align: left; padding: 5px; font-weight: 600; margin: 10px;">이 영화에 대한 한줄평<span id="reviewCount" class="ml-2"></span></h4>';
 					
 					<%-- 유저들의 한줄평 보여주기 시작 --%>
 					$.each(json, function(index, item){
@@ -172,7 +169,7 @@ div#commentRegister textarea:focus, div#commentEdit textarea:focus, div#review_m
 				       		  +         '<p style="width: 70%; padding-left: 10px; margin: 10px 0px; font-size: 11pt; color: gray;">작성일자&nbsp;<span class="ml-2">'+item.review_date+'</span></p>';
 				       		  
 				        if(item.rating == 0){ // 별점평가를 하지 않은 경우
-					       	html +=   	'<p class="movieRate text-center">평가안함</p>'
+					       	html +=   	'<p class="movieRate text-center" style="font-size: 11pt; width: 35%;">평가안함</p>'
 					       		  +	  '</div>';
 				        }
 				        else {
@@ -187,7 +184,7 @@ div#commentRegister textarea:focus, div#commentEdit textarea:focus, div#review_m
 				       		html +=       '<input type="checkbox" id="like_review'+item.review_id+'" class="like_review" checked/>'
 				      	  	  	  +       '<span>좋아요&nbsp;<i class="fa-solid fa-heart" style="color: #ff0558;"></i></span>';
 				       	}
-				       	else if(item.user_id == "${sessionScope.loginuser.user_id}" || "${empty sessionScope.loginuser}"){ // 로그인한 회원이 자신의 한줄평에 좋아요를 클릭한 경우
+				       	else if(item.user_id == "${sessionScope.loginuser.user_id}" || "${sessionScope.loginuser.user_id}" == ""){ // 로그인한 회원이 자신의 한줄평에 좋아요를 클릭한 경우
 				       		html +=       '<span onclick="func_likeAlert()">좋아요&nbsp;<i class="fa-solid fa-heart" style="color: #cccccc;"></i></span>';
 				       	}
 				       	else {
@@ -235,6 +232,8 @@ div#commentRegister textarea:focus, div#commentEdit textarea:focus, div#review_m
 			//	console.log("확인용 : "+JSON.stringify(json));
 
 				if(Number(json.totalCount) > 0){
+					
+					$("span#reviewCount").text(Number(json.totalCount));
 					
 					if(typeof currentShowPageNo == "string"){ // currentShowPageNo 가 string 타입이면 사칙연산을 위해 형변환해준다.
 						currentShowPageNo = Number(currentShowPageNo);
@@ -309,9 +308,8 @@ div#commentRegister textarea:focus, div#commentEdit textarea:focus, div#review_m
       	html +=       '<h5 style="text-align: left; padding: 0 5px; font-weight: 600; margin: 8px 10px;">'+reviewObj.name+'</h5>'
       	
         if(reviewObj.user_id == "${sessionScope.loginuser.user_id}"){ // 로그인한 회원이 작성한 한줄평일 경우
-	       	html +=   '<p class="pr-2" style="color: gray; font-size: 10pt; padding: 0px; margin: 10px 0 0 0;">내가 쓴 한줄평</p>'
-	       		  +	  '<button type="button" data-toggle="modal" data-backdrop="static" data-target="#editReview" style="font-weight: bold; color: #ff0558; border: none; background-color: transparent;">수정</button>'
-	       		  +	  "<button type='button' onclick='delReview("+reviewObj.review_id+")' style='font-weight: bold; color: #ff0558; border: none; background-color: transparent;'>삭제</button>"
+	       	html +=   '<button type="button" class="px-1" data-toggle="modal" data-backdrop="static" data-target="#editReview" style="font-weight: bold; color: gray; border: none; background-color: transparent; font-size: 10pt;">수정</button>'
+	       		  +	  "<button type='button' class='px-1' onclick='delReview("+reviewObj.review_id+")' style='font-weight: bold; color: gray; border: none; background-color: transparent; font-size: 10pt;'>삭제</button>"
 				  + '</div>';
         } // end of if(로그인한 회원이 작성한 한줄평일 경우)
       	
@@ -344,10 +342,10 @@ div#commentRegister textarea:focus, div#commentEdit textarea:focus, div#review_m
      		  +         '<p style="width: 20%; padding-left: 10px; margin: 10px 0px; font-size: 11pt; color: gray;">작성일자&nbsp;<span class="ml-2">'+reviewObj.review_date+'</span></p>';
      		  
       	if(reviewObj.rating == 0){ // 별점평가를 하지 않은 경우
-	       	html +=   	'<p class="movieRate text-center ml-1" style="width: 8%;">평가안함</p>';
+	       	html +=   	'<p class="movieRate text-center ml-1" style="width: 10%; font-size: 11pt;">평가안함</p>';
       	}
       	else {
-	       	html +=   	'<p class="movieRate text-center ml-1" style="width: 8%;">★&nbsp;<span>'+reviewObj.rating+'</span></p>';
+	       	html +=   	'<p class="movieRate text-center ml-1" style="width: 7%;">★&nbsp;<span>'+reviewObj.rating+'</span></p>';
       	}
       	
      	html +=   	 '</div>'
@@ -459,7 +457,7 @@ div#commentRegister textarea:focus, div#commentEdit textarea:focus, div#review_m
 						html +=     '<div style="text-align: left;">'
 							  
 						if(item.user_id == reviewObj.user_id){ // 한줄평 작성자가 자신의 한줄평에 댓글을 단 경우
-							html +=   '<p style="padding: 0 5px; margin: 0px 0px 5px 0px; font-weight: 600;">'+item.name+'<span class="pl-2" style="color: #ff0558; font-size: 10pt;">작성자</span></p>'
+							html +=   '<p style="padding: 0 5px; margin: 0px 0px 5px 0px; font-weight: 600;">'+item.name+'<span class="pl-2" style="color: #6c757d; text-shadow: 1px 1px 1px #e6e6e6; font-size: 10pt;">작성자</span></p>'
 						}
 						else {
 							html +=   '<p style="padding: 0 5px; margin: 0px 0px 5px 0px; font-weight: 600;">'+item.name+'</p>'
@@ -577,7 +575,7 @@ div#commentRegister textarea:focus, div#commentEdit textarea:focus, div#review_m
 	} // end of function delReview(review_id)
 	
 	function func_likeAlert(){
-		if(${empty sessionScope.loginuser}){
+		if("${sessionScope.loginuser.user_id}" == ""){
 			alert("회원만 좋아요를 할 수 있어요!");
 		}
 		else { // 로그인한 회원이 본인의 한줄평에 좋아요를 클릭한 경우
