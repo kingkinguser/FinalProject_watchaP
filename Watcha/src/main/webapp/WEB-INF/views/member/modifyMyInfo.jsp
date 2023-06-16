@@ -474,7 +474,7 @@ function goEdit() {
           <div class="modify-img-edge">
             <div class="modify-img-radius">
               <c:if test="${not empty sessionScope.loginuser.profile_image}">
-  			    <img id="img_profile" src="<%= ctxPath%>/resources/images/profile_img/${sessionScope.loginuser.profile_image}" class="modify-img e18xnnz0"/>
+  			    <img id="img_profile" src="<%= ctxPath%>/resources/images/${sessionScope.loginuser.profile_image}" class="modify-img e18xnnz0"/>
 			  	<input type="hidden" name="profile_image" value="${sessionScope.loginuser.profile_image}">
 			  </c:if>
 			  <c:if test="${empty sessionScope.loginuser.profile_image}">
