@@ -77,17 +77,6 @@ public class WatchaController {
 			// *** 4. 검색하기 - 모든 종류의 장르 가져오기
 			List<GenreVO> genreList = service.genreInfo();
 	
-			// 추후 수정예정
-			// 로그인한 회원이 해당 영화에 대해 작성한 한줄평 유무 및 한줄평 정보
-			Map<String, String> paraMap = new HashMap<>();
-			paraMap.put("user_id", user_id);
-			paraMap.put("movie_id", "290859"); // 수정예정 - 페이지 합치기 전 movie_id 만 넘겨준 것
-			
-			Map<String, String> reviewInfo = null;
-			if(user_id != null) {
-				reviewInfo = service.reviewInfo(paraMap);
-			}
-	
 			request.setAttribute("ratingFiveList", ratingFiveList);
 			request.setAttribute("userInfo", userInfo);
 			request.setAttribute("reviewCount", reviewCount);
@@ -95,8 +84,6 @@ public class WatchaController {
 			request.setAttribute("userPhotoTicketList", userPhotoTicketList);
 			request.setAttribute("photoTicketCount", userPhotoTicketList.size());
 			request.setAttribute("genreList", genreList);
-	
-			request.setAttribute("reviewInfo", reviewInfo);
 			
 			return "myWatcha/myWatcha.tiles";
 			// /WEB-INF/views/myWatcha/myWatcha.jsp
