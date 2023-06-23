@@ -61,7 +61,7 @@ public class WatchaAOP {
 		
 		
 		// === Before Advice(공통관심사, 보조업무) === //
-		@Before("requiredLogin()")
+		@Before("requiredLogin2()")
 		public void loginCheck2(JoinPoint joinpoint) { 
 			
 			HttpServletRequest request = (HttpServletRequest) joinpoint.getArgs()[0];    // 주업무 메소드의 첫번째 파라미터를 얻어오는 것이다.
@@ -69,7 +69,7 @@ public class WatchaAOP {
 			
 			HttpSession session = request.getSession();
 			if(session.getAttribute("loginuser") == null) {
-				String message = "먼저 로그인 하세요~~~";
+				String message = "먼저 로그인 하세요!!!";
 				
 				request.setAttribute("message", message);
 				
@@ -78,7 +78,7 @@ public class WatchaAOP {
 				session.setAttribute("needLogin", true);
 				session.setAttribute("goBackURL", url); // 세션에 url 정보를 저장시켜둔다.
 				
-				RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/views/member/needLogin.jsp"); 
+				RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/views/member/needLogin2.jsp"); 
 				try {
 					dispatcher.forward(request, response);
 				} catch (ServletException | IOException e) {

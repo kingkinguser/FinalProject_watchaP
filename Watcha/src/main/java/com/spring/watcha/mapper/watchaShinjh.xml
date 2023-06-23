@@ -52,7 +52,7 @@
 	
 	<!-- 임시 비밀번호 변경 email ajax -->
 	<update id="findPwd" parameterType="HashMap">
-		update member set password = #{password}
+		update member set password = #{password}, last_password_change = sysdate
 		where email = #{email}
 	</update>
 	

@@ -948,6 +948,10 @@
 		  dataType:"json",
 		  success:function(json){
 			  // console.log("~~ 확인용 : " + JSON.stringify(json));
+			  if(json.likeCollection == 2) {
+				  alert("로그인이 필요합니다.");
+				  location.href = "javascript:history.go(-1);";
+			  }
 			  
 		  },
 		  error: function(request, status, error){

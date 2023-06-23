@@ -650,7 +650,8 @@
 		
 
 		let idbool = false; // 아이디 중복체크 결과
-		let emailbool = false; // 이메일 중복체크 결과
+		let emailbool = false; // 이메일 정규식 결과
+		let emaildupbool = false; // 이메일 중복체크 결과
 		
 		
 		// 로그인 회원가입 전환 버튼
@@ -660,7 +661,8 @@
 		    resetForm($(".login_signup-modal"));
 		    $($(this).attr("data-modal")).css("display","flex");
 		    idbool = false; // 아이디 중복체크 결과 초기화
-			emailbool = false; // 이메일 중복체크 결과 초기화
+			emailbool = false; // 이메일 정규식 결과 초기화
+			emaildupbool = false; // 이메일 중복체크 결과 초기화
 		});
 		
 		// modal 바깥을 클릭했을 때 닫는 기능
@@ -671,10 +673,11 @@
 			    $(this).parent().find(".login_signup-label-input").removeClass("warn-label-input");
 			    resetForm(this);
 			    idbool = false; // 아이디 중복체크 결과 초기화
-				emailbool = false; // 이메일 중복체크 결과 초기화
+				emailbool = false; // 이메일 정규식 결과 초기화
+				emaildupbool = false; // 이메일 중복체크 결과 초기화
 				
 				if ($(this).attr('id') != 'findPwdModal') {
-				    $("html").removeClass("disableBodyScrolling");
+				    $("html").removeClass("disableBodyScrolling");			    
 				}
 			}
 		});		
@@ -685,7 +688,7 @@
 		    $("html").addClass("disableBodyScrolling");
 
 			if ($(this).attr('id') === 'findPwdModal') {
-				emailbool = true;
+				emaildupbool = true;
 			}
 		});
 		
@@ -698,9 +701,7 @@
 	    
 	    // 비번찾기 modal 닫기 기능
 	    $(".findPwd-closebtn").click(function(e) {
-		    $($(this).attr("data-modal")).css("display","none");
-		    $(this).find(".login_signup-label-input").removeClass("warn-label-input");
-		    resetForm(this);
+	    	$("#findPwdModal").click();
 	    });
 	        
 
@@ -990,11 +991,11 @@
 
 	// modal 창에서 입력된 값 초기화 시키기
 	function resetForm(e){
-	    const modal_frmArr = $(e.target).find("form");
+	    const modal_frmArr = $(e).find("form");
 	    for(let i=0; i<modal_frmArr.length; i++) {
 	        modal_frmArr[i].reset();
 	    }
-	    $(e.target).find("p.warning-text").css("display","none");    
+	    $(e).find("p.warning-text").css("display","none");    
 	}
 
 
@@ -1003,35 +1004,19 @@
 
 		if( $(e).val().trim().length < 2 ) {
 			// 2글자 미만일 경우 
-			$("p#id-warning").css("display","block"); // 해당 부분만 error 문구 출력해주기
+			$(e).parent().parent().parent().find("p.min2").css("display","block"); // 해당 부분만 error 문구 출력해주기
 			$(e).parent().parent().addClass("warn-label-input");
+			idbool = false;
 		}
 		else {
 			// 2글자 이상일 경우
-			$("p#id-warning").css("display","none"); // 해당 부분만 error 문구 숨기기
+			$(e).parent().parent().parent().find("p.min2").css("display","none"); // 해당 부분만 error 문구 숨기기
 			$(e).parent().parent().removeClass("warn-label-input");
+			idbool = true;
 		}
 		
 	}
-
-
-	//----- 아이디 입력태그2 ------ //
-	function id2Change(e) {
-
-		if( $(e).val().trim().length < 2 ) {
-			// 2글자 미만일 경우 
-			$("p#id2-warning").css("display","block"); // 해당 부분만 error 문구 출력해주기
-			$(e).parent().parent().addClass("warn-label-input");
-		}
-		else {
-			// 2글자 이상일 경우
-			$("p#id2-warning").css("display","none"); // 해당 부분만 error 문구 숨기기
-			$(e).parent().parent().removeClass("warn-label-input");
-			checkId();
-		}
-		
-	}
-
+	
 
 	// ----- 비밀번호 입력태그 ------ //
 	function pwdChange(e) {
@@ -1107,13 +1092,15 @@
 			$(e).parent().parent().parent().find("p.warnRegular").css("display","block"); // 해당 부분만 error 문구 출력해주기
 			$(e).parent().parent().addClass("warn-label-input");
 			emailbool=false;
+			emaildupbool=false;
 		}
 		
 		else {
 			// 이메일이 정규표현식에 맞는 경우
-			$("p#email-warning").css("display","none"); // 해당 부분만 error 문구 숨기기
+			$(e).parent().parent().parent().find("p.warnRegular").css("display","none"); // 해당 부분만 error 문구 숨기기
+			$(e).parent().parent().removeClass("warn-label-input");
 			emailbool=true;
-			emailDuplicateCheck();
+			emailDuplicateCheck($(e).val());
 		}
 	}
 
@@ -1121,11 +1108,17 @@
 	// 로그인 기능
 	function func_Login() {
 		
-		const frm = document.loginForm;
+		if(!idbool) {
+			return false;
+		}
+		else {
 		
-		frm.action = "<%= ctxPath%>/loginEnd.action";
-		frm.method = "post";
-		frm.submit();
+			const frm = document.loginForm;
+			
+			frm.action = "<%= ctxPath%>/loginEnd.action";
+			frm.method = "post";
+			frm.submit();
+		}
 		
 	}// end of function func_Login()---------
 
@@ -1133,7 +1126,7 @@
 	// 회원가입 기능
 	function func_Signup() {
 		
-		if(!idbool || !emailbool) {	
+		if(!idbool || !emailbool || !emaildupbool) {	
 			return false;
 		}
 		
@@ -1148,10 +1141,10 @@
 	}
 	
 
-	// 비번찾기
+	// 비밀번호 임시변경
 	function func_Findpwd() {
 		
-		if(emailbool) {
+		if(!emailbool || emaildupbool) {
 	   		return false;	 
 		}
 		else {
@@ -1171,7 +1164,7 @@
 						alert("메일전송 실패");
 					}
 					else if( json.result == 2 ) { // 업데이트 실패
-						alert("임시비번 업데이트 실패");
+						alert("비밀번호 임시변경 실패");
 					}
 					
 				},
@@ -1219,33 +1212,33 @@
 
 	// 이메일 중복체크
 	// 회원가입에서는 이메일 중복이 불가하고, 비번찾기시에는 이메일이 존재해야한다.
-	function emailDuplicateCheck() {
+	function emailDuplicateCheck(email) {
 		
 	   	$.ajax({
 	   		url:"<%= ctxPath%>/emailDuplicateCheck.action",
-	   		data:{"email":$("input[name=email]").val()},
+	   		data:{"email":email},
 	   		type:"post",
 			dataType:"json",
+	  		async:false,
 			success:function(json){ 
 	               
 				if(json.isExists > 0) { // 중복된 이메일의 경우 / 존재하는 이메일일 경우
 					$("p#email-warning2").css("display","block"); // 회원가입 해당 부분만 error 문구 출력해주기
 					$("input#email").parent().parent().addClass("warn-label-input");
-					$("p#email-warning2").val($("input#email").val()+"은 중복된 email 이므로 사용이 불가능합니다.");
 
 					$("p#email-findpwd-warning2").css("display","none"); // 비번찾기 해당 부분만 error 문구 숨기기
 					$("input#email-findpwd2").parent().parent().removeClass("warn-label-input");
 					
-					emailbool = false;
+					emaildupbool = false;
 				}
 				else if( json.isExists == 0 ) { // 중복되지 않는 이메일인 경우 / 존재하지 않는 이메일일 경우
 					$("p#email-warning2").css("display","none"); // 회원가입 해당 부분만 error 문구 숨기기
 					$("input#email").parent().parent().removeClass("warn-label-input");
 					
-					$("p#email-email-findpwd-warning2").css("display","block"); // 비번찾기 해당 부분만 error 문구 출력해주기
+					$("p#email-findpwd-warning2").css("display","block"); // 비번찾기 해당 부분만 error 문구 출력해주기
 					$("input#email-findpwd").parent().parent().addClass("warn-label-input");
 					
-					emailbool = true;
+					emaildupbool = true;
 				}
 			},
 			
@@ -1391,7 +1384,7 @@
                                         <input autocomplete="off" placeholder="아이디" id="user_id" name="user_id" class="login_signup-input" oninput="idChange(this)" required>
                                     </div>
                                 </label>
-                                <p class="warning-text" id="id-warning">아이디는 두글자 이상이어야 합니다.</p>
+                                <p class="warning-text min2" id="id-warning">아이디는 두글자 이상이어야 합니다.</p>
                             </div>
                             
                             <div class="py4">
@@ -1453,7 +1446,9 @@
         <div class="login_signup-modal-dialog">
             <header class="findPwd-header">
                 <div class="display-flex">
-                    <div><button type="button" aria-label="close" class="findPwd-closebtn" data-modal="#findPwdModal"></button></div>
+                    <div>
+                      <button type="button" aria-label="close" class="findPwd-closebtn" data-modal="#findPwdModal"></button>
+                    </div>
                 </div>
                 <div class="mr4_mb10">
                     <div class="findPwd-title">비밀번호 재설정</div>
@@ -1471,7 +1466,7 @@
                     <div class="mx20">
                         <form name="findpwdForm" class="form" onsubmit="return func_Findpwd()">
                             <div class="py4">
-                            	<label value="false" class="login_signup-label-input">
+                            	<label class="login_signup-label-input">
                                     <div class="login_signup-div-input">
 	                                    <input autocomplete="off" placeholder="이메일" type="email" id="email-findpwd"
 	                                            name="email" class="login_signup-input" oninput="emailChange(this)"
@@ -1505,10 +1500,10 @@
                             <div class="py4">
                                 <label class="login_signup-label-input">
                                     <div class="login_signup-div-input">
-                                        <input autocomplete="off" placeholder="아이디" type="text" id="user_id2" name="user_id" class="login_signup-input" title="아이디를 입력하세요." oninput="id2Change(this)" minlength="2" required>
+                                        <input autocomplete="off" placeholder="아이디" type="text" id="user_id2" name="user_id" class="login_signup-input" title="아이디를 입력하세요." oninput="idChange(this), checkId()" minlength="2" required>
                                     </div>
                                 </label>
-                                <p class="warning-text" id="id2-warning">아이디는 최소 2자 이상이어야 합니다.</p>
+                                <p class="warning-text min2" id="id2-warning">아이디는 최소 2자 이상이어야 합니다.</p>
                                 <p class="warning-text" id="id2-warning2">중복된 아이디 입니다.</p>
                             </div>
                             
@@ -1549,7 +1544,7 @@
                                     </div>
                                 </label>
                                 <p class="warning-text warnRegular" id="email-warning">정확하지 않은 이메일입니다.</p>
-                                <p class="warning-text" id="email-warning2"></p>
+                                <p class="warning-text" id="email-warning2">중복된 이메일입니다.</p>
                             </div>
                             
                             <button type="submit" class="login_signup-btn" id="btnSignup">회원가입</button>

@@ -2,14 +2,12 @@ package com.spring.watcha.shinjh.controller;
 
 import java.io.File;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
@@ -163,18 +161,17 @@ public class WatchaController {
 			Map<String, String> paraMap = new HashMap<>();
 			
 			paraMap.put("email", email);
-			paraMap.put("password", password);
+			paraMap.put("password", Sha256.encrypt(password));
 			int n = service.findPwd(paraMap);
 			
-			
-			paraMap.put("ctxPath", request.getContextPath());
+			paraMap.put("password", password);
 			
 			JsonObject jsonObj = new JsonObject();			
 			
 			if(n==1) {
 				
 				try {
-					mail.sendmail(email, paraMap);
+					mail.sendmail(paraMap);
 					jsonObj.addProperty("result", 1);
 				} catch (Exception e) {
 					e.printStackTrace();

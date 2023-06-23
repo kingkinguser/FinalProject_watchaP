@@ -254,25 +254,32 @@ public class WatchaController {
 			// === 좋아요 === //
 			@ResponseBody
 			@RequestMapping(value="/likeCollection.action", method= {RequestMethod.POST})   
-			public String requiredLogin2_likeCollection(HttpServletRequest request, HttpServletResponse response) {
+			public String likeCollection(HttpServletRequest request, HttpServletResponse response) {
 				 
 				String likeCollection = "";
-				String user_id_collection = request.getParameter("user_id_collection");
-				String user_id_like = request.getParameter("user_id_like");
-				
-				Map<String, Object> paraMap = new HashMap<>();
-				paraMap.put("user_id_collection", user_id_collection);
-				paraMap.put("user_id_like", user_id_like); 
-				
-				int n = service.getLikeSelect(paraMap);
-				
-				paraMap.put("n", n);
-				
-				if(n == 1) {
-					 likeCollection = service.getLikeDeleteCollection(paraMap);
+
+				HttpSession session = request.getSession();
+				if(session.getAttribute("loginuser") == null) {
+					likeCollection = "2";
 				}
-				else {
-				     likeCollection = service.getLikeInsertCollection(paraMap);
+				else { // 로그인 했을경우
+					String user_id_collection = request.getParameter("user_id_collection");
+					String user_id_like = request.getParameter("user_id_like");
+					
+					Map<String, Object> paraMap = new HashMap<>();
+					paraMap.put("user_id_collection", user_id_collection);
+					paraMap.put("user_id_like", user_id_like); 
+					
+					int n = service.getLikeSelect(paraMap);
+					
+					paraMap.put("n", n);
+					
+					if(n == 1) {
+						 likeCollection = service.getLikeDeleteCollection(paraMap);
+					}
+					else {
+					     likeCollection = service.getLikeInsertCollection(paraMap);
+					}
 				}
 				JSONObject jsonObj = new JSONObject();
 				jsonObj.put("likeCollection", likeCollection);
